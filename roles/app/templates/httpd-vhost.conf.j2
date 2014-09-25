@@ -1,0 +1,11 @@
+Listen 80
+<VirtualHost *:80>
+    DocumentRoot /opt/stepup/{{ vhost_name }}.{{ app_domain }}
+    ServerName {{ vhost_name }}.{{ app_domain }}
+
+    #Not supported until http://apache.openmirror.de//httpd/CHANGES_2.4.9
+    #ProxyPassMatch ^/(.*\.php(/.*)?)$ unix:/var/run/php-fpm/{{ vhost_name }}.socket|fcgi://localhost/opt/stepup/{{ vhost_name }}.{{ app_domain }}/
+    DirectoryIndex /index.php
+
+    # Other directives here
+</VirtualHost>

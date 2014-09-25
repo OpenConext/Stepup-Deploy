@@ -1,0 +1,5 @@
+[app]
+app1.suaas.utr.surfcloud.nl
+
+[app:vars]
+app_domain = dev.stepup.coin.surf.net

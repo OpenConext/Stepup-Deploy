@@ -1,0 +1,16 @@
+
+- name: Install httpd
+  yum: name=httpd state=present
+
+- name: Enable the httpd service on boot
+  service: name=httpd state=started enabled=true
+
+
+- name: Install php-fpm
+  yum: name=php-fpm state=present
+
+- name: Enable the php-fpm service on boot
+  service: name=php-fpm state=started enabled=true
+
+
+- include: vhost.yml vhost_name=gateway

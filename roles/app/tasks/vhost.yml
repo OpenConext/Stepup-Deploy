@@ -1,0 +1,32 @@
+
+# Create user & group for FPM pool
+- name: Add group {{ vhost_name }}
+  group: name={{ vhost_name }} state=present
+
+- name: Add user {{ vhost_name }}
+  user: name={{ vhost_name }} group={{ vhost_name }} createhome=no state=present
+
+
+# Create web directory
+- name: Create {{ vhost_name }} app directory for {{ vhost_name }}
+  file: path=/opt/stepup/{{ vhost_name }}.{{ app_domain }} state=directory
+  tags: httpd
+
+# Create index.php if not exists
+- template: src='httpd-index.php.j2' dest='/opt/stepup/{{ vhost_name }}.{{ app_domain }}/index.php' force=no
+  tags: httpd
+
+# Put httpd config
+- name: httpd config
+  action: template src='httpd-vhost.conf.j2' dest='/etc/httpd/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  notify:
+    - restart httpd
+  tags: httpd
+
+
+# Put fpm config
+- name: php-fpm config
+  action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  notify:
+    - restart php-fpm
+  tags: fpm

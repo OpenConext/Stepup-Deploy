@@ -1,0 +1,17 @@
+---
+# Setup Step-up dev environment
+
+- name: Configuration for all nodes
+  hosts: all
+  sudo: True
+
+  roles:
+  - common
+
+
+- name: Setup application servers
+  hosts: app
+  sudo: True
+
+  roles:
+  - app

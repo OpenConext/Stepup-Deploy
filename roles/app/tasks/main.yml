@@ -13,4 +13,6 @@
   service: name=php-fpm state=started enabled=true
 
 
-- include: vhost.yml vhost_name=gateway
+- include: vhost.yml vhost_name=gateway vhost_local_port=9000
+- include: vhost.yml vhost_name=selfservice vhost_local_port=9001
+- include: vhost.yml vhost_name=ra vhost_local_port=9002

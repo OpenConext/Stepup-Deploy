@@ -1,0 +1,21 @@
+<VirtualHost *:443>
+    DocumentRoot /var/www/{{ vhost_name }}.{{ app_domain }}/web
+    ServerName {{ vhost_name }}.{{ app_domain }}
+
+    ProxyPassMatch ^/(.+\.php(/.*)?)$ fcgi://localhost:{{ vhost_local_port }}/var/www/{{ vhost_name }}.{{ app_domain }}/web/$1
+    DirectoryIndex app.php
+
+    SSLEngine on
+    SSLProtocol all -SSLv2
+    #SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+
+    SSLCertificateChainFile /etc/httpd/conf/ssl.crt/ca.crt
+    SSLCertificateFile /etc/httpd/conf/ssl.crt/server.crt
+    SSLCertificateKeyFile /etc/httpd/conf/ssl.crt/server.key
+
+    <Directory "/var/www/{{ vhost_name }}.{{ app_domain }}/">
+        Options All
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>

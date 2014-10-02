@@ -1,0 +1,17 @@
+---
+- name: Add group {{ user }}
+  group: name={{ user }} state=present
+
+- name: Add user {{ user }}
+  user: name={{ user }} group={{ user }} createhome=no state=present
+
+- name: Create PHP session directory
+  shell: mkdir /var/lib/php/session/{{ user }} && chown {{ user }}:{{ user }} /var/lib/php/session/{{ user }} creates=/var/lib/php/session/{{ user }}
+
+- name: Configure Apache for {{ vhost_name }}.{{ app_domain }}
+  action: template src='httpd-vhost.conf.j2' dest='/etc/httpd/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  notify: restart httpd
+
+- name: Configure PHP-FPM for {{ vhost_name }}.{{ app_domain }}
+  action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=apache group=apache
+  notify: restart php-fpm

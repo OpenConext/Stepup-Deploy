@@ -1,0 +1,8 @@
+---
+- hosts: ansible-graylog
+  sudo: true
+  vars:
+    timezone: Europe/Amsterdam
+    app_domain: stepup.coin.surf.net
+  roles:
+    - common

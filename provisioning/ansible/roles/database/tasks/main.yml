@@ -1,0 +1,34 @@
+---
+- name: Install MariaDB
+  sudo: yes
+  yum: pkg=mariadb-server state=present
+
+- name: Start MariaDB
+  sudo: true
+  service: name=mariadb enabled=yes state=started
+
+- name: Change MariaDB bind address 0.0.0.0
+  lineinfile: dest=/etc/my.cnf.d/server.cnf regexp="^bind-address = " insertafter="^\[mysqld\]" line="bind-address = 0.0.0.0"
+  notify: Restart MariaDB
+
+- name: Set root password
+  shell: mysqladmin -uroot password {{ mariadb_root_password|quote }} && touch /home/vagrant/.mariadb_root_password_set creates=/home/vagrant/.mariadb_root_password_set
+
+- name: Install Python MySQL library to enable mysql_db Ansible module
+  sudo: yes
+  yum: pkg=MySQL-python state=present
+
+- name: Add Middleware database
+  mysql_db: name=middleware state=present login_user=root login_password={{ mariadb_root_password }}
+
+- name: Grant middleware access to database middleware
+  mysql_user: name=middleware password=middleware priv=middleware.*:ALL login_user=root login_password={{ mariadb_root_password }}
+
+- name: Add Gateway database
+  mysql_db: name=gateway state=present login_user=root login_password={{ mariadb_root_password }}
+
+- name: Grant middleware access to database gateway
+  mysql_user: name=middleware password=middleware priv=gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}
+
+- name: Grant gateway access to database gateway
+  mysql_user: name=gateway password=gateway priv=gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}

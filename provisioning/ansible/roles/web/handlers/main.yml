@@ -1,0 +1,9 @@
+---
+- name: restart httpd
+  service: name=httpd state=restarted enabled=true
+
+- name: restart php-fpm
+  service: name=php-fpm enabled=yes state=restarted
+
+- name: Reload firewall
+  command: firewall-cmd --reload

@@ -1,0 +1,6 @@
+---
+- name: start ntp
+  service: name=ntpd state=started enabled=true
+
+- name: restart httpd
+  service: name=httpd state=restarted enabled=true

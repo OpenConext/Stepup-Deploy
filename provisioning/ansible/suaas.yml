@@ -1,0 +1,19 @@
+---
+- hosts: suaas
+  sudo: true
+  vars:
+    timezone: Europe/Amsterdam
+    app_domain: stepup.coin.surf.net
+    php_packages:
+      - php-mbstring
+      - php-mcrypt
+      - php-pdo
+      - php-pecl-xdebug
+    mariadb_root_password: root
+  roles:
+    - role: common
+      tags: [mw, gw, ss, ra]
+    - role: web
+      tags: [mw, gw, ss, ra]
+    - role: database
+      tags: [mw, gw]

@@ -1,0 +1,57 @@
+---
+- name: Install httpd
+  yum: name={{ item }} state=present
+  with_items:
+    - httpd
+    - mod_ssl
+  notify: restart httpd
+
+- name: Ensure Apache doesn't listen on port 80
+  lineinfile: dest=/etc/httpd/conf/httpd.conf regexp='^Listen 80$' state=absent
+
+- name: Install php5-cli
+  sudo: yes
+  yum: pkg=php-cli state=present
+
+- name: Ensure timezone is set in cli php.ini
+  lineinfile: dest=/etc/php.ini regexp='date.timezone =' line='date.timezone = {{ timezone }}'
+
+- name: Install PHP Packages
+  sudo: yes
+  yum: pkg={{ item }} state=present
+  with_items: php_packages
+
+- name: Install php-fpm
+  sudo: yes
+  yum: pkg=php-fpm state=present
+  notify: restart php-fpm
+
+- name: Prepare for copying certificates
+  shell: mkdir /etc/httpd/conf/ssl.crt && chown apache:apache /etc/httpd/conf/ssl.crt creates=/etc/httpd/conf/ssl.crt
+
+- name: Copy CA certificate
+  copy: src=../../../../../ssl/ca.crt dest=/etc/httpd/conf/ssl.crt/ca.crt owner=apache group=apache mode=600
+
+- name: Copy SSL certificate
+  copy: src=../../../../../ssl/server.crt dest=/etc/httpd/conf/ssl.crt/server.crt owner=apache group=apache mode=600
+
+- name: Copy SSL key
+  copy: src=../../../../../ssl/server.key dest=/etc/httpd/conf/ssl.crt/server.key owner=apache group=apache mode=600
+
+- name: Create PHP session directory
+  shell: mkdir /var/lib/php/session creates=/var/lib/php/session
+
+- include: vhost.yml vhost_name=mw-dev vhost_local_port=9000 user=middleware
+- include: vhost.yml vhost_name=gw-dev vhost_local_port=9001 user=gateway
+- include: vhost.yml vhost_name=ss-dev vhost_local_port=9002 user=selfservice
+- include: vhost.yml vhost_name=ra-dev vhost_local_port=9003 user=ra
+
+- name: Add firewall rule for HTTPS
+  sudo: yes
+  firewalld: service=https permanent=true state=enabled
+  notify: Reload firewall
+
+- name: Add firewall rule for MariaDB
+  sudo: yes
+  firewalld: service=mysql permanent=true state=enabled
+  notify: Reload firewall

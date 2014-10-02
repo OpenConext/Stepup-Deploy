@@ -1,0 +1,12 @@
+# Mix between CentOS 7 and Wheezy boxes
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+127.0.1.1   packer-virtualbox-iso.vagrantup.com     packer-virtualbox-iso
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6 ip6-localhost ip6-loopback
+ff02::1     ip6-allnodes
+ff02::2     ip6-allrouters
+
+# Middleware, Gateway, Self-Service, Registration Authority
+10.0.0.100  mw-dev.{{ app_domain }} gw-dev.{{ app_domain }} ss-dev.{{ app_domain }} ra-dev.{{ app_domain }}
+
+# Graylog2
+10.0.0.101  g2-dev.{{ app_domain }}

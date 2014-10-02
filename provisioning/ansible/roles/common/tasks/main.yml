@@ -1,0 +1,30 @@
+---
+- name: Set SELinux policy to targeted & permissive
+  selinux: policy=targeted state=disabled
+  when: ansible_os_family == "RedHat"
+
+- name: Enable EPEL repo
+  yum: name=epel-release.noarch state=present
+  when: ansible_os_family == "RedHat"
+
+- name: Configure /etc/hosts
+  sudo: yes
+  template: src=hosts.j2 dest=/etc/hosts backup=yes
+
+- name: "Configure the timezone #1"
+  sudo: yes
+  template: src=timezone.j2 dest=/etc/timezone
+
+- name: "Configure the timezone #2"
+  sudo: yes
+  file: src=/usr/share/zoneinfo/{{timezone}} dest=/etc/localtime state=link force=yes backup=yes
+
+- name: Install ntp
+  yum: name=ntp state=present
+  notify: start ntp
+  when: ansible_os_family == "RedHat"
+
+- name: Install ntp
+  apt: name=ntp state=present
+  notify: start ntp
+  when: ansible_os_family == "Debian"

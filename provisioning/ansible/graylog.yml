@@ -1,5 +1,5 @@
 ---
-- hosts: ansible-graylog
+- hosts: suaas-graylog
   sudo: true
   vars:
     timezone: Europe/Amsterdam

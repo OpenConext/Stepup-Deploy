@@ -16,18 +16,21 @@
 
 This setup is designed to run next to the four step-up applications Middleware, Gateway, Self-Service and RA:
 
- * `box/` — Contains the application and Graylog2 boxes
- * `middleware/` — Contains the Middleware application code
- * `gateway/` — Contains the Gateway application code
- * `selfservice/` — Contains the Self-Service application code
- * `ra/` — Contains the RA application code
+ * `Stepup-Deploy/` — Contains the application and Graylog2 boxes
+ * `Stepup-Middleware/` — Contains the Middleware application code
+ * `Stepup-Gateway/` — Contains the Gateway application code
+ * `Stepup-SelfService/` — Contains the Self-Service application code
+ * `Stepup-RA/` — Contains the RA application code
 
 ```sh-session
 $ mkdir suaas
 $ cd suaas
-$ mkdir middleware gateway selfservice ra
-$ git clone git@github.com:SURFnet/Stepup-Deploy.git box
-$ cd box
+$ git clone git@github.com:SURFnet/Stepup-Deploy.git
+$ git clone git@github.com:SURFnet/Stepup-Middleware.git
+$ git clone git@github.com:SURFnet/Stepup-Gateway.git
+$ git clone git@github.com:SURFnet/Stepup-SelfService.git
+$ git clone git@github.com:SURFnet/Stepup-RA.git
+$ cd Stepup-Deploy
 $ git checkout dev
 $ git submodule update --init --recursive
 $ vagrant plugin install vagrant-vbguest
@@ -40,8 +43,6 @@ Place the SSL certificates in `./ssl`:
  * `ca.crt` — CA certificate chain
  * `server.crt` — Server wildcard certificate
  * `server.key` — Server wildcard private key
-
-Place the projects in their respective directories (middleware, gateway, etc.)
 
 Edit your hosts file to include the following:
 

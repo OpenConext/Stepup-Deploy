@@ -35,10 +35,10 @@ Vagrant.configure("2") do |config|
 
     # Mount shared folders after provisioning
     # https://github.com/mitchellh/vagrant/issues/936#issuecomment-7179034
-    config.vm.synced_folder "../../middleware", "/var/www/mw-dev.stepup.coin.surf.net"
-    config.vm.synced_folder "../../gateway", "/var/www/gw-dev.stepup.coin.surf.net"
-    config.vm.synced_folder "../../selfservice", "/var/www/ss-dev.stepup.coin.surf.net"
-    config.vm.synced_folder "../../ra", "/var/www/ra-dev.stepup.coin.surf.net"
+    config.vm.synced_folder "../../Stepup-Middleware",  "/var/www/mw-dev.stepup.coin.surf.net"
+    config.vm.synced_folder "../../Stepup-Gateway",     "/var/www/gw-dev.stepup.coin.surf.net"
+    config.vm.synced_folder "../../Stepup-SelfService", "/var/www/ss-dev.stepup.coin.surf.net"
+    config.vm.synced_folder "../../Stepup-RA",          "/var/www/ra-dev.stepup.coin.surf.net"
     config.vm.provision :shell, inline: "mount -t vboxsf -o uid=middleware,gid=middleware   var_www_mw-dev.stepup.coin.surf.net /var/www/mw-dev.stepup.coin.surf.net"
     config.vm.provision :shell, inline: "mount -t vboxsf -o uid=gateway,gid=gateway         var_www_gw-dev.stepup.coin.surf.net /var/www/gw-dev.stepup.coin.surf.net"
     config.vm.provision :shell, inline: "mount -t vboxsf -o uid=selfservice,gid=selfservice var_www_ss-dev.stepup.coin.surf.net /var/www/ss-dev.stepup.coin.surf.net"

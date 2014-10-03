@@ -14,6 +14,14 @@
 
 ## Installation
 
+This setup is designed to run next to the four step-up applications Middleware, Gateway, Self-Service and RA:
+
+ * `box/` — Contains the application and Graylog2 boxes
+ * `middleware/` — Contains the Middleware application code
+ * `gateway/` — Contains the Gateway application code
+ * `selfservice/` — Contains the Self-Service application code
+ * `ra/` — Contains the RA application code
+
 ```sh-session
 $ mkdir suaas
 $ cd suaas

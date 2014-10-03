@@ -2,6 +2,7 @@
     DocumentRoot /var/www/{{ vhost_name }}.{{ app_domain }}/web
     ServerName {{ vhost_name }}.{{ app_domain }}
 
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
     ProxyPassMatch ^/(.+\.php(/.*)?)$ fcgi://localhost:{{ vhost_local_port }}/var/www/{{ vhost_name }}.{{ app_domain }}/web/$1
     DirectoryIndex app.php
 

@@ -18,8 +18,8 @@
 $ mkdir suaas
 $ cd suaas
 $ mkdir middleware gateway selfservice ra
-$ git clone git@github.com:SURFnet/Stepup-Deploy.git deploy
-$ cd deploy
+$ git clone git@github.com:SURFnet/Stepup-Deploy.git box
+$ cd box
 $ git checkout dev
 $ git submodule update --init --recursive
 $ vagrant plugin install vagrant-vbguest

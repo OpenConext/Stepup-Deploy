@@ -8,7 +8,7 @@
 - name: Create PHP session directory
   shell: mkdir /var/lib/php/session/{{ user }} && chown {{ user }}:{{ user }} /var/lib/php/session/{{ user }} creates=/var/lib/php/session/{{ user }}
 
-- name: Configure Apache for {{ vhost_name }}.{{ app_domain }}
+- name: Configure Apache for {{ vhost_name }}.{{ app_domain }}:{{ port }}
   action: template src='httpd-vhost.conf.j2' dest='/etc/httpd/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
   notify: restart httpd
 

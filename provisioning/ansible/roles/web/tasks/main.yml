@@ -6,8 +6,13 @@
     - mod_ssl
   notify: restart httpd
 
-- name: Ensure Apache doesn't listen on port 80
-  lineinfile: dest=/etc/httpd/conf/httpd.conf regexp='^Listen 80$' state=absent
+- name: Ensure Apache listens on port 80
+  lineinfile: dest=/etc/httpd/conf/httpd.conf regexp='^Listen [\d\.:]*80$' line='Listen 80' state=present
+  notify: restart httpd
+
+- name: Ensure Apache listens on port 443
+  lineinfile: dest=/etc/httpd/conf.d/ssl.conf regexp='^Listen [\d\.:]*443( https)?$' line='Listen 443 https' state=present
+  notify: restart httpd
 
 - name: Install php5-cli
   sudo: yes
@@ -41,10 +46,15 @@
 - name: Create PHP session directory
   shell: mkdir /var/lib/php/session creates=/var/lib/php/session
 
-- include: vhost.yml vhost_name=mw-dev vhost_local_port=9000 user=middleware
-- include: vhost.yml vhost_name=gw-dev vhost_local_port=9001 user=gateway
-- include: vhost.yml vhost_name=ss-dev vhost_local_port=9002 user=selfservice
-- include: vhost.yml vhost_name=ra-dev vhost_local_port=9003 user=ra
+- include: vhost.yml vhost_name=mw-dev vhost_local_port=9000 user=middleware port=80
+- include: vhost.yml vhost_name=gw-dev vhost_local_port=9001 user=gateway port=443
+- include: vhost.yml vhost_name=ss-dev vhost_local_port=9002 user=selfservice port=443
+- include: vhost.yml vhost_name=ra-dev vhost_local_port=9003 user=ra port=443
+
+- name: Add firewall rule for HTTP
+  sudo: yes
+  firewalld: service=http permanent=true state=enabled
+  notify: Reload firewall
 
 - name: Add firewall rule for HTTPS
   sudo: yes

@@ -15,3 +15,6 @@
 - name: Configure PHP-FPM for {{ vhost_name }}.{{ app_domain }}
   action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=apache group=apache
   notify: restart php-fpm
+
+- name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if possible
+  command: cp /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist /var/www/{{ vhost_name }}.{{ app_domain }}/web/app_dev.php

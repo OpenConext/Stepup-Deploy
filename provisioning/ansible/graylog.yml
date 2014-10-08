@@ -6,3 +6,4 @@
     app_domain: stepup.coin.surf.net
   roles:
     - common
+    - graylog2

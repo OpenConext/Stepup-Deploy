@@ -21,6 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision "ansible" do |ansible|
       ansible.playbook = "../provisioning/ansible/graylog.yml"
       ansible.inventory_path = "../provisioning/ansible/inventories/development"
+      ansible.limit = "all"
     end
   else
       config.vm.provision :shell, inline: "env PLAYBOOK=../provisioning/ansible/graylog.yml ../provisioning/ansible/windows.sh"

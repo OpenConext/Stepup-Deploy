@@ -1,6 +1,6 @@
 ---
 - name: Set cluster name
-  lineinfile: dest=/etc/elasticsearch/elasticsearch.yml regexp='^(#\s*)?cluster.name' line='cluster.name = "graylog2"' state=present
+  lineinfile: dest=/etc/elasticsearch/elasticsearch.yml regexp='^(#\s*)?cluster.name' line='cluster.name: "graylog2"' state=present
 
 - name: Restart ElasticSearch node
   service: name=elasticsearch state=restarted enabled=true

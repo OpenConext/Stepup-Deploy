@@ -51,4 +51,5 @@ Edit your hosts file to include the following:
 10.0.0.101  g2-dev.stepup.coin.surf.net
 ```
 
-Visit https://mw-dev.stepup.coin.surf.net.
+ * To view the self-service, visit https://ss-dev.stepup.coin.surf.net.
+ * To view the Graylog2 web interface, vist http://g2-dev.stepup.coin.surf.net:9000 and use username `admin` and password `yourpassword`.

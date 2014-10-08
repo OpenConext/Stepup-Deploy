@@ -18,4 +18,3 @@
 
 - name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if possible
   command: cp /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist /var/www/{{ vhost_name }}.{{ app_domain }}/web/app_dev.php
-  ignore_errors: yes

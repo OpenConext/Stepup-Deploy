@@ -30,12 +30,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Change from forwarded ports to private network
   config.vm.network :private_network, ip: "10.0.0.101"
 
-  config.vm.network :forwarded_port, guest: 9000, host: 9000
-  config.vm.network :forwarded_port, guest: 80, host: 8080
-  config.vm.network :forwarded_port, guest: 12201, host: 12201, protocol: 'udp', auto_correct: true
-  config.vm.network :forwarded_port, guest: 12201, host: 12201, protocol: 'tcp', auto_correct: true
-  config.vm.network :forwarded_port, guest: 12900, host: 12900
-
 end
 
 # Check to determine whether we're on a windows or linux/os-x host,

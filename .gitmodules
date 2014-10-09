@@ -7,9 +7,6 @@
 [submodule "provisioning/graylog/modules/stdlib"]
 	path = provisioning/graylog/modules/stdlib
 	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
-[submodule "provisioning/graylog/modules/elasticsearch"]
-	path = provisioning/graylog/modules/elasticsearch
-	url = https://github.com/elasticsearch/puppet-elasticsearch.git
 [submodule "provisioning/graylog/modules/apache"]
 	path = provisioning/graylog/modules/apache
 	url = https://github.com/puppetlabs/puppetlabs-apache.git

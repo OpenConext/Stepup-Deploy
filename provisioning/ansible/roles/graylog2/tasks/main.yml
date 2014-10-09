@@ -8,5 +8,9 @@
 - name: Sleep 5 seconds
   command: sleep 5
 
+# Single restart would fail at stopping a non-running instance and not try to start it.
 - name: Restart Graylog2 server
+  service: name=graylog2-server state=restarted enabled=true
+
+- name: Restart Graylog2 server (again)
   service: name=graylog2-server state=restarted enabled=true

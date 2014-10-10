@@ -1,0 +1,37 @@
+{% if port == '443' %}
+server {
+    listen 80;
+    server_name {{ vhost_name }}.{{ app_domain }};
+
+    rewrite ^/(.*) https://{{ vhost_name }}.{{ app_domain }}/$1 permanent;
+}
+{% endif %}
+
+server {
+    {% if port == '443' %}
+    listen 443 ssl;
+    {% else %}
+    listen 80;
+    {% endif %}
+    server_name {{ vhost_name }}.{{ app_domain }};
+
+    root /var/www/{{ vhost_name }}.{{ app_domain }}/web;
+
+    location / {
+        # try to serve file directly, fallback to app.php
+        try_files $uri /app.php$is_args$args;
+    }
+
+    location ~ ^/(app|app_dev)\.php(/|$) {
+        # fastcgi_pass unix:/var/run/php5-fpm.sock;
+        # fastcgi_pass fcgi://localhost:{{ vhost_local_port }}/var/www/{{ vhost_name }}.{{ app_domain }}/web/$1;
+        fastcgi_pass 127.0.0.1:{{ vhost_local_port }};
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS off;
+    }
+
+    error_log /var/log/nginx/{{ vhost_name }}_error.log;
+    access_log /var/log/nginx/{{ vhost_name }}_access.log;
+}

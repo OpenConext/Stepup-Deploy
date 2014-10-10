@@ -8,12 +8,12 @@
 - name: Create PHP session directory
   shell: mkdir /var/lib/php/session/{{ user }} && chown {{ user }}:{{ user }} /var/lib/php/session/{{ user }} creates=/var/lib/php/session/{{ user }}
 
-- name: Configure Apache for {{ vhost_name }}.{{ app_domain }}:{{ port }}
-  action: template src='httpd-vhost.conf.j2' dest='/etc/httpd/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
-  notify: restart httpd
+- name: Configure Nginx for {{ vhost_name }}.{{ app_domain }}:{{ port }}
+  action: template src='nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  notify: restart nginx
 
 - name: Configure PHP-FPM for {{ vhost_name }}.{{ app_domain }}
-  action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=apache group=apache
+  action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=nginx group=nginx
   notify: restart php-fpm
 
 - name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if possible

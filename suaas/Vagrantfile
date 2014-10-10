@@ -14,6 +14,7 @@
 
 Vagrant.configure("2") do |config|
     config.vm.provider :virtualbox do |v|
+        v.name = 'SuaaS applications'
         v.memory = 1024
     end
 

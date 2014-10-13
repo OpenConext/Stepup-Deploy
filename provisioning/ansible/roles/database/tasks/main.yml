@@ -24,8 +24,8 @@
 - name: Add Gateway database
   mysql_db: name=gateway state=present login_user=root login_password={{ mariadb_root_password }}
 
-- name: Grant middleware access to database middleware, gateway
-  mysql_user: host=% name=middleware password=middleware priv=middleware.*:ALL/gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}
+- name: Grant middleware access to database middleware
+  mysql_user: host=% name=middleware password=middleware priv=middleware.*:ALL login_user=root login_password={{ mariadb_root_password }}
 
 - name: Grant gateway access to database gateway
   mysql_user: host=% name=gateway password=gateway priv=gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}

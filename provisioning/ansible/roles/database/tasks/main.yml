@@ -32,3 +32,8 @@
 
 - name: Grant gateway access to database gateway
   mysql_user: name=gateway password=gateway priv=gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}
+
+- name: Add firewall rule for MariaDB
+  sudo: yes
+  firewalld: service=mysql permanent=true state=enabled
+  notify: Reload firewall

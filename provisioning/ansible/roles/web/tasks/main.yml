@@ -1,18 +1,6 @@
 ---
-- name: Install httpd
-  yum: name={{ item }} state=present
-  with_items:
-    - httpd
-    - mod_ssl
-  notify: restart httpd
-
-- name: Ensure Apache listens on port 80
-  lineinfile: dest=/etc/httpd/conf/httpd.conf regexp='^Listen [\d\.:]*80$' line='Listen 80' state=present
-  notify: restart httpd
-
-- name: Ensure Apache listens on port 443
-  lineinfile: dest=/etc/httpd/conf.d/ssl.conf regexp='^Listen [\d\.:]*443( https)?$' line='Listen 443 https' state=present
-  notify: restart httpd
+- name: Install Nginx
+  yum: name=nginx state=present
 
 - name: Install php5-cli
   sudo: yes
@@ -29,19 +17,24 @@
 - name: Install php-fpm
   sudo: yes
   yum: pkg=php-fpm state=present
-  notify: restart php-fpm
 
 - name: Prepare for copying certificates
-  shell: mkdir /etc/httpd/conf/ssl.crt && chown apache:apache /etc/httpd/conf/ssl.crt creates=/etc/httpd/conf/ssl.crt
+  shell: mkdir /etc/nginx/conf.d/ssl && chown nginx:nginx /etc/nginx/conf.d/ssl creates=/etc/nginx/conf.d/ssl
 
 - name: Copy CA certificate
-  copy: src=../../../../../ssl/ca.crt dest=/etc/httpd/conf/ssl.crt/ca.crt owner=apache group=apache mode=600
+  copy: src=../../../../../ssl/ca.crt dest=/etc/nginx/conf.d/ssl/ca.crt owner=nginx group=nginx mode=600
 
 - name: Copy SSL certificate
-  copy: src=../../../../../ssl/server.crt dest=/etc/httpd/conf/ssl.crt/server.crt owner=apache group=apache mode=600
+  copy: src=../../../../../ssl/server.crt dest=/etc/nginx/conf.d/ssl/server.crt owner=nginx group=nginx mode=600
 
 - name: Copy SSL key
-  copy: src=../../../../../ssl/server.key dest=/etc/httpd/conf/ssl.crt/server.key owner=apache group=apache mode=600
+  copy: src=../../../../../ssl/server.key dest=/etc/nginx/conf.d/ssl/server.key owner=nginx group=nginx mode=600
+
+- name: Create SSL certificate chain
+  shell: 'cat /etc/nginx/conf.d/ssl/server.crt /etc/nginx/conf.d/ssl/ca.crt > /etc/nginx/conf.d/ssl/server.chain.crt && chown nginx:nginx /etc/nginx/conf.d/ssl/server.chain.crt'
+
+- name: Copy SSL configuration
+  copy: src=ssl.conf dest=/etc/nginx/conf.d/ssl.conf owner=nginx group=nginx mode=600
 
 - name: Create PHP session directory
   shell: mkdir /var/lib/php/session creates=/var/lib/php/session
@@ -50,6 +43,9 @@
 - include: vhost.yml vhost_name=gw-dev vhost_local_port=9001 user=gateway port=443
 - include: vhost.yml vhost_name=ss-dev vhost_local_port=9002 user=selfservice port=443
 - include: vhost.yml vhost_name=ra-dev vhost_local_port=9003 user=ra port=443
+  notify:
+   - restart nginx
+   - restart php-fpm
 
 - name: Add firewall rule for HTTP
   sudo: yes
@@ -65,3 +61,6 @@
   sudo: yes
   firewalld: service=mysql permanent=true state=enabled
   notify: Reload firewall
+
+- name: Add eth1 interface to firewall
+  command: firewall-cmd --zone=public --add-interface=eth1

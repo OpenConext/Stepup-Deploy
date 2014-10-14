@@ -7,13 +7,21 @@
   user: name={{ vhost_name }} group={{ vhost_name }} createhome=no state=present
 
 
-# Create web directory
-- name: Create app directory for {{ vhost_name }} in /opt/stepup
-  file: path=/opt/stepup/{{ vhost_name }}.{{ app_domain }} state=directory
+- name: Create directory for vhosts to store PHP sessions
+  file: path=/var/lib/php/session/{{ vhost_name }} state=directory owner={{ vhost_name }} group=root mode=770
 
-# Create index.php if not exists
-- name: Create /opt/stepup/{{ vhost_name }}.{{ app_domain }}/index.php if not exists
-  template: src='httpd-index.php.j2' dest='/opt/stepup/{{ vhost_name }}.{{ app_domain }}/index.php' force=no
+
+# Create a default app
+# When no app is installed yet in the webdirectory then a link to the default app is created
+- name: Create default app directory for {{ vhost_name }}.{{ app_domain }}
+  file: path=/opt/default/{{ vhost_name }}.{{ app_domain }}/web/ state=directory
+
+- name: Create default /opt/default/{{ vhost_name }}.{{ app_domain }}/web/app.php
+  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}.{{ app_domain }}/web/app.php'
+
+
+- name: Install default app when no app is installed (yet)
+  file: src=/opt/default/{{ vhost_name }}.{{ app_domain }} dest=/opt/www/{{ vhost_name }}.{{ app_domain }} state=link force=no
 
 
 # Put httpd vhost config
@@ -25,6 +33,6 @@
 
 # Put fpm config
 - name: php-fpm config
-  action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  template: src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf'
   notify:
     - restart php-fpm

@@ -28,3 +28,42 @@
   roles:
   - app
 
+
+- name: Deploy gateway
+  hosts: app
+  sudo: True
+  tags: deploy-gateway
+  vars:
+     deploy_release_name: develop
+     deploy_git_branch: develop
+     deploy_git_repo: https://github.com/SURFnet/Stepup-Gateway
+     deploy_component: gateway
+     deploy_web_dir: /opt/www/{{ deploy_component }}.{{ app_domain }}
+
+  roles:
+  - deploy
+
+
+- name: Deploy middleware
+  hosts: app
+  sudo: True
+  tags: deploy-middleware
+  vars:
+     deploy_release_name: develop
+     deploy_git_branch: develop
+     deploy_git_repo: https://github.com/SURFnet/Stepup-Middleware
+     deploy_component: middleware
+     deploy_web_dir: /opt/www/{{ deploy_component }}.{{ app_domain }}
+
+  roles:
+  - deploy
+
+
+- name: Dev tools
+  hosts: dev
+  sudo: True
+  tags: dev
+
+  roles:
+  - dev
+

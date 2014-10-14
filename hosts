@@ -18,3 +18,8 @@ mariadb_root_password = AOamgweLqk4d-uBuLTLLBdzww6C7LsPjU-pESmwM7iixl9h-6yo98dZQ
 mariadb_cluster_user = cluster
 mariadb_cluster_password = AOamgwd7JgOtZhpe1brlUPIgXMX0kmVeAgnf-yCLKkRuJU_coX6toRB_Kdzq-TUG7UGx-jX63q71jSiX2v_ZPq6ydTtOjQXevg
 mariadb_cluster_name = stepup-cluster
+
+
+# Install dev tools on:
+[dev]
+#app1.suaas.utr.surfcloud.nl

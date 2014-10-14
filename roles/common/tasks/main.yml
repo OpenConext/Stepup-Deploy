@@ -9,11 +9,12 @@
   tags: epel
 
 
-- name: Install ntp, iptables, ip6tables
+- name: Install ntp, iptables, ip6tables, git
   yum: name={{item}} state=present
   with_items:
   - ntp
   - iptables
+  - git # For deploys
 
 
 - name: Put iptables

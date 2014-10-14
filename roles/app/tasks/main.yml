@@ -1,8 +1,12 @@
-- name: Install nginx & php-fpm
+- name: Install nginx & php(-fpm)
   yum: name={{item}} state=present
   with_items:
   - nginx
   - php-fpm
+  - php-cli
+  - php-mbstring
+  - php-mcrypt
+  - php-pdo
 
 
 - name: Start nginx & php-fpm services on boot
@@ -10,6 +14,12 @@
   with_items:
   - nginx
   - php-fpm
+
+
+- name: Put php.ini
+  action: template src='php.ini.j2' dest='/etc/php.ini'
+  notify:
+    - restart php-fpm
 
 
 # Remove default distro conf files
@@ -26,18 +36,34 @@
   - restart php-fpm
 
 
+- name: Create directory for vhosts to store PHP sessions
+  file: path=/var/lib/php/session/ state=directory
+
+
 # Create vhosts
+- include: vhost.yml vhost_name=middleware
 - include: vhost.yml vhost_name=gateway
 - include: vhost.yml vhost_name=selfservice
 - include: vhost.yml vhost_name=ra
 
+
 # nginx will start with invalid vhost config, so test config explicitly first
 - name: Test nginx config
   command: /sbin/service nginx configtest
-
 
 - name: Start nginx & php-fpm services
   service: name={{item}} state=running
   with_items:
   - nginx
   - php-fpm
+
+
+
+#- name: Install NodeJS
+#  yum: name=nodejs state=present
+#
+#- name: Install NPM
+#  command: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
+#
+#- name: Install LESS compiler
+#  npm: name=less global=yes state=present

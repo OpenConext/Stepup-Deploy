@@ -1,3 +1,5 @@
+- name: Set /etc/hostname to {{ inventory_hostname }}
+  template: src='hostname.j2' dest='/etc/hostname'
 
 - name: Set SELinux policy to targeted & permissive
   selinux: policy=targeted state=permissive
@@ -7,11 +9,27 @@
   tags: epel
 
 
-- name: Install ntp
-  yum: name=ntp state=present
-  tags: ntp
+- name: Install ntp, iptables, ip6tables
+  yum: name={{item}} state=present
+  with_items:
+  - ntp
+  - iptables
 
-- name: Start the ntp service
-  service: name=ntpd state=started enabled=true
-  tags: ntp
 
+- name: Put iptables
+  action: template src='iptables.j2' dest='/etc/sysconfig/iptables'
+  notify:
+  - restart iptables
+
+- name: Put ip6tables
+  action: template src='ip6tables.j2' dest='/etc/sysconfig/ip6tables'
+  notify:
+  - restart ip6tables
+
+
+- name: Start services ntpd, iptables, iptables6
+  service: name={{item}} state=started enabled=true
+  with_items:
+  - ntpd
+  - iptables
+  - ip6tables

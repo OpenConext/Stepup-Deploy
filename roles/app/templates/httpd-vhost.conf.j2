@@ -1,18 +1,58 @@
 <VirtualHost *:80>
     DocumentRoot /opt/stepup/{{ vhost_name }}.{{ app_domain }}
     ServerName {{ vhost_name }}.{{ app_domain }}
+    ServerAlias {{ vhost_name }}.{{ app_domain }}
 
-    #Unix socket
-    #Not supported until Apache 2.4.9: http://apache.openmirror.de//httpd/CHANGES_2.4.9
-    #ProxyPassMatch ^/(.*\.php(/.*)?)$ unix:/var/run/php-fpm/{{ vhost_name }}.socket|fcgi://localhost/opt/stepup/{{ vhost_name }}.{{ app_domain }}/
-
-    #IP socket
-    ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://localhost:{{ vhost_local_port }}/opt/stepup/{{ vhost_name }}.{{ app_domain }}/
-    DirectoryIndex /index.php
+    # "logs" is symlink in /etc/httpd/
+    ErrorLog "logs/{{ vhost_name }}_error_log"
+    CustomLog "logs/{{ vhost_name }}_access_log" combined
+    LogLevel warn
 
     <Directory "/opt/stepup/{{ vhost_name }}.{{ app_domain }}/">
         Options All
         AllowOverride All
-        Require all granted
+        Order allow,deny
+        allow from all
     </Directory>
+
+    DirectoryIndex /index.php
+
+    #########
+    # PHP-FPM
+    #########
+
+    # Next line replaces all config below, but not supported until Apache 2.4.9
+    #ProxyPassMatch ^/(.*\.php(/.*)?)$ unix:/var/run/php-fpm/{{ vhost_name }}.socket|fcgi://localhost/opt/stepup/{{ vhost_name }}.{{ app_domain }}/
+
+
+    # Configuration for using PHP-FPM FastCGI using Apache 2.2
+    # More verbose than the Apache 2.4 solution with ProxyPassMatch using mod_proxy
+    # Using: SetHandler -> Action -> Alias -> FastCgiExtarnalServer
+
+    # Note: This setup affects the way Rewite rules work
+    # Enable to debug rewriting
+    #RewriteLog "logs/{{ vhost_name }}_rewrite.log"
+    #RewriteLogLevel 3
+
+    # Set handler for PHP files.
+    <FilesMatch ".+\.php$">
+        SetHandler application/x-httpd-php
+    </FilesMatch>
+
+    # Define Action and Alias needed for FastCGI external server.
+    Action application/x-httpd-php /fcgi-bin/php-fpm-{{ vhost_name }} virtual
+    Alias /fcgi-bin/php-fpm-{{ vhost_name }} /fcgi-bin-php-fpm-{{ vhost_name }}
+
+    # Prevent direct access to /fcgi-bin/php-fpm-{{ vhost_name }}
+    <Location /fcgi-bin/php-fpm-{{ vhost_name }}>
+      Order Deny,Allow
+      Deny from All
+      # Allow env=REDIRECT_STATUS allows access to the /fcgi-bin/php-fpm-... after an internal redirect
+      # (using the Action defined above)
+      Allow from env=REDIRECT_STATUS
+    </Location>
+
+    # FastCgi to php-fpm pool
+    FastCgiExternalServer /fcgi-bin-php-fpm-{{ vhost_name }} -socket /var/run/php-fpm/{{ vhost_name }}.socket -pass-header Authorization
+
 </VirtualHost>

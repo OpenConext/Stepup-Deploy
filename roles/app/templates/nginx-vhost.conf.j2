@@ -1,0 +1,15 @@
+server {
+    listen       80;
+    server_name  {{ vhost_name }}.{{ app_domain }};
+    location / {
+        root   /opt/stepup/{{ vhost_name }}.{{ app_domain }};           # Document root
+        index index.php index.html index.htm;
+    }
+    location ~ \.php$ {
+        root           /opt/stepup/{{ vhost_name }}.{{ app_domain }};   # Document root
+        fastcgi_pass   unix:/var/run/php-fpm/{{ vhost_name }}.socket;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}

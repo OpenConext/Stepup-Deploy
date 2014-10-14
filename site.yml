@@ -4,14 +4,27 @@
 - name: Configuration for all nodes
   hosts: all
   sudo: True
+  tags: common
 
   roles:
   - common
 
 
+- name: Setup database cluster
+  hosts: dbcluster
+  sudo: True
+  tags: db
+  serial: 1
+
+  roles:
+  - db
+
+
 - name: Setup application servers
   hosts: app
   sudo: True
+  tags: app
 
   roles:
   - app
+

@@ -64,3 +64,12 @@
 
 - name: Add eth1 interface to firewall
   command: firewall-cmd --zone=public --add-interface=eth1
+
+- name: Install NodeJS
+  yum: name=nodejs state=present
+
+- name: Install NPM
+  command: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
+
+- name: Install LESS compiler
+  npm: name=less global=yes state=present

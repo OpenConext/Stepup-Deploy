@@ -64,7 +64,7 @@
   yum: name=nodejs state=present
 
 - name: Install NPM
-  command: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
+  shell: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
 
 - name: Install LESS compiler
   npm: name=less global=yes state=present

@@ -21,14 +21,19 @@
 - name: Add Middleware database
   mysql_db: name=middleware state=present login_user=root login_password={{ mariadb_root_password }}
 
-- name: Grant middleware access to database middleware
-  mysql_user: name=middleware password=middleware priv=middleware.*:ALL login_user=root login_password={{ mariadb_root_password }}
-
 - name: Add Gateway database
   mysql_db: name=gateway state=present login_user=root login_password={{ mariadb_root_password }}
 
-- name: Grant middleware access to database gateway
-  mysql_user: name=middleware password=middleware priv=gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}
+- name: Grant middleware access to database middleware
+  mysql_user: host=% name=middleware password=middleware priv=middleware.*:DELETE,INSERT,SELECT,UPDATE,EXECUTE login_user=root login_password={{ mariadb_root_password }}
 
 - name: Grant gateway access to database gateway
-  mysql_user: name=gateway password=gateway priv=gateway.*:ALL login_user=root login_password={{ mariadb_root_password }}
+  mysql_user: host=% name=gateway password=gateway priv=gateway.*:SELECT,EXECUTE login_user=root login_password={{ mariadb_root_password }}
+
+- name: Grant deploy user access to middleware, gateway databases
+  mysql_user: host=% name=deploy password=deploy priv=middleware.*:ALL,GRANT/gateway.*:ALL,GRANT login_user=root login_password={{ mariadb_root_password }}
+
+- name: Add firewall rule for MariaDB
+  sudo: yes
+  firewalld: service=mysql permanent=true state=enabled
+  notify: Reload firewall

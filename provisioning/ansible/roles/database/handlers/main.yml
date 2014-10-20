@@ -1,3 +1,6 @@
 ---
 - name: Restart MariaDB
   service: name=mariadb state=restarted enabled=yes
+
+- name: Reload firewall
+  command: firewall-cmd --reload

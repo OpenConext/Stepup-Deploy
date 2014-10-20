@@ -57,11 +57,6 @@
   firewalld: service=https permanent=true state=enabled
   notify: Reload firewall
 
-- name: Add firewall rule for MariaDB
-  sudo: yes
-  firewalld: service=mysql permanent=true state=enabled
-  notify: Reload firewall
-
 - name: Add eth1 interface to firewall
   command: firewall-cmd --zone=public --add-interface=eth1
 

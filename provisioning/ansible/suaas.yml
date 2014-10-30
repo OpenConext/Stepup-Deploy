@@ -9,6 +9,7 @@
       - php-mcrypt
       - php-pdo
       - php-pecl-xdebug
+      - php-mysql
     mariadb_root_password: root
   roles:
     - role: common

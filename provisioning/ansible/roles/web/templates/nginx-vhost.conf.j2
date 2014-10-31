@@ -27,7 +27,9 @@ server {
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        {% if port == '80' %}
         fastcgi_param HTTPS off;
+        {% endif %}
     }
 
     error_log /var/log/nginx/{{ vhost_name }}_error.log;

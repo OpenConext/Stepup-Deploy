@@ -16,5 +16,11 @@
   action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=nginx group=nginx
   notify: restart php-fpm
 
-- name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if possible
+- name: test if app_dev.php exists
+  command: test -f /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist
+  register: appdevexists
+  ignore_errors: True
+
+- name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if it exists
   command: cp /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist /var/www/{{ vhost_name }}.{{ app_domain }}/web/app_dev.php
+  when: appdevexists|success

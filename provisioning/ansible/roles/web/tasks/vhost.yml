@@ -9,7 +9,7 @@
   shell: mkdir /var/lib/php/session/{{ user }} && chown {{ user }}:{{ user }} /var/lib/php/session/{{ user }} creates=/var/lib/php/session/{{ user }}
 
 - name: Configure Nginx for {{ vhost_name }}.{{ app_domain }}:{{ port }}
-  action: template src='nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  action: template src='nginx-vhost-{{ tpl }}.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
   notify: restart nginx
 
 - name: Configure PHP-FPM for {{ vhost_name }}.{{ app_domain }}

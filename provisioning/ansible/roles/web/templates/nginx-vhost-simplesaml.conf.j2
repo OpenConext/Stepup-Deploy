@@ -1,0 +1,32 @@
+server {
+    listen 80;
+    server_name {{ vhost_name }}.{{ app_domain }};
+
+    rewrite ^/(.*) https://{{ vhost_name }}.{{ app_domain }}/$1 permanent;
+}
+
+server {
+    {% if port == '443' %}
+    listen 443 ssl;
+    {% else %}
+    listen 80;
+    {% endif %}
+    server_name {{ vhost_name }}.{{ app_domain }};
+
+    root /var/www/{{ vhost_name }}.{{ app_domain }}/www;
+
+    location / {
+        # try to serve file directly, fallback to index.php
+        try_files $uri /index.php$is_args$args;
+    }
+
+    location ~ ^/(.+\.php)(/|$) {
+        fastcgi_pass 127.0.0.1:{{ vhost_local_port }};
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+    error_log /var/log/nginx/{{ vhost_name }}_error.log;
+    access_log /var/log/nginx/{{ vhost_name }}_access.log;
+}

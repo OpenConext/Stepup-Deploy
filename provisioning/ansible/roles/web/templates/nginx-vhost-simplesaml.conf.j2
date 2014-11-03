@@ -6,11 +6,8 @@ server {
 }
 
 server {
-    {% if port == '443' %}
     listen 443 ssl;
-    {% else %}
-    listen 80;
-    {% endif %}
+
     server_name {{ vhost_name }}.{{ app_domain }};
 
     root /var/www/{{ vhost_name }}.{{ app_domain }}/www;

@@ -47,6 +47,10 @@
    - restart nginx
    - restart php-fpm
 
+- name: Remove default PHP-FPM vhost 'www'
+  file: path=/etc/php-fpm.d/www.conf state=absent
+  notify: restart php-fpm
+
 - name: Add firewall rule for HTTP
   sudo: yes
   firewalld: service=http permanent=true state=enabled

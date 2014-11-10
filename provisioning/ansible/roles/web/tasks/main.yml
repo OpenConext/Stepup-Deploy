@@ -43,10 +43,11 @@
 - name: Create PHP session directory
   shell: mkdir /var/lib/php/session creates=/var/lib/php/session
 
-- include: vhost.yml vhost_name=mw-dev vhost_local_port=9000 user=middleware port=80
-- include: vhost.yml vhost_name=gw-dev vhost_local_port=9001 user=gateway port=443
-- include: vhost.yml vhost_name=ss-dev vhost_local_port=9002 user=selfservice port=443
-- include: vhost.yml vhost_name=ra-dev vhost_local_port=9003 user=ra port=443
+- include: vhost.yml vhost_name=mw-dev tpl=default vhost_local_port=9000 user=middleware port=80
+- include: vhost.yml vhost_name=gw-dev tpl=default vhost_local_port=9001 user=gateway port=443
+- include: vhost.yml vhost_name=ss-dev tpl=default vhost_local_port=9002 user=selfservice port=443
+- include: vhost.yml vhost_name=ra-dev tpl=default vhost_local_port=9003 user=ra port=443
+- include: vhost.yml vhost_name=idp-dev tpl=simplesaml vhost_local_port=9004 user=simplesaml port=443
   notify:
    - restart nginx
    - restart php-fpm

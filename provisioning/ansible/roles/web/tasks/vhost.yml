@@ -9,12 +9,18 @@
   shell: mkdir /var/lib/php/session/{{ user }} && chown {{ user }}:{{ user }} /var/lib/php/session/{{ user }} creates=/var/lib/php/session/{{ user }}
 
 - name: Configure Nginx for {{ vhost_name }}.{{ app_domain }}:{{ port }}
-  action: template src='nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
+  action: template src='nginx-vhost-{{ tpl }}.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'
   notify: restart nginx
 
 - name: Configure PHP-FPM for {{ vhost_name }}.{{ app_domain }}
   action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=nginx group=nginx
   notify: restart php-fpm
 
-- name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if possible
+- name: test if app_dev.php exists
+  command: test -f /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist
+  register: appdevexists
+  ignore_errors: True
+
+- name: Copy /app_dev.php.dist to /web/app_dev.php for {{ vhost_name }} if it exists
   command: cp /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist /var/www/{{ vhost_name }}.{{ app_domain }}/web/app_dev.php
+  when: appdevexists|success

@@ -52,6 +52,9 @@
    - restart nginx
    - restart php-fpm
 
+- name: Add nginx to user groups
+  user: name=nginx groups=nginx,middleware,gateway,selfservice,ra createhome=no state=present
+
 - name: Remove default PHP-FPM vhost 'www'
   file: path=/etc/php-fpm.d/www.conf state=absent
   notify: restart php-fpm

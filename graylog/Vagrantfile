@@ -29,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Change from forwarded ports to private network
-  config.vm.network :private_network, ip: "10.0.0.101"
+  config.vm.network :private_network, ip: "10.10.0.101"
 
 end
 

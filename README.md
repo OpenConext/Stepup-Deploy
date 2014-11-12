@@ -47,8 +47,8 @@ Place the SSL certificates in `./ssl`:
 Edit your hosts file to include the following:
 
 ```
-10.0.0.100  mw-dev.stepup.coin.surf.net gw-dev.stepup.coin.surf.net ss-dev.stepup.coin.surf.net ra-dev.stepup.coin.surf.net
-10.0.0.101  g2-dev.stepup.coin.surf.net
+10.10.0.100  mw-dev.stepup.coin.surf.net gw-dev.stepup.coin.surf.net ss-dev.stepup.coin.surf.net ra-dev.stepup.coin.surf.net
+10.10.0.101  g2-dev.stepup.coin.surf.net
 ```
 
  * To view the self-service, visit https://ss-dev.stepup.coin.surf.net.

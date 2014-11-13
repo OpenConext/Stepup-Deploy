@@ -1,3 +1,12 @@
+# Install the "REMI" repo which contain php 5.4 packages that override the default
+# packages from the core distro. The core distro ships 5.3 still
+- name: Install REMI repo
+  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm state=present
+
+- name: Enable REMI repo
+  copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
+
+
 - name: Install nginx & php(-fpm)
   yum: name={{item}} state=present
   with_items:
@@ -7,6 +16,8 @@
   - php-mbstring
   - php-mcrypt
   - php-pdo
+  - php-intl
+  - php-dom
 
 
 - name: Start nginx & php-fpm services on boot

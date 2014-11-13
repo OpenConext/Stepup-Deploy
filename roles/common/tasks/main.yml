@@ -4,17 +4,31 @@
 - name: Set SELinux policy to targeted & permissive
   selinux: policy=targeted state=permissive
 
+
+# Set timezone
+- name: Check current timezone
+  shell: awk -F\" '{ print $2}' /etc/sysconfig/clock
+  register: current_zone
+  changed_when: False
+
+- name: Set UTC timezone
+  file: src=/usr/share/zoneinfo/{{ timezone }}  dest=/etc/localtime state=link force=yes
+  when: current_zone.stdout != '{{ timezone }}'
+
+
+# Extra Packages for Enterprise Linux
+# https://fedoraproject.org/wiki/EPEL
 - name: Enable EPEL repo
   yum: name=epel-release.noarch state=present
   tags: epel
 
 
-- name: Install ntp, iptables, ip6tables, git
+- name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
   with_items:
   - ntp
   - iptables
-  - git # For deploys
+  - rsyslog
 
 
 - name: Put iptables
@@ -34,3 +48,8 @@
   - ntpd
   - iptables
   - ip6tables
+
+
+# Directory for keeping misc ansible files
+- name: Create managed files dir
+  file: name={{ managed_file_dir }} state=directory

@@ -23,3 +23,13 @@ mariadb_cluster_name = stepup-cluster
 # Install dev tools on:
 [dev]
 #app1.suaas.utr.surfcloud.nl
+
+
+[manage]
+manage.suaas.utr.surfcloud.nl
+
+[manage:vars]
+graylog2_password_secret = AOamgwfbLdNj1QpoYPrK3jQcK5CV-waexhjz91PoPpz_2gp4tgVXmaYkiq9lZKUkkdFDLCDlqg_bXy1OHLHHDjcww5iNx_Sn5H0lGXMrGN6Rdruo3SIzAXE3Icrl80xFB6n9GRWCKZX23bSUSYRZ3uOPm-ledcHRQNoc6a5L2Yod59WDT_pnJ6jqQC74jVWlw5MVWTw-YWU2
+graylog2_root_username = admin
+graylog2_root_password = AOamgwdhvkwYzlb8YVNwWKyXhQAbd9KHeg9V5kbrgTdEKZLAyEut6O5i4Tz-8HpNVkkKHirOw6Yxp7kXkk2Z9Yo23wWEdj6SbA
+graylog2_web_application_secret = AOamgwcZqLK4LN-aSEujUZtoeOyA6ioysNqU-ROa9SyIgjSDUahcmQJP5-NzRGcLNKi8uPujK-A4e18gla4pdhNgxirkQlBp4jitrxOapTcrmP8SeIE2TWuAJaHJmxLTZQe9sYxdCsgMpIgt05OjnmTLKmOmljjdD4TSgXH2ZDYLpGOl9sX72NQKNGwROVmfn8K21ogV9Hbh

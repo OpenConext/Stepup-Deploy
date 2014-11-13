@@ -1,0 +1,8 @@
+# group_vars/all: Variables visible in all roles
+
+# Directory for keeping files on the remote host for use
+# by the playbook
+managed_file_dir: /opt/ansible/managed_files
+
+# Timezone
+timezone: Europe/Amsterdam

@@ -1,22 +1,35 @@
 ---
+- name: Remove the old mariadb-libs
+  sudo: yes
+  yum: pkg=mariadb-libs state=absent
+
+- name: Add MariaDB.org repository
+  sudo: yes
+  template: src='mariadb.repo.j2' dest='/etc/yum.repos.d/mariadb.repo'
+
+- name: Add the MariaDB key
+  sudo: yes
+  command: rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+
 - name: Install MariaDB
   sudo: yes
-  yum: pkg=mariadb-server state=present
-
-- name: Start MariaDB
-  sudo: true
-  service: name=mariadb enabled=yes state=started
+  yum: pkg={{item}} state=present
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+    - MariaDB-shared
+    - MySQL-python
 
 - name: Change MariaDB bind address 0.0.0.0
   lineinfile: dest=/etc/my.cnf.d/server.cnf regexp="^bind-address = " insertafter="^\[mysqld\]" line="bind-address = 0.0.0.0"
   notify: Restart MariaDB
 
+- name: Start MariaDB
+  sudo: true
+  service: name=mysql enabled=yes state=started
+
 - name: Set root password
   shell: mysqladmin -uroot password {{ mariadb_root_password|quote }} && touch /home/vagrant/.mariadb_root_password_set creates=/home/vagrant/.mariadb_root_password_set
-
-- name: Install Python MySQL library to enable mysql_db Ansible module
-  sudo: yes
-  yum: pkg=MySQL-python state=present
 
 - name: Add Middleware database
   mysql_db: name=middleware state=present login_user=root login_password={{ mariadb_root_password }}

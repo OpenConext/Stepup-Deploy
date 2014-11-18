@@ -15,7 +15,8 @@
   roles:
     - role: common
       tags: [mw, gw, ss, ra]
-    - role: web
-      tags: [mw, gw, ss, ra]
     - role: database
       tags: [mw, gw]
+    - role: web
+      tags: [mw, gw, ss, ra]
+

@@ -22,6 +22,7 @@
 
 - name: Change MariaDB bind address 0.0.0.0
   lineinfile: dest=/etc/my.cnf.d/server.cnf regexp="^bind-address = " insertafter="^\[mysqld\]" line="bind-address = 0.0.0.0"
+  notify: Restart MariaDB
 
 - name: Start MariaDB
   sudo: true

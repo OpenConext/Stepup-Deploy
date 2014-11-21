@@ -80,3 +80,5 @@
 
 - name: Install LESS compiler
   npm: name=less global=yes state=present
+
+- include: mailcatcher.yml

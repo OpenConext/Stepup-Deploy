@@ -1,0 +1,14 @@
+---
+- name: Install necessary packages for installing Mailcatcher
+  yum: pkg={{ item }} state=present
+  with_items:
+    - ruby-devel
+    - gcc-c++
+    - sqlite-devel
+
+- name: Install Mailcatcher
+  action: command gem install mailcatcher creates=/usr/local/bin/mailcatcher
+
+- name: Add firewall rule for Mailcatcher web interface
+  firewalld: port=1080/tcp permanent=true state=enabled
+  notify: Reload firewall

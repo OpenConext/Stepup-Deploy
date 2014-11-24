@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=selfservice,gid=selfservice var_www_ss-dev.stepup.coin.surf.net /var/www/ss-dev.stepup.coin.surf.net"
     config.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=ra,gid=ra                   var_www_ra-dev.stepup.coin.surf.net /var/www/ra-dev.stepup.coin.surf.net"
     config.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=simplesaml,gid=simplesaml   var_www_idp-dev.stepup.coin.surf.net /var/www/idp-dev.stepup.coin.surf.net"
-    config.vm.provision :shell, run: "always", inline: "pkill mailcatcher"
+    config.vm.provision :shell, run: "always", inline: "pkill mailcatcher || true"
     config.vm.provision :shell, run: "always", inline: "/usr/local/bin/mailcatcher --ip=0.0.0.0"
 end
 

@@ -24,7 +24,7 @@ COMMIT_Z_DATE=`php -r "echo gmdate('YmdHis\Z', strtotime('${COMMIT_DATE}'));"`
 COMMIT_BRANCH=`git rev-parse --abbrev-ref HEAD`
 NAME=${REPO}-${COMMIT_BRANCH}-${COMMIT_Z_DATE}-${COMMIT_HASH}
 
-export SYMPHONY_ENV=prod
+export SYMFONY_ENV=prod
 composer.phar install --prefer-dist --ignore-platform-reqs --no-dev --no-interaction --optimize-autoloader
 if [ $? -ne "0" ]; then
     echo "Composer install failed"

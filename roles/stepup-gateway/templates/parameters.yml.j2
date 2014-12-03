@@ -1,0 +1,46 @@
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     127.0.0.1
+    database_port:     3306
+    database_name:     {{ database_gateway_name }}
+    database_gateway_user:     {{ database_gateway_user }}
+    database_gateway_password: {{ database_gateway_password | vault}}
+    database_deploy_user:      {{ database_deploy_user }}
+    database_deploy_password:  {{ database_deploy_password | vault }}
+
+    mailer_transport:  smtp
+    mailer_host:       127.0.0.1
+    mailer_user:       ~
+    mailer_password:   ~
+
+    default_locale:    nl
+    locales:           [nl]
+    secret:            {{ gateway_secret | vault }}
+
+    debug_toolbar:          true
+    debug_redirects:        false
+    use_assetic_controller: true
+
+    messagebird_authorization: AccessKey {{ messagebird_authorization | vault }}
+    messagebird_messaging_originator: {{ messagebird_messaging_originator }}
+
+    yubikey_client_id: {{ yubikey_client_id }}
+    yubikey_client_secret: {{ yubikey_client_secret | vault }}
+
+    selfservice_api_password: {{ selfservice_api_password | vault }}
+    registration_authority_api_password: {{ registration_authority_api_password | vault }}
+
+    graylog_hostname: {{ graylog_hostname }}
+
+    saml_sp_publickey: {{ saml_sp_publickey }}
+    saml_sp_privatekey: {{ saml_sp_privatekey }}
+
+    saml_idp_publickey: {{ saml_idp_publickey }}
+    saml_idp_privatekey: {{ saml_idp_privatekey }}
+
+    saml_metadata_publickey: {{ saml_metadata_publickey }}
+    saml_metadata_privatekey: {{ saml_metadata_privatekey }}
+
+    saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
+    saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}
+    saml_remote_idp_certificate: {{ saml_remote_idp_certificate }}

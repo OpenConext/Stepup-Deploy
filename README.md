@@ -59,11 +59,11 @@ Deploy
 
 Very much a WIP still. The deploy playbook is `deploy.yml`. Usage:
 
-    `ansible-playbook deploy.yml` 
+   `ansible-playbook deploy.yml` 
 
 to Deploy a single component to a single server:
-    `ansible-playbook deploy.yml --tags gateway --limit "app1*"` 
 
+   `ansible-playbook deploy.yml --tags gateway --limit "app1*"` 
 
 Build
 -----

@@ -1,4 +1,7 @@
-This is an Ansible playbook to deploy the step-up infrastructure on the OpenStack utrecht.surfcloud.nl. The playbook is targeted to the CentOD 6.5 image.
+This are the Ansible playbooks to create the step-up infrastructure on the OpenStack utrecht.surfcloud.nl and to deploy stepup components (i.e. middleware, gateway, RA, selfserve) to this infra. The playbook is targeted to the CentOS 6.5 image.
+
+Create / update infrastructure
+------------------------------
 
 Use `ansible-playbook site.yml`
 
@@ -16,7 +19,7 @@ The databases form a galera cluster. When none of the MariaDB databases is runni
 Vault
 -----
 
-This playbook uses the same vault setup as is used by SURFconext (SURFconext-deploy). This differs from the way a vault is used normally in Ansible. 
+The playbooks use the same vault setup as is used by SURFconext (SURFconext-deploy). This differs from the way a vault is used normally in Ansible. 
 
 Using keyczar (http://keyczar.org) a keystore is created that contains the key that is used to encrypt / decrypt the secrets that are used in the playbook. The secrets are encrypted individually and the resulting base64 encoded values are stored in the playbook. This provides a more git friendly playbook.
 
@@ -49,4 +52,21 @@ Creating a keystore is done once per environment. After that the keystore is sha
 3. Add a new key to the keyset, and make this the active key
 
    `keyczart addkey --location=$HOME/.stepup-ansible-keystore --status=primary`
+
+
+Deploy
+------
+
+Very much a WIP still. The deploy playbook is `deploy.yml`. Usage:
+
+   `ansible-playbook deploy.yml` 
+
+to Deploy a single component to a single server:
+
+   `ansible-playbook deploy.yml --tags gateway --limit "app1*"` 
+
+Build
+-----
+
+Before a component can be deployed it must be built. This creates a tarball that can then be unpacked by the deploy playbook on the application servers. The script to do that is `scripts/stepup-build.sh`. This script will checkout a comonent from git, run composer and create a tar. The name of the tar to deploy for each component is set the `deploy.yml` playbook.
 

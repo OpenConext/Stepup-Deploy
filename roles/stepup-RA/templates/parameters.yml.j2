@@ -1,0 +1,32 @@
+parameters:
+    default_locale:    en_NL
+    locales:           [nl_NL, en_GB]
+    secret:            {{ ra_secret | vault }}
+
+    debug_toolbar:          true
+    debug_redirects:        false
+    use_assetic_controller: true
+
+    # TODO: Use https
+    gateway_api_url: http://gateway.{{ app_domain }}/
+    gateway_api_username: ra
+    gateway_api_password: {{ registration_authority_api_password | vault }}
+
+    middleware_credentials_username: ra
+    middleware_credentials_password: {{ registration_authority_api_password | vault }}
+    # TODO: Use https
+    middleware_url_command_api: http://middleware.{{ app_domain }}/command
+    # TODO: Use https
+    middleware_url_api: http://middleware.{{ app_domain }}
+
+    sms_originator: SURFnet bv
+
+    saml_idp_publickey: {{ saml_sp_publickey }}
+    saml_idp_privatekey: {{ saml_sp_privatekey | vault }}
+
+    saml_metadata_publickey: {{ saml_metadata_publickey }}
+    saml_metadata_privatekey: {{ saml_metadata_privatekey | vault }}
+
+    saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
+    saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}
+    saml_remote_idp_certificate: {{ saml_remote_idp_certificate }}

@@ -7,7 +7,9 @@
   copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
 
 
-- name: Install nginx & php(-fpm)
+# node.less is used by app/console assetic:dump
+# sendmail is used for sending mail from localhost (enabled in default config)
+- name: Install nginx & php-(cli,fpm) & node.less & smtpd
   yum: name={{item}} state=present
   with_items:
   - nginx
@@ -18,7 +20,11 @@
   - php-pdo
   - php-intl
   - php-dom
-
+  - php-mysql
+  - nodejs
+  - nodejs-less.noarch
+  - sendmail
+  - sendmail-cf
 
 - name: Start nginx & php-fpm services on boot
   service: name={{item}} enabled=true

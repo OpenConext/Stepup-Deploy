@@ -10,3 +10,17 @@
 
   roles:
       - stepup-gateway
+
+
+- name: Install Stepup-middleware
+  hosts: app
+  sudo: True
+  tags: middleware
+
+  roles:
+        - stepup-middleware
+
+  vars:
+      component_tarball_name: Stepup-Gateway-develop-20141202081514Z-e8ef9e8b0a34180c14fefbe3a847edc47c3ef3be.tar.bz2
+      component_name: middleware
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}

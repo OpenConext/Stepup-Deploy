@@ -77,10 +77,14 @@
   - dev
 
 
-- name: Test
-  hosts: manage
-  sudo: True
-  tags: test
+#- name: Test
+#  hosts: manage
+#  sudo: True
+#  tags: test
+#
+#  tasks:
+#  - name: Gather facts
+#    setup:
+#
+#  - debug: var=hostvars[groups['manage'][0]][ansible_default_ipv4][address]
 
-  tasks:
-  - debug: var=manage[0]

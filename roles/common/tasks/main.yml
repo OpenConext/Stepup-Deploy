@@ -32,12 +32,12 @@
 
 
 - name: Put iptables
-  action: template src='iptables.j2' dest='/etc/sysconfig/iptables'
+  template: src='iptables.j2' dest='/etc/sysconfig/iptables'
   notify:
   - restart iptables
 
 - name: Put ip6tables
-  action: template src='ip6tables.j2' dest='/etc/sysconfig/ip6tables'
+  template: src='ip6tables.j2' dest='/etc/sysconfig/ip6tables'
   notify:
   - restart ip6tables
 
@@ -53,3 +53,9 @@
 # Directory for keeping misc ansible files
 - name: Create managed files dir
   file: name={{ managed_file_dir }} state=directory
+
+
+# Setup rsyslog to graylog
+- name: Add rsyslog config to forward logs to graylog2
+  template: src='90-graylog2.conf.j2' dest='/etc/rsyslog.d/90-graylog2.conf'
+  notify: restart rsyslog

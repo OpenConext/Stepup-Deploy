@@ -129,7 +129,10 @@ NAME=${COMPONENT}-${GIT_HEAD}${GIT_BRANCH}-${COMMIT_Z_DATE}-${COMMIT_HASH}
 # Install composer in project
 COMPOSER_PATH=`which composer.phar`
 if [ -z "${COMPOSER_PATH}" ]; then
-    error_exit "Cannot find composer.phar"
+    COMPOSER_PATH=`which composer`
+    if [ -z "${COMPOSER_PATH}" ]; then
+        error_exit "Cannot find composer.phar"
+    fi
 fi
 COMPOSER_VERSION=`${COMPOSER_PATH} --version`
 echo "Using composer: ${COMPOSER_PATH}"

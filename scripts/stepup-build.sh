@@ -152,7 +152,7 @@ if [ $? -ne "0" ]; then
 fi
 
 
-composer.phar archive --format=tar --dir="${TMP_ARCHIVE_DIR}" --no-interaction
+${COMPOSER_PATH} archive --format=tar --dir="${TMP_ARCHIVE_DIR}" --no-interaction
 if [ $? -ne "0" ]; then
     error_exit "Composer achive failed"
 fi

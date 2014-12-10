@@ -1,5 +1,3 @@
-# Firewall configuration written by system-config-firewall
-# Manual customization of this file is not recommended.
 *filter
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
@@ -16,6 +14,7 @@
 
 {% if 'manage' in group_names %}
 -A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 12201 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 9000 -j ACCEPT
 {% endif %}
 

@@ -24,6 +24,18 @@ GRAYLOG2_INPUT_SYSLOG_UDP="{
   \"creator_user_id\": \"${GRAYLOG2_ROOT_USER}\",
   \"type\": \"org.graylog2.inputs.syslog.udp.SyslogUDPInput\" }"
 
+GRAYLOG2_INPUT_GELF_UDP="{
+  \"global\": \"true\",
+  \"title\": \"GELF UDP\",
+  \"configuration\": {
+    \"port\": 12201,
+    \"bind_address\": \"0.0.0.0\",
+    \"recv_buffer_size\": 1048576
+  },
+  \"creator_user_id\": \"${GRAYLOG2_ROOT_USER}\",
+  \"type\": \"org.graylog2.inputs.gelf.udp.GELFUDPInput\" }"
+
+
 # List available inputs
 echo -n "Listing inputs... "
 INPUTS=`/usr/bin/curl -s -X GET -H "Content-Type: application/json" ${GRAYLOG2_URL}/system/inputs 2>/dev/null`
@@ -36,11 +48,11 @@ echo "OK"
 
 # Add input only when it does not exist yet (match on "title" specified while adding input)
 if [ `echo $INPUTS | grep -c '"title":"Syslog UDP"'` != "1" ]; then
-    echo -n "Adding input... "
+    echo -n "Adding Syslog UDP input... "
     echo $CURL_PARAM
     NEW_INPUT=`/usr/bin/curl -s -X POST -H "Content-Type: application/json" -d "${GRAYLOG2_INPUT_SYSLOG_UDP}" ${GRAYLOG2_URL}/system/inputs/`
     if [ $? != "0" ]; then
-        echo "Could not add inputs. REST call to Graylog2 failed"
+        echo "Could not add input. REST call to Graylog2 failed"
         exit 1
     fi
     # Result should be something like: {"persist_id":"546f447ae4b0e4fe2aaaadf3","input_id":"3990f28a-e08b-4733-97af-0b7fcaa36be7"}
@@ -52,7 +64,28 @@ if [ `echo $INPUTS | grep -c '"title":"Syslog UDP"'` != "1" ]; then
 
     echo "OK"
 else
-    echo "Input exists. Nothing to do"
+    echo "Syslog UDP Input exists. Nothing to do"
+fi
+
+
+if [ `echo $INPUTS | grep -c '"title":"GELF UDP"'` != "1" ]; then
+    echo -n "Adding GELF UDP input... "
+    echo $CURL_PARAM
+    NEW_INPUT=`/usr/bin/curl -s -X POST -H "Content-Type: application/json" -d "${GRAYLOG2_INPUT_GELF_UDP}" ${GRAYLOG2_URL}/system/inputs/`
+    if [ $? != "0" ]; then
+        echo "Could not add input. REST call to Graylog2 failed"
+        exit 1
+    fi
+    # Result should be something like: {"persist_id":"546f447ae4b0e4fe2aaaadf3","input_id":"3990f28a-e08b-4733-97af-0b7fcaa36be7"}
+    if [ `echo $NEW_INPUT | grep -c '"input_id":'` != "1" ]; then
+        echo "Adding input failed"
+        echo ${NEW_INPUT}
+        exit 1
+    fi
+
+    echo "OK"
+else
+    echo "Syslog UDP Input exists. Nothing to do"
 fi
 
 exit 0

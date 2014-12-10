@@ -17,25 +17,34 @@
 - name: Create Middleware database
   mysql_db: name={{ database_middleware_name }} state=present login_user=root login_password={{ mariadb_root_password | vault }}
 
-- name: Create Middleware user
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_middleware_user }}
-    password={{ database_middleware_password | vault }}
-    priv={{ database_middleware_name }}.*:SELECT,EXECUTE
-    login_user=root
-    login_password={{ mariadb_root_password | vault }}
+# Both midleware and gateway databases are managed using middleware app/console (for now)
+- name: Create Gateway database
+  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault }}
 
-
-- name: Create deploy user with access to gateway database
+# TODO: migrations script executes GRANTS, so priv below are not suficcient
+# TODO: migrations script uses both @127.0.0.1 and @localhost
+- name: Create deploy user with ALL access to middleware and gateway database
   mysql_user:
     host=127.0.0.1
     name={{ database_deploy_user }}
     password={{ database_deploy_password | vault }}
-    priv={{ database_gateway_name }}.*:ALL
+    priv={{ database_gateway_name }}.*:ALL/{{ database_middleware_name }}.*:ALL
+    login_host=127.0.0.1
     login_user=root
     login_password={{ mariadb_root_password | vault }}
 
+
+# Access to middleware and gateway databases
+# TODO: Tighten DB user rights
+- name: Create DB user for Middleware component
+  mysql_user:
+    host=localhost
+    name={{ database_middleware_user }}
+    password={{ database_middleware_password | vault }}
+    priv={{ database_middleware_name }}.*:SELECT,INSERT,DELETE,EXECUTE/{{ database_gateway_name }}.*:SELECT,EXECUTE
+    login_host=127.0.0.1
+    login_user=root
+    login_password={{ mariadb_root_password | vault }}
 
 
 - name: Create stepup directory
@@ -43,24 +52,48 @@
 
 - name: Untar component
   unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }}
+  when: ( {{ component_unarchive | default(1) }} == 1)
 
 - name: Put parameters.yml
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml
 
+- name: assets:install
+  command: php app/console assets:install --symlink --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 
 - name: Dump Assetic Assets
-  shell: php {{ component_dir_name }}/app/console assetic:dump --env=prod --no-debug
+  command: php app/console assetic:dump --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 
 - name: Clear cache
-  shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-debug
+  command: php app/console cache:clear --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} owner=gateway recurse=yes
+  file: path={{ item}} owner=middleware recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
 
-# DOTO: Database setup & migration
+
+# TODO: Database setup & migration
+# To do this manually change to the component_dir_name and run:
+# # php app/console middleware:migrations:migrate --env=prod
+
+- name: Put middleware config script
+  template: src={{ item }}.j2 dest=/root/{{ item }}
+  with_items:
+  - "middleware-config.sh"
+  - "middleware-config.json"
+
+
+# TODO: Middleware configuration
+# To do this manually run:
+# # /root/middleware-config.sh
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
+

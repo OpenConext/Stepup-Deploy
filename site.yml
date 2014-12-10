@@ -38,6 +38,15 @@
   - app
 
 
+- name: Setup proxy on application servers
+  hosts: app
+  sudo: True
+  tags: proxy
+
+  roles:
+  - proxy
+
+
 #- name: Deploy gateway
 #  hosts: app
 #  sudo: True

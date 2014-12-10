@@ -21,16 +21,18 @@
   - php-intl
   - php-dom
   - php-mysql
+  - php-bcmath
   - nodejs
   - nodejs-less.noarch
   - sendmail
   - sendmail-cf
 
-- name: Start nginx & php-fpm services on boot
+- name: Start nginx & php-fpm & and smtp services on boot
   service: name={{item}} enabled=true
   with_items:
   - nginx
   - php-fpm
+  - sendmail
 
 
 - name: Put php.ini
@@ -53,8 +55,9 @@
   - restart php-fpm
 
 
+# Set mode to a+x so components can access their subdirectories under session/
 - name: Create directory for vhosts to store PHP sessions
-  file: path=/var/lib/php/session/ state=directory
+  file: path=/var/lib/php/session/ state=directory mode=a+x
 
 
 # Create vhosts

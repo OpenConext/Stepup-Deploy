@@ -1,4 +1,4 @@
-# Infra suff for middleware
+# Infra suff for RA
 
 - name: Get active component
   shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
@@ -20,23 +20,50 @@
 
 - name: Untar component
   unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }}
+  when: ( {{ component_unarchive | default(1) }} == 1)
 
 - name: Put parameters.yml
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml
 
+- name: assets:install
+  command: php app/console assets:install --symlink --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: mopa:bootstrap:symlink:less
+  command: php app/console mopa:bootstrap:symlink:less --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 
 - name: Dump Assetic Assets
-  shell: php {{ component_dir_name }}/app/console assetic:dump --env=prod --no-debug
+  command: php app/console assetic:dump --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 
 - name: Clear cache
-  shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-debug
-
+  command: php app/console cache:clear --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} owner=gateway recurse=yes
+  file: path={{item}} owner=ra recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
 
+
+- name: Write SP private key
+  copy: content="{{ saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
+
+- name: Write SP certificate
+  copy: content="{{ saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
+
+- name: Put middleware config script in /root/midleware-config.sh
+  template: src={{item}}.j2 dest=/root/{{item}}
+  with_items:
+  - "middleware-config.sh"
+  - "middleware-config.json"
+
+- file: path=/root/midleware-config.sh mode="a+x"
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link

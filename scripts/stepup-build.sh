@@ -127,7 +127,7 @@ NAME=${COMPONENT}-${GIT_HEAD}${GIT_TAG}${GIT_BRANCH}-${COMMIT_Z_DATE}-${COMMIT_H
 NAME=`echo "${NAME}" | tr / _`
 
 
-# Install composer in project
+# Find a composer to use
 COMPOSER_PATH=`which composer.phar`
 if [ -z "${COMPOSER_PATH}" ]; then
     COMPOSER_PATH=`which composer`
@@ -146,6 +146,16 @@ ${COMPOSER_PATH} install --prefer-dist --ignore-platform-reqs --no-dev --no-inte
 if [ $? -ne "0" ]; then
     error_exit "Composer install failed"
 fi
+
+#php app/console assets:install --symlink
+#if [ $? -ne "0" ]; then
+#    error_exit "console command 'assets:install' failed"
+#fi
+
+#php app/console mopa:bootstrap:symlink:less
+#if [ $? -ne "0" ]; then
+#    error_exit "console command: 'mopa:bootstrap:symlink:less' failed"
+#fi
 
 TMP_ARCHIVE_DIR=`mktemp -d "/tmp/${COMPONENT}.XXXXXXXX"`
 if [ $? -ne "0" ]; then

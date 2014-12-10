@@ -32,14 +32,14 @@ parameters:
 
     graylog_hostname: {{ graylog_hostname }}
 
-    saml_sp_publickey: {{ saml_sp_publickey }}
-    saml_sp_privatekey: {{ saml_sp_privatekey }}
+    saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
+    saml_sp_privatekey: {{ component_dir_name }}/app/config/sp.key
 
-    saml_idp_publickey: {{ saml_idp_publickey }}
-    saml_idp_privatekey: {{ saml_idp_privatekey }}
+    saml_idp_publickey: {{ component_dir_name }}/app/config/idp.crt
+    saml_idp_privatekey: {{ component_dir_name }}/app/config/idp.key
 
-    saml_metadata_publickey: {{ saml_metadata_publickey }}
-    saml_metadata_privatekey: {{ saml_metadata_privatekey }}
+    saml_metadata_publickey: {{ component_dir_name }}/app/config/idp.crt
+    saml_metadata_privatekey: {{ component_dir_name }}/app/config/idp.key
 
     saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
     saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}

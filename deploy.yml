@@ -1,7 +1,7 @@
 - name: Intall Stepup-Gateway
-  hosts: app
+  hosts: stepup-gateway
   sudo: True
-  tags: gateway
+  tags: stepup-gateway
 
   vars:
       component_tarball_name: Stepup-Gateway-develop-20141202081514Z-e8ef9e8b0a34180c14fefbe3a847edc47c3ef3be.tar.bz2
@@ -13,14 +13,45 @@
 
 
 - name: Install Stepup-middleware
-  hosts: app
+  hosts: stepup-middleware
   sudo: True
-  tags: middleware
+  tags: stepup-middleware
 
   roles:
         - stepup-middleware
 
   vars:
-      component_tarball_name: Stepup-Gateway-develop-20141202081514Z-e8ef9e8b0a34180c14fefbe3a847edc47c3ef3be.tar.bz2
+      component_tarball_name: Stepup-Middleware-bugfix_api-entity-metadata-20141210091501Z-84dd3a1ff54672d9d8a3e926a8901bdc41a00dae.tar.bz2
       component_name: middleware
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+
+
+
+- name: Install Stepup-SelfService
+  hosts: stepup-selfservice
+  sudo: True
+  tags: stepup-selfservice
+
+  roles:
+        - stepup-selfservice
+
+  vars:
+      component_tarball_name: Stepup-SelfService-develop-20141210133202Z-716d9a0c78ad65f5160d7572abae673c156faf36.tar.bz2
+      component_name: selfservice
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+
+
+
+- name: Install Stepup-RA
+  hosts: stepup-ra
+  sudo: True
+  tags: stepup-ra
+
+  roles:
+        - stepup-ra
+
+  vars:
+      component_tarball_name: Stepup-RA-develop-20141210133225Z-9c5949d14b7abbcccddcd4c46c1fe42d82690f18.tar.bz2
+      component_name: ra
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+

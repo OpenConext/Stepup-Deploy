@@ -98,8 +98,8 @@ cd ${CWD}/${COMPONENT}
 # Switch to specified branch / tag
 if [ -n "${GIT_BRANCH}" ]; then
     echo "Using branch: ${GIT_BRANCH}"
-    if [ -z "`git branch --list ${GIT_BRANCH}`" ]; then
-        error_exit "No such branch: '${GIT_BRANCH}'"
+    if [ `git ls-remote | grep -c "refs/heads/${GIT_BRANCH}"` -ne "1" ]; then
+        error_exit "No such branch on remote: '${GIT_BRANCH}'"
     fi
     git checkout "origin/${GIT_BRANCH}"
     if [ "$?" -ne "0" ]; then
@@ -123,7 +123,8 @@ fi
 COMMIT_HASH=`git log -1 --pretty="%H"`
 COMMIT_DATE=`git log -1 --pretty="%cd" --date=iso`
 COMMIT_Z_DATE=`php -r "echo gmdate('YmdHis\Z', strtotime('${COMMIT_DATE}'));"`
-NAME=${COMPONENT}-${GIT_HEAD}${GIT_BRANCH}-${COMMIT_Z_DATE}-${COMMIT_HASH}
+NAME=${COMPONENT}-${GIT_HEAD}${GIT_TAG}${GIT_BRANCH}-${COMMIT_Z_DATE}-${COMMIT_HASH}
+NAME=`echo "${NAME}" | tr / _`
 
 
 # Install composer in project

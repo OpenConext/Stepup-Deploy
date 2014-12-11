@@ -1,6 +1,11 @@
 #
 # Usage: {{ foo | vault }}
 #        {{ foo | sha256 }}
+#        {{ foo | depem }}
+
+# vault: decrypt string using key stored in keyczar vault. Key is stored in "'~/.stepup-ansible-keystore"
+# sha256: return hex encoded SHA-256 hash of string
+# depem: Strip PEM headers and remove all whitespace from string
 
 def vault(encrypted):
   method = """
@@ -21,6 +26,11 @@ def sha256s(data):
   return hashlib.sha256(data).hexdigest()
 
 
+def depem(string):
+  import re
+  return re.sub(r'\s+|(-----(BEGIN|END).*-----)', '', string)
+
+
 class FilterModule(object):
 
   def filters(self):
@@ -28,4 +38,6 @@ class FilterModule(object):
       'vault': vault,
 
       'sha256': sha256s,
+
+      'depem': depem,
     }

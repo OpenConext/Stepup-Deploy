@@ -15,7 +15,8 @@ function error_exit {
 COMPONENT_TARBALL=$1
 shift
 if [ -z "${COMPONENT_TARBALL}"  ]; then
-    echo "Usage: $0 <component tarball>"
+    echo "Usage: $0 <component tarball> [-n|--no-unarchive]"
+    echo "--no-unarchive: Skip uploading and unarchiving the tarball on the remote"
     echo "Supported components: ${COMPONENTS[*]}"
     exit 1;
 fi

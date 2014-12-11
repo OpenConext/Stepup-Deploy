@@ -1,6 +1,7 @@
 {
   "sraa": [
-      "3858f62230ac3c915f300c664312c63f"
+      "3858f62230ac3c915f300c664312c63f",
+      "urn:collab:surfnet.nl:pieter"
   ],
 "raa": {
     "Example Inc": [
@@ -14,10 +15,20 @@
   "gateway": {
     "service_providers": [
       {
-        "entity_id": "http://ra.dev.stepup.coin.surf.net/authentication/metadata",
-        "public_key": "MIIDkzCCAnugAwIBAgIJAJKYTYZ2ZI5FMA0GCSqGSIb3DQEBBQUAMGAxCzAJBgNVBAYTAk5MMRAwDgYDVQQIDAdVdHJlY2h0MRAwDgYDVQQHDAdVdHJlY2h0MRMwEQYDVQQKDApTVVJGbmV0IGJ2MRgwFgYDVQQDDA9TdGVwLXVwIFJBIFRFU1QwHhcNMTQxMjA3MTQyMDE2WhcNMTcxMjA2MTQyMDE2WjBgMQswCQYDVQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDETMBEGA1UECgwKU1VSRm5ldCBidjEYMBYGA1UEAwwPU3RlcC11cCBSQSBURVNUMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA32MMIYQ+SDxnBJ3ZeTDefIbKPsfk53TF39dvbIbAK8VUhekOYSVRm+saZsiPjkdxguTSJ15Xzctn4LaC/I3IjG7ws8yjpU9X2GmLcW45SNJ30kqgTKEB+CQ2kc74Mqv+AA99cx6fBD0IEWo+K3sl4ZjPmcyUIrdVHWBb87fvQ9dtqZixKgvFL8dJBPmZJZc036ahqbLWwbTR78sFg1JyNsrPF7E790I4NXdia0ygDbHoIJ+v/2Zl4e2xN9mJz5XRkQVWilq8XgUT+KptokvJGvSp+Ext2lSyjOUaFa2KAyAw1BNsSX9Yrb8/t02ITTEsGGj6Q8q1ZZxtKbe2o2rfRQIDAQABo1AwTjAdBgNVHQ4EFgQU6Z3v5kL6rNJXgZD9L+CrWhPcVscwHwYDVR0jBBgwFoAU6Z3v5kL6rNJXgZD9L+CrWhPcVscwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOCAQEAAaKbVAe6QD2SnyCCwx0WK6WKTG50MGBW0CXZkBoWlVArgzR6wQ2mCxLFdbZrHUEAo+HYSLTgtJD0ZQlU1p9K9/9phJqwEb+/p66AIS4o6ng0NU+4jlBXAkp98VZuzHqxSpOHHEk5gP+OEjyc6GzwYXw66pL7lXxalZqs8tBQioTTCigwn3vDCGdZIVG9J2aLQNRsXN4Ro+e7cH/ZzdDLm2VLDBfdYq+gA364Vx/dUkQoXOOM8c5atr0uku52X7B3Aws+pTGj3ChGeJgTGj9N84Sk3hKKMthPyAOaY2HKLqbCMIGOdYHLnyP5Jogw/jYxfHj5ZaRqkie3jNjazQe8/w==",
+        "entity_id": "https://ra.dev.stepup.coin.surf.net/authentication/metadata",
+        "public_key": "{{ ra_saml_sp_publickey | depem }}",
         "acs": [
-          "http://ra.dev.stepup.coin.surf.net/authentication/consume-assertion"
+          "http://ra.{{ app_domain }}/authentication/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "https://example.gateway.tld/authentication/loa1"
+        }
+      },
+      {
+        "entity_id": "https://selfservice.{{ app_domain }}/authentication/metadata",
+        "public_key": "{{ selfservice_saml_sp_publickey | depem }}",
+        "acs": [
+          "http://selfservice.{{ app_domain }}/authentication/consume-assertion"
         ],
         "loa": {
           "__default__": "https://example.gateway.tld/authentication/loa1"

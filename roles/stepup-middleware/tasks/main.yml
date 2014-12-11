@@ -98,3 +98,17 @@
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
 
+- name: Show database configuration hint
+  debug:
+      msg: |
+          Note: Database initialisation/migration must be run manually. To do this:
+          1) change to directory: "{{ component_dir_name }}"
+          2) execute: php app/console middleware:migrations:migrate --env=prod
+
+- name: Show middleware configuration hint
+  debug:
+      msg: |
+          Note: the configuration of the middleware component using its REST interface
+          must be performed manually.
+          A starter configuration was written to: /root/middleware-config.json
+          To send the configuration execute: /root/middleware-config.sh

@@ -20,8 +20,8 @@ parameters:
 
     middleware_credentials_username: ss
     middleware_credentials_password: {{ selfservice_api_password | vault }}
-    middleware_url_command_api: https://middleware.{{ app_domain }}/command
-    middleware_url_api: https://middleware.{{ app_domain }}/
+    middleware_url_command_api: http://middleware.{{ app_domain }}/command
+    middleware_url_api: http://middleware.{{ app_domain }}/
 
     sms_originator: SURFStepup
 
@@ -32,6 +32,10 @@ parameters:
     saml_metadata_publickey: {{ component_dir_name }}/app/config/sp.crt
 
     saml_metadata_privatekey: {{ component_dir_name }}/app/config/sp.key
+
+    #saml_remote_idp_entity_id: http://gateway.{{ app_domain }}/authentication/metadata
+    #saml_remote_idp_sso_url: http://gateway.{{ app_domain }}/authentication/single-sign-on
+    #saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
 
     saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
     saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}

@@ -52,10 +52,10 @@
 
 
 - name: Write SP private key
-  copy: content="{{ saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
+  copy: content="{{ ra_saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
 
 - name: Write SP certificate
-  copy: content="{{ saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
+  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
 
 - name: Activate component

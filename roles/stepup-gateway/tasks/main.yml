@@ -69,16 +69,16 @@
 
 
 - name: Write SP private key
-  copy: content="{{ saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
+  copy: content="{{ gateway_saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
 
 - name: Write SP certificate
-  copy: content="{{ saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
+  copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
 - name: Write IdP private key
-  copy: content="{{ saml_idp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/idp.key
+  copy: content="{{ gateway_saml_idp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/idp.key
 
 - name: Write IdP certificate
-  copy: content="{{ saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt
+  copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt
 
 
 - name: Activate component

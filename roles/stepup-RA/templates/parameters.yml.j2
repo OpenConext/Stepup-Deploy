@@ -36,7 +36,7 @@ parameters:
 
     saml_remote_idp_entity_id: http://gateway.{{ app_domain }}/authentication/metadata
     saml_remote_idp_sso_url: http://gateway.{{ app_domain }}/authentication/single-sign-on
-    saml_remote_idp_certificate: {{ saml_gateway_idp_certificate }}
+    saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
 
     loa_required_for_login: 'https://gateway.example.tld/authorisation/loa1'
     graylog_hostname: {{ graylog_hostname }}

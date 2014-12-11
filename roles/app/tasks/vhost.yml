@@ -23,8 +23,12 @@
   template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}.{{ app_domain }}/web/app.php'
 
 
+- stat: path=/opt/www/{{ vhost_name }}.{{ app_domain }}
+  register: r
+
 - name: Install default app when no app is installed (yet)
   file: src=/opt/default/{{ vhost_name }}.{{ app_domain }} dest=/opt/www/{{ vhost_name }}.{{ app_domain }} state=link force=no
+  when: (r.stat.exists == false)
 
 
 # Put httpd vhost config

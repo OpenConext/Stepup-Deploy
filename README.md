@@ -54,6 +54,12 @@ Creating a keystore is done once per environment. After that the keystore is sha
    `keyczart addkey --location=$HOME/.stepup-ansible-keystore --status=primary`
 
 
+Build
+-----
+
+Before a component can be deployed it must be built. This creates a tarball that can then be unpacked by the deploy playbook on the application servers. The script to do that is `scripts/stepup-build.sh`. This script will checkout a comonent from git, run composer and create a tar. The name of the tar to deploy for each component is set the `deploy.yml` playbook.
+
+
 Deploy
 ------
 
@@ -61,12 +67,25 @@ Very much a WIP still. The deploy playbook is `deploy.yml`. Usage:
 
    `ansible-playbook deploy.yml` 
 
-to Deploy a single component to a single server:
+to Deploy a single component (stepup-selfservice | stepup-gateway | stepup-ra | stepup-middleware) to a single server:
 
-   `ansible-playbook deploy.yml --tags gateway --limit "app1*"` 
+   `ansible-playbook deploy.yml --tags stepup-gateway --limit "app1*"`
+   
+The `deploy.sh` script can be used to deploy a single component. Use:
 
-Build
------
+   `scripts/deploy.sh <component tarball created with steppup-build.sh>`
+   
 
-Before a component can be deployed it must be built. This creates a tarball that can then be unpacked by the deploy playbook on the application servers. The script to do that is `scripts/stepup-build.sh`. This script will checkout a comonent from git, run composer and create a tar. The name of the tar to deploy for each component is set the `deploy.yml` playbook.
+Setup / directory layout
+------------------------
 
+* You need PHP (5.4), a somewhat resent ansible and composer installed. Should run on both OSX and linux
+* Make sure you have the `~/.stepup-ansible-keystore` for this project, if not ask...
+* Create an directory in a location of your choice
+* Clone Stepup-Deploy repo
+  `git clone git@github.com:SURFnet/Stepup-Deploy.git`
+* Create symlinks to step-build and deploy
+  `ln -s Stepup-Deploy/scrips/stepup-build.sh stepup-build.sh`
+  `ln -s Stepup-Deploy/scrips/deploy.sh deploy.sh`
+
+You can now run the stepup-build and deploy scripts from the directory you created 

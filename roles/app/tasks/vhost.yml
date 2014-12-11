@@ -10,6 +10,7 @@
 - name: Create directory for vhosts to store PHP sessions
   file: path=/var/lib/php/session/{{ vhost_name }} state=directory owner={{ vhost_name }} group=root mode=770
 
+
 - name: Create /opt/www/
   file: path=/opt/www/ state=directory
 

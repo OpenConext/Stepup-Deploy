@@ -57,13 +57,6 @@
 - name: Write SP certificate
   copy: content="{{ saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
-- name: Put middleware config script in /root/midleware-config.sh
-  template: src={{item}}.j2 dest=/root/{{item}}
-  with_items:
-  - "middleware-config.sh"
-  - "middleware-config.json"
-
-- file: path=/root/midleware-config.sh mode="a+x"
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link

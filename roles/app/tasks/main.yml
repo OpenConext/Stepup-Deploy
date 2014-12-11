@@ -57,7 +57,7 @@
 
 # Set mode to a+x so components can access their subdirectories under session/
 - name: Create directory for vhosts to store PHP sessions
-  file: path=/var/lib/php/session/ state=directory mode=a+x
+  file: path=/var/lib/php/session/ state=directory mode="771"
 
 
 # Create vhosts

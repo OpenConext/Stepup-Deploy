@@ -89,6 +89,7 @@
   - "middleware-config.sh"
   - "middleware-config.json"
 
+- file: path=/root/midleware-config.sh mode="a+x"
 
 # TODO: Middleware configuration
 # To do this manually run:

@@ -1,0 +1,16 @@
+# Assumes ngix has been installed previously
+
+- name: Put proxy cert
+  copy: content="{{ proxy_certificate }}" dest=/etc/nginx/proxy.crt
+  notify:
+      - restart nginx
+
+- name: Put proxy key
+  copy: content="{{ proxy_key | vault }}" dest=/etc/nginx/proxy.key
+  notify:
+      - restart nginx
+
+- name: Put proxy.conf
+  template: src='proxy.conf.j2' dest='/etc/nginx/conf.d/proxy.conf'
+  notify:
+      - restart nginx

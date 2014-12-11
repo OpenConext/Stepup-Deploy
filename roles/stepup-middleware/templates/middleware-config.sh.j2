@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Script to write the middleware config
+
+curl -XPOST -v \
+    -u management:{{ management_password | vault }} \
+    -H "Accept: application/json" \
+    -H "Content-type: application/json" \
+    -d @/root/middleware-config.json \
+    http://middleware.{{ app_domain }}/management/configuration
+
+echo "Done."

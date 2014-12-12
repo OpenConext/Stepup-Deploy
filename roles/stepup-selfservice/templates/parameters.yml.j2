@@ -14,7 +14,7 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-    gateway_api_url: https://gateway.{{ app_domain }}/
+    gateway_api_url: http://gateway.{{ app_domain }}/
     gateway_api_username: ss
     gateway_api_password: {{ selfservice_api_password | vault }}
 

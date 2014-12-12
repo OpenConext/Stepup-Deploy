@@ -87,7 +87,7 @@ Setup / directory layout
 * Clone Stepup-Deploy repo
   `git clone git@github.com:SURFnet/Stepup-Deploy.git`
 * Create symlinks to step-build and deploy
-  `ln -s Stepup-Deploy/scrips/stepup-build.sh stepup-build.sh`
-  `ln -s Stepup-Deploy/scrips/deploy.sh deploy.sh`
+  `ln -s Stepup-Deploy/scripts/stepup-build.sh stepup-build.sh`
+  `ln -s Stepup-Deploy/scripts/deploy.sh deploy.sh`
 
 You can now run the stepup-build and deploy scripts from the directory you created 

@@ -23,6 +23,8 @@ The playbooks use the same vault setup as is used by SURFconext (SURFconext-depl
 
 Using keyczar (http://keyczar.org) a keystore is created that contains the key that is used to encrypt / decrypt the secrets that are used in the playbook. The secrets are encrypted individually and the resulting base64 encoded values are stored in the playbook. This provides a more git friendly playbook.
 
+You can install keyczar using: `pip install python-keyczar`
+
 A ansible filer plugin "vault" (`filter_plugins/custom_plugins.py`) is used to decrypt values using the key from the keystore. E.g: `{{ encrypted_value | vault }}`. This decryption is done on the host from which ansible-playbook is run. 
 
 The stepup-ansible-keystore is stored in `~/.stepup-ansible-keystore`. It must not be stored in the cloud (github, dropbox, etc). The filter references the keystore in `~/.stepup-ansible-keystore`. 
@@ -32,6 +34,8 @@ To create enrypted values for use in thr playbook use:
 * For values: `scripts/encrypt.sh`
 
 * For files: `scripts/encrypt-file.sh`
+
+You then store the encrypted values in de playbook.
 
 To decrypt a value manually add the "--decrypt" option.
 

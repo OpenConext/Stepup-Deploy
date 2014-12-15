@@ -38,5 +38,6 @@ parameters:
     saml_remote_idp_sso_url: http://gateway.{{ app_domain }}/authentication/single-sign-on
     saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
 
-    loa_required_for_login: 'https://gateway.example.tld/authorisation/loa1'
+    # TODO: Raise LOA; LOA 1 used for bootstrapping
+    loa_required_for_login: 'http://suaas.example.com/assurance/loa1'
     graylog_hostname: {{ graylog_hostname }}

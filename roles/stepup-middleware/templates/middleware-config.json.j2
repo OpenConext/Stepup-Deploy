@@ -1,7 +1,9 @@
 {
   "sraa": [
       "3858f62230ac3c915f300c664312c63f",
-      "urn:collab:surfnet.nl:pieter"
+      "urn:collab:person:surfnet.nl:pieter",
+      "urn:collab:person:surfnet.nl:jodi",
+      "urn:collab:person:surfnet.nl:eefje"
   ],
 "raa": {
     "Example Inc": [
@@ -18,7 +20,7 @@
         "entity_id": "https://ra.dev.stepup.coin.surf.net/authentication/metadata",
         "public_key": "{{ ra_saml_sp_publickey | depem }}",
         "acs": [
-          "http://ra.{{ app_domain }}/authentication/consume-assertion"
+          "https://ra.{{ app_domain }}/authentication/consume-assertion"
         ],
         "loa": {
           "__default__": "https://example.gateway.tld/authentication/loa1"
@@ -28,7 +30,7 @@
         "entity_id": "https://selfservice.{{ app_domain }}/authentication/metadata",
         "public_key": "{{ selfservice_saml_sp_publickey | depem }}",
         "acs": [
-          "http://selfservice.{{ app_domain }}/authentication/consume-assertion"
+          "https://selfservice.{{ app_domain }}/authentication/consume-assertion"
         ],
         "loa": {
           "__default__": "https://example.gateway.tld/authentication/loa1"

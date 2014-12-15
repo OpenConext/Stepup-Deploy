@@ -41,7 +41,7 @@
     host=localhost
     name={{ database_middleware_user }}
     password={{ database_middleware_password | vault }}
-    priv={{ database_middleware_name }}.*:SELECT,INSERT,DELETE,EXECUTE/{{ database_gateway_name }}.*:SELECT,EXECUTE
+    priv={{ database_middleware_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE/{{ database_gateway_name }}.*:SELECT,EXECUTE
     login_host=127.0.0.1
     login_user=root
     login_password={{ mariadb_root_password | vault }}

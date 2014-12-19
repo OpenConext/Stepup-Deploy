@@ -49,9 +49,13 @@
 - name: Put parameters.yml
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml
 
-
 - name: assets:install
   command: php app/console assets:install --symlink --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: mopa:bootstrap:symlink:less
+  command: php app/console mopa:bootstrap:symlink:less --env=prod --no-debug
   args:
       chdir: "{{ component_dir_name }}"
 

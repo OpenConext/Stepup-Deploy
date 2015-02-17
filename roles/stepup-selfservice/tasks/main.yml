@@ -57,5 +57,9 @@
 - name: Write SP certificate
   copy: content="{{ selfservice_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link

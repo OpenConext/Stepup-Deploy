@@ -95,6 +95,10 @@
 # To do this manually run:
 # # /root/middleware-config.sh
 
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
 

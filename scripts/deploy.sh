@@ -77,7 +77,7 @@ if [ $? -ne "0" ]; then
 fi
 
 # Untar it
-tar -xf ${TMP_ARCHIVE_DIR}/component.tar
+tar -xf ${TMP_ARCHIVE_DIR}/component.tar -C ${TMP_ARCHIVE_DIR}
 if [ $? -ne "0" ]; then
     error_exit "tar failed"
 fi

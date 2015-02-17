@@ -2,8 +2,9 @@ server {
     listen       80;
     server_name  {{ vhost_name }}.{{ app_domain }};
     root /opt/www/{{ vhost_name }}.{{ app_domain }}/web;
+
     error_log /var/log/nginx/{{ vhost_name }}_error.log;
-    access_log /var/log/nginx/{{ vhost_name }}_access.log;
+    access_log /var/log/nginx/{{ vhost_name }}_access.log combinedProxy;
 
     location / {
         # try to serve file directly, fallback to app.php

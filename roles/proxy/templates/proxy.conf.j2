@@ -13,6 +13,7 @@ server {
     ssl_prefer_server_ciphers on;
 
     access_log /var/log/nginx/proxy.access.log;
+    access_log /var/log/nginx/proxy.error.log;
 
     location ~ {
         proxy_set_header    Host $host;

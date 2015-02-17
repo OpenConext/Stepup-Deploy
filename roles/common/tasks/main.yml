@@ -23,12 +23,25 @@
   tags: epel
 
 
-- name: Install ntp, iptables, ip6tables, rsyslog
+# Add Logstash repo
+# Logstash uses the elasticsearch repo key
+- name: Copy elasticsearch repository key
+  copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
+
+- name: Add elasticsearch repository key
+  rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
+
+- name: Enable logstash repo
+  copy: src=logstash.repo dest=/etc/yum.repos.d/logstash.repo
+
+
+- name: Install ntp, iptables, ip6tables, rsyslog, logstash
   yum: name={{item}} state=present
   with_items:
   - ntp
   - iptables
   - rsyslog
+  - logstash
 
 
 - name: Put iptables
@@ -48,6 +61,7 @@
   - ntpd
   - iptables
   - ip6tables
+  - logstash
 
 
 # Directory for keeping misc ansible files
@@ -59,3 +73,11 @@
 - name: Add rsyslog config to forward logs to graylog2
   template: src='90-graylog2.conf.j2' dest='/etc/rsyslog.d/90-graylog2.conf'
   notify: restart rsyslog
+
+# Setup logstash to graylog
+- name: Add logstash config to output logs to graylog2
+  template: src='logstash/gelf-udp.output.j2' dest='/etc/logstash/conf.d/gelf-udp.output'
+  notify: restart logstash
+
+
+

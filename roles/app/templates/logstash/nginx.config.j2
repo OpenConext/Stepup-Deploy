@@ -1,0 +1,23 @@
+input {
+  file {
+    type => "nginx_access"
+    path => ["/var/log/nginx/*access.log"]
+    discover_interval => 10
+  }
+  file {
+    type => "nginx_error"
+    path => ["/var/log/nginx/*error.log"]
+    discover_interval => 10
+  }
+}
+
+filter {
+  grok {
+    type => "nginx_access"
+    match => ["path","%{GREEDYDATA}/%{GREEDYDATA:filename}\.log"]
+  }
+  grok {
+    type => "nginx_error"
+    match => ["path","%{GREEDYDATA}/%{GREEDYDATA:filename}\.log"]
+  }
+}

@@ -103,3 +103,7 @@
 
 - name: Add graylog inputs
   script: graylog2_add_input.sh {{ graylog2_root_username }} {{ graylog2_root_password | vault }}
+
+
+- name: Write test script to /root
+  template: src=graylog2/gelf_udp_test.sh.j2 dest=/root/gelf_udp_test.sh

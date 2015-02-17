@@ -1,0 +1,3 @@
+#!/bin/sh
+# Send a GELF UDP test message to Gralyog2 input
+echo '{"version": "1.1","host":"manage","short_message":"A short message that helps you identify what is going on","full_message":"Backtrace here\n\nmore stuff","level":1,"_user_id":9001,"_some_info":"foo","_some_env_var":"bar"}' | nc -4 -w 1 -u {{ hostvars[groups['manage'][0]]['ansible_default_ipv4']['address'] }} 12201

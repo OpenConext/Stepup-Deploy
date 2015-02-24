@@ -83,13 +83,18 @@
 # To do this manually change to the component_dir_name and run:
 # # php app/console middleware:migrations:migrate --env=prod
 
-- name: Put middleware config script
-  template: src={{ item }}.j2 dest=/root/{{ item }}
+- name: Put middleware config scripts in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "middleware-config.sh"
   - "middleware-config.json"
+  - "db_migrate.sh"
 
-- file: path=/root/middleware-config.sh mode="771"
+- name: Put middleware config script data in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400"
+  with_items:
+  - "middleware-config.json"
+
 
 # TODO: Middleware configuration
 # To do this manually run:

@@ -24,6 +24,8 @@ parameters:
     middleware_url_api: http://middleware.{{ app_domain }}/
 
     sms_originator: SURFStepup
+    sms_otp_expiry_interval: 900 # 15 minutes
+    sms_maximum_otp_requests: 3
 
     saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
 
@@ -41,4 +43,4 @@ parameters:
     saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}
     saml_remote_idp_certificate: {{ saml_remote_idp_certificate }}
 
-    graylog_hostname: {{ graylog_hostname }}
+    graylog_hostname: 127.0.0.1

@@ -1,0 +1,5 @@
+filter {
+  mutate {
+    replace => [ "host", "{{inventory_hostname}}" ]
+  }
+}

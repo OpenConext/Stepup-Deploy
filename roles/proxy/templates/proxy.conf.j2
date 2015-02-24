@@ -12,8 +12,8 @@ server {
     ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
     ssl_prefer_server_ciphers on;
 
-    access_log /var/log/nginx/proxy.access.log;
-    access_log /var/log/nginx/proxy.error.log;
+    access_log /var/log/nginx/proxy_access.log;
+    error_log /var/log/nginx/proxy_error.log;
 
     location ~ {
         proxy_set_header    Host $host;

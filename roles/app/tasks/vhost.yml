@@ -43,3 +43,8 @@
   template: src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf'
   notify:
     - restart php-fpm
+
+- name: Put logstash config
+  template: src='logstash/symfony2.input.j2' dest='/etc/logstash/conf.d/symfony2_{{ vhost_name }}.input'
+  notify:
+      - restart logstash

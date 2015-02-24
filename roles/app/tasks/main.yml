@@ -97,6 +97,7 @@
   with_items:
     - nginx.config
     - php-fpm.config
+    - symfony2.config
   notify: restart logstash
 
 

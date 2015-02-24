@@ -76,7 +76,12 @@
 
 # Setup logstash to graylog
 - name: Add logstash config to output logs to graylog2
-  template: src='logstash/gelf-udp.output.j2' dest='/etc/logstash/conf.d/gelf-udp.output'
+  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
+  with_items:
+  - file.output
+  - gelf-udp.output
+  - gelf-udp.input
+  - host.config
   notify: restart logstash
 
 

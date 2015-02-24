@@ -12,12 +12,18 @@ input {
 }
 
 filter {
-  grok {
-    type => "nginx_access"
-    match => ["path","%{GREEDYDATA}/%{GREEDYDATA:filename}\.log"]
+  if [type] == "nginx_access" { 
+    grok {
+      break_on_match => false
+      match => ["path","%{GREEDYDATA}/%{GREEDYDATA:application}_access\.log"]
+      match => ["message", "%{COMBINEDAPACHELOG} %{QS:process_time}"] 
+    }
   }
-  grok {
-    type => "nginx_error"
-    match => ["path","%{GREEDYDATA}/%{GREEDYDATA:filename}\.log"]
+  if [type] == "nginx_error" {
+    grok {
+      break_on_match => false
+      match => ["path","%{GREEDYDATA}/%{GREEDYDATA:application}_error\.log"]
+      match => ["message", "%{DATESTAMP:timestamp} \[%{GREEDYDATA:level}\] %{NUMBER:pid}#%{NUMBER:tid}: \*%{NUMBER:cid} %{GREEDYDATA:error}"]
+    }
   }
 }

@@ -52,7 +52,7 @@
   - "{{ component_dir_name }}/app/logs"
 
 - name: Write SP private key
-  copy: content="{{ selfservice_saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
+  copy: content="{{ selfservice_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key
 
 - name: Write SP certificate
   copy: content="{{ selfservice_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt

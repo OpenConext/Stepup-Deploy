@@ -62,15 +62,15 @@
 # - Set root password
 # - Remove anonymous users and test database
 - name: Bootstrap mysql database
-  script: mysql_bootstrap.sh "{{ mariadb_root_password | vault }}"
+  script: mysql_bootstrap.sh "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 
 # Add cluster user
 - name: add mariadb cluster user
   mysql_user:
     name: "{{ mariadb_cluster_user }}"
-    password: "{{ mariadb_cluster_password | vault }}"
+    password: "{{ mariadb_cluster_password | vault(vault_keydir) }}"
     login_user: root
-    login_password: "{{ mariadb_root_password | vault }}"
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
     priv: "*.*:ALL PRIVILEGES/*.*:USAGE"
     state: present

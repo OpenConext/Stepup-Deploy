@@ -8,7 +8,7 @@ node_id_file = /etc/graylog2/server/node-id
 
 # You MUST set a secret to secure/pepper the stored user passwords here. Use at least 64 characters.
 # Generate one by using for example: pwgen -N 1 -s 96
-password_secret = {{ graylog2_password_secret | vault }}
+password_secret = {{ graylog2_password_secret | vault(vault_keydir) }}
 
 # the default root user is named 'admin'
 root_username = {{ graylog2_root_username }}
@@ -19,7 +19,7 @@ root_username = {{ graylog2_root_username }}
 # modify it in this file.
 # Create one by using for example: echo -n yourpassword | shasum -a 256
 # and put the resulting hash value into the following line
-root_password_sha2 = {{ graylog2_root_password | vault | sha256 }}
+root_password_sha2 = {{ graylog2_root_password | vault(vault_keydir) | sha256 }}
 
 # Set plugin directory here (relative or absolute)
 plugin_dir = /usr/share/graylog2-server/plugin

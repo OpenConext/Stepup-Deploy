@@ -102,7 +102,7 @@
   wait_for: delay=0 port=12900 timeout=30 state=started
 
 - name: Add graylog inputs
-  script: graylog2_add_input.sh {{ graylog2_root_username }} {{ graylog2_root_password | vault }}
+  script: graylog2_add_input.sh {{ graylog2_root_username }} {{ graylog2_root_password | vault(vault_keydir) }}
 
 
 - name: Write test script to /root

@@ -4,16 +4,16 @@ parameters:
     database_port:     3306
     database_middleware_name:     {{ database_middleware_name }}
     database_middleware_user:     {{ database_middleware_user }}
-    database_middleware_password: {{ database_middleware_password | vault}}
+    database_middleware_password: {{ database_middleware_password | vault(vault_keydir)}}
     database_gateway_name:     {{ database_gateway_name }}
     database_gateway_user:     {{ database_middleware_user }}
-    database_gateway_password: {{ database_middleware_password | vault}}
+    database_gateway_password: {{ database_middleware_password | vault(vault_keydir)}}
     # TODO: Deploy creds should only be available during deploy
     # TODO: Use a specific deploy user, not root
     #database_deploy_user:      {{ database_deploy_user }}
-    #database_deploy_password:  {{ database_deploy_password | vault }}
+    #database_deploy_password:  {{ database_deploy_password | vault(vault_keydir) }}
     database_deploy_user:      root
-    database_deploy_password:  {{ mariadb_root_password | vault }}
+    database_deploy_password:  {{ mariadb_root_password | vault(vault_keydir) }}
 
 
     mailer_transport:  smtp
@@ -23,13 +23,13 @@ parameters:
 
     default_locale:    nl_NL
     locales:           [nl_NL]
-    secret:            {{ middleware_secret | vault }}
+    secret:            {{ middleware_secret | vault(vault_keydir) }}
 
     use_assetic_controller: true
 
-    selfservice_api_password: {{ selfservice_api_password | vault }}
-    registration_authority_api_password: {{ registration_authority_api_password | vault }}
-    management_password: {{ management_password | vault }}
+    selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
+    registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
+    management_password: {{ management_password | vault(vault_keydir) }}
 
     graylog_hostname: 127.0.0.1
 

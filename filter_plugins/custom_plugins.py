@@ -1,22 +1,23 @@
 #
-# Usage: {{ foo | vault }}
+# Usage: {{ foo | vault(path to keystore) }}
 #        {{ foo | sha256 }}
 #        {{ foo | depem }}
 
-# vault: decrypt string using key stored in keyczar vault. Key is stored in "'~/.stepup-ansible-keystore"
+# vault: decrypt string using key stored in keyczar vault.
 # sha256: return hex encoded SHA-256 hash of string
 # depem: Strip PEM headers and remove all whitespace from string
 
-def vault(encrypted):
+def vault(encrypted, keydir):
+  #keydir = "~/.stepup-ansible-keystore"
   method = """
 from keyczar import keyczar
 import os.path
 import sys
 
-keydir = os.path.expanduser('~/.stepup-ansible-keystore')
-crypter = keyczar.Crypter.Read(keydir)
+expanded_keydir = os.path.expanduser("%s")
+crypter = keyczar.Crypter.Read(expanded_keydir)
 sys.stdout.write(crypter.Decrypt("%s"))
-  """ % encrypted
+  """ % (keydir, encrypted)
   from subprocess import check_output
   return check_output(["python", "-c", method])
 

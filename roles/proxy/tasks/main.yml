@@ -6,7 +6,7 @@
       - restart nginx
 
 - name: Put proxy key
-  copy: content="{{ proxy_key | vault }}" dest=/etc/nginx/proxy.key
+  copy: content="{{ proxy_key | vault(vault_keydir) }}" dest=/etc/nginx/proxy.key
   notify:
       - restart nginx
 

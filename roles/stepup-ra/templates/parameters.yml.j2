@@ -8,7 +8,7 @@ parameters:
 
     default_locale:    en_GB
     locales:           [nl_NL, en_GB]
-    secret:            {{ ra_secret | vault }}
+    secret:            {{ ra_secret | vault(vault_keydir) }}
 
     debug_toolbar:          true
     debug_redirects:        false
@@ -16,10 +16,10 @@ parameters:
 
     gateway_api_url: https://gateway.{{ app_domain }}/
     gateway_api_username: ra
-    gateway_api_password: {{ registration_authority_api_password | vault }}
+    gateway_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
 
     middleware_credentials_username: ra
-    middleware_credentials_password: {{ registration_authority_api_password | vault }}
+    middleware_credentials_password: {{ registration_authority_api_password | vault(vault_keydir) }}
     # TODO: Use https
     middleware_url_command_api: http://middleware.{{ app_domain }}/command
     # TODO: Use https

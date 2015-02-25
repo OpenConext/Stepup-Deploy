@@ -15,16 +15,16 @@
   when: ( 0 ) and ( component_dir_name != active_component.stdout)
 
 - name: Create Gateway database
-  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault }}
+  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
 - name: Create gateway user
   mysql_user:
     host=127.0.0.1
     name={{ database_gateway_user }}
-    password={{ database_gateway_password | vault }}
+    password={{ database_gateway_password | vault(vault_keydir) }}
     priv={{ database_gateway_name }}.*:SELECT,EXECUTE
     login_user=root
-    login_password={{ mariadb_root_password | vault }}
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
 
 # Unused for now
@@ -32,10 +32,10 @@
   mysql_user:
     host=127.0.0.1
     name={{ database_deploy_user }}
-    password={{ database_deploy_password | vault }}
+    password={{ database_deploy_password | vault(vault_keydir) }}
     priv={{ database_gateway_name }}.*:ALL
     login_user=root
-    login_password={{ mariadb_root_password | vault }}
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
 
 - name: Create stepup directory
@@ -73,13 +73,13 @@
 
 
 - name: Write SP private key
-  copy: content="{{ gateway_saml_sp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/sp.key
+  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key
 
 - name: Write SP certificate
   copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
 - name: Write IdP private key
-  copy: content="{{ gateway_saml_idp_privatekey | vault  }}" dest={{ component_dir_name }}/app/config/idp.key
+  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key
 
 - name: Write IdP certificate
   copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt

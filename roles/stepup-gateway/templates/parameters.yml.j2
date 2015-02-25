@@ -6,9 +6,9 @@ parameters:
     database_port:     3306
     database_name:     {{ database_gateway_name }}
     database_gateway_user:     {{ database_gateway_user }}
-    database_gateway_password: {{ database_gateway_password | vault}}
+    database_gateway_password: {{ database_gateway_password | vault(vault_keydir)}}
     database_deploy_user:      {{ database_deploy_user }}
-    database_deploy_password:  {{ database_deploy_password | vault }}
+    database_deploy_password:  {{ database_deploy_password | vault(vault_keydir) }}
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -17,20 +17,20 @@ parameters:
 
     default_locale:    en_GB
     locales:           [nl_NL, en_GB]
-    secret:            {{ gateway_secret | vault }}
+    secret:            {{ gateway_secret | vault(vault_keydir) }}
 
     debug_toolbar:          true
     debug_redirects:        false
     use_assetic_controller: true
 
-    messagebird_authorization: AccessKey {{ messagebird_authorization | vault }}
+    messagebird_authorization: AccessKey {{ messagebird_authorization | vault(vault_keydir) }}
     messagebird_messaging_originator: {{ messagebird_messaging_originator }}
 
     yubikey_client_id: {{ yubikey_client_id }}
-    yubikey_client_secret: {{ yubikey_client_secret | vault }}
+    yubikey_client_secret: {{ yubikey_client_secret | vault(vault_keydir) }}
 
-    selfservice_api_password: {{ selfservice_api_password | vault }}
-    registration_authority_api_password: {{ registration_authority_api_password | vault }}
+    selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
+    registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
 
     graylog_hostname: 127.0.0.1
 

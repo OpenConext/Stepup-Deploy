@@ -3,7 +3,7 @@
 # Script to write the middleware config
 
 curl -XPOST -v \
-    -u management:{{ management_password | vault }} \
+    -u management:{{ management_password | vault(vault_keydir) }} \
     -H "Accept: application/json" \
     -H "Content-type: application/json" \
     -d @/root/middleware-config.json \

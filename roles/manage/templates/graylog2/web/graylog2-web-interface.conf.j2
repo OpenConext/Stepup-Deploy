@@ -9,7 +9,7 @@ graylog2-server.uris="http://127.0.0.1:12900/"
 # The secret key is used to secure cryptographics functions. Set this to a long and randomly generated string.
 # If you deploy your application to several instances be sure to use the same key!
 # Generate for example with: pwgen -N 1 -s 96
-application.secret="{{ graylog2_web_application_secret | vault }}"
+application.secret="{{ graylog2_web_application_secret | vault(vault_keydir) }}"
 
 # Web interface timezone
 # Graylog2 stores all timestamps in UTC. To properly display times, set the default timezone of the interface.

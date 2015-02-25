@@ -1,0 +1,16 @@
+---
+# Drop middleware and gateway databases
+
+- name: Drop middleware and gateway databases
+  hosts: all
+  sudo: True
+
+  tasks:
+  - name: Keydir
+    debug: msg="keydir = {{ keydir }}"
+
+  - name: Encrypted
+    debug: msg="Encrypted mariadb_root_password = {{ mariadb_root_password }}"
+
+  - name: Test vault
+    debug: msg="Decrypted mariadb_root_password = {{ mariadb_root_password | vault(vault_keydir) }}"

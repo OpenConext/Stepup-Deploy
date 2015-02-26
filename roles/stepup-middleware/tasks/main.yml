@@ -91,7 +91,7 @@
   - "db_migrate.sh"
 
 - name: Put middleware config script data in /root/
-  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400"
+  template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400"
   with_items:
   - "middleware-config.json"
 

@@ -87,7 +87,6 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "middleware-config.sh"
-  - "middleware-config.json"
   - "db_migrate.sh"
 
 - name: Put middleware config script data in /root/

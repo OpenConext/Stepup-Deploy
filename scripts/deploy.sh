@@ -5,6 +5,8 @@ BASEDIR=`dirname $0`
 COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA")
 UNARCHIVE=1
 VERBOSE=0
+INVENTORY=""
+LIMIT=""
 
 function error_exit {
     echo "${1}"
@@ -20,8 +22,12 @@ function error_exit {
 COMPONENT_TARBALL=$1
 shift
 if [ -z "${COMPONENT_TARBALL}"  ]; then
-    echo "Usage: $0 <component tarball> [-n|--no-unarchive]"
-    echo "--no-unarchive: Skip uploading and unarchiving the tarball on the remote"
+    echo "Usage: $0 <component tarball> [options]"
+
+    echo "-i|--inventory <FILE>  Location of ansible inventory file"
+    echo "-l|--limit: <SUBSET>   Limit option to pass to ansible (limits hosts)"
+    echo "-n|--no-unarchive      Skip uploading and unarchiving the tarball on the remote"
+    echo "-v|--verbose           Pass \"-vvvv\" verbosity to ansible"
     echo "Supported components: ${COMPONENTS[*]}"
     exit 1;
 fi
@@ -37,6 +43,23 @@ case $option in
     ;;
     -v|--verbose)
     VERBOSE="1"
+    ;;
+    -i|--inventory)
+    INVENTORY="$1"
+    shift
+    if [ -z "${INVENTORY}" ]; then
+        error_exit "-i|--inventory option requires an argument"
+    fi
+    if [ ! -f "${INVENTORY}" ]; then
+        error_exit "Inventory file '${INVENTORY}' not found"
+    fi
+    ;;
+    -l|--limit)
+    LIMIT="$1"
+    shift
+    if [ -z "${LIMIT}" ]; then
+        error_exit "-l|--limit option requires an argument"
+    fi
     ;;
     *)
     error_exit "Unkown option: '${option}'"
@@ -58,9 +81,12 @@ if [ "$found" -ne "1" ]; then
 fi
 
 COMPONENT=`echo ${COMPONENT} | tr '[:upper:]' '[:lower:]'`
-echo "Deploying component: $COMPONENT"
+echo "Deploying component: ${COMPONENT}"
+echo "Unsing inventory: ${INVENTORY}"
+echo "Host limit: ${LIMIT}"
 echo "unarchive=${UNARCHIVE}"
 echo "verbose=${VERBOSE}"
+echo
 
 echo "Testing ${COMPONENT_TARBALL}"
 
@@ -93,8 +119,20 @@ if [ "${VERBOSE}" -eq "1" ]; then
     verbose_flag="-vvvv"
 fi
 
-playbook_root="${BASEDIR}/.."
+inventory_option=""
+if [ -n "${INVENTORY}" ]; then
+    inventory_option="-i ${INVENTORY}"
+fi
 
-ansible-playbook ${playbook_root}/deploy.yml ${verbose_flag} -i ${playbook_root}/hosts --limit "app1*" --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+limit_option=""
+if [ -n "${LIMIT}" ]; then
+    limit_option="-l ${LIMIT}"
+fi
+
+
+playbook_root="${BASEDIR}/.."
+cd ${playbook_root}
+
+ansible-playbook ./deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
 
 cd ${CWD}

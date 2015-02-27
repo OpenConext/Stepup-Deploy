@@ -9,14 +9,15 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-password=`env LC_CTYPE=C LC_ALL=C tr -dc "a-zA-Z0-9-_\$\?" < /dev/urandom | head -c $1`
+password=`env LC_CTYPE=C LC_ALL=C tr -dc "a-zA-Z0-9-_" < /dev/urandom | head -c $1`
 
 if [ -d "$2" ]; then
     tempfile=`mktemp -t genpass`
-    echo ${password} > "$tempfile"    
+    echo -n ${password} > "$tempfile"    
     `dirname $0`/encrypt-file.sh "$2" -f "$tempfile"
     cat "$tempfile"
     rm "$tempfile"
+    echo
 else
     echo $password
 fi

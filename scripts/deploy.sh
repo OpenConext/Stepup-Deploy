@@ -20,6 +20,9 @@ function error_exit {
 
 # Process options
 COMPONENT_TARBALL=$1
+if [ ! -f ${COMPONENT_TARBALL} ]; then
+    error_exit "FIle not found: '${COMPONENT_TARBALL}'"
+fi
 shift
 if [ -z "${COMPONENT_TARBALL}"  ]; then
     echo "Usage: $0 <component tarball> [options]"
@@ -79,6 +82,11 @@ done
 if [ "$found" -ne "1" ]; then
     error_exit "Tarball to deploy must end in .tar.bz2 and start with one of: ${COMPONENTS[*]}"
 fi
+
+# Get absolute path to component tarball
+cd `basedir ${COMPONENT_TARBALL}`
+COMPONENT_TARBALL=`pwd`/`basename ${COMPONENT_TARBALL}`
+cd ${CWD}
 
 COMPONENT=`echo ${COMPONENT} | tr '[:upper:]' '[:lower:]'`
 echo "Deploying component: ${COMPONENT}"

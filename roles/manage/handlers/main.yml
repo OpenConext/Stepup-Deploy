@@ -27,3 +27,7 @@
 # web server listens on 9000
 - name: Restart graylog2-web-server
   service: name=graylog2-web state=restarted
+
+
+- name: restart nginx
+  service: name=nginx state=restarted

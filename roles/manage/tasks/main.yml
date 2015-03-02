@@ -42,7 +42,7 @@
 
 # Enable on boot
 - name: Enable elasticsearch service
-  service: name=elasticsearch enabled=yes
+  service: name=elasticsearch enabled=yes state=started
 
 
 # Get health of cluster:
@@ -91,10 +91,10 @@
 
 
 - name: Enable Graylog2 server
-  service: name=graylog2-server enabled=yes
+  service: name=graylog2-server enabled=yes state=started
 
 - name: Enable Graylog2 web server
-  service: name=graylog2-web enabled=yes
+  service: name=graylog2-web enabled=yes state=started
 
 
 # Wait until (REST API) accepts connections
@@ -107,3 +107,7 @@
 
 - name: Write test script to /root
   template: src=graylog2/gelf_udp_test.sh.j2 dest=/root/gelf_udp_test.sh
+
+
+- include: nginx-https.yml
+  when: manage_https_proxy | default(false)

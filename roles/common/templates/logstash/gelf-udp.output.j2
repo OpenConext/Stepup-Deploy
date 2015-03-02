@@ -1,6 +1,6 @@
 output {
   gelf {
-    host => "{{ hostvars[groups['manage'][0]]['ansible_default_ipv4']['address'] }}"
+    host => "{{ graylog_hostname }}"
     port => 12201
   }
 }

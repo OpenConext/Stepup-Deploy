@@ -1,2 +1,2 @@
 $template GRAYLOGRFC5424,"<%pri%>%protocol-version% %timestamp:::date-rfc3339% %HOSTNAME% %app-name% %procid% %msg%\n"
-*.* @{{ hostvars[groups['manage'][0]]['ansible_default_ipv4']['address'] }}:1514;GRAYLOGRFC5424
+*.* @{{ graylog_hostname }}:1514;GRAYLOGRFC5424

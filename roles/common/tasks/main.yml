@@ -1,6 +1,15 @@
 - name: Set /etc/hostname to {{ inventory_hostname }}
   template: src='hostname.j2' dest='/etc/hostname'
 
+- name: Write /etc/hosts with {{ inventory_hostname }}
+  template: src='hosts.j2' dest='/etc/hosts'
+
+
+# Directory for keeping misc ansible files
+- name: Create managed files dir
+  file: name={{ managed_file_dir }} state=directory
+
+
 - name: Set SELinux policy to targeted & permissive
   selinux: policy=targeted state=permissive
 
@@ -62,11 +71,6 @@
   - iptables
   - ip6tables
   - logstash
-
-
-# Directory for keeping misc ansible files
-- name: Create managed files dir
-  file: name={{ managed_file_dir }} state=directory
 
 
 # Setup rsyslog to graylog

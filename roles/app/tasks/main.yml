@@ -27,13 +27,6 @@
   - sendmail
   - sendmail-cf
 
-- name: Start nginx & php-fpm & and smtp services on boot
-  service: name={{item}} enabled=true
-  with_items:
-  - nginx
-  - php-fpm
-  - sendmail
-
 
 - name: Put php.ini
   template: src='php.ini.j2' dest='/etc/php.ini'
@@ -77,11 +70,12 @@
 - name: Test nginx config
   command: /sbin/service nginx configtest
 
-- name: Start nginx & php-fpm services
-  service: name={{item}} state=running
+- name: Start and enable nginx & php-fpm & smtp services
+  service: name={{item}} state=started enabled=true
   with_items:
   - nginx
   - php-fpm
+  - sendmail
 
 
 # setfacl -m u:logstash:rx .

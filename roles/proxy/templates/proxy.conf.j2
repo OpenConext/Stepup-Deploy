@@ -1,6 +1,6 @@
 server {
 
-    listen 443;
+    listen [::]:443;
     server_name gateway.{{ app_domain }} selfservice.{{ app_domain }} middleware.{{ app_domain }} ra.{{ app_domain }};
 
     ssl_certificate     /etc/nginx/proxy.crt;

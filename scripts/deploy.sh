@@ -56,6 +56,11 @@ case $option in
     if [ ! -f "${INVENTORY}" ]; then
         error_exit "Inventory file '${INVENTORY}' not found"
     fi
+    # Get absolute path to inventory
+    cd ${CWD}
+    cd `dirname ${INVENTORY}`
+    INVENTORY=`pwd`/`basename ${INVENTORY}`
+    cd ${CWD}
     ;;
     -l|--limit)
     LIMIT="$1"
@@ -84,7 +89,8 @@ if [ "$found" -ne "1" ]; then
 fi
 
 # Get absolute path to component tarball
-cd `basedir ${COMPONENT_TARBALL}`
+cd ${CWD}
+cd `dirname ${COMPONENT_TARBALL}`
 COMPONENT_TARBALL=`pwd`/`basename ${COMPONENT_TARBALL}`
 cd ${CWD}
 

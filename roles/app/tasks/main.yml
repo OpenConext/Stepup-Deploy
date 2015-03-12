@@ -59,6 +59,10 @@
   file: path=/var/lib/php/session/ state=directory mode="771"
 
 
+- name: Create /opt/www/
+  file: path=/opt/www/ state=directory owner=root group={{ deploy_user }} mode=775
+
+
 # Create vhosts
 - include: vhost.yml vhost_name=middleware
 - include: vhost.yml vhost_name=gateway

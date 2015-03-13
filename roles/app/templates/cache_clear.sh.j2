@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Clear and rebuild the cache of the component
+# Run to effectuate changes to app/config directory
+
+function error_exit {
+    echo "${1}"
+    cd ${CWD}
+    exit 1
+}
+
+CWD=`pwd`
+
+APP_DIR=/opt/www/{{ vhost_name }}.{{ app_domain }}
+if [ -d ${APP_DIR} ]; then
+    error_exit "Application not found: ${APP_DIR}"
+fi
+
+cd ${APP_DIR}
+if [ $# -ne "0" ]; then
+    error_exit "Error changing to directory: ${APP_DIR}"
+fi
+
+php app/console cache:clear --env=prod --
+console_res=$#
+
+

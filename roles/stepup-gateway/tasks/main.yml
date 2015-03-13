@@ -48,7 +48,10 @@
 
 
 - name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }}
+  with_items:
+  - parameters.yml
+  - samlstepupproviders_parameters.yml
 
 - name: assets:install
   command: php app/console assets:install --symlink --env=prod --no-debug

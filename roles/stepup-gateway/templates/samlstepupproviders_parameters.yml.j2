@@ -1,0 +1,28 @@
+parameters:
+    # the routes should be kept as is, they map to specific URLs on the gateway
+    gssp_routes_sso: gssp_verify
+    gssp_routes_consume_assertion: gssp_consume_assertion
+    gssp_routes_metadata: gssp_saml_metadata
+
+    # tiqr should be enabled
+    gssp_tiqr_enabled: true
+    # Entity ID's of the Tiqr SPs
+    gssp_tiqr_allowed_sps: [ 'https://selfservice.{{ app_domain }}/registration/gssf/tiqr/metadata', 'https://ra.{{ app_domain }}/vetting-procedure/gssf/tiqr/metadata' ]
+
+    # Tiqr SP Proxy for authenticating with the real tiqr IdP
+    gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
+    gssp_tiqr_sp_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+
+    # Certificate and private key of Tiqr SAML IdP Proxy for use by RA and SS
+    gssp_tiqr_idp_publickey: {{ component_dir_name }}/app/config/idp_tiqr.crt
+    gssp_tiqr_idp_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
+
+    # Metadata signing cert and key for tiqr SP/IdP proxy
+    gssp_tiqr_metadata_publickey: {{ component_dir_name }}/app/config/idp_tiqr.crt
+    gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
+
+    # Real Tiqr IdP
+    gssp_tiqr_remote_entity_id: 'https://tiqr.stepup.coin.surf.net/saml/metadata'
+    gssp_tiqr_remote_sso_url: 'https://tiqr.stepup.coin.surf.net/saml/sso'
+    # Base64 encoded string without PEM headers
+    gssp_tiqr_remote_certificate: MIIDCTCCAfGgAwIBAgIJANwuRZcnCZxnMA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMMEFNBTUwgc2lnbmluZyBrZXkwHhcNMTUwMzA0MjMxNTE0WhcNMTUwNDAzMjMxNTE0WjAbMRkwFwYDVQQDDBBTQU1MIHNpZ25pbmcga2V5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwen0JxwhfmxczxjCwLBLW/6FMu0kwH1zsBmRH/49yDyjkK/dCAbpaXehNh00ITDPPYgMTAPoTsY2DCWHvwSogi1XjrG4YxjHE1s0wG8kfL+lkYTZqlKX7sQFEqfO2vxbONbIasLUDOiR2tAUZTiaYYLPpsi9A0kwFNC5ELoBf2QozZDaXSKLIs83i+R1Rpjob/pYvKu/11zcsJlpSthPxd74FSGbJOZ1TC2ZFtzqBNMhqyx8do/y8wagLdT9p1ZKZZfEmjRHzHS5u5XhTQ9BLTRa+m0evsPMfM7G2Y4jqHh++JW+GTUgotKWARUNBjfKSzzNFA5W7t3meis/QWxnIwIDAQABo1AwTjAdBgNVHQ4EFgQU+WoylE+nk37M5zQ0LhNR6gt3YmAwHwYDVR0jBBgwFoAU+WoylE+nk37M5zQ0LhNR6gt3YmAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAVTnvvrh32zf0Q6EJivwCLd3m8b4l+S6lDuZSZPwIbnjwKOoijdyHIojlvQG36oLYT7bKrXVZqE6ieWSAPXITNn8E0EvGaPKdogieq5dsFmnNrEw/Ddj6uVjA3mciIopwyXP3HPz4nnrjnhnfp6QixYnOfn54YLeZBtOiixvD5/dD1Zl69sryVDUNQeW2axummNb1nashzPN/ayTDRSefjg0CK6BkRFbchMWxp1GqdnDWpDMntDCG9OO92ac/AdIzdpd4+X+uV0IwQsUIpRfosVqq9tJNIOpbWcdqTc5Y39lPjjb5LBDZKPXXFIhNXUtnmwYJGRUfzKSC67YfpGbZOQ==

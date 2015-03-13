@@ -8,7 +8,8 @@
 - debug:
     msg: |
        Currently installed component: {{ active_component.stdout }}
-       Component to be installed    : {{ component_dir_name }}
+       ; Component to be installed: {{ component_dir_name }}
+       ; Asset version: {{ stable_nonce }}
 
 - name: Check whether component is installed
   fail: msg="Component already active"
@@ -78,11 +79,26 @@
 - name: Write SP certificate
   copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
+- name: Write SP Tiqr private key
+  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_name }} mode=400
+
+- name: Write SP Tiqr certificate
+  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt
+
+
+
 - name: Write IdP private key
   copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_name }} mode=400
 
 - name: Write IdP certificate
   copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt
+
+- name: Write IdP Tiqr private key
+  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_name }} mode=400
+
+- name: Write IdP Tiqr certificate
+  copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt
+
 
 
 - name: Set stepup directory rights

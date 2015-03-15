@@ -25,7 +25,7 @@
       component_tarball_name: Stepup-Middleware-bugfix_api-entity-metadata-20141210091501Z-84dd3a1ff54672d9d8a3e926a8901bdc41a00dae.tar.bz2
       component_name: middleware
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
-
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\\\1') }}"
 
 
 - name: Install Stepup-SelfService
@@ -40,7 +40,7 @@
       component_tarball_name: Stepup-SelfService-develop-20141210133202Z-716d9a0c78ad65f5160d7572abae673c156faf36.tar.bz2
       component_name: selfservice
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
-
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\\\1') }}"
 
 
 - name: Install Stepup-RA
@@ -55,4 +55,5 @@
       component_tarball_name: Stepup-RA-develop-20141210133225Z-9c5949d14b7abbcccddcd4c46c1fe42d82690f18.tar.bz2
       component_name: ra
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\\\1') }}"
 

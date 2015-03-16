@@ -70,6 +70,12 @@
 - name: Write SP certificate
   copy: content="{{ selfservice_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
 
+- name: Write Tiqr SP private key
+  copy: content="{{ selfservice_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key
+
+- name: Write Tiqr SP certificate
+  copy: content="{{ selfservice_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt
+
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory mode=a+rx

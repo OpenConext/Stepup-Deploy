@@ -1,0 +1,18 @@
+---
+# Push middleware config
+# This playbook writes the middleware configuration to each trageted app host and then executes the
+# /root/middleware-config.sh to push the config to the middleware
+# "run_once: True" is used to execute the push once instead of on each trageted host
+
+- name: Push middleware config
+  hosts: app
+  sudo: True
+
+  tasks:
+  - name: Write middleware config to /root/middleware-config.json
+    template: src={{ inventory_dir }}/templates/middleware/middleware-config.json.j2 dest=/root/middleware-config.json group=root owner=root mode="400" backup=yes
+
+  # /root/middleware-config.sh script was written by middleware deploy
+  - name: Push middleware configuration
+    command: /root/middleware-config.sh
+    run_once: True

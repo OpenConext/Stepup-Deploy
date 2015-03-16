@@ -102,28 +102,29 @@ echo "unarchive=${UNARCHIVE}"
 echo "verbose=${VERBOSE}"
 echo
 
-echo "Testing ${COMPONENT_TARBALL}"
+if [ ${UNARCHIVE} -eq "1" ]; then
+    echo "Testing ${COMPONENT_TARBALL}"
 
-# Sanity check tar file
-TMP_ARCHIVE_DIR=`mktemp -d "/tmp/${COMPONENT}.XXXXXXXX"`
-if [ $? -ne "0" ]; then
-    error_exit "Could not create temp dir"
+    # Sanity check tar file
+    TMP_ARCHIVE_DIR=`mktemp -d "/tmp/${COMPONENT}.XXXXXXXX"`
+    if [ $? -ne "0" ]; then
+        error_exit "Could not create temp dir"
+    fi
+
+    # Extract tarball
+    bunzip2 -k -q -c "${COMPONENT_TARBALL}" > ${TMP_ARCHIVE_DIR}/component.tar
+    if [ $? -ne "0" ]; then
+        error_exit "bunzip2 failed"
+    fi
+
+    # Untar it
+    tar -xf ${TMP_ARCHIVE_DIR}/component.tar -C ${TMP_ARCHIVE_DIR}
+    if [ $? -ne "0" ]; then
+        error_exit "tar failed"
+    fi
+
+    rm -r ${TMP_ARCHIVE_DIR}
 fi
-
-# Extract tarball
-bunzip2 -k -q -c "${COMPONENT_TARBALL}" > ${TMP_ARCHIVE_DIR}/component.tar
-if [ $? -ne "0" ]; then
-    error_exit "bunzip2 failed"
-fi
-
-# Untar it
-tar -xf ${TMP_ARCHIVE_DIR}/component.tar -C ${TMP_ARCHIVE_DIR}
-if [ $? -ne "0" ]; then
-    error_exit "tar failed"
-fi
-
-rm -r ${TMP_ARCHIVE_DIR}
-
 
 # Start ansible deploy
 echo "Starting deploy"

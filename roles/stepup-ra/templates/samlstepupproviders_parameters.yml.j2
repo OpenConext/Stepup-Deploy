@@ -13,7 +13,7 @@ parameters:
 
     # EntityID of the Tiqr IdP
     gssp_tiqr_remote_entity_id: 'https://gateway.{{ app_domain }}/gssp/tiqr/metadata'
-    gssp_tiqr_remote_sso_url: 'https://gateway.{{ app_domain }}/php/gssp/tiqr/single-sign-on'
+    gssp_tiqr_remote_sso_url: 'https://gateway.{{ app_domain }}/gssp/tiqr/single-sign-on'
 
     # base64 without pem headers
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}

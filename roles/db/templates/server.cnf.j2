@@ -39,7 +39,7 @@ innodb_file_per_table
 innodb_flush_log_at_trx_commit=2
 
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
-wsrep_cluster_address="gcomm://{% for host in groups['dbcluster'] %}{{ hostvars[host]['ansible_default_ipv4']['address'] }}{% if not loop.last %},{% endif %}{% endfor %}"
+wsrep_cluster_address="gcomm://{% for host in groups['dbcluster'] %}{{ hostvars[host]['host_ipv4'] }}{% if not loop.last %},{% endif %}{% endfor %}"
 wsrep_cluster_name='{{ mariadb_cluster_name }}'
 wsrep_node_address='{{ ansible_default_ipv4['address'] }}:4567'
 wsrep_node_name='{{ inventory_hostname }}'

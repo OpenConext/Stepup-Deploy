@@ -6,9 +6,7 @@
   register: active_component
 
 - debug:
-    msg: |
-       Currently installed component: {{ active_component.stdout }}
-       Component to be installed    : {{ component_dir_name }}
+    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
 
 - name: Check whether component is installed
   fail: msg="Component already active"

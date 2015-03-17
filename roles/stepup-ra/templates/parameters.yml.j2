@@ -41,9 +41,8 @@ parameters:
     loa_required_for_login: 'http://suaas.example.com/assurance/loa1'
     graylog_hostname: 127.0.0.1
 
-    # TODO: check diff with gateway_loa_loa1; generate from template?
-    stepup_loa_loa1: 'http://suaas.example.com/assurance/loa1'
-    stepup_loa_loa2: 'http://suaas.example.com/assurance/loa2'
-    stepup_loa_loa3: 'http://suaas.example.com/assurance/loa3'
+    stepup_loa_loa1: '{{ stepup_uri_loa1 }}'
+    stepup_loa_loa2: '{{ stepup_uri_loa2 }}'
+    stepup_loa_loa3: '{{ stepup_uri_loa3 }}'
 
     asset_version: {{ stable_nonce }}

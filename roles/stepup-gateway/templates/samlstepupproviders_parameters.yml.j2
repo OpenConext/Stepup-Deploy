@@ -22,6 +22,6 @@ parameters:
     gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
 
     # Real Tiqr IdP
-    gssp_tiqr_remote_entity_id: gateway_tiqr_remote_entity_id
-    gssp_tiqr_remote_sso_url: gateway_tiqr_remote_sso_url
-    gssp_tiqr_remote_certificate: gateway_tiqr_remote_certificate
+    gssp_tiqr_remote_entity_id: {{ gateway_tiqr_remote_entity_id }}
+    gssp_tiqr_remote_sso_url: {{ gateway_tiqr_remote_sso_url }}
+    gssp_tiqr_remote_certificate: {{ gateway_tiqr_remote_certificate }}

@@ -1,0 +1,27 @@
+parameters:
+    # the routes should be kept as is, they map to specific URLs on the gateway
+    gssp_routes_sso: gssp_verify
+    gssp_routes_consume_assertion: gssp_consume_assertion
+    gssp_routes_metadata: gssp_saml_metadata
+
+    # tiqr should be enabled
+    gssp_tiqr_enabled: true
+    # Entity ID's of the Tiqr SPs
+    gssp_tiqr_allowed_sps: [ 'https://selfservice.{{ app_domain }}/registration/gssf/tiqr/metadata', 'https://ra.{{ app_domain }}/vetting-procedure/gssf/tiqr/metadata' ]
+
+    # Tiqr SP Proxy for authenticating with the real tiqr IdP
+    gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
+    gssp_tiqr_sp_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+
+    # Certificate and private key of Tiqr SAML IdP Proxy for use by RA and SS
+    gssp_tiqr_idp_publickey: {{ component_dir_name }}/app/config/idp_tiqr.crt
+    gssp_tiqr_idp_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
+
+    # Metadata signing cert and key for tiqr SP/IdP proxy
+    gssp_tiqr_metadata_publickey: {{ component_dir_name }}/app/config/idp_tiqr.crt
+    gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
+
+    # Real Tiqr IdP
+    gssp_tiqr_remote_entity_id: {{ gateway_tiqr_remote_entity_id }}
+    gssp_tiqr_remote_sso_url: {{ gateway_tiqr_remote_sso_url }}
+    gssp_tiqr_remote_certificate: {{ gateway_tiqr_remote_certificate }}

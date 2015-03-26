@@ -1,15 +1,25 @@
 server {
     listen       80;
     server_name  {{ vhost_name }}.{{ app_domain }};
+    root /opt/www/{{ vhost_name }}.{{ app_domain }}/web;
+
+    error_log /var/log/nginx/{{ vhost_name }}_error.log;
+    access_log /var/log/nginx/{{ vhost_name }}_access.log combinedProxy;
+
     location / {
-        root   /opt/stepup/{{ vhost_name }}.{{ app_domain }};           # Document root
-        index index.php index.html index.htm;
+        # try to serve file directly, fallback to app.php
+        try_files $uri /app.php$is_args$args;
     }
-    location ~ \.php$ {
-        root           /opt/stepup/{{ vhost_name }}.{{ app_domain }};   # Document root
-        fastcgi_pass   unix:/var/run/php-fpm/{{ vhost_name }}.socket;
-        fastcgi_index  index.php;
-        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-        include        fastcgi_params;
+
+    location ~ ^/(app|app_dev)\.php(/|$) {
+        fastcgi_pass unix:/var/run/php-fpm/{{ vhost_name }}.socket;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param REQUEST_METHOD  $request_method;
+        fastcgi_param CONTENT_TYPE    $content_type;
+        fastcgi_param CONTENT_LENGTH  $content_length;
+        # fastcgi_param HTTPS off;
+        fastcgi_param SYMFONY_ENV prod;
     }
 }

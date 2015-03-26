@@ -5,3 +5,9 @@
 
   - name: restart ip6tables
     service: name=ip6tables state=restarted
+
+  - name: restart rsyslog
+    service: name=rsyslog state=restarted
+
+  - name: restart logstash
+    service: name=logstash state=restarted

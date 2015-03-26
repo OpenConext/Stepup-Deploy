@@ -1,0 +1,21 @@
+parameters:
+    # the routes should be kept as is, they map to specific URLs on the gateway
+    #gssp_routes_consume_assertion: gssp_consume_assertion
+    #gssp_routes_metadata: gssp_saml_metadata
+    gssp_routes_consume_assertion: ss_registration_gssf_consume_assertion
+    gssp_routes_metadata: ss_registration_gssf_saml_metadata
+
+    # Tiqr SP used to authenticate to Tiqr IdP though Tiqr IdP proxy in the gateway
+    gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
+    gssp_tiqr_sp_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+
+    # Certificate used to sign metadata of the Tiqr SP
+    gssp_tiqr_metadata_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
+    gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+
+    # EntityID of the Tiqr IdP
+    gssp_tiqr_remote_entity_id: 'https://gateway.{{ app_domain }}/gssp/tiqr/metadata'
+    gssp_tiqr_remote_sso_url: 'https://gateway.{{ app_domain }}/gssp/tiqr/single-sign-on'
+
+    # base64 without pem headers
+    gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}

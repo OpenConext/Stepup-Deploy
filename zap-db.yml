@@ -1,0 +1,24 @@
+---
+# Drop middleware and gateway databases
+#
+# To get going again you must:
+# 1) Deploy the middleware again. This creates the middleware and gateway databases
+# 2) Run the database migrations to create the required tables on one of the app servers:
+#    $ cd /opt/www/middleware.<env>
+#    $ php app/console middleware:migrations:migrate --env=prod
+# 3) Push the middleware configuration using the push-mw-config.yml playbook
+# 4) Bootstrap the first RA on one of the app servers:
+#    $ cd /opt/www/middleware.<env>
+#    $ php app/console middleware:bootstrap:identity-with-yubikey --env=prod urn:collab:person:<schachome>:<uid> <schachome> "<user's common name>" <user's email> <encoded yubikey id>
+#
+
+- name: Drop middleware and gateway databases
+  hosts: dbcluster
+  sudo: True
+
+  tasks:
+  - name: Drop Middleware database
+    mysql_db: name={{ database_middleware_name }} state=absent login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+  - name: Drop Gateway database
+    mysql_db: name={{ database_gateway_name }} state=absent login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}

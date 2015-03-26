@@ -1,0 +1,120 @@
+# Infra suff for middleware
+
+- name: Get active component
+  shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
+  ignore_errors: true
+  register: active_component
+
+- debug:
+    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+- name: Check whether component is installed
+  fail: msg="Component already active"
+  when: ( 0 ) and ( component_dir_name != active_component.stdout)
+
+- name: Create Middleware database
+  mysql_db: name={{ database_middleware_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+# Both midleware and gateway databases are managed using middleware app/console (for now)
+- name: Create Gateway database
+  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+# TODO: migrations script executes GRANTS, so priv below are not suficcient
+# TODO: migrations script uses both @127.0.0.1 and @localhost
+- name: Create deploy user with ALL access to middleware and gateway database
+  mysql_user:
+    host=127.0.0.1
+    name={{ database_deploy_user }}
+    password={{ database_deploy_password | vault(vault_keydir) }}
+    priv={{ database_gateway_name }}.*:ALL/{{ database_middleware_name }}.*:ALL
+    login_host=127.0.0.1
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+# Access to middleware and gateway databases
+# TODO: Tighten DB user rights
+- name: Create DB user for Middleware component
+  mysql_user:
+    host=localhost
+    name={{ database_middleware_user }}
+    password={{ database_middleware_password | vault(vault_keydir) }}
+    priv={{ database_middleware_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE/{{ database_gateway_name }}.*:SELECT,EXECUTE
+    login_host=127.0.0.1
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+- name: Create stepup directory
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
+- name: Untar component
+  unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }}
+  when: ( {{ component_unarchive | default(1) }} == 1)
+
+- name: Put parameters.yml
+  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml
+
+- name: assets:install
+  command: php app/console assets:install --symlink --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Dump Assetic Assets
+  command: php app/console assetic:dump --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Clear cache
+  command: php app/console cache:clear --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Grant app write access to cache and log dirs
+  file: path={{ item}} owner=middleware recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app/cache"
+  - "{{ component_dir_name }}/app/logs"
+
+
+# TODO: Database setup & migration
+# To do this manually change to the component_dir_name and run:
+# # php app/console middleware:migrations:migrate --env=prod
+
+- name: Put middleware config scripts in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  with_items:
+  - "middleware-config.sh"
+  - "db_migrate.sh"
+
+- name: Put middleware config script data in /root/
+  template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400"
+  with_items:
+  - "middleware-config.json"
+
+
+# TODO: Middleware configuration
+# To do this manually run:
+# # /root/middleware-config.sh
+
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
+
+- name: Show database configuration hint
+  debug:
+      msg: |
+          Note: Database initialisation/migration must be run manually. To do this:
+          1) change to directory: "{{ component_dir_name }}"
+          2) execute: php app/console middleware:migrations:migrate --env=prod
+
+- name: Show middleware configuration hint
+  debug:
+      msg: |
+          Note: the configuration of the middleware component using its REST interface
+          must be performed manually.
+          A starter configuration was written to: /root/middleware-config.json
+          To send the configuration execute: /root/middleware-config.sh

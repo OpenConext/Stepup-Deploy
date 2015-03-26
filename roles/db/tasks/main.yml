@@ -15,8 +15,10 @@
   - MySQL-python  # Required for using the Ansible mysql_* modules
 
 
+# Note: Won't work with "--limit=<hostname>" because the facts of the other hosts will be missing
+# fatal: [<hostname>] => {'msg': "AnsibleUndefinedVariable: One or more undefined variables: 'dict object' has no attribute 'ansible_default_ipv4'", 'failed': True}
 - name: Put mariadb server.cnf
-  action: template src='server.cnf.j2' dest='/etc/my.cnf.d/server.cnf'
+  template: src='server.cnf.j2' dest='/etc/my.cnf.d/server.cnf'
   notify:
     - restart mariadb
 
@@ -60,15 +62,14 @@
 # - Set root password
 # - Remove anonymous users and test database
 - name: Bootstrap mysql database
-  script: mysql_bootstrap.sh "{{ mariadb_root_password | vault }}"
-
+  script: mysql_bootstrap.sh "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 # Add cluster user
 - name: add mariadb cluster user
   mysql_user:
     name: "{{ mariadb_cluster_user }}"
-    password: "{{ mariadb_cluster_password | vault }}"
+    password: "{{ mariadb_cluster_password | vault(vault_keydir) }}"
     login_user: root
-    login_password: "{{ mariadb_root_password | vault }}"
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
     priv: "*.*:ALL PRIVILEGES/*.*:USAGE"
     state: present

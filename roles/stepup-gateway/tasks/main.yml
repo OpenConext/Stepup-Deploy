@@ -1,0 +1,108 @@
+# Infra suff for gateway
+
+- name: Get active component
+  shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
+  ignore_errors: true
+  register: active_component
+
+- debug:
+    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+- name: Check whether component is installed
+  fail: msg="Component already active"
+  when: ( 0 ) and ( component_dir_name != active_component.stdout)
+
+- name: Create Gateway database
+  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+- name: Create gateway user
+  mysql_user:
+    host=127.0.0.1
+    name={{ database_gateway_user }}
+    password={{ database_gateway_password | vault(vault_keydir) }}
+    priv={{ database_gateway_name }}.*:SELECT,EXECUTE
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+# Unused for now
+- name: Create deploy user with access to gateway database
+  mysql_user:
+    host=127.0.0.1
+    name={{ database_deploy_user }}
+    password={{ database_deploy_password | vault(vault_keydir) }}
+    priv={{ database_gateway_name }}.*:ALL
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+- name: Create stepup directory
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
+- name: Untar component
+  unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }}
+  when: ( {{ component_unarchive | default(1) }} == 1)
+
+
+- name: Put parameters.yml
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }}
+  with_items:
+  - parameters.yml
+  - samlstepupproviders_parameters.yml
+
+- name: assets:install
+  command: php app/console assets:install --symlink --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: mopa:bootstrap:symlink:less
+  command: php app/console mopa:bootstrap:symlink:less --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Dump Assetic Assets
+  shell: php {{ component_dir_name }}/app/console assetic:dump --env=prod --no-debug
+
+- name: Clear cache
+  shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-debug
+
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} owner=gateway recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app/cache"
+  - "{{ component_dir_name }}/app/logs"
+
+
+- name: Write SP private key
+  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_name }} mode=400
+
+- name: Write SP certificate
+  copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt
+
+- name: Write SP Tiqr private key
+  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_name }} mode=400
+
+- name: Write SP Tiqr certificate
+  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt
+
+
+
+- name: Write IdP private key
+  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_name }} mode=400
+
+- name: Write IdP certificate
+  copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt
+
+- name: Write IdP Tiqr private key
+  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_name }} mode=400
+
+- name: Write IdP Tiqr certificate
+  copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt
+
+
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link

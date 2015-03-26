@@ -1,0 +1,113 @@
+---
+
+# Add elasticsearch repo and repo key
+- name: Copy elasticsearch repository key
+  copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
+
+- name: Add elasticsearch repository key
+  rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
+
+- name: Enable elasticsearch repo
+  copy: src=elasticsearch.repo dest=/etc/yum.repos.d/elasticsearch.repo
+
+# Note:
+# - requires java7
+- name: Install elasticsearch, java openjdk
+  yum: name={{ item }} state=present
+  with_items:
+  - java-1.7.0-openjdk
+  - elasticsearch
+
+
+# Increase open file limits
+- name: Put etc/security/elasticseach_limits.conf
+  copy: src=elasticsearch_limits.conf dest=/etc/security/limits.d/elasticsearch_limits.conf
+  notify:
+  - "Restart elasticsearch"
+
+
+- name: Put elasticsearch config
+  template: src='{{ item }}.j2' dest='/etc/{{ item }}'
+  with_items:
+  - "sysconfig/elasticsearch"
+  - "elasticsearch/elasticsearch.yml"
+  - "elasticsearch/logging.yml"
+  notify:
+  - "Restart elasticsearch"
+  - "Wait for elasticsearch"
+  - "Restart graylog2-server"
+  - "Wait for graylog2-server"
+  - "Restart graylog2-web-server"
+
+
+# Enable on boot
+- name: Enable elasticsearch service
+  service: name=elasticsearch enabled=yes state=started
+
+
+# Get health of cluster:
+# curl -XGET 'http://127.0.0.1:9200/_cluster/health?pretty=true'
+
+
+- name: Install mongodb-server
+  yum: name=mongodb-server state=present
+
+- name: Start mongodb server
+  service: name=mongod state=started enabled=yes
+
+
+# Add Graylog2 repo (& repo key)
+- name: Add Graylog2 repo
+  yum: name=https://packages.graylog2.org/repo/packages/graylog2-0.91-repository-el6_latest.rpm state=present
+
+# Note:
+# Requires Elasticsearch v1.3.4 (explicity 1.3.4)
+# Requires mongodb > 2.0
+- name: Install Graylog2 server & web server
+  yum: name={{item}} state=present
+  with_items:
+  - graylog2-server
+  - graylog2-web
+
+
+- name: Put graylog2 server config
+  template: src='{{ item }}.j2' dest='/etc/{{ item }}'
+  with_items:
+  - "graylog2.conf"
+  - "sysconfig/graylog2-server"
+  notify:
+  - "Restart graylog2-server"
+  - "Wait for graylog2-server"
+  - "Restart graylog2-web-server"
+
+
+- name: Put graylog2 web server config
+  template: src='{{ item }}.j2' dest='/etc/{{ item }}'
+  with_items:
+  - sysconfig/graylog2-web
+  - graylog2/web/graylog2-web-interface.conf
+  notify:
+  - "Restart graylog2-web-server"
+
+
+- name: Enable Graylog2 server
+  service: name=graylog2-server enabled=yes state=started
+
+- name: Enable Graylog2 web server
+  service: name=graylog2-web enabled=yes state=started
+
+
+# Wait until (REST API) accepts connections
+- name: Wait for graylog2 REST API
+  wait_for: delay=0 port=12900 timeout=30 state=started
+
+- name: Add graylog inputs
+  script: graylog2_add_input.sh {{ graylog2_root_username }} {{ graylog2_root_password | vault(vault_keydir) }}
+
+
+- name: Write test script to /root
+  template: src=graylog2/gelf_udp_test.sh.j2 dest=/root/gelf_udp_test.sh
+
+
+- include: nginx-https.yml
+  when: manage_https_proxy | default(false)

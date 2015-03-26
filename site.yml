@@ -1,5 +1,8 @@
 ---
-# Setup Step-up dev environment
+# Ansible playbook for setting up the step-up infrastructure
+# Run:
+# cd Stepup-Deploy
+# ansible-playbook -i inventory environment/<env>/inventory site.yml
 
 - name: Configuration for all nodes
   hosts: all
@@ -8,6 +11,15 @@
 
   roles:
   - common
+
+
+- name: Setup management server
+  hosts: manage
+  sudo: True
+  tags: manage
+
+  roles:
+  - manage
 
 
 - name: Setup database cluster
@@ -28,3 +40,20 @@
   roles:
   - app
 
+
+- name: Setup proxy on application servers
+  hosts: app
+  sudo: True
+  tags: proxy
+
+  roles:
+  - proxy
+
+
+- name: Dev tools
+  hosts: dev
+  sudo: True
+  tags: dev
+
+  roles:
+  - dev

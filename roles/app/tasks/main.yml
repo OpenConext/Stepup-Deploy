@@ -1,15 +1,37 @@
-- name: Install nginx & php-fpm
+# Install the "REMI" repo which contain php 5.4 packages that override the default
+# packages from the core distro. The core distro ships 5.3 still
+- name: Install REMI repo
+  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm state=present
+
+- name: Enable REMI repo
+  copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
+
+
+# node.less is used by app/console assetic:dump
+# sendmail is used for sending mail from localhost (enabled in default config)
+- name: Install nginx & php-(cli,fpm) & node.less & smtpd
   yum: name={{item}} state=present
   with_items:
   - nginx
   - php-fpm
+  - php-cli
+  - php-mbstring
+  - php-mcrypt
+  - php-pdo
+  - php-intl
+  - php-dom
+  - php-mysql
+  - php-bcmath
+  - nodejs
+  - nodejs-less.noarch
+  - sendmail
+  - sendmail-cf
 
 
-- name: Start nginx & php-fpm services on boot
-  service: name={{item}} enabled=true
-  with_items:
-  - nginx
-  - php-fpm
+- name: Put php.ini
+  template: src='php.ini.j2' dest='/etc/php.ini'
+  notify:
+    - restart php-fpm
 
 
 # Remove default distro conf files
@@ -26,18 +48,62 @@
   - restart php-fpm
 
 
+- name: Put nginx.conf
+  template: src='nginx.conf.j2' dest='/etc/nginx/nginx.conf'
+  notify:
+      - restart nginx
+
+
+# Set mode to a+x so components can access their subdirectories under session/
+- name: Create directory for vhosts to store PHP sessions
+  file: path=/var/lib/php/session/ state=directory mode="771"
+
+
+- name: Create /opt/www/
+  file: path=/opt/www/ state=directory owner=root group={{ deploy_user }} mode=775
+
+
 # Create vhosts
+- include: vhost.yml vhost_name=middleware
 - include: vhost.yml vhost_name=gateway
 - include: vhost.yml vhost_name=selfservice
 - include: vhost.yml vhost_name=ra
+
 
 # nginx will start with invalid vhost config, so test config explicitly first
 - name: Test nginx config
   command: /sbin/service nginx configtest
 
-
-- name: Start nginx & php-fpm services
-  service: name={{item}} state=running
+- name: Start and enable nginx & php-fpm & smtp services
+  service: name={{item}} state=started enabled=true
   with_items:
   - nginx
   - php-fpm
+  - sendmail
+
+
+# setfacl -m u:logstash:rx .
+- name: Give logstash read access to ngix and php-fpm log directories
+  acl: name={{ item }} entity=logstash etype=user permissions="rx" state=present
+  with_items:
+  - /var/log/nginx
+  - /var/log/php-fpm
+
+
+- name: Add logstash config to get nginx and php-fpm logs
+  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
+  with_items:
+    - nginx.config
+    - php-fpm.config
+    - symfony2.config
+  notify: restart logstash
+
+
+#- name: Install NodeJS
+#  yum: name=nodejs state=present
+#
+#- name: Install NPM
+#  command: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
+#
+#- name: Install LESS compiler
+#  npm: name=less global=yes state=present

@@ -1,0 +1,2 @@
+$template GRAYLOGRFC5424,"<%pri%>%protocol-version% %timestamp:::date-rfc3339% %HOSTNAME% %app-name% %procid% %msg%\n"
+*.* @{{ graylog_hostname }}:1514;GRAYLOGRFC5424

@@ -1,0 +1,7 @@
+input {
+  file {
+    type => "php-fpm_error"
+    path => ["/var/log/php-fpm/error.log"]
+    discover_interval => 10
+  }
+}

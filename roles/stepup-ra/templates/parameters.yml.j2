@@ -25,7 +25,9 @@ parameters:
     # TODO: Use https
     middleware_url_api: http://middleware.{{ app_domain }}/
 
-    sms_originator: SURFStepup
+    sms_originator: {{ sms_originator }}
+    sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
+    sms_maximum_otp_requests: {{ sms_maximum_otp_requests }}
 
     saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
     saml_sp_privatekey: {{ component_dir_name }}/app/config/sp.key

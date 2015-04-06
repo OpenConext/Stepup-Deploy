@@ -73,3 +73,25 @@
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
     priv: "*.*:ALL PRIVILEGES/*.*:USAGE"
     state: present
+
+# Add backup user
+- name: add mariadb backup user
+  mysql_user:
+    name: "{{ mariadb_backup_user }}"
+    password: "{{ mariadb_backup_password | vault(vault_keydir) }}"
+    login_user: root
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
+    priv: "*.*:SELECT"
+    state: present
+
+- name: Add "backup" shell user
+  user: name=backup
+
+- name: Put mariadb_backup script
+  template: src='mariadb_backup.sh.j2' dest='/home/backup/mariadb_backup.sh' mode=500 owner=backup
+
+- name:
+  authorized_key:
+    user: "{{ mariadb_backup_user }}"
+    key: "{{ mariadb_backup_sshkey }}"
+    key_options: command="/home/backup/mariadb_backup.sh"

@@ -24,7 +24,10 @@ parameters:
     use_assetic_controller: true
 
     messagebird_authorization: AccessKey {{ messagebird_authorization | vault(vault_keydir) }}
-    messagebird_messaging_originator: {{ messagebird_messaging_originator }}
+
+    sms_originator: {{ sms_originator }}
+    sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
+    sms_maximum_otp_requests: {{ sms_maximum_otp_requests }}
 
     yubikey_client_id: {{ yubikey_client_id }}
     yubikey_client_secret: {{ yubikey_client_secret | vault(vault_keydir) }}

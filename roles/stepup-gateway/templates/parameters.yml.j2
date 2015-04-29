@@ -23,14 +23,14 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-    messagebird_authorization: AccessKey {{ messagebird_authorization | vault(vault_keydir) }}
+    {% if messagebird_authorization | vault(vault_keydir) | length == 0 %}messagebird_authorization: AccessKey dummy_access_key{% else %}messagebird_authorization: AccessKey {{ messagebird_authorization | vault(vault_keydir) }}{% endif %}
 
     sms_originator: {{ sms_originator }}
     sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
     sms_maximum_otp_requests: {{ sms_maximum_otp_requests }}
 
     yubikey_client_id: {{ yubikey_client_id }}
-    yubikey_client_secret: {{ yubikey_client_secret | vault(vault_keydir) }}
+    {% if yubikey_client_secret | vault(vault_keydir) | length == 0 %}yubikey_client_secret: dummy_client_secret{% else %}yubikey_client_secret: {{ yubikey_client_secret | vault(vault_keydir) }}{% endif %}
 
     selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
     registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}

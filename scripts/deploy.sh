@@ -18,6 +18,22 @@ function error_exit {
 }
 
 
+function realpath {
+    if [ ! -d ${1} ]; then
+        return 1
+    fi
+    current_dir=`pwd`
+    cd ${1}
+    res=$?
+    if [ $? -eq "0" ]; then
+        path=`pwd`
+        cd $current_dir
+        echo $path
+    fi
+    return $res
+}
+
+
 # Process options
 COMPONENT_TARBALL=$1
 if [ ! -f ${COMPONENT_TARBALL} ]; then
@@ -145,9 +161,13 @@ if [ -n "${LIMIT}" ]; then
 fi
 
 
-playbook_root="${BASEDIR}/.."
-cd ${playbook_root}
+deploy_playbook_dir=`realpath "${BASEDIR}/../"`
 
-ansible-playbook ./deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+
+if [ "${VERBOSE}" -eq "1" ]; then
+    echo ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+fi
+
+ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
 
 cd ${CWD}

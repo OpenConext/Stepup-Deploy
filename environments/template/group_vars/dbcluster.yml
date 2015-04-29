@@ -1,0 +1,20 @@
+# Name of the galera cluster
+mariadb_cluster_name: stepup-cluster
+
+# Password for mariaDB root user
+mariadb_root_password: "{{ lookup('file', inventory_dir+'/password/mariadb_root') }}"
+
+# Name and password for MariaDB account for inter node communication in the cluser
+mariadb_cluster_user: cluster
+mariadb_cluster_password: "{{ lookup('file', inventory_dir+'/password/mariadb_cluster') }}"
+
+
+# Set to "yes" to enable database dump over ssh
+mariadb_enable_remote_ssh_backup: no
+
+# Name and password for mariadb account for making backups
+mariadb_backup_user: backup
+mariadb_backup_password: "{{ lookup('file', inventory_dir+'/password/mariadb_backup') }}"
+
+# SSH public key to associate with the "backup" user shell account
+mariadb_backup_sshkey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0y73ksjdAxMbKBzEm/nZIroVLPamLG+m388f6OQ4+ogdCh/YA41pkZ6yGMlnGjKEbzeH2iDtI7qkQVGN+150aYwVvy7hlWdvg691mKDw71ZEAsgSexQ4OwKhE6UiJmoCP63I19YWf8NSz+SWUdlhmtoLiQvWcqCsa4Xv7VIRRs3TLI/n8uLPriEh/i1cnOpYNSPwznFtqjs4ViJmhLG2orxmQlgxlA8INSY2laW9vPGw3mW6ovECynmJJj141DZb0qfveXQqt2E6GmX7dSkMO4UftUmnT+TYBIPO536nztcI9p81WCM0YEuhFejFYO3uLbAMV5Idx4YkjqTnji17SQ== pieter@knikker.surf.net

@@ -1,0 +1,70 @@
+# Config for gateway component
+
+database_gateway_name: gateway
+database_gateway_user: gateway
+database_gateway_password: "{{ lookup('file', inventory_dir+'/password/database_gateway') }}"
+database_deploy_user: gateway-deploy
+database_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_deploy') }}"
+
+
+# Used for Symfony CSRF protection
+gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
+
+
+# Messagebird (www.messagebird.com) REST API (v2 and above) access key
+# TODO: Set messagebird API access key
+messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+
+
+# Message originator as displayed in SMS
+# "This can be a telephone number (including country code) or an alphanumeric string.
+#  In case of an alphanumeric string, the maximum length is 11 characters."
+sms_originator: Stepup
+# Validity time of an OTP send using SMS in seconds
+sms_otp_expiry_interval: 900
+# Maximum number of times a user may resend an SMS during authenticaton
+sms_maximum_otp_requests: 3
+
+
+# Yubikey client_id and secret (Vaulted) for accessing the yubico authentication service
+# Create one at: https://upgrade.yubico.com/getapikey/
+# TODO: Set yubikey client id
+yubikey_client_id: 00000
+# TODO: Set yubikey secret
+yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"
+# Format: PEM X.509 certificate
+gateway_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.crt') }}"
+
+
+# Public key is in all.yml, so RA and SS have access to it.
+# Format: PEM RSA PRIVATE KEY
+gateway_saml_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_idp.key') }}"
+
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+gateway_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_sp.key') }}"
+# Used by the gateway to authenticate users to the real Tiqr IdP
+# Format: PEM X.509 certificate
+gateway_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_sp.crt') }}"
+
+
+# Public key is in all, so RA and SS have access to it.
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+gateway_tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.key') }}"
+
+
+# Configuration of the remote Tiqr IdP
+# Entity ID of the Tiqr Idp
+# TODO: Set remote Tiqr IdP EntityID
+gateway_tiqr_remote_entity_id: 'https://tiqr.stepup.coin.surf.net/saml/metadata'
+# SingleSingOn Location of the remote Tiqr IdP
+# TODO: Set remote Tiqr IdP SSL Location
+gateway_tiqr_remote_sso_url: 'https://tiqr.stepup.coin.surf.net/saml/sso'
+# SAML signing certificate of the Tiqr IdP
+# Format: Base64 encoded X.509 certificate without PEM headers
+# TODO: Set remote Tiqr IdP SAML Signing certificate
+gateway_tiqr_remote_certificate: MIIDCTCCAfGgAwIBAgIJANwuRZcnCZxnMA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMMEFNBTUwgc2lnbmluZyBrZXkwHhcNMTUwMzA0MjMxNTE0WhcNMTUwNDAzMjMxNTE0WjAbMRkwFwYDVQQDDBBTQU1MIHNpZ25pbmcga2V5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwen0JxwhfmxczxjCwLBLW/6FMu0kwH1zsBmRH/49yDyjkK/dCAbpaXehNh00ITDPPYgMTAPoTsY2DCWHvwSogi1XjrG4YxjHE1s0wG8kfL+lkYTZqlKX7sQFEqfO2vxbONbIasLUDOiR2tAUZTiaYYLPpsi9A0kwFNC5ELoBf2QozZDaXSKLIs83i+R1Rpjob/pYvKu/11zcsJlpSthPxd74FSGbJOZ1TC2ZFtzqBNMhqyx8do/y8wagLdT9p1ZKZZfEmjRHzHS5u5XhTQ9BLTRa+m0evsPMfM7G2Y4jqHh++JW+GTUgotKWARUNBjfKSzzNFA5W7t3meis/QWxnIwIDAQABo1AwTjAdBgNVHQ4EFgQU+WoylE+nk37M5zQ0LhNR6gt3YmAwHwYDVR0jBBgwFoAU+WoylE+nk37M5zQ0LhNR6gt3YmAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAVTnvvrh32zf0Q6EJivwCLd3m8b4l+S6lDuZSZPwIbnjwKOoijdyHIojlvQG36oLYT7bKrXVZqE6ieWSAPXITNn8E0EvGaPKdogieq5dsFmnNrEw/Ddj6uVjA3mciIopwyXP3HPz4nnrjnhnfp6QixYnOfn54YLeZBtOiixvD5/dD1Zl69sryVDUNQeW2axummNb1nashzPN/ayTDRSefjg0CK6BkRFbchMWxp1GqdnDWpDMntDCG9OO92ac/AdIzdpd4+X+uV0IwQsUIpRfosVqq9tJNIOpbWcdqTc5Y39lPjjb5LBDZKPXXFIhNXUtnmwYJGRUfzKSC67YfpGbZOQ==

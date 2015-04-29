@@ -1,0 +1,26 @@
+# X.509 Server certificates and keys for the proxy / LB
+
+# Format: PEM RSA PRIVATE KEY
+proxy_gateway_key: "{{ lookup('file', inventory_dir+'/ssl_cert/gateway.key') }}"
+
+# Format: PEM RSA PRIVATE KEY
+proxy_selfservice_key: "{{ lookup('file', inventory_dir+'/ssl_cert/selfservice.key') }}"
+
+# Format: PEM RSA PRIVATE KEY
+proxy_ra_key: "{{ lookup('file', inventory_dir+'/ssl_cert/ra.key') }}"
+
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_gateway_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/gateway.crt') }}"
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_selfservice_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/selfservice.crt') }}"
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_ra_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/ra.crt') }}"

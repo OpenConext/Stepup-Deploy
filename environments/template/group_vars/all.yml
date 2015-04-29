@@ -1,0 +1,51 @@
+# group_vars/all: Variables visible in all roles
+
+# Location of the keystore directory on the deploy host
+vault_keydir: "{{ inventory_dir }}/stepup-ansible-keystore"
+
+# Directory for keeping files on the remote host for use
+# by the playbook
+managed_file_dir: /opt/ansible/managed_files
+
+# Timezone
+# Format: IANA tz zone name (e.g. "Europe/Amsterdam")
+timezone: Europe/Amsterdam
+
+# Administrative email address
+server_admin_email: admin@stepup.example.com
+
+# "noreply" email address
+noreply_email: noreply@stepup.example.com
+
+# Domain suffix for web applications (i.e. gateway, selfservice, ra and middleware)
+app_domain: stepup.example.com
+
+# The uri's that are used to define the LoA levels
+# TODO: Set LoA uri's
+stepup_uri_loa1: 'http://suaas.example.com/assurance/loa1'
+stepup_uri_loa2: 'http://suaas.example.com/assurance/loa2'
+stepup_uri_loa3: 'http://suaas.example.com/assurance/loa3'
+
+# Hostname/IP of central log server
+graylog_hostname: 192.168.66.2
+
+# Public SAML signing key of the gateway IdP
+# Private key in stepup-gateway.yml
+# Format: PEM X.509 certificate
+gateway_saml_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_idp.crt') }}"
+
+# Public SAML signing key of selfservice SP
+# Private key in stepup-selfservice.yml
+# Format: PEM X.509 certificate
+selfservice_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.crt') }}"
+
+# Public SAML signing key of RA SP
+# Private key in stepup-ra.yml
+# Format: PEM X.509 certificate
+ra_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_saml_sp.crt') }}"
+
+# Public SAML signing key of the Tiqr gateway
+# IdP for the Tiqr authentication gateway tha is used by the SS and RA Tiqr SP endpoints
+# Private key in stepup-gateway.yml
+# Format: PEM X.509 certificate
+gateway_tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.crt') }}"

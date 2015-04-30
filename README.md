@@ -5,9 +5,16 @@ Creating a new Environment
 
 The playbooks and the deploy script require an "environment" that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template can be used as a starting point for a new environment. 
 
-Using the `create_new_environment.sh` script a new environment can be created based on the template. The new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. Secrets (private keys, password etc) are encrypted with a smmetic key. This key kan be stored in a safe location (e.g. on a deploy host), sepearate from the environment.
+Using the `create_new_environment.sh` script a new environment can be created based on the template. The new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. The secrets (private keys, password etc) in the environment are encrypted with a symmetic key using keycsar. This keycsar key kan be stored in a safe location (e.g. on a deploy host), separate from the environment.
 
-Use `create_new_environment.sh <environment_directory>` to create a new environment. The created environment can be used to deploy to VMs created with the scripts in `Stepup-VM`. The script will generate passwords, secrets, SAML signing certificates and SSL server certificates for the environemnt and encrypt these with a keycsar key specific for the environment.
+Use `create_new_environment.sh <environment_directory>` to create a new environment. This new environment can be used as-is to deploy to VMs created with the scripts in `Stepup-VM`. The script will generate passwords, secrets, SAML signing certificates and SSL server certificates for the environemnt and encrypt these with a keycsar key specific for the environment. For any other environment than one that targets the Stepup-VM you will need to make changes to the new environment. Because the Step-up software depends on external systems additional configuration and setup is required to be able to actually use a Step-up environment. In the new environment:
+
+* Set hostnames, domains, email addresses
+* Use proper SSL Server certificates
+* Configure API keys for messagebird, yubikey
+* Configure remote "first factor" IdP
+* Configure remote tiqr IdP
+* Move the keycsar key out of the environment
 
 Create / update infrastructure
 ------------------------------
@@ -84,17 +91,36 @@ The -i, -t (tags) -l (limit) and -v (verbose) options are passed to ansible-play
 Getting started
 ---------------
 
-* You a resent Ansible installed (1.9). The bash scripts and playbooks should run on both OSX and linux
-* Make sure you have the environment, the keystore for the environment and the ssh config, if not ask...
-	* Put the keystore in the directory that is set for the `vault_keydir` variable.
-	* Configure the ssh properties for the hosts in your ~/.ssh/config
+* You a resent Ansible installed (1.9). The bash scripts and playbooks should run on both OSX and linux. For building the
+  stepup components you need Vagrant and a provider like OpenBox or VMWare Fusion
 * Create an directory in a location of your choice
+  `mkdir Stepup`
 * Clone Stepup-Deploy repo
   `git clone git@github.com:SURFnet/Stepup-Deploy.git`
-* Clone Stepup-Build repo, follow instructions in that repo for creating the build machine.
+* Make sure you have the environment, the keystore for the environment and the ssh config, if not ask...
+    * Put the keystore in the directory that is set for the `vault_keydir` variable.
+    * Configure the ssh properties for the hosts in your ~/.ssh/config
+  To create a new environment:
+    `Stepup-Deploy/scripts/create_new_environment.sh new_environment`
+* Clone Stepup-Build repo, follow instructions in that repo for creating the build machine and building 
+  the Stepup-Gateway, Stepup-Middleware, Stepup-Selfservice and Stepup-RA components. Short version:
   `git clone git@github.com:SURFnet/Stepup-Build.git`
+  `cd Stepup-Build`
+  `vagrant up`
+  `cd ..`
+  `Stepup-Build/stepup-build.sh Stepup-Middleware`
+  ... same for gateway, slefservice and ra
 
 The [Stepup-VM](https://github.com/SURFnet/Stepup-VM) repository contains a vagrant configuration the can be used to create VM suitable for testing the deploy of a Step-up environment that was created using the `create_new_environment.sh` script.
+
+* Clone the Stepup-VM repo and start the VMs, see Stepup-VM for details (requires Vagrant and a provider like VirtualBox)
+  `git clone git@github.com:SURFnet/Stepup-VM.git`
+  `cd Stepup-VM`
+  `vagrant up`
+
+* Deploy to the VMs
+  ansible-playbook ../Stepup-Deploy/site.yml -i <your environment>/inventory
+  
 
 ### Example ###
 
@@ -104,3 +130,4 @@ To build and deploy a new version of the selfservice component to the existing t
    This creates a tarball (e.g. `Stepup-SelfService-develop-20150223143536Z-6ef51b629bc968218b582605894445b857927a4d.tar.bz2`) in the current directory
 2. `.../Stepup-Deploy/scripts/deploy.sh Stepup-SelfService-develop-20150223143536Z-6ef51b629bc968218b582605894445b857927a4d.tar.bz2 -l "app*" -i <some environment>/inventory`
    This deploys the tarball the hosts in the referenced inventory with a name starting with "app".
+

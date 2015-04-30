@@ -94,7 +94,7 @@ Getting started
 * Clone Stepup-Build repo, follow instructions in that repo for creating the build machine.
   `git clone git@github.com:SURFnet/Stepup-Build.git`
 
-The [Stepup-VM](https://github.com/SURFnet/Stepup-VM) contains a vagrant configuration the can be used to create VM suitable for testing the deploy of a Step-up environment that was created using the `create_new_environment.sh` script.
+The [Stepup-VM](https://github.com/SURFnet/Stepup-VM) repository contains a vagrant configuration the can be used to create VM suitable for testing the deploy of a Step-up environment that was created using the `create_new_environment.sh` script.
 
 ### Example ###
 

@@ -1,4 +1,4 @@
-These are the Ansible playbooks to create the step-up infrastructure and to deploy stepup components (i.e. middleware, gateway, RA, selfserve) to this infra. The playbooks are targeted to a CentOS 7 image.
+These are the Ansible playbooks to create the step-up infrastructure and to deploy stepup components (i.e. middleware, gateway, RA, selfserve) to this infra. The playbooks are targeted to a CentOS 7 image and should be usable with any environment.
 
 Creating a new Environment
 --------------------------

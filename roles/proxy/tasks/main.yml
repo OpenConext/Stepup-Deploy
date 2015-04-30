@@ -1,16 +1,17 @@
 # Assumes ngix has been installed previously
 
-- name: Put proxy cert
-  copy: content="{{ proxy_certificate }}" dest=/etc/nginx/proxy.crt
-  notify:
-      - restart nginx
+# Create SSL config for proxy to vhost
+- include: proxy.yml
+  vhost_name: gateway
+  proxy_certificate: "{{ proxy_gateway_certificate }}"
+  proxy_key: "{{ proxy_gateway_key }}"
 
-- name: Put proxy key
-  copy: content="{{ proxy_key | vault(vault_keydir) }}" dest=/etc/nginx/proxy.key owner=root mode=400
-  notify:
-      - restart nginx
+- include: proxy.yml
+  vhost_name: selfservice
+  proxy_certificate: "{{ proxy_selfservice_certificate }}"
+  proxy_key: "{{ proxy_selfservice_key }}"
 
-- name: Put proxy.conf
-  template: src='proxy.conf.j2' dest='/etc/nginx/conf.d/proxy.conf'
-  notify:
-      - restart nginx
+- include: proxy.yml
+  vhost_name: ra
+  proxy_certificate: "{{ proxy_ra_certificate }}"
+  proxy_key: "{{ proxy_ra_key }}"

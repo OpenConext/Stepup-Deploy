@@ -1,0 +1,11 @@
+# Config for middleware component
+
+database_middleware_name: middleware
+database_middleware_user: middleware
+database_middleware_password: "{{ lookup('file', inventory_dir+'/password/database_middleware') }}"
+database_deploy_user: middleware-deploy
+database_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_deploy') }}"
+
+
+# Used for Symfony CSRF protection
+middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"

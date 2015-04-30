@@ -1,0 +1,29 @@
+# Remote IdP, this is the IdP that is used as first factor in step-up (i.e. OpenConext, SURFconext)
+# Remote IdP entityID
+# TODO: Set Remote IdP entityID
+saml_remote_idp_entity_id: https://engine.test.surfconext.nl/authentication/idp/metadata
+
+# Remote IdP SingleSignOnService Location of HTTP-Redirect Binding
+# TODO: Set Remote IdP SSO Location
+saml_remote_idp_sso_url: https://engine.test.surfconext.nl/authentication/idp/single-sign-on
+
+# Remote IdP SAML Siging key
+# Format: Certificate as found in SAML metadata (i.e. PEM X.509 certificate, but without PEM headers and whitespace)
+# TODO: Set Remote IdP SAML Signing X509Certificate
+saml_remote_idp_certificate: MIIESzCCAzOgAwIBAgIJAIbjZLbIpAxQMA0GCSqGSIb3DQEBBQUAMIG7MQswCQYDVQQGEwItLTESMBAGA1UECAwJU29tZVN0YXRlMREwDwYDVQQHDAhTb21lQ2l0eTEZMBcGA1UECgwQU29tZU9yZ2FuaXphdGlvbjEfMB0GA1UECwwWU29tZU9yZ2FuaXphdGlvbmFsVW5pdDEeMBwGA1UEAwwVbG9jYWxob3N0LmxvY2FsZG9tYWluMSkwJwYJKoZIhvcNAQkBFhpyb290QGxvY2FsaG9zdC5sb2NhbGRvbWFpbjAeFw0xNDA0MTQwOTE1MDBaFw0xNTA0MTQwOTE1MDBaMIG7MQswCQYDVQQGEwItLTESMBAGA1UECAwJU29tZVN0YXRlMREwDwYDVQQHDAhTb21lQ2l0eTEZMBcGA1UECgwQU29tZU9yZ2FuaXphdGlvbjEfMB0GA1UECwwWU29tZU9yZ2FuaXphdGlvbmFsVW5pdDEeMBwGA1UEAwwVbG9jYWxob3N0LmxvY2FsZG9tYWluMSkwJwYJKoZIhvcNAQkBFhpyb290QGxvY2FsaG9zdC5sb2NhbGRvbWFpbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAM38You8gdExyrGhXRnCstcoUcpec+jCgJ6u81ruBDOX3dwsFZaRJAW9/r9tuGSHF5yXq7c39DDovCLSxmvAm10UXRQROv2NNrG1qFsyyCdB4jC8wO9aGxfiIj8ETpiYCqB/KbHzFqZeq21y3fWSVfdqcSTemqPBAGDJNJ6HqRKpMtGrK69MolA95SD2HTWw0kVxH6Cjp8BUL+ppevSnsWg8lZAObDVLkuQX6UmeqHEN4RD/PGngv1pMN46lnLgRFs+bd/MOdSkPx5nVImdmm1WErOyziO7RRJQzsggGmO426eLgs8oEdAbmHJRI83ijMwnlVPDFnsUDgKTnrngo/N8CAwEAAaNQME4wHQYDVR0OBBYEFKI5/5EYYjzXnu+aW+dsmL+VfYXDMB8GA1UdIwQYMBaAFKI5/5EYYjzXnu+aW+dsmL+VfYXDMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBAH+PZRW8IY6RZLBVY1tiLtWgwe3yfuRQTQo6zc0a1imZ3OFG6j7cL3jnFhlP7B1VKpGrFFGnoz1Oarq9kUAx8w54R4wUIDAf7teq09v+U5NOAyM4Nnkm0c18PAHY0fg6DlbfDm3qpV/fFm+p/fWyxCbwo4DsdKuVIi7UjxQ9OZkGLi6q2OwfYDJTMLcoctr1Ja70AzzV565AQbB/L47owaw2E6GU/MXLGlJH96vquBorf75wZ+kCcxQhyRfYDHjh/k8GbecDJepo9mxb1ZmZ7Luv/5q4OS38b3mAdvfqWcY9tW8OwEoC/+eMYnwqbzQUMWYmB/ynvtcYRiSF+28kgCY=
+
+
+# Passwords for accessing the Middleware REST API
+selfservice_api_password: "{{ lookup('file', inventory_dir+'/password/middleware_selfservice_api') }}"
+registration_authority_api_password: "{{ lookup('file', inventory_dir+'/password/middleware_registration_authority_api') }}"
+management_password: "{{ lookup('file', inventory_dir+'/password/middleware_management_api') }}"
+
+
+# User for performing deploys
+app_deploy_user: stepup-deploy
+
+
+# URL to where the user is redirected after logout.
+# TODO: Set logout URL
+logout_redirect_url: https://engine.surfconext.nl/logout
+

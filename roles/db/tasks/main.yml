@@ -74,6 +74,7 @@
     priv: "*.*:ALL PRIVILEGES/*.*:USAGE"
     state: present
 
+
 # Add backup user
 - name: add mariadb backup user
   mysql_user:
@@ -83,15 +84,19 @@
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
     priv: "*.*:SELECT"
     state: present
+  when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name: Add "backup" shell user
   user: name=backup
+  when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name: Put mariadb_backup script
   template: src='mariadb_backup.sh.j2' dest='/home/backup/mariadb_backup.sh' mode=500 owner=backup
+  when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name:
   authorized_key:
     user: "{{ mariadb_backup_user }}"
     key: "{{ mariadb_backup_sshkey }}"
     key_options: command="/home/backup/mariadb_backup.sh"
+  when: mariadb_enable_remote_ssh_backup | default(false)

@@ -1,11 +1,13 @@
-These are the Ansible playbooks to create the step-up infrastructure and to deploy stepup components (i.e. middleware, gateway, RA, selfserve) to this infra. The playbooks are targeted to a CentOS 7 image and should be usable with any environment.
+These are the Ansible playbooks and scripts to create the step-up infrastructure and to deploy stepup components (i.e. middleware, gateway, RA, selfserve) to this infra. The playbooks are targeted to a CentOS 7 image and should be usable with any environment (i.e. not be specific to a test or production environment).
 
 Creating a new Environment
 --------------------------
 
-The playbooks and the deploy script require a "environment" that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template can be used as a starting point for a new environment. Using the `create_new_environment.sh` script a new environment can be created. The new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. Secrets (private keys, password etc) are encrypted with a smmetic key. This key kan be stored in a safe location (e.g. on a deploy host), sepearate from the environment.
+The playbooks and the deploy script require an "environment" that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template can be used as a starting point for a new environment. 
 
-Use `create_new_environment.sh <environment_directory>` to create a new environment. The created environment can be used to deploy to VMs created with the scripts in `Stepup-VM`.
+Using the `create_new_environment.sh` script a new environment can be created based on the template. The new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. Secrets (private keys, password etc) are encrypted with a smmetic key. This key kan be stored in a safe location (e.g. on a deploy host), sepearate from the environment.
+
+Use `create_new_environment.sh <environment_directory>` to create a new environment. The created environment can be used to deploy to VMs created with the scripts in `Stepup-VM`. The script will generate passwords, secrets, SAML signing certificates and SSL server certificates for the environemnt and encrypt these with a keycsar key specific for the environment.
 
 Create / update infrastructure
 ------------------------------

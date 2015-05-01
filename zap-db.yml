@@ -19,6 +19,8 @@
   tasks:
   - name: Drop Middleware database
     mysql_db: name={{ database_middleware_name }} state=absent login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+    run_once: True
 
   - name: Drop Gateway database
     mysql_db: name={{ database_gateway_name }} state=absent login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+    run_once: True

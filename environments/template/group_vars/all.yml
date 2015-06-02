@@ -26,9 +26,6 @@ stepup_uri_loa1: 'http://suaas.example.com/assurance/loa1'
 stepup_uri_loa2: 'http://suaas.example.com/assurance/loa2'
 stepup_uri_loa3: 'http://suaas.example.com/assurance/loa3'
 
-# Hostname/IP of central log server
-graylog_hostname: 192.168.66.2
-
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml
 # Format: PEM X.509 certificate

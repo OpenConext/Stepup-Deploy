@@ -22,7 +22,6 @@
   copy: src=logstash.sysconfig dest=/etc/sysconfig/logstash
   notify: Restart logstash
 
-
 # Install logstash-input-relp plugin
 # Grep exit code: 0 when found, 1 when not found, 2 on error
 - name: Check whether logstash-input-relp is installed
@@ -31,34 +30,24 @@
   changed_when: False
   failed_when: relp_input_installed.rc > 1
 
-
 # Note: Can be slow...
 - name: Install logstash-input-relp plugin
   shell: sudo -u logstash ./bin/plugin install logstash-input-relp chdir=/opt/logstash/
   when: relp_input_installed.rc == 1
   notify: Restart logstash
 
+- name: Put logstash config
+  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
+  with_items:
+  - 10-rsyslog_relp_input.conf
+  - 90-output_logstash.conf
+  - 99-output_log.conf
+  notify: Restart logstash
 
 # Enable logstash on boot
 - name: Enable logstash service
   service: name=logstash enabled=yes state=started
 
 
-
 - name: Install kibana
   include: kibana.yml
-
-
-# Get health of ES cluster:
-# curl -XGET 'http://127.0.0.1:9200/_cluster/health?pretty=true'
-
-
-#Setup logstash
-#- name: Put logstash config
-#  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
-#  with_items:
-#  - file.output
-#  - gelf-udp.output
-#  - gelf-udp.input
-#  - host.config
-#  notify: restart logstash

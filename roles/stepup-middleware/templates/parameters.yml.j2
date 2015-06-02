@@ -31,8 +31,6 @@ parameters:
     registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
     management_password: {{ management_password | vault(vault_keydir) }}
 
-    graylog_hostname: 127.0.0.1
-
     self_service_email_verification_url_template: https://selfservice.{{ app_domain }}/verify-email?n={nonce}
     email_sender_name: SURFnet bv
     email_sender_email: {{ noreply_email }}

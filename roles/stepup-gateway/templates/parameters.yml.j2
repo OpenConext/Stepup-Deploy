@@ -35,8 +35,6 @@ parameters:
     selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
     registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
 
-    graylog_hostname: 127.0.0.1
-
     saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
     saml_sp_privatekey: {{ component_dir_name }}/app/config/sp.key
 

@@ -1,0 +1,20 @@
+# Receive messages from local rsyslog
+input {
+  relp {
+    host => '127.0.0.1'
+    port => 20514
+    type => 'rsyslog'
+  }
+}
+
+# Decode rsyslog
+filter {
+  grok {
+    type => 'rsyslog'
+    match => {
+      "message" => "%{SYSLOG5424PRI}%{SYSLOGLINE}"
+    }
+    # Replace existing message with decoded message
+    overwrite => 'message'
+  }
+}

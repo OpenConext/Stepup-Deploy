@@ -35,13 +35,17 @@ parameters:
 
     saml_metadata_privatekey: {{ component_dir_name }}/app/config/sp.key
 
-    #saml_remote_idp_entity_id: http://gateway.{{ app_domain }}/authentication/metadata
-    #saml_remote_idp_sso_url: http://gateway.{{ app_domain }}/authentication/single-sign-on
-    #saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
+    # Connect to remote IdP through Stepup Gateway
+    saml_remote_idp_entity_id: https://gateway.{{ app_domain }}/authentication/metadata
+    saml_remote_idp_sso_url: https://gateway.{{ app_domain }}/authentication/single-sign-on
+    saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
 
+{#
+    # Connect to remote IdP directly
     saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
     saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}
     saml_remote_idp_certificate: {{ saml_remote_idp_certificate }}
+#}
 
     graylog_hostname: 127.0.0.1
 

@@ -1,0 +1,2 @@
+# Name of the elastic search cluster
+elastic_search_cluster_name: stepup-vm

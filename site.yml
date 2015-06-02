@@ -22,7 +22,7 @@
   - manage
 
 
-- name: Setup database cluster
+- name: Setup mariadb database cluster
   hosts: dbcluster
   sudo: True
   tags: db
@@ -30,6 +30,16 @@
 
   roles:
   - db
+
+
+- name: Stetup elasticseach cluster
+  hosts: es
+  sudo: True
+  tags: es
+  serial: 1
+
+  roles:
+    - es
 
 
 - name: Setup application servers

@@ -1,0 +1,50 @@
+---
+
+# Add elasticsearch repo and repo key
+- name: Copy elasticsearch repository key
+  copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
+
+- name: Add elasticsearch repository key
+  rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
+
+- name: Enable elasticsearch repo
+  copy: src=elasticsearch.repo dest=/etc/yum.repos.d/elasticsearch.repo
+
+
+# Install ES and Java 8
+- name: Install elasticsearch, java openjdk
+  yum: name={{ item }} state=present
+  with_items:
+  - java-1.8.0-openjdk
+  - elasticsearch
+
+
+# Increase open file limits for ES
+- name: Put etc/security/elasticseach_limits.conf
+  copy: src=elasticsearch_limits.conf dest=/etc/security/limits.d/elasticsearch_limits.conf
+  notify:
+  - "Restart elasticsearch"
+
+- name: Determine number of nodes in cluser
+  set_fact: elastic_search_node_count={{ groups['es'] | length }}
+
+- debug: msg={{ elastic_search_node_count }}
+
+- name: Put elasticsearch config
+  template: src='{{ item }}.j2' dest='/etc/{{ item }}'
+  with_items:
+  - "sysconfig/elasticsearch"
+  - "elasticsearch/elasticsearch.yml"
+  - "elasticsearch/logging.yml"
+  notify:
+  - "Restart elasticsearch"
+  - "Wait for elasticsearch"
+
+
+# Enable ES on boot
+- name: Enable elasticsearch service
+  service: name=elasticsearch enabled=yes state=started
+
+
+# Get health of ES cluster:
+# curl -XGET 'http://node_ip:9200/_cluster/health?pretty=true'

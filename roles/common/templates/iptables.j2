@@ -13,8 +13,7 @@
 {% endif %}
 
 {% if 'manage' in group_names %}
--A INPUT -m state --state NEW -m udp -p udp --dport 1514 -j ACCEPT
--A INPUT -m state --state NEW -m udp -p udp --dport 12201 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 10514 -j ACCEPT
 
 {% if manage_https_proxy | default(false) %}
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT

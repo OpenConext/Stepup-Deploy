@@ -25,48 +25,46 @@
   tags: epel
 
 
-# Firewall chaned from ip(6)tables start/stop in CentOS6 to firewalld in CentOS7, need to
-# update firewall configuration
-- name: "Disable firewalld (TODO: fix this...)"
+# Firewall changed from ip(6)tables start/stop in CentOS6 to firewalld in CentOS7
+# ip(6)tables can still be installed using iptables-services
+# First disable firewalld service
+- name: "Disable firewalld"
   service: name=firewalld enabled=no state=stopped
-
-
 
 
 - name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
   with_items:
   - ntp
-#  - iptables
+  - iptables-services
   - rsyslog # Is the default syslog for RH / CentOS
   - rsyslog-relp # For using RELP with rsyslog
 
 
-#- name: Put iptables
-#  template: src='iptables.j2' dest='/etc/sysconfig/iptables'
-#  notify:
-#  - restart iptables
+- name: Put iptables
+  template: src={{ inventory_dir }}/templates/common/iptables.j2 dest='/etc/sysconfig/iptables'
+  notify:
+  - restart iptables
 
-#- name: Put ip6tables
-#  template: src='ip6tables.j2' dest='/etc/sysconfig/ip6tables'
-#  notify:
-#  - restart ip6tables
+- name: Put ip6tables
+  template: src={{ inventory_dir }}/templates/common/ip6tables.j2 dest='/etc/sysconfig/ip6tables'
+  notify:
+  - restart ip6tables
 
 
-- name: Start services ntpd, iptables, iptables6
+- name: Start and enable services ntpd, iptables, iptables6
   service: name={{item}} state=started enabled=true
   with_items:
   - ntpd
-#  - iptables
-#  - ip6tables
+  - iptables
+  - ip6tables
 
 # Create directory for rsyslog message buffer
 - name: Create rsyslog dir
   file: name=/var/lib/rsyslog state=directory
 
+
 # Setup rsyslog
 - name: Put rsyslog config
   template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
   notify: restart rsyslog
-
-

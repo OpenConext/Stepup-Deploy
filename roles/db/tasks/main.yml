@@ -27,6 +27,7 @@
   command: /sbin/service mysql status
   ignore_errors: true
   register: status_result
+  changed_when: False
 # status codes:
 #0 program is running or service is OK
 #1 program is dead and /var/run pid file exists

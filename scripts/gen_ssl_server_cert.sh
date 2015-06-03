@@ -77,7 +77,7 @@ CA_DIR=`realpath ${CA_DIR}`
 
 OPENSSL_CONF=${BASEDIR}/opensslca.conf
 
-tmpdir=`mktemp -d -t sscrt`
+tmpdir=`mktemp -d -t sscrt.XXXXX`
 if [ $? -ne "0" ]; then
     error_exit "Error creating TMP dir"
 fi

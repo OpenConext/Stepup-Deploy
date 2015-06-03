@@ -25,8 +25,8 @@ function realpath {
     return $res
 }
 
-KEYCZART=`which keyczart`
-if [ -z "${KEYCZART}" -o ! -x ${KEYCZART} ]; then
+KEYCZART=`which keyczart 2>/dev/null`
+if [ -z "${KEYCZART}" -o ! -x "${KEYCZART}" ]; then
     echo "keyczart is not in path or not executable. Please install keyczart"
     echo "See: http://keyczar.org"
     exit 1;

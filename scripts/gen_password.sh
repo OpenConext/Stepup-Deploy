@@ -19,7 +19,7 @@ else
 fi
 
 if [ -d "$2" ]; then
-    tempfile=`mktemp -t genpass`
+    tempfile=`mktemp -t genpass.XXXXX`
     echo -n ${password} > "$tempfile"    
     `dirname $0`/encrypt-file.sh "$2" -f "$tempfile"
     if [ $? -ne "0" ]; then

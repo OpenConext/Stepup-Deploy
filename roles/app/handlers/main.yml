@@ -12,5 +12,5 @@
    - name: restart logstash
      service: name=logstash state=restarted
 
-   - name: reload rsyslog
-     service: name=rsyslog state=reloaded
+   - name: restart rsyslog
+     service: name=rsyslog state=restart

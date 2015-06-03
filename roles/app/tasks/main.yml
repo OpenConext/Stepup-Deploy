@@ -94,7 +94,7 @@
 
 - name: Put rsyslog config for nginx
   copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
-  notify: reload rsyslog
+  notify: restart rsyslog
 
 # setfacl -m u:logstash:rx .
 #- name: Give logstash read access to ngix and php-fpm log directories

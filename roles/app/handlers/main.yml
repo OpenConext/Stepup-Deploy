@@ -13,4 +13,4 @@
      service: name=logstash state=restarted
 
    - name: restart rsyslog
-     service: name=rsyslog state=restart
+     service: name=rsyslog state=restarted

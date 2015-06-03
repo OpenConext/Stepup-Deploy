@@ -51,6 +51,11 @@
   notify:
   - restart ip6tables
 
+- name: Put ntp.conf
+  template: src={{ inventory_dir }}/templates/common/ntp.conf.j2 dest='/etc/ntp.conf'
+  notify:
+  - restart ntpd
+
 
 - name: Start and enable services ntpd, iptables, iptables6
   service: name={{item}} state=started enabled=true

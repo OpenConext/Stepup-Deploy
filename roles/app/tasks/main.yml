@@ -51,6 +51,11 @@
   - restart nginx
   - restart php-fpm
 
+- name: Put /etc/php-fpm.conf
+  copy: src='php-fpm.conf' dest='/etc/php-fpm.conf'
+  notify:
+      - restart php-fpm
+
 
 - name: Put nginx.conf
   template: src='nginx.conf.j2' dest='/etc/nginx/nginx.conf'
@@ -86,6 +91,10 @@
   - php-fpm
   - sendmail
 
+
+- name: Put rsyslog config for nginx
+  copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
+  notify: reload rsyslog
 
 # setfacl -m u:logstash:rx .
 #- name: Give logstash read access to ngix and php-fpm log directories

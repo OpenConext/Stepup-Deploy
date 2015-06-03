@@ -1,0 +1,17 @@
+# Nginx main error log
+$InputFileName /var/log/nginx/{{ vhost_name }}_error.log
+$InputFileTag nginx-error-{{ vhost_name }}:
+$InputFileStateFile stat-nginx-error-{{ vhost_name }}
+
+$InputFileSeverity error
+$InputFileFacility local0
+$InputRunFileMonitor
+
+# Nginx main access log
+$InputFileName /var/log/nginx/{{ vhost_name }}_access.log
+$InputFileTag nginx-access-{{ vhost_name }}:
+$InputFileStateFile stat-nginx-access-{{ vhost_name }}
+
+$InputFileSeverity notice
+$InputFileFacility local0
+$InputRunFileMonitor

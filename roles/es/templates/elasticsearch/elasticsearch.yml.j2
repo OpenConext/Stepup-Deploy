@@ -29,7 +29,7 @@
 # Cluster name identifies your cluster for auto-discovery. If you're running
 # multiple clusters on the same network, make sure you're using unique names.
 #
-cluster.name: graylog2
+cluster.name: "{{ elastic_search_cluster_name }}"
 
 
 #################################### Node #####################################
@@ -37,7 +37,8 @@ cluster.name: graylog2
 # Node names are generated dynamically on startup, so you're relieved
 # from configuring them manually. You can tie this node to a specific name:
 #
-node.name: "graylog2_elasticsearch"
+{# Set node name to name of this server specified Ansible inventory #}
+node.name: "{{ inventory_hostname }}"
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
@@ -104,17 +105,27 @@ node.max_local_storage_nodes: 1
 
 # Set the number of shards (splits) of an index (5 by default):
 #
-index.number_of_shards: 1
+#index.number_of_shards: 5
 
 # Set the number of replicas (additional copies) of an index (1 by default):
 #
-index.number_of_replicas: 0
+#index.number_of_replicas: 1
 
 # Note, that for development on a local machine, with small indices, it usually
 # makes sense to "disable" the distributed features:
 #
 #index.number_of_shards: 1
 #index.number_of_replicas: 0
+
+
+{% if elastic_search_node_count > 1 %}
+{# Use defaults when there is more than 1 ES node #}
+index.number_of_shards: 5
+index.number_of_replicas: 1
+{% else %}
+index.number_of_shards: 1
+index.number_of_replicas: 0
+{% endif %}
 
 # These settings directly affect the performance of index and search operations
 # in your cluster. Assuming you have enough machines to hold shards and
@@ -209,7 +220,7 @@ index.number_of_replicas: 0
 
 # Set both 'bind_host' and 'publish_host':
 #
-network.host: 127.0.0.1
+network.host: {{ host_ipv4 }}
 
 # Set a custom port for the node to node communication (9300 by default):
 #
@@ -263,7 +274,7 @@ gateway.type: local
 # are up (and recover_after_nodes is met), begin recovery process immediately
 # (without waiting for recover_after_time to expire):
 #
-gateway.expected_nodes: 1 
+gateway.expected_nodes: {{ elastic_search_node_count }}
 
 
 ############################# Recovery Throttling #############################
@@ -301,7 +312,7 @@ gateway.expected_nodes: 1
 # operational within the cluster. Its recommended to set it to a higher value
 # than 1 when running more than 2 nodes in the cluster.
 #
-#discovery.zen.minimum_master_nodes: 1
+discovery.zen.minimum_master_nodes: 1
 
 # Set the time to wait for ping responses from other nodes when discovering.
 # Set this option to a higher value on a slow or congested network
@@ -323,7 +334,7 @@ discovery.zen.ping.multicast.enabled: false
 # 2. Configure an initial list of master nodes in the cluster
 #    to perform discovery when new nodes (master or data) are started:
 #
-discovery.zen.ping.unicast.hosts: []
+discovery.zen.ping.unicast.hosts: [{% for host in groups['es'] %}'{{ hostvars[host].host_ipv4 }}:9300'{% if not loop.last %},{% endif %}{% endfor %}]
 
 # EC2 discovery allows to use AWS EC2 API in order to perform discovery.
 #

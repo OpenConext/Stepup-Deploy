@@ -1,0 +1,54 @@
+---
+
+- name: Create kibana group
+  group: name=kibana
+
+- name: Create kibana user
+  user: name=kibana group=kibana
+
+- name: Create kibana directory
+  file: dest=/opt/kibana4 state=directory owner=root group=root mode=655
+
+# SHA1 = c925f75cd5799bfd892c7ea9c5936be10a20b119
+# SHA256 = 4cc36e5c6ca7c495667319df75feda1facb7c43a3d9686841f07a2522adec294
+# URL = https://download.elastic.co/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz
+
+- name: Download kibana 4.0.2 tarball
+  get_url:
+    url: https://download.elastic.co/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz
+    sha256sum: 4cc36e5c6ca7c495667319df75feda1facb7c43a3d9686841f07a2522adec294
+    dest: "{{ managed_file_dir }}/kibana-4.0.2-linux-x64.tar.gz"
+    force: no
+    owner: root
+    group: root
+  notify: Restart kibana
+
+- name: Unarchive tarball
+  unarchive:
+    dest: /opt/kibana4/
+    src: "{{ managed_file_dir }}/kibana-4.0.2-linux-x64.tar.gz"
+    copy: false
+    creates: /opt/kibana4/kibana-4.0.2-linux-x64
+  notify: Restart kibana
+
+- name: Set ownership
+  file:
+    dest: /opt/kibana4/kibana-4.0.2-linux-x64/
+    state: directory
+    owner: root
+    group: kibana
+    recurse: yes
+
+- name: Create symlink
+  file: src=/opt/kibana4/kibana-4.0.2-linux-x64 dest=/opt/kibana4/kibana state=link
+
+- name: Put kibana config
+  template: src=kibana/kibana4.yml.j2 dest=/opt/kibana4/kibana/config/kibana.yml owner=root group=root mode=0644
+  notify: Restart kibana
+
+- name: Add kibana systemd config
+  template: src=kibana/kibana4.service.j2 dest=/etc/systemd/system/kibana4.service owner=root group=root mode=0640
+  notify: Restart kibana
+
+- name: Enable kibana service
+  service: name=kibana4 enabled=yes

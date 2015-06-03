@@ -1,0 +1,8 @@
+output {
+  elasticsearch {
+     # Push message to ES using HTTP protocol.
+     protocol => "http"
+     host => [{% for host in groups['es'] %}'{{ hostvars[host].host_ipv4 }}'{% if not loop.last %},{% endif %}{% endfor %}]
+     port => "9200"
+  }
+}

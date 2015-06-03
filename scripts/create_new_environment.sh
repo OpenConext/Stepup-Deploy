@@ -6,10 +6,10 @@
 # Please read the notice at the end of the script
 
 PASSWORD_LENGTH=15
-PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_deploy" "database_middleware" "graylog2_root")
+PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_deploy" "database_middleware")
 
 SECRET_LENGTH=40
-SECRETS=("gateway" "middleware" "ra" "graylog2_password" "selfservice" "graylog2_root" "graylog2_web_application")
+SECRETS=("gateway" "middleware" "ra" "selfservice")
 
 SAML_CERTS=("gateway_saml_idp" "gateway_saml_sp" "gateway_tiqr_idp" "gateway_tiqr_sp" "selfservice_saml_sp" "selfservice_tiqr_sp" "ra_saml_sp" "ra_tiqr_sp")
 

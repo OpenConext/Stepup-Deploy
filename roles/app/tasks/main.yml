@@ -79,10 +79,13 @@
 - include: vhost.yml vhost_name=ra
 
 
-# TODO: Fix on CentOS7
-# nginx will start with invalid vhost config, so test config explicitly first
-#- name: Test nginx config
-#  command: /sbin/service nginx configtest
+# Because nginx will restart with an invalid config without service detecting this, so we test the config  first
+- name: Test nginx config
+  command: /sbin/nginx -t
+  register: nginx_test
+  changed_when: False
+  failed_when: nginx_test.rc > 0
+
 
 - name: Start and enable nginx & php-fpm & smtp services
   service: name={{item}} state=started enabled=true

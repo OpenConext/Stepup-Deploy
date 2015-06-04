@@ -24,7 +24,6 @@
 # https://fedoraproject.org/wiki/EPEL
 - name: Enable EPEL repo
   yum: name=epel-release.noarch state=present
-  tags: epel
 
 
 # Firewall changed from ip(6)tables start/stop in CentOS6 to firewalld in CentOS7

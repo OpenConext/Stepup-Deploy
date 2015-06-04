@@ -2,8 +2,3 @@
 
 # Used for Symfony CSRF protection
 middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
-
-
-# Used for creating DB tables and DB users
-# Also defined in dbcluster.yml
-mariadb_root_password: "{{ lookup('file', inventory_dir+'/password/mariadb_root') }}"

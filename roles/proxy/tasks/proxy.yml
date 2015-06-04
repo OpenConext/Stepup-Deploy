@@ -1,11 +1,11 @@
 
-- name: Put proxy cert for {{ vhost_name }}
-  copy: content="{{ proxy_certificate }}" dest=/etc/nginx/proxy_{{ vhost_name }}.crt
+- name: Put proxy cert for {{ component_name }}
+  copy: content="{{ proxy_certificate }}" dest=/etc/nginx/proxy_{{ component_name }}.crt
   notify:
       - restart nginx
 
-- name: Put proxy key for {{ vhost_name }}
-  copy: content="{{ proxy_key | vault(vault_keydir) }}" dest=/etc/nginx/proxy_{{ vhost_name }}.key owner=root mode=400
+- name: Put proxy key for {{ component_name }}
+  copy: content="{{ proxy_key | vault(vault_keydir) }}" dest=/etc/nginx/proxy_{{ component_name }}.key owner=root mode=400
   notify:
       - restart nginx
 

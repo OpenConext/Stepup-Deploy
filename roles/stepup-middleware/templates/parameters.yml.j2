@@ -1,6 +1,8 @@
 parameters:
     database_driver:   pdo_mysql
-    database_host:     localhost
+
+    # TODO: Use LB address
+    database_host:     {{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}
     database_port:     3306
     database_middleware_name:     {{ database_middleware_name }}
     database_middleware_user:     {{ database_middleware_user }}
@@ -9,12 +11,8 @@ parameters:
     database_gateway_user:     {{ database_middleware_user }}
     database_gateway_password: {{ database_middleware_password | vault(vault_keydir)}}
     # TODO: Deploy creds should only be available during deploy
-    # TODO: Use a specific deploy user, not root
-    #database_deploy_user:      {{ database_deploy_user }}
-    #database_deploy_password:  {{ database_deploy_password | vault(vault_keydir) }}
-    database_deploy_user:      root
-    database_deploy_password:  {{ mariadb_root_password | vault(vault_keydir) }}
-
+    database_deploy_user:      {{ database_deploy_user }}
+    database_deploy_password:  {{ database_deploy_password | vault(vault_keydir) }}
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1

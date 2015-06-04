@@ -73,7 +73,6 @@
     priv: "*.*:ALL PRIVILEGES/*.*:USAGE"
     state: present
 
-
 # Add backup user
 - name: add mariadb backup user
   mysql_user:
@@ -99,3 +98,7 @@
     key: "{{ mariadb_backup_sshkey }}"
     key_options: command="/home/backup/mariadb_backup.sh"
   when: mariadb_enable_remote_ssh_backup | default(false)
+
+
+- include: middleware.yml
+- include: gateway.yml

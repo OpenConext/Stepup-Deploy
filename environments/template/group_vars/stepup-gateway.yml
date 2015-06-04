@@ -1,12 +1,5 @@
 # Config for gateway component
 
-database_gateway_name: gateway
-database_gateway_user: gateway
-database_gateway_password: "{{ lookup('file', inventory_dir+'/password/database_gateway') }}"
-database_deploy_user: gateway-deploy
-database_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_deploy') }}"
-
-
 # Used for Symfony CSRF protection
 gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 

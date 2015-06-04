@@ -1,0 +1,36 @@
+# Database configuration for middleware component
+
+- name: Create Middleware database
+  mysql_db: name={{ database_middleware_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+# Both midleware and gateway databases are managed using middleware app/console (for now)
+- name: Create Gateway database
+  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+# TODO: migrations script executes GRANTS, so priv below are not suficcient
+# TODO: migrations script uses both @127.0.0.1 and @localhost
+- name: Create deploy user with ALL access to middleware and gateway database
+  mysql_user:
+    name={{ database_deploy_user }}
+    host={{ hostvars[item].host_ipv4 }}
+    password={{ database_deploy_password | vault(vault_keydir) }}
+    priv={{ database_gateway_name }}.*:ALL/{{ database_middleware_name }}.*:ALL
+    login_host=127.0.0.1
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  with_items: "{{ groups['app'] }}"
+
+
+# Access to middleware and gateway databases
+# TODO: Tighten DB user rights
+- name: Create DB user for Middleware component
+  mysql_user:
+    name={{ database_middleware_user }}
+    host={{ hostvars[item].host_ipv4 }}
+    password={{ database_middleware_password | vault(vault_keydir) }}
+    priv={{ database_middleware_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE/{{ database_gateway_name }}.*:SELECT,EXECUTE
+    login_host=127.0.0.1
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  with_items: "{{ groups['app'] }}"

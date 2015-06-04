@@ -49,3 +49,19 @@ ra_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_saml_sp.cr
 # Private key in stepup-gateway.yml
 # Format: PEM X.509 certificate
 gateway_tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.crt') }}"
+
+
+# Database tables and users for Stepup applications
+# Used by dbcluster role to create users and tables
+
+# Used by stepup-middleware role to configure middleware
+database_middleware_name: middleware
+database_middleware_user: middleware
+database_middleware_password: "{{ lookup('file', inventory_dir+'/password/database_middleware') }}"
+database_deploy_user: middleware-deploy
+database_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_deploy') }}"
+
+# Used by stepup-middleware role to configure middleware
+database_gateway_name: gateway
+database_gateway_user: gateway
+database_gateway_password: "{{ lookup('file', inventory_dir+'/password/database_gateway') }}"

@@ -1,13 +1,16 @@
 ---
 
-  - name: restart iptables
-    service: name=iptables state=restarted
+- name: restart iptables
+  service: name=iptables state=restarted
 
-  - name: restart ip6tables
-    service: name=ip6tables state=restarted
+- name: restart ip6tables
+  service: name=ip6tables state=restarted
 
-  - name: restart rsyslog
-    service: name=rsyslog state=restarted
+- name: restart rsyslog
+  service: name=rsyslog state=restarted
 
-  - name: restart logstash
-    service: name=logstash state=restarted
+- name: restart logstash
+  service: name=logstash state=restarted
+
+# Include handlers for environment specific tasks
+- include: "{{ inventory_dir }}/handlers/common.yml"

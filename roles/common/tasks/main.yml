@@ -1,3 +1,5 @@
+# Set of tasks to apply to all hosts
+
 - name: Set /etc/hostname to {{ inventory_hostname }}
   template: src='hostname.j2' dest='/etc/hostname'
 
@@ -73,3 +75,7 @@
 - name: Put rsyslog config
   template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
   notify: restart rsyslog
+
+
+# Include environment specific tasks
+- include: "{{ inventory_dir }}/tasks/common.yml"

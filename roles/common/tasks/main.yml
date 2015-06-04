@@ -12,8 +12,8 @@
   file: name={{ managed_file_dir }} state=directory
 
 
-- name: Set SELinux policy to targeted & permissive
-  selinux: policy=targeted state=permissive
+- name: Disable SELinux policy
+  selinux: state=disabled
 
 
 - name: Set timezone

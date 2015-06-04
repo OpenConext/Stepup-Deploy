@@ -95,29 +95,3 @@
 - name: Put rsyslog config for nginx
   copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
   notify: restart rsyslog
-
-# setfacl -m u:logstash:rx .
-#- name: Give logstash read access to ngix and php-fpm log directories
-#  acl: name={{ item }} entity=logstash etype=user permissions="rx" state=present
-#  with_items:
-#  - /var/log/nginx
-#  - /var/log/php-fpm
-
-
-#- name: Add logstash config to get nginx and php-fpm logs
-#  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
-#  with_items:
-#    - nginx.config
-#    - php-fpm.config
-#    - symfony2.config
-#  notify: restart logstash
-
-
-#- name: Install NodeJS
-#  yum: name=nodejs state=present
-#
-#- name: Install NPM
-#  command: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
-#
-#- name: Install LESS compiler
-#  npm: name=less global=yes state=present

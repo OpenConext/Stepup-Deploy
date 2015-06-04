@@ -1,8 +1,0 @@
-input {
-  file {
-    type => "symfony2_prod_log"
-    add_field => { "application", "{{ vhost_name }}" }
-    path => ["/opt/www/{{ vhost_name }}.{{ app_domain }}/app/logs/prod.log"]
-    discover_interval => 10
-  }
-}

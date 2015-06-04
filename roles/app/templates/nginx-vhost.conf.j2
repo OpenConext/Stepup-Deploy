@@ -1,10 +1,10 @@
 server {
     listen       80;
-    server_name  {{ vhost_name }}.{{ app_domain }};
-    root /opt/www/{{ vhost_name }}.{{ app_domain }}/web;
+    server_name  {{ vhost_name }};
+    root /opt/www/{{ vhost_name }}/web;
 
-    error_log /var/log/nginx/{{ vhost_name }}_error.log;
-    access_log /var/log/nginx/{{ vhost_name }}_access.log combinedProxy;
+    error_log /var/log/nginx/{{ component_name }}_error.log;
+    access_log /var/log/nginx/{{ component_name }}_access.log combinedProxy;
 
     location / {
         # try to serve file directly, fallback to app.php
@@ -12,7 +12,7 @@ server {
     }
 
     location ~ ^/(app|app_dev)\.php(/|$) {
-        fastcgi_pass unix:/var/run/php-fpm/{{ vhost_name }}.socket;
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;

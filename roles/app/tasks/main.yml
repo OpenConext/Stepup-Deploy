@@ -72,11 +72,11 @@
   file: path=/opt/www/ state=directory owner=root group={{ app_deploy_user }} mode=775
 
 
-# Create vhosts
-- include: vhost.yml vhost_name=middleware
-- include: vhost.yml vhost_name=gateway
-- include: vhost.yml vhost_name=selfservice
-- include: vhost.yml vhost_name=ra
+# Create vhosts for stepup components
+- { include: vhost.yml, component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}" }
+- { include: vhost.yml, component_name: gateway,     vhost_name: "{{ gateway_vhost_name }}" }
+- { include: vhost.yml, component_name: selfservice, vhost_name: "{{ selfservice_vhost_name }}" }
+- { include: vhost.yml, component_name: ra,          vhost_name: "{{ ra_vhost_name }}" }
 
 
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first

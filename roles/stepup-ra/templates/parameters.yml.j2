@@ -14,16 +14,17 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-    gateway_api_url: https://gateway.{{ app_domain }}/
+    gateway_api_url: https://{{ gateway_vhost_name }}/
     gateway_api_username: ra
     gateway_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
 
     middleware_credentials_username: ra
     middleware_credentials_password: {{ registration_authority_api_password | vault(vault_keydir) }}
-    # TODO: Use https
-    middleware_url_command_api: http://middleware.{{ app_domain }}/command
-    # TODO: Use https
-    middleware_url_api: http://middleware.{{ app_domain }}/
+
+{# Middleware access over http because it is assumed that RA and MW are located on the same server
+   middleware vhost ip is set in /etc/hosts #}
+    middleware_url_command_api: http://{{ middleware_vhost_name }}/command
+    middleware_url_api: http://{{ middleware_vhost_name }}/
 
     sms_originator: {{ sms_originator }}
     sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
@@ -35,8 +36,8 @@ parameters:
     saml_metadata_publickey: {{ component_dir_name }}/app/config/sp.crt
     saml_metadata_privatekey: {{ component_dir_name }}/app/config/sp.key
 
-    saml_remote_idp_entity_id: https://gateway.{{ app_domain }}/authentication/metadata
-    saml_remote_idp_sso_url: https://gateway.{{ app_domain }}/authentication/single-sign-on
+    saml_remote_idp_entity_id: https://{{ gateway_vhost_name }}/authentication/metadata
+    saml_remote_idp_sso_url: https://{{ gateway_vhost_name }}/authentication/single-sign-on
     saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
 
     # Minimum LoA required for login to the RA interface

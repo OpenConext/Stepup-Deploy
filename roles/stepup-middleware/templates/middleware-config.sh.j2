@@ -7,7 +7,7 @@ output=`curl -XPOST -i -s \
     -H "Accept: application/json" \
     -H "Content-type: application/json" \
     -d @/root/middleware-config.json \
-    http://middleware.{{ app_domain }}/management/configuration`
+    http://{{ middleware_vhost_name }}/management/configuration`
 
 echo $output
 

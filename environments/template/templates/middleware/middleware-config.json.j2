@@ -38,10 +38,10 @@
   "gateway": {
     "service_providers": [
       {
-        "entity_id": "https://ra.{{ app_domain }}/authentication/metadata",
+        "entity_id": "https://{{ ra_vhost_name }}/authentication/metadata",
         "public_key": "{{ ra_saml_sp_publickey | depem }}",
         "acs": [
-          "https://ra.{{ app_domain }}/authentication/consume-assertion"
+          "https://{{ ra_vhost_name }}/authentication/consume-assertion"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -50,10 +50,10 @@
         "blacklisted_encryption_algorithms": []
       },
       {
-        "entity_id": "https://selfservice.{{ app_domain }}/authentication/metadata",
+        "entity_id": "https://{{ selfservice_vhost_name }}/authentication/metadata",
         "public_key": "{{ selfservice_saml_sp_publickey | depem }}",
         "acs": [
-          "https://selfservice.{{ app_domain }}/authentication/consume-assertion"
+          "https://{{ selfservice_vhost_name }}/authentication/consume-assertion"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -62,10 +62,10 @@
         "blacklisted_encryption_algorithms": []
       },
       {
-        "entity_id": "https://selfservice.{{ app_domain }}/registration/gssf/tiqr/metadata",
+        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata",
         "public_key": "{{ selfservice_tiqr_sp_publickey | depem }}",
         "acs": [
-          "https://selfservice.{{ app_domain }}/registration/gssf/tiqr/consume-assertion"
+          "https://selfservice_vhost_name }}/registration/gssf/tiqr/consume-assertion"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -74,10 +74,10 @@
         "blacklisted_encryption_algorithms": []
       },
       {
-       "entity_id": "https://ra.{{ app_domain }}/vetting-procedure/gssf/tiqr/metadata",
+       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata",
         "public_key": "{{ ra_tiqr_sp_publickey | depem }}",
         "acs": [
-          "https://ra.{{ app_domain }}/vetting-procedure/gssf/tiqr/verify"
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/verify"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa3 }}"

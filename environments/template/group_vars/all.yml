@@ -17,8 +17,11 @@ server_admin_email: admin@stepup.example.com
 # "noreply" email address
 noreply_email: noreply@stepup.example.com
 
-# Domain suffix for web applications (i.e. gateway, selfservice, ra and middleware)
-app_domain: stepup.example.com
+# FQDN for vhosts
+middleware_vhost_name: middleware.stepup.example.com
+selfservice_vhost_name: selfservice.stepup.example.com
+ra_vhost_name: ra.stepup.example.com
+gateway_vhost_name: gateway.stepup.example.com
 
 # The uri's that are used to define the LoA levels
 # TODO: Set LoA uri's

@@ -1,0 +1,7 @@
+loadbalancing:
+  middleware: {
+    name: "middleware",
+    port: 401,
+    heartbeat: { url: "/", method: "GET" },
+    hostgroup: "app",
+  }

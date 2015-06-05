@@ -102,3 +102,4 @@
 
 - include: middleware.yml
 - include: gateway.yml
+- include: keyserver.yml

@@ -56,3 +56,18 @@
       component_name: ra
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
+
+
+- name: Install Stepup-Keyserver
+  hosts: stepup-keyserver
+  sudo: True
+  tags: oath-service-php
+
+  roles:
+        - stepup-keyserver
+
+  vars:
+      component_tarball_name: oath-service-php-develop-20150603123314Z-b927846e2310c7883baa841940bb8a9e75f16230.tar.bz2
+      component_name: keyserver
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"

@@ -1,0 +1,78 @@
+# Infra stuff for key server
+
+- name: Get active component
+  shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
+  ignore_errors: true
+  register: active_component
+
+- debug:
+    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+- name: Check whether component is installed
+  fail: msg="Component already active"
+  when: ( 0 ) and ( component_dir_name != active_component.stdout)
+
+- name: Create keyserver database
+  mysql_db: name={{ database_keyserver_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+- name: Create keyserver user
+  mysql_user:
+    host=127.0.0.1
+    name={{ database_keyserver_user }}
+    password={{ database_keyserver_password | vault(vault_keydir) }}
+    priv={{ database_keyserver_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+# Unused for now
+- name: Create deploy user with access to keyserver database
+  mysql_user:
+    host=127.0.0.1
+    name={{ database_deploy_user }}
+    password={{ database_deploy_password | vault(vault_keydir) }}
+    priv={{ database_keyserver_name }}.*:ALL
+    login_user=root
+    login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
+
+- name: Create stepup directory
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
+- name: Untar component
+  unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }}
+  when: ( {{ component_unarchive | default(1) }} == 1)
+
+# Symfony stuff
+
+- name: Put parameters.yml
+  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml
+
+- name: assets:install
+  command: php app/console assets:install --symlink --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Dump Assetic Assets
+  command: php app/console assetic:dump --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Clear cache
+  command: php app/console cache:clear --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} owner=keyserver recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app/cache"
+  - "{{ component_dir_name }}/app/logs"
+
+# Finish
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory mode=a+rx
+
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link

@@ -77,6 +77,7 @@
 - { include: vhost.yml, component_name: gateway,     vhost_name: "{{ gateway_vhost_name }}" }
 - { include: vhost.yml, component_name: selfservice, vhost_name: "{{ selfservice_vhost_name }}" }
 - { include: vhost.yml, component_name: ra,          vhost_name: "{{ ra_vhost_name }}" }
+- { include: vhost.yml, component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}" }
 
 
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first

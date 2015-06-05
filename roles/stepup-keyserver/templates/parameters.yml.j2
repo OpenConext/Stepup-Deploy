@@ -9,10 +9,10 @@ parameters:
     surfnet_oath.userstorage:
         type: pdo
         options:
-          dsn: mysql:host=localhost;dbname={{ database_keyserver_name }}
+          dsn: mysql:host={{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }};dbname={{ database_keyserver_name }}
           username: {{ database_keyserver_user }}
           password: {{ database_keyserver_password | vault(vault_keydir) }}
-          # TODO: config?
+          # TODO: configerable?
           table: secret
 
     surfnet_oath.consumerKey: {{ oath_keyserver_consumerkey | vault(vault_keydir) }}

@@ -26,10 +26,11 @@
 
 # MariaDB service from RedHat is called "mariadb", MariaDB service from MariaDB is called "mysql"
 - name: Check whether DB is running
-  command: /sbin/service mysql status
+  command: /bin/systemctl status mysql
   ignore_errors: true
   register: status_result
   changed_when: False
+  failed_when: status_result.rc >= 4
 # status codes:
 #0 program is running or service is OK
 #1 program is dead and /var/run pid file exists

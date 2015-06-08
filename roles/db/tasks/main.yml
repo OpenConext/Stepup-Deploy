@@ -1,11 +1,15 @@
+# Add MariaDB repo and key
 - name: Add MariaDB.org repository
   template: src='mariadb.repo.j2' dest='/etc/yum.repos.d/mariadb.repo'
 
+- name: Copy MariaDB repository key
+  copy: src=RPM-GPG-KEY-MariaDB dest={{ managed_file_dir }}/RPM-GPG-KEY-MariaDB
+
 - name: Add MariaDB.org repository key
-  rpm_key: state=present key=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+  rpm_key: state=present key={{ managed_file_dir }}/RPM-GPG-KEY-MariaDB
 
 
-- name: Install RPMs
+- name: Install MariaDB, Galera, rsync, MySQL-python
   yum: name={{item}} state=installed
   with_items:
   - MariaDB-Galera-server

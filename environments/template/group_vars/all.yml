@@ -65,3 +65,6 @@ database_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_d
 database_gateway_name: gateway
 database_gateway_user: gateway
 database_gateway_password: "{{ lookup('file', inventory_dir+'/password/database_gateway') }}"
+
+# The (ip) address to use to access the mariadb database
+database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster

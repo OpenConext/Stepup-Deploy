@@ -1,8 +1,7 @@
 parameters:
     database_driver:   pdo_mysql
 
-    # TODO: Use LB address
-    database_host:     {{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}
+    database_host:     {{ database_lb_address }}
     database_port:     3306
     database_middleware_name:     {{ database_middleware_name }}
     database_middleware_user:     {{ database_middleware_user }}

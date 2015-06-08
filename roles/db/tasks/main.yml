@@ -58,14 +58,14 @@
   when: (status_result.rc != 0) and (start_result|failed) and (galera_bootstrap_node != inventory_hostname)
 
 # Only bootstrap when galera_bootstrap_node allows us to bootsrap this node, and the node is not running
-- name: Bootstrap Galera node
+- name: Bootstrap first MariaDB server
   command: /sbin/service mysql bootstrap
   when: (status_result.rc != 0) and (start_result|failed) and (galera_bootstrap_node == inventory_hostname)
 
 # Bootstrap database
 # - Set root password
 # - Remove anonymous users and test database
-- name: Bootstrap mysql database
+- name: Change mysql root password and remove test database
   script: mysql_bootstrap.sh "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 # Add cluster user

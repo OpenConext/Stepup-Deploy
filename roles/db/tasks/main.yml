@@ -67,6 +67,9 @@
 # - Remove anonymous users and test database
 - name: Change mysql root password and remove test database
   script: mysql_bootstrap.sh "{{ mariadb_root_password | vault(vault_keydir) }}"
+  register: db_bootstrap_result
+  changed_when: db_bootstrap_result.rc > 0
+  failed_when: db_bootstrap_result.rc >= 2
 
 # Add cluster user
 - name: add mariadb cluster user

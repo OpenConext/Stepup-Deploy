@@ -7,13 +7,18 @@
 # - remove anonymous users
 #
 # Usage: mysql_bootstrap.sh "<mysql root password>"
-
+#
+# Return code:
+# 0: success, no changes
+# 1: success, changes
+# 2: error
 
 mysql_root_password=$1
+changes=0
 
 if [ -z ${mysql_root_password} ]; then
    echo "Usage $0 <mysql root password>"
-   exit 1
+   exit 2
 fi
 
 #Test login as user root to localhost without password
@@ -27,11 +32,12 @@ res=$?
 
 if [ $res == 0 ]; then
    echo "Root access without password is allowed to localhost. Setting new root password for all root users."
+   changed=1
    mysql --user=root --password= -e "UPDATE mysql.user SET Password = PASSWORD('${mysql_root_password}') WHERE User = 'root'; FLUSH PRIVILEGES;"
    res=$?
    if [ $res == 1 ]; then
       echo "Error setting new mysql password"
-      exit 1;
+      exit 2;
    fi
    echo "Set new password for mysql user root"
 elif [[ ${out_err} ==  "ERROR 1045 (28000)"* ]]; then
@@ -40,41 +46,56 @@ elif [[ ${out_err} ==  "ERROR 1045 (28000)"* ]]; then
 else
    echo "Unexpected error from mysql:"
    echo ${out_err}
-  exit 1
+   exit 2
 fi
 
 # Fix any root acounts that we may have missed
 echo -n "Securing all root accounts... "
-mysql -u root -p${mysql_root_password} -e "UPDATE mysql.user SET Password = PASSWORD('${mysql_root_password}') WHERE User = 'root'; FLUSH PRIVILEGES;"
+out=`mysql -u root -p${mysql_root_password} -N -B -e "UPDATE mysql.user SET Password = PASSWORD('${mysql_root_password}') WHERE User = 'root'; SELECT ROW_COUNT(); FLUSH PRIVILEGES;"`
 res=$?
 if [ ${res} == 0 ]; then
-   echo "OK"
+   if [ "${out}" -gt "0" ]; then
+      changed=1
+      echo "Changed. OK"
+   else
+      echo "OK"
+   fi
 else
    echo "Failed"
-   exit 1
+   exit 2
 fi
 
 
 echo -n "Removing anonymous users (if any)... "
-mysql -u root -p"${mysql_root_password}" -e "DELETE FROM mysql.user WHERE User = ''; FLUSH PRIVILEGES;"
+out=`mysql -u root -p"${mysql_root_password}" -N -B -e "DELETE FROM mysql.user WHERE User = ''; SELECT ROW_COUNT(); FLUSH PRIVILEGES;"`
 res=$?
 if [ ${res} == 0 ]; then
-   echo "OK"
+   if [ "${out}" -gt "0" ]; then
+      changed=1
+      echo "Changed. OK"
+   else
+      echo "OK"
+   fi
 else
    echo "Failed"
-   exit 1
+   exit 2
 fi
 
 
 echo -n "Removing test schema/database (if any)... "
-mysql -u root -p"${mysql_root_password}" -e "DROP DATABASE IF EXISTS test;"
+out=`mysql -u root -p"${mysql_root_password}" -N -B -e "DROP DATABASE IF EXISTS test; SELECT ROW_COUNT();"`
 res=$?
 if [ ${res} == 0 ]; then
-   echo "OK"
+   if [ "${out}" -gt "0" ]; then
+      changed=1
+      echo "Changed. OK"
+   else
+      echo "OK"
+   fi
 else
    echo "Failed"
-   exit 1
+   exit 2
 fi
 
 
-exit 0
+exit ${changed}

@@ -12,8 +12,12 @@
 [mysqld]
 log_warnings=2
 
+# this is the config used by the normal mysql service
 [mysqld_safe]
 syslog
+
+# general_log_file: log *all* queries to file
+# general_log_file=/var/lib/mysql/general.log
 
 # this is only for embedded server
 [embedded]

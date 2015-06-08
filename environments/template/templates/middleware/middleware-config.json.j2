@@ -4,25 +4,6 @@
       "urn:collab:person:pieter.aai.surfnet.nl:joost",
       "urn:collab:person:pieter.aai.surfnet.nl:eefje"
   ],
-  "raa": {
-    "pieter.aai.surfnet.nl": [
-      {
-        "name_id": "urn:collab:person:pieter.aai.surfnet.nl:pieter",
-        "location": "Utrecht, SURFnet, CIS spot",
-        "contact_info": "Pieter van der Meulen (SURFnet) [pieter.aai] - pieter@surfnet.nl"
-      },
-      {
-        "name_id": "urn:collab:person:pieter.aai.surfnet.nl:joost",
-        "location": "Utrecht, SURFnet, CIS spot",
-        "contact_info": "Joost van Dijk (SURFnet) [pieter.aai] - joost@surfnet.nl"
-      },
-      {
-        "name_id": "urn:collab:person:pieter.aai.surfnet.nl:eefje",
-        "location": "Utrecht, SURFnet, CIS spot",
-        "contact_info": "Eefje van der Harst (SURFnet) [pieter.aai] - eefje@surfnet.nl"
-      }
-    ],
-  },
 
   "email_templates": {
     "confirm_email": {
@@ -65,7 +46,7 @@
         "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata",
         "public_key": "{{ selfservice_tiqr_sp_publickey | depem }}",
         "acs": [
-          "https://selfservice_vhost_name }}/registration/gssf/tiqr/consume-assertion"
+          "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/consume-assertion"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -99,6 +80,8 @@
         "assertion_encryption_enabled": false,
         "blacklisted_encryption_algorithms": []
       }
+    ],
+    'identity_providers': [
     ]
   }
 }

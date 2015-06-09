@@ -1,0 +1,33 @@
+---
+
+- name: Install
+  yum: name=nginx state=present
+
+- name: Copy empty default.conf
+  copy: src=default.conf dest=/etc/nginx/conf.d
+
+- include: vhost.yml
+  vhost_name: "{{ gateway_vhost_name }}"
+  component_name: gateway
+  vhost_certificate: "{{ proxy_gateway_certificate }}"
+  vhost_key: "{{ nginx_gateway_key }}"
+
+- include: vhost.yml
+  vhost_name: "{{ selfservice_vhost_name }}"
+  component_name: selfservice
+  vhost_certificate: "{{ proxy_selfservice_certificate }}"
+  vhost_key: "{{ nginx_selfservice_key }}"
+
+- include: vhost.yml
+  vhost_name: "{{ ra_vhost_name }}"
+  component_name: ra
+  vhost_certificate: "{{ proxy_ra_certificate }}"
+  vhost_key: "{{ nginx_ra_key }}"
+
+- name: enable service
+  service: name=nginx enabled=yes
+  notify:
+    - restart nginx
+
+- name: start
+  service: name=nginx state=started

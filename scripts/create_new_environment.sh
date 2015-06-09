@@ -14,7 +14,7 @@ SECRETS=("gateway" "middleware" "ra" "selfservice")
 SAML_CERTS=("gateway_saml_idp" "gateway_saml_sp" "gateway_tiqr_idp" "gateway_tiqr_sp" "selfservice_saml_sp" "selfservice_tiqr_sp" "ra_saml_sp" "ra_tiqr_sp")
 
 DOMAIN='stepup.example.com' # Domain for SSL certs
-SSL_CERTS=("gateway" "ra" "selfservice" "manage")
+SSL_CERTS=("gateway" "ra" "selfservice" "manage" "middleware")
 
 
 CWD=`pwd`

@@ -1,17 +1,17 @@
 server {
     listen       0.0.0.0:80;
-    server_name  {{ vhost_name }}.{{ base_domain }};
+    server_name  {{ vhost_name }};
 
-    return       301 https://{{ vhost_name }}.{{ base_domain }}$request_uri;
+    return       301 https://{{ vhost_name }}$request_uri;
 }
 
 server {
   listen       0.0.0.0:443 ssl spdy;
-  server_name  {{ vhost_name }}.{{ base_domain }};
+  server_name  {{ vhost_name }};
 
   ssl                  on;
-  ssl_certificate      /etc/nginx/keys/{{ certificate_name }};
-  ssl_certificate_key  /etc/nginx/keys/{{ key_name }};
+  ssl_certificate      /etc/nginx/keys/{{ vhost_name }}.crt;
+  ssl_certificate_key  /etc/nginx/keys/{{ vhost_name }}.key;
 
   ssl_session_timeout  60m;
 
@@ -23,7 +23,7 @@ server {
   ssl_ecdh_curve secp384r1;
 
   location / {
-      proxy_pass http://127.0.0.1:{{ haproxy_port }}/;
+      proxy_pass http://127.0.0.1:{{ loadbalancing[component].port }}/;
       proxy_http_version 1.1;
       proxy_redirect off;
       proxy_set_header Host $http_host;
@@ -36,18 +36,18 @@ server {
 
 server {
     listen       [::]:80;
-    server_name  {{ vhost_name }}.{{ base_domain }};
+    server_name  {{ vhost_name }};
 
-    return       301 https://{{ vhost_name }}.{{ base_domain }}$request_uri;
+    return       301 https://{{ vhost_name }}$request_uri;
 }
 
 server {
     listen       [::]:443 ssl spdy;
-    server_name  {{ vhost_name }}.{{ base_domain }};
+    server_name  {{ vhost_name }};
 
     ssl                  on;
-    ssl_certificate      /etc/nginx/keys/{{ certificate_name }};
-    ssl_certificate_key  /etc/nginx/keys/{{ key_name }};
+    ssl_certificate      /etc/nginx/keys/{{ vhost_name }}.crt;
+    ssl_certificate_key  /etc/nginx/keys/{{ vhost_name }}.key;
 
     ssl_session_timeout  60m;
 
@@ -60,7 +60,7 @@ server {
     ssl_stapling on;
 
     location / {
-        proxy_pass http://127.0.0.1:{{ haproxy_port }}/;
+        proxy_pass http://127.0.0.1:{{ loadbalancing[component].port }}/;
         proxy_http_version 1.1;
         proxy_redirect off;
         proxy_set_header Host $http_host;

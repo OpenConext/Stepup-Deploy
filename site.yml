@@ -67,3 +67,13 @@
 
   roles:
   - dev
+
+- name: Setup loadbalancer servers
+  hosts: lb
+  sudo: True
+  tags: lb
+
+  roles:
+  - lb
+
+

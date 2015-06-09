@@ -1,5 +1,5 @@
 - name: Install haproxy
-  yum: name=haproxy.x86_64 state=present
+  yum: name=haproxy state=present
 
 - name: Install socat
   yum: name=socat state=present

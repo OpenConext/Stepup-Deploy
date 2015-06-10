@@ -60,11 +60,6 @@
   args:
       chdir: "{{ component_dir_name }}"
 
-- name: Dump Assetic Assets
-  command: php app/console assetic:dump --env=prod --no-debug
-  args:
-      chdir: "{{ component_dir_name }}"
-
 - name: Clear cache
   command: php app/console cache:clear --env=prod --no-debug
   args:

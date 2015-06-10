@@ -39,25 +39,18 @@
   - "{{ component_dir_name }}/app/logs"
 
 
-# TODO: Database setup & migration
-# To do this manually change to the component_dir_name and run:
-# # php app/console middleware:migrations:migrate --env=prod
-
-- name: Put middleware config scripts in /root/
+- name: Put middleware configuration scripts in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
-  - "middleware-config.sh"
-  - "db_migrate.sh"
+  - "01-db_migrate.sh"
+  - "02-middleware-config.sh"
+  - "03-bootstrap-sraa-users.sh"
 
-- name: Put middleware config script data in /root/
+
+- name: Put middleware config from environment in /root/
   template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400"
   with_items:
   - "middleware-config.json"
-
-
-# TODO: Middleware configuration
-# To do this manually run:
-# # /root/middleware-config.sh
 
 
 - name: Set stepup directory rights
@@ -66,17 +59,15 @@
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link
 
+
 - name: Show database configuration hint
   debug:
-      msg: |
-          Note: Database initialisation/migration must be run manually. To do this:
-          1) change to directory: "{{ component_dir_name }}"
-          2) execute: php app/console middleware:migrations:migrate --env=prod
+    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-db_migrate.sh' on an app server."
 
 - name: Show middleware configuration hint
   debug:
-      msg: |
-          Note: the configuration of the middleware component using its REST interface
-          must be performed manually.
-          A starter configuration was written to: /root/middleware-config.json
-          To send the configuration execute: /root/middleware-config.sh
+    msg: "Note: The configuration of the middleware component using its REST interface must be performed manually. Run '/root/02-middleware-config.sh' on an app server."
+
+- name: Show SRAA user bootstrap hint
+  debug:
+    msg: "Note: The first SRAA user(s) must be provisionied manually. Run '/root/03-bootstrap-sraa-users.sh' on an app server."

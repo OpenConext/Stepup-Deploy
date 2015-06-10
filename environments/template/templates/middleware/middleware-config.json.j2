@@ -1,8 +1,8 @@
 {
   "sraa": [
-      "urn:collab:person:pieter.aai.surfnet.nl:pieter",
-      "urn:collab:person:pieter.aai.surfnet.nl:joost",
-      "urn:collab:person:pieter.aai.surfnet.nl:eefje"
+      {% for sraa in middleware_sraa %}"{{ sraa.nameid }}"{% if not loop.last %},{% endif %}
+
+      {% endfor %}
   ],
 
   "email_templates": {

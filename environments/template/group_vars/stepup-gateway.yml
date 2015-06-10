@@ -1,10 +1,10 @@
 # Config for gateway component
 
-# Used for Symfony CSRF protection
+# Used for Symfony CSRF protection (Vaulted)
 gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
 
-# Messagebird (www.messagebird.com) REST API (v2 and above) access key
+# Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
 # TODO: Set messagebird API access key
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
@@ -19,7 +19,7 @@ sms_otp_expiry_interval: 900
 sms_maximum_otp_requests: 3
 
 
-# Yubikey client_id and secret (Vaulted) for accessing the yubico authentication service
+# Yubikey client_id (Plain) and secret (Vaulted) for accessing the yubico authentication service
 # Create one at: https://upgrade.yubico.com/getapikey/
 # TODO: Set yubikey client id
 yubikey_client_id: 00000

@@ -6,7 +6,7 @@
 # Wait until port 9200 and 9300 accept connections
 # Start polling after <delay> seconds, try for max <timeout> seconds
 - name: Wait for elasticsearch
-  wait_for: delay=0 port={{ item }} timeout=60 state=started
+  wait_for: delay=0 port={{ item }} timeout=60 state=started host={{ host_ipv4 }}
   with_items:
   - 9200
   - 9300

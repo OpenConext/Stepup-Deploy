@@ -10,8 +10,7 @@ pushd /opt/www/{{ middleware_vhost_name }}
 #Format: php app/console middleware:bootstrap:identity-with-yubikey --env=prod <nameID> <schachomeorganization> <common name> <email> <preferred locale> <modhex yubikeyid>
 
 {% for sraa in middleware_sraa %}
-read -p "Add idenity {{ sraa.nameid }} (y/n)? " -n 1 -r
-echo
+read -p "Add identity {{ sraa.nameid }} (y/n)? " -r
 if [[ ${REPLY} =~ ^[Yy]$ ]]
 then
     php app/console middleware:bootstrap:identity-with-yubikey --env=prod {{ sraa.nameid }} {{ sraa.institution }} "{{ sraa.cn }}" {{ sraa.email }} {{ sraa.lang }} {{ sraa['yubikey_id'] }}

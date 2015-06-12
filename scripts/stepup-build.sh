@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CWD=`pwd`
-COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA")
+COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "oath-service-php")
 DEFAULT_BRANCH=develop
 BUILD_ENV=build
 

@@ -20,6 +20,11 @@
 {% if 'app' in group_names %}
 {% endif %}
 
+# key server
+# TODO restrict access to key server from tiqr IDP only
+{% if 'keyserver' in group_names %}
+{% endif %}
+
 # Elastic search cluster
 {% if 'es' in group_names %}
 {% endif %}

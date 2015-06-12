@@ -19,3 +19,16 @@
   component_name: ra
   proxy_certificate: "{{ proxy_ra_certificate }}"
   proxy_key: "{{ proxy_ra_key }}"
+
+- include: proxy.yml
+  vhost_name: "{{ tiqr_vhost_name }}"
+  component_name: tiqr
+  proxy_certificate: "{{ proxy_tiqr_certificate }}"
+  proxy_key: "{{ proxy_tiqr_key }}"
+
+# TODO: adapt so that TLS terminates on key server instead of proxy/LB
+- include: proxy.yml
+  vhost_name: "{{ keyserver_vhost_name }}"
+  component_name: keyserver
+  proxy_certificate: "{{ proxy_keyserver_certificate }}"
+  proxy_key: "{{ proxy_keyserver_key }}"

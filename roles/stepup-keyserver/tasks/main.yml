@@ -12,29 +12,6 @@
   fail: msg="Component already active"
   when: ( 0 ) and ( component_dir_name != active_component.stdout)
 
-- name: Create keyserver database
-  mysql_db: name={{ database_keyserver_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-- name: Create keyserver user
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_keyserver_user }}
-    password={{ database_keyserver_password | vault(vault_keydir) }}
-    priv={{ database_keyserver_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-
-# Unused for now
-- name: Create deploy user with access to keyserver database
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_deploy_user }}
-    password={{ database_deploy_password | vault(vault_keydir) }}
-    priv={{ database_keyserver_name }}.*:ALL
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
 
 - name: Create stepup directory
   file: path={{ component_dir_name }} state=directory mode=a+rx

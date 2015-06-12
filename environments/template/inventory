@@ -16,11 +16,11 @@
 
 # The host defined below are suitable for use with the VMs creates Stepup-Deploy-VM
 
-#####
-# app
-#####
+############
+# stepup-app
+############
 
-[app]
+[stepup-app]
 app.stepup.example.com host_ipv4=192.168.66.2 ansible_ssh_host=192.168.66.2 ansible_ssh_user=stepup ansible_ssh_pass=stepup
 
 ########
@@ -31,9 +31,17 @@ app.stepup.example.com host_ipv4=192.168.66.2 ansible_ssh_host=192.168.66.2 ansi
 manage.stepup.example.com host_ipv4=192.168.66.3 ansible_ssh_host=192.168.66.3 ansible_ssh_user=stepup ansible_ssh_pass=stepup
 
 
-###############
-# elasticsearch
-###############
+###########
+# keyserver
+###########
+
+[ks]
+ks.stepup.example.com host_ipv4=192.168.66.7 ansible_ssh_host=192.168.66.7 ansible_ssh_user=stepup ansible_ssh_pass=stepup
+
+
+##############
+# elsticsearch
+##############
 
 # Elasticsearch cluster
 [es]
@@ -61,7 +69,6 @@ app
 
 [dbcluster]
 db.stepup.example.com host_ipv4=192.168.66.5 ansible_ssh_host=192.168.66.5 ansible_ssh_user=stepup ansible_ssh_pass=stepup
-db2.stepup.example.com host_ipv4=192.168.66.7 ansible_ssh_host=192.168.66.7 ansible_ssh_user=stepup ansible_ssh_pass=stepup
 
 
 #####
@@ -72,7 +79,7 @@ db2.stepup.example.com host_ipv4=192.168.66.7 ansible_ssh_host=192.168.66.7 ansi
 
 
 
-# The "Stepup-XXX" groups below are used for deployment
+# The "Stepup-XXX" groups below ae used for deployment
 
 ################
 # stepup-gateway
@@ -81,7 +88,7 @@ db2.stepup.example.com host_ipv4=192.168.66.7 ansible_ssh_host=192.168.66.7 ansi
 [stepup-gateway]
 
 [stepup-gateway:children]
-app
+stepup-app
 
 
 ###################
@@ -91,7 +98,7 @@ app
 [stepup-middleware]
 
 [stepup-middleware:children]
-app
+stepup-app
 
 
 ###########
@@ -101,7 +108,7 @@ app
 [stepup-ra]
 
 [stepup-ra:children]
-app
+stepup-app
 
 
 ####################
@@ -111,8 +118,7 @@ app
 [stepup-selfservice]
 
 [stepup-selfservice:children]
-app
-
+stepup-app
 
 #############
 # stepup-tiqr
@@ -121,7 +127,7 @@ app
 [stepup-tiqr]
 
 [stepup-tiqr:children]
-app
+stepup-app
 
 
 ##################
@@ -131,4 +137,16 @@ app
 [stepup-keyserver]
 
 [stepup-keyserver:children]
-app
+ks
+
+
+
+#####
+# app
+#####
+
+[app]
+
+[app:children]
+stepup-app
+ks

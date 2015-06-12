@@ -9,6 +9,12 @@ proxy_selfservice_key: "{{ lookup('file', inventory_dir+'/ssl_cert/selfservice.k
 # Format: PEM RSA PRIVATE KEY
 proxy_ra_key: "{{ lookup('file', inventory_dir+'/ssl_cert/ra.key') }}"
 
+# Format: PEM RSA PRIVATE KEY
+proxy_keyserver_key: "{{ lookup('file', inventory_dir+'/ssl_cert/keyserver.key') }}"
+
+# Format: PEM RSA PRIVATE KEY
+proxy_tiqr_key: "{{ lookup('file', inventory_dir+'/ssl_cert/tiqr.key') }}"
+
 
 # Format: PEM Certificate (chain)
 # Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
@@ -24,3 +30,13 @@ proxy_selfservice_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/selfs
 # Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
 # Do not include root CA certificate
 proxy_ra_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/ra.crt') }}"
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_keyserver_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/keyserver.crt') }}"
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_tiqr_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/tiqr.crt') }}"

@@ -22,7 +22,7 @@ middleware_vhost_name: middleware.stepup.example.com
 selfservice_vhost_name: selfservice.stepup.example.com
 ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
-tiqr_vhost_name: keyserver.stepup.example.com
+tiqr_vhost_name: tiqr.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
 
 # The uri's that are used to define the LoA levels

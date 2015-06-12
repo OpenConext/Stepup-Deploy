@@ -31,9 +31,9 @@ app.stepup.example.com host_ipv4=192.168.66.2 ansible_ssh_host=192.168.66.2 ansi
 manage.stepup.example.com host_ipv4=192.168.66.3 ansible_ssh_host=192.168.66.3 ansible_ssh_user=stepup ansible_ssh_pass=stepup
 
 
-##############
-# elsticsearch
-##############
+###############
+# elasticsearch
+###############
 
 # Elasticsearch cluster
 [es]
@@ -74,7 +74,7 @@ app
 
 
 
-# The "Stepup-XXX" groups below ae used for deployment
+# The "Stepup-XXX" groups below are used for deployment
 
 ################
 # stepup-gateway
@@ -113,4 +113,24 @@ app
 [stepup-selfservice]
 
 [stepup-selfservice:children]
+app
+
+
+#############
+# stepup-tiqr
+#############
+
+[stepup-tiqr]
+
+[stepup-tiqr:children]
+app
+
+
+##################
+# stepup-keyserver
+##################
+
+[stepup-keyserver]
+
+[stepup-keyserver:children]
 app

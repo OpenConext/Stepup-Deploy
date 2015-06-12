@@ -58,6 +58,21 @@
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
 
 
+- name: Install Stepup-tiqr IDP
+  hosts: stepup-tiqr
+  sudo: True
+  tags: stepup-tiqr
+
+  roles:
+        - stepup-tiqr
+
+  vars:
+      component_tarball_name: Stepup-tiqr-develop-20150507103441Z-f07a3c01ea97a3fea88d77c4978aad6daeb28cd5.tar.bz2
+      component_name: tiqr
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
+
+
 - name: Install Stepup-Keyserver
   hosts: stepup-keyserver
   sudo: True

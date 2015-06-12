@@ -42,9 +42,9 @@
 - name: Put middleware configuration scripts in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
-  - "01-db_migrate.sh"
+  - "01-middleware-db_migrate.sh"
   - "02-middleware-config.sh"
-  - "03-bootstrap-sraa-users.sh"
+  - "03-middleware-bootstrap-sraa-users.sh"
 
 
 - name: Put middleware config from environment in /root/

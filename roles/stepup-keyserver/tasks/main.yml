@@ -53,3 +53,8 @@
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ keyserver_vhost_name }} state=link
+
+- name: Put keyserver configuration script in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  with_items:
+  - "01-keyserver-db_init.sh"

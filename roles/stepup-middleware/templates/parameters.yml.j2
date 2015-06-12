@@ -10,8 +10,8 @@ parameters:
     database_gateway_user:     {{ database_middleware_user }}
     database_gateway_password: {{ database_middleware_password | vault(vault_keydir)}}
     # TODO: Deploy creds should only be available during deploy
-    database_deploy_user:      {{ database_deploy_user }}
-    database_deploy_password:  {{ database_deploy_password | vault(vault_keydir) }}
+    database_deploy_user:      {{ database_middleware_deploy_user }}
+    database_deploy_password:  {{ database_middleware_deploy_password | vault(vault_keydir) }}
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1

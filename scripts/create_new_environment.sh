@@ -6,7 +6,7 @@
 # Please read the notice at the end of the script
 
 PASSWORD_LENGTH=15
-PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_deploy" "database_middleware" "database_keyserver" "database_tiqr")
+PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_middleware_deploy" "database_middleware" "database_keyserver_deploy" "database_keyserver" "database_tiqr" "database_tiqr_deploy")
 
 SECRET_LENGTH=40
 SECRETS=("gateway" "middleware" "ra" "selfservice" "tiqr" "keyserver")

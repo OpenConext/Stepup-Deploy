@@ -1,12 +1,26 @@
+# Database configuration for keyserver component
+
 - name: Create keyserver database
   mysql_db: name={{ database_keyserver_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
-- name: Create keyserver user
+- name: Create keyserver deploy DB user with ALL access to keyserver database
   mysql_user:
-    name={{ database_keyserver_user }}
-    host={{ hostvars[item].host_ipv4 }}
-    password={{ database_keyserver_password | vault(vault_keydir) }}
-    priv={{ database_keyserver_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-  with_items: "{{ groups['app'] }}"
+    name: "{{ database_keyserver_deploy_user }}"
+    host: "%"
+    password: "{{ database_keyserver_deploy_password | vault(vault_keydir) }}"
+    priv: "{{ database_keyserver_name }}.*:ALL\ PRIVILEGES,GRANT"
+    login_host: "127.0.0.1"
+    login_user: "root"
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
+
+
+- name: Create DB user for keyserver component
+  mysql_user:
+    name: "{{ database_keyserver_user }}"
+    host: "%"
+    password: "{{ database_keyserver_password | vault(vault_keydir) }}"
+    priv: "{{ database_keyserver_name }}.*:SELECT,INSERT,DELETE,UPDATE"
+    login_host: "127.0.0.1"
+    login_user: root
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
+

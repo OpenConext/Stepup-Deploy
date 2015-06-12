@@ -1,7 +1,7 @@
 # Infra stuff for key server
 
 - name: Get active component
-  shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
+  shell: readlink /opt/www/{{ keyserver_vhost_name }}
   ignore_errors: true
   register: active_component
 
@@ -75,4 +75,4 @@
   file: path={{ component_dir_name }} state=directory mode=a+rx
 
 - name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
+  file: src={{ component_dir_name }} dest=/opt/www/{{ keyserver_vhost_name }} state=link

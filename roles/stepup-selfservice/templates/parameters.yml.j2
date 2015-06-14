@@ -14,20 +14,23 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
+{# Note: Gateway API acces over HTTP #}
+{# gateway vhost ip is set in /etc/hosts #}
     gateway_api_url: http://{{ gateway_vhost_name }}/
     gateway_api_username: ss
     gateway_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
 
     middleware_credentials_username: ss
     middleware_credentials_password: {{ selfservice_api_password | vault(vault_keydir) }}
-{# Middleware access over http because it is assumed that SS and MW are located on the same server
-   middleware vhost ip is set in /etc/hosts #}
+
+{# Note: Middleware API acces over HTTP #}
+{# middleware vhost ip is set in /etc/hosts #}
     middleware_url_command_api: http://{{ middleware_vhost_name }}/command
     middleware_url_api: http://{{ middleware_vhost_name }}/
 
-    sms_originator: SURFStepup
-    sms_otp_expiry_interval: 900 # 15 minutes
-    sms_maximum_otp_requests: 3
+    sms_originator: {{ sms_originator }}
+    sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
+    sms_maximum_otp_requests: {{ sms_maximum_otp_requests }}
 
     saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
 

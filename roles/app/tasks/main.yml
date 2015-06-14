@@ -13,9 +13,11 @@
 
 # node.less is used by app/console assetic:dump
 # sendmail is used for sending mail from localhost (enabled in default config)
-- name: Install nginx & php-(cli,fpm) & node.less & smtpd
+- name: Install nginx, php-(cli,fpm), node.less, smtpd, mysql client libs, bzip2
   yum: name={{item}} state=present
   with_items:
+  - mysql
+  - bzip2
   - nginx
   - php-fpm
   - php-cli

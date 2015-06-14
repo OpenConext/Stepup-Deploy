@@ -62,7 +62,7 @@
 
 - name: Show database configuration hint
   debug:
-    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-db_migrate.sh' on an app server."
+    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-middleware-db_migrate.sh' on an app server."
 
 - name: Show middleware configuration hint
   debug:
@@ -70,4 +70,4 @@
 
 - name: Show SRAA user bootstrap hint
   debug:
-    msg: "Note: The first SRAA user(s) must be provisionied manually. Run '/root/03-bootstrap-sraa-users.sh' on an app server."
+    msg: "Note: The first SRAA user(s) must be provisionied manually. Run '/root/03-middleware-bootstrap-sraa-users.sh' on an app server."

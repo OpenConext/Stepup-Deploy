@@ -86,4 +86,9 @@ database_keyserver_deploy_password: "{{ lookup('file', inventory_dir+'/password/
 
 
 # The (ip) address to use to access the mariadb database
+# TODO: Set to loadbalanced address when using > 1 DB nodes
 database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster
+
+# The (ip) address to use to access the keyserver
+# TODO: Set to loadbalanced address when using > 1 keyservers
+keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use address of first ks

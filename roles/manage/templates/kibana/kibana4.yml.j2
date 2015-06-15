@@ -2,7 +2,7 @@
 port: 5601
 
 # The host to bind the server to.
-host: "0.0.0.0"
+host: "127.0.0.1"
 
 # The Elasticsearch instance to use for all your queries.
 elasticsearch_url: "http://{{ hostvars[groups['es'][0]]['host_ipv4'] }}:9200"

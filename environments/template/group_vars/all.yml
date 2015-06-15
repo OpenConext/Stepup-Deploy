@@ -92,3 +92,8 @@ database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use
 # The (ip) address to use to access the keyserver
 # TODO: Set to loadbalanced address when using > 1 keyservers
 keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use address of first ks
+
+# The ip address of the loghost server to receive logs
+# TODO: Set to address and port of logserver
+loghost_relp_address: "{{ hostvars[groups['manage'][0]]['host_ipv4'] }}"
+loghost_relp_port: 10514

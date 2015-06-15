@@ -13,3 +13,6 @@ tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') 
 
 # OAuth consumer key for authentication to the keyserver
 oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyserver') }}"
+
+# API key
+gcm_apikey: "{{ lookup('file', inventory_dir+'/secret/gcm_apikey') }}"

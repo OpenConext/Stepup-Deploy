@@ -1,7 +1,7 @@
 # Infra stuff for tiqr IDP
 
 - name: Get active component
-  shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
+  shell: readlink /opt/www/{{ tiqr_vhost_name }}
   ignore_errors: true
   register: active_component
 
@@ -11,31 +11,6 @@
 - name: Check whether component is installed
   fail: msg="Component already active"
   when: ( 0 ) and ( component_dir_name != active_component.stdout)
-
-- name: Create tiqr database
-  mysql_db: name={{ database_tiqr_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-# TODO change db host
-- name: Create tiqr user
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_tiqr_user }}
-    password={{ database_tiqr_password | vault(vault_keydir) }}
-    priv={{ database_tiqr_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-
-# Unused for now
-- name: Create deploy user with access to tiqr database
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_deploy_user }}
-    password={{ database_deploy_password | vault(vault_keydir) }}
-    priv={{ database_tiqr_name }}.*:ALL
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
 
 - name: Create stepup-tiqr directory
   file: path={{ component_dir_name }} state=directory mode=a+rx
@@ -47,17 +22,40 @@
 # config stuff
 
 - name: Put local config
-  template: src=local_config.j2 dest={{ component_dir_name }}/local_config.php
+  template: src=local_config.php.j2 dest={{ component_dir_name }}/local_config.php
+
+- name: Put local options
+  template: src=local_options.php.j2 dest={{ component_dir_name }}/local_options.php
+
+- name: Create log directory
+  file: path={{ component_dir_name }}/logs state=directory mode=a+rx
 
 - name: Grant app write access to log dirs (similar to symfony2 apps)
   file: path={{item}} owner=tiqr recurse=yes
   with_items:
-  - "{{ component_dir_name }}/app/logs"
+  - "{{ component_dir_name }}/logs"
 
 # Finish
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory mode=a+rx
 
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
+- name: Activate componen
+  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
+
+- name: Put tiqr configuration script in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  with_items:
+  - "01-tiqr-db_init.sh"
+
+# TODO: change in Stepup-tiqr
+
+- name: create symlink to match generic nginx config
+  file: src=/opt/www/{{ tiqr_vhost_name }}/www dest=/opt/www/{{ tiqr_vhost_name }}/web state=link
+
+# TODO move to logs directory
+- name: Create log files
+  file: path={{ component_dir_name }}/authn.log owner=tiqr mode=u+rw
+
+- name: Create log files
+  file: path={{ component_dir_name }}/saml.log owner=tiqr mode=u+rw

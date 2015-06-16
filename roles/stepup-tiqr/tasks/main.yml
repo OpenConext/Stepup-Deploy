@@ -48,6 +48,9 @@
   with_items:
   - "01-tiqr-db_init.sh"
 
+- name: Write tiqr APNS certificate
+  copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/apns.pem
+
 # TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
 - name: Write tiqr sp certificate
   copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/gateway.crt
@@ -57,7 +60,7 @@
   copy: content="{{ tiqr_idp_publickey }}" dest={{ component_dir_name }}/cert.pem
 
 # TODO: Explicitly config filenames
-- name: Write tiqr idp certificate
+- name: Write tiqr idp private key
   copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/key.pem
 
 # TODO: change in Stepup-tiqr

@@ -3,4 +3,7 @@
 127.0.0.1   {{ inventory_hostname }} {{ inventory_hostname.split('.')[0] }}
 {% if 'app' in group_names %}
 {{ host_ipv4 }} {{ middleware_vhost_name }}
+{{ host_ipv4 }} {{ selfservice_vhost_name }}
+{{ host_ipv4 }} {{ gateway_vhost_name }}
+{{ host_ipv4 }} {{ ra_vhost_name }}
 {% endif %}

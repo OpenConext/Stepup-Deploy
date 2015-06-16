@@ -21,7 +21,7 @@ $options["apns.certificate"] = "{{ component_dir_name }}/apns.pem";
 $options["apns.environment"] = "production";
 
 $options["gcm.application"] = "nl.surfnet.authenticator";
-$options["gcm.apikey"]    = "{{ gcm_apikey | vault(vault_keydir) }}";
+$options["gcm.apikey"]    = "{{ tiqr_gcm_apikey | vault(vault_keydir) }}";
 
 //$options["statestorage"]    = array("type" => "memcache", "prefix"=>"tiqr_");
 

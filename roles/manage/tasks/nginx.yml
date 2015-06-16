@@ -4,6 +4,7 @@
   yum: name={{item}} state=present
   with_items:
   - nginx
+  - python-passlib     # For Ansible htpasswd module
 
 
 # Remove default distro conf files
@@ -47,6 +48,12 @@
   copy: content="{{ manage_key | vault(vault_keydir) }}" dest=/etc/nginx/manage.key owner=root mode=400
   notify:
       - restart nginx
+
+- name: Write /etc/nginx/manage.htpasswd
+  htpasswd: crypt_scheme=ldap_sha1 path=/etc/nginx/manage.htpasswd name={{ manage_kibana_user }} password={{ manage_kibana_password | vault(vault_keydir) }}
+  notify:
+      - restart nginx
+
 
 - name: Start and enable nginx
   service: name=nginx state=started enabled=yes

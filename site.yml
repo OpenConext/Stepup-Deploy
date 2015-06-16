@@ -52,7 +52,7 @@
 
 
 - name: Setup proxy on application servers
-  hosts: app
+  hosts: proxy
   sudo: True
   tags: proxy
 

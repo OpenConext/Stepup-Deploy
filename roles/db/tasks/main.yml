@@ -38,7 +38,10 @@
 #3 program is not running
 #4 program or service status is unknown
 
-- name: Start and enable the MariaDB (mysql) service on boot
+- debug:
+    msg: "Note: if no DB is running or reachable the next task takes a while to timeout. When it fails read the message about 'galera_bootstrap_node' to get the first DB node running"
+
+- name: Start and enable the MariaDB (mysql) service on boot.
   service: name=mysql state=started enabled=true
   ignore_errors: true
   register: start_result
@@ -110,3 +113,5 @@
 
 - include: middleware.yml
 - include: gateway.yml
+- include: tiqr.yml
+- include: keyserver.yml

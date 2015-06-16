@@ -1,0 +1,33 @@
+<?php
+// local options
+
+/*
+    "identifier"      => "pilot.stepup.coin.surf.net",
+    "name"            => "Stepup Authentication Service",
+    "logoUrl"         => "https://demo.tiqr.org/img/tiqrRGB.png",
+    "infoUrl"         => $_SERVER['HTTP_HOST'], // base(),
+    "usersecretstorage" => array("type" => "file"),
+*/
+
+$options['userstorage'] = array(
+	'type' => 'pdo',
+        'table' => 'user',
+        'dsn' => "mysql:host={{ database_lb_address }};dbname={{ database_tiqr_name }}",
+        'username' => '{{ database_tiqr_user }}',
+        'password' => '{{ database_tiqr_password | vault(vault_keydir) }}',
+);
+
+$options["apns.certificate"] = "{{ component_dir_name }}/apple-production-push-services.pem";
+$options["apns.environment"] = "production";
+
+$options["gcm.application"] = "nl.surfnet.authenticator";
+$options["gcm.apikey"]    = "{{ gcm_apikey | vault(vault_keydir) }}";
+
+//$options["statestorage"]    = array("type" => "memcache", "prefix"=>"tiqr_");
+
+$options["devicestorage"]   = array(
+	"type"  => "tokenexchange",
+        "url"   => "https://tx.tiqr.org/tokenexchange/",
+        "appid" => "tiqr"
+);
+

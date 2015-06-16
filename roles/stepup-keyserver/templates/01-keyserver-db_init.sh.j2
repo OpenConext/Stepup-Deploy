@@ -1,0 +1,6 @@
+#!/bin/bash
+
+mysql -u {{ database_keyserver_deploy_user }} -p{{ database_keyserver_deploy_password | vault(vault_keydir) }} -h {{ database_lb_address }} {{ database_keyserver_name }} < /opt/www/{{ keyserver_vhost_name }}/db/mysql-create-tables.sql
+if [ "$res" -gt 0 ]; then
+    echo "mysql failed"
+fi

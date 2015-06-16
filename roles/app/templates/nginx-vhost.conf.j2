@@ -6,16 +6,37 @@ server {
     error_log /var/log/nginx/{{ component_name }}_error.log;
     access_log /var/log/nginx/{{ component_name }}_access.log combinedProxy;
 
+    location /heartbeat {
+        return 200 'Heartbeat for {{ vhost_name }}';
+    }
+
+{% if component_name == "tiqr" %}
+    location /tiqr/ {
+        # try to serve file directly, otherwise forward to tiqr/index.php
+        try_files $uri /tiqr/index.php$is_args$args;
+    }
+    location /saml/ {
+        # try to serve file directly, otherwise forward to saml/index.php
+        try_files $uri /saml/index.php$is_args$args;
+    }
+    # Forward: /tiqr/tiqr.php, /tiqr/indexp.php and /saml/index.php
+    location ~ ^/(tiqr|saml)/(tiqr|index)\.php(/|$) {
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param REQUEST_METHOD  $request_method;
+        fastcgi_param CONTENT_TYPE    $content_type;
+        fastcgi_param CONTENT_LENGTH  $content_length;
+        fastcgi_param HTTPS on;
+    }
+{% else %}
     location / {
         # try to serve file directly, fallback to app.php
         try_files $uri /app.php$is_args$args;
     }
 
-    location /heartbeat {
-        return 200 'Heartbeat for {{ vhost_name }}';
-    }
-
-    location ~ ^/(app|app_dev)\.php(/|$) {
+    location ~ ^/app\.php(/|$) {
         fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
@@ -26,4 +47,5 @@ server {
         fastcgi_param HTTPS on;
         fastcgi_param SYMFONY_ENV prod;
     }
+{% endif %}
 }

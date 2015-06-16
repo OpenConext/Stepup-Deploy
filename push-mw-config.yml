@@ -5,7 +5,7 @@
 # "run_once: True" is used to execute the push once instead of on each trageted host
 
 - name: Push middleware config
-  hosts: app
+  hosts: stepup-middleware
   sudo: True
 
   tasks:

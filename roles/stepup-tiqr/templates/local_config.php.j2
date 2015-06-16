@@ -1,0 +1,7 @@
+<?php
+// local config
+$config['sp']['https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'] = array(
+	'acs' => "https://{{ gateway_vhost_name }}/gssp/tiqr/consume-assertion",
+	# TODO: reenable checking request signing
+	#'certfile' => 'gateway.crt',
+);

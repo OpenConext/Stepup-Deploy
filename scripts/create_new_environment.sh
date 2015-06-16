@@ -6,16 +6,16 @@
 # Please read the notice at the end of the script
 
 PASSWORD_LENGTH=15
-PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_deploy" "database_middleware")
+PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_middleware_deploy" "database_middleware" "database_keyserver_deploy" "database_keyserver" "database_tiqr" "database_tiqr_deploy" "manage_kibana")
 
 SECRET_LENGTH=40
-SECRETS=("gateway" "middleware" "ra" "selfservice")
+SECRETS=("gateway" "middleware" "ra" "selfservice" "tiqr" "keyserver")
 
-SAML_CERTS=("gateway_saml_idp" "gateway_saml_sp" "gateway_tiqr_idp" "gateway_tiqr_sp" "selfservice_saml_sp" "selfservice_tiqr_sp" "ra_saml_sp" "ra_tiqr_sp")
+SAML_CERTS=("gateway_saml_idp" "gateway_saml_sp" "gateway_tiqr_idp" "gateway_tiqr_sp" "selfservice_saml_sp" "selfservice_tiqr_sp" "ra_saml_sp" "ra_tiqr_sp" "tiqr_idp")
 
 DOMAIN='stepup.example.com' # Domain for SSL certs
-SSL_CERTS=("gateway" "ra" "selfservice" "manage" "middleware")
 
+SSL_CERTS=("gateway" "ra" "selfservice" "manage" "middleware" "tiqr" "keyserver")
 
 CWD=`pwd`
 BASEDIR=`dirname $0`

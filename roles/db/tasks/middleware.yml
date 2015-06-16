@@ -8,11 +8,11 @@
   mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
 
-- name: Create deploy user with ALL access to middleware and gateway database
+- name: Create middleware deploy user with ALL access to middleware and gateway database
   mysql_user:
-    name: "{{ database_deploy_user }}"
+    name: "{{ database_middleware_deploy_user }}"
     host: "%"
-    password: "{{ database_deploy_password | vault(vault_keydir) }}"
+    password: "{{ database_middleware_deploy_password | vault(vault_keydir) }}"
     priv: "{{ database_gateway_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}.*:ALL\ PRIVILEGES,GRANT"
     login_host: "127.0.0.1"
     login_user: "root"
@@ -26,7 +26,7 @@
     name: "{{ database_middleware_user }}"
     host: "%"
     password: "{{ database_middleware_password | vault(vault_keydir) }}"
-    priv: "{{ database_middleware_name }}.*:SELECT,INSERT,DELETE,EXECUTE,UPDATE/{{ database_gateway_name }}.*:SELECT,EXECUTE"
+    priv: "{{ database_middleware_name }}.*:SELECT,INSERT,DELETE,UPDATE/{{ database_gateway_name }}.*:SELECT"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

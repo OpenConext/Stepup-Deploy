@@ -21,6 +21,11 @@
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
 {% endif %}
 
+# key server
+# TODO restrict access to key server from tiqr IDP only
+{% if 'keyserver' in group_names %}
+{% endif %}
+
 # Galera mariaDB database (cluster)
 {% if 'dbcluster' in group_names %}
 # MariaDB client port
@@ -46,7 +51,7 @@
 # rsyslog RELP
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 10514 -j ACCEPT
 # Kibana web interface
--A INPUT -m state --state NEW -m tcp -p tcp --dport 5601 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
 {% endif %}
 
 # Loadbalancer / proxy

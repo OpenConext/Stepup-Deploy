@@ -10,7 +10,6 @@
 - name: Enable logstash repo
   copy: src=logstash.repo dest=/etc/yum.repos.d/logstash.repo
 
-
 # Install logstash and Java 8
 - name: Install logstash, java openjdk
   yum: name={{ item }} state=present
@@ -51,3 +50,7 @@
 
 - name: Install kibana
   include: kibana.yml
+
+
+- name: Setup nginx HTTPS reverse proxy for kibana
+  include: nginx.yml

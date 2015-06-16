@@ -1,0 +1,36 @@
+parameters:
+    locale:            en
+    secret:            {{ keyserver_secret | vault(vault_keydir) }}
+
+    debug_toolbar:          true
+    debug_redirects:        false
+    use_assetic_controller: true
+
+    surfnet_oath.userstorage:
+        type: pdo
+        options:
+          dsn: mysql:host={{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }};dbname={{ database_keyserver_name }}
+          username: {{ database_keyserver_user }}
+          password: {{ database_keyserver_password | vault(vault_keydir) }}
+          # TODO: configerable?
+          table: secret
+
+    surfnet_oath.consumerKey: {{ oath_keyserver_consumerkey | vault(vault_keydir) }}
+    surfnet_oath.oath.ocra:
+        suite: OCRA-1:HOTP-SHA1-6:QH10-S
+    surfnet_oath.oath.hotp:
+        length: 6
+    surfnet_oath.oath.totp:
+        length: 6
+        window: 120 # in seconds
+
+    # Configuration for YubiHSM
+    surfnet_oath.yubihsm:
+        device: /dev/ttyACM1
+        key_handle: 2
+        commands:
+            oath_init:          /mnt/hgfs/projects/oath-service-php/utils/oath-init.py
+            oath_hotp_validate: /mnt/hgfs/projects/oath-service-php/utils/oath-hotp-validate.py
+            hash_aead:          /mnt/hgfs/projects/oath-service-php/utils/hash-aead.py
+
+    asset_version: {{ stable_nonce }}

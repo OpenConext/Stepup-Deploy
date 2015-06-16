@@ -7,8 +7,8 @@ parameters:
     database_name:     {{ database_gateway_name }}
     database_gateway_user:     {{ database_gateway_user }}
     database_gateway_password: {{ database_gateway_password | vault(vault_keydir)}}
-    database_deploy_user:      {{ database_deploy_user }}
-    database_deploy_password:  {{ database_deploy_password | vault(vault_keydir) }}
+    database_deploy_user:      {{ database_middleware_deploy_user }}
+    database_deploy_password:  {{ database_middleware_deploy_password | vault(vault_keydir) }}
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1

@@ -1,0 +1,15 @@
+# vhost FQDN
+manage_vhost_name: manage.stepup.example.com
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+manage_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/manage.crt') }}"
+
+# Format: PEM RSA PRIVATE KEY
+manage_key: "{{ lookup('file', inventory_dir+'/ssl_cert/manage.key') }}"
+
+# Username and password for authentication to the Kibana webinterface
+# https://{{ manage_vhost_name }}/kibana4
+manage_kibana_user: stepup
+manage_kibana_password: "{{ lookup('file', inventory_dir+'/password/manage_kibana') }}"

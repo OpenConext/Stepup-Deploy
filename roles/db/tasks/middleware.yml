@@ -26,7 +26,7 @@
     name: "{{ database_middleware_user }}"
     host: "%"
     password: "{{ database_middleware_password | vault(vault_keydir) }}"
-    priv: "{{ database_middleware_name }}.*:SELECT,INSERT,DELETE,UPDATE/{{ database_gateway_name }}.*:SELECT,DELETE"
+    priv: "{{ database_middleware_name }}.*:SELECT,INSERT,DELETE,UPDATE/{{ database_gateway_name }}.*:SELECT,INSERT,DELETE,UPDATE"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

@@ -45,12 +45,14 @@
   - "01-middleware-db_migrate.sh"
   - "02-middleware-config.sh"
   - "03-middleware-bootstrap-sraa-users.sh"
+  - "04-middleware-whitelist.sh"
 
 
 - name: Put middleware config from environment in /root/
   template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400"
   with_items:
   - "middleware-config.json"
+  - "middleware-whitelist.json"
 
 
 - name: Set stepup directory rights
@@ -66,7 +68,7 @@
 
 - name: Show middleware configuration hint
   debug:
-    msg: "Note: The configuration of the middleware component using its REST interface must be performed manually. Run '/root/02-middleware-config.sh' on an app server."
+    msg: "Note: The configuration of the middleware component using its REST interface must be performed manually. Run '/root/02-middleware-config.sh' and '/root/04-middleware-whitelist.sh' on an app server."
 
 - name: Show SRAA user bootstrap hint
   debug:

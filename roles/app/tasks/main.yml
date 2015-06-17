@@ -28,6 +28,7 @@
   - php-dom
   - php-mysql
   - php-bcmath
+  - php-gmp
   - nodejs
   - nodejs-less.noarch
   - sendmail

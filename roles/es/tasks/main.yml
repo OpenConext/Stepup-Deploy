@@ -45,6 +45,12 @@
 - name: Enable elasticsearch service
   service: name=elasticsearch enabled=yes state=started
 
+- name: Put elasticsearch utility scripts in /root/
+  template: src='elasticsearch/{{ item }}.j2' dest='/root/{{ item }}' mode=ug+x
+  with_items:
+  - "es-get_health.sh"
+  - "es-zap_node.sh"
+
 
 # Get health of ES cluster:
 # curl -XGET 'http://node_ip:9200/_cluster/health?pretty=true'

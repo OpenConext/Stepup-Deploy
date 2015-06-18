@@ -27,20 +27,12 @@
 - name: Put local options
   template: src=local_options.php.j2 dest={{ component_dir_name }}/local_options.php
 
-- name: Create log directory
-  file: path={{ component_dir_name }}/logs state=directory mode=a+rx
-
-- name: Grant app write access to log dirs (similar to symfony2 apps)
-  file: path={{item}} owner=tiqr recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/logs"
-
 # Finish
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory mode=a+rx
 
-- name: Activate componen
+- name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
 
 - name: Put tiqr configuration script in /root/
@@ -67,10 +59,3 @@
 
 - name: create symlink to match generic nginx config
   file: src=/opt/www/{{ tiqr_vhost_name }}/www dest=/opt/www/{{ tiqr_vhost_name }}/web state=link
-
-# TODO: Log to syslog
-- name: Create log files
-  file: name={{ component_dir_name }}/authn.log owner=tiqr mode=u+rw state=touch
-
-- name: Create log file
-  file: name={{ component_dir_name }}/saml.log owner=tiqr mode=u+rw state=touch

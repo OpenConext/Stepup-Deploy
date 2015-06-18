@@ -3,3 +3,6 @@
 
 - include: nginx.yml
   tag: nginx
+
+- include: pacemaker.yml
+  tag: pacemaker

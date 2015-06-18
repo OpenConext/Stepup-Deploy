@@ -33,6 +33,12 @@
   vhost_certificate: "{{ nginx_middleware_certificate }}"
   vhost_key: "{{ nginx_middleware_key }}"
 
+- include: vhost.yml
+  vhost_name: "{{ tiqr_vhost_name }}"
+  component: middleware
+  vhost_certificate: "{{ nginx_tiqr_certificate }}"
+  vhost_key: "{{ nginx_tiqr_key }}"
+
 - name: enable service
   service: name=nginx enabled=yes
   notify:

@@ -25,6 +25,14 @@ $options["gcm.apikey"]    = "{{ tiqr_gcm_apikey | vault(vault_keydir) }}";
 
 //$options["statestorage"]    = array("type" => "memcache", "prefix"=>"tiqr_");
 
+/*
+$option["usersecretstorage"] = array(
+	"type" => "oathserviceclient",
+	"apiURL" => 'http://{{ keyserver_vhost_name }}/',
+	"consumerKey" => '{{ oath_keyserver_consumerkey | vault(vault_keydir) }}',
+);
+*/
+
 # TODO: do we need a dedicated TX service?
 $options["devicestorage"]   = array(
 	"type"  => "tokenexchange",

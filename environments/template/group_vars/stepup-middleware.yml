@@ -6,5 +6,5 @@ middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
 #TODO: Define SRAA's
 # List of Super RA Administrators for first time manual provisioning
 middleware_sraa:
-    - { nameid: urn:collab:person:pieter.aai.surfnet.nl:pieter, institution: pieter.aai.surfnet.nl, cn: "Pieter van der Meulen", email: pieter.vandermeulen@surfnet.nl, lang: nl_NL, yubikey_id: ccccccbtbhrh }
-    - { nameid: urn:collab:person:pieter.aai.surfnet.nl:joost, institution: pieter.aai.surfnet.nl, cn: "Joost van Dijk", email: joost.vandijk@surfnet.nl, lang: nl_NL, yubikey_id: ccccccbtulit }
+    - { nameid: urn:collab:person:pieter.aai.surfnet.nl:pieter, institution: pieter.aai.surfnet.nl, cn: "Pieter van der Meulen", email: pieter.vandermeulen@surfnet.nl, lang: nl_NL, yubikey_id: 01906374 }
+    - { nameid: urn:collab:person:pieter.aai.surfnet.nl:joost, institution: pieter.aai.surfnet.nl, cn: "Joost van Dijk", email: joost.vandijk@surfnet.nl, lang: nl_NL, yubikey_id: 01960573 }

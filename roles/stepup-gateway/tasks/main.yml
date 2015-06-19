@@ -1,7 +1,7 @@
 # Infra suff for gateway
 
 - name: Get active component
-  shell: readlink /opt/www/{{ component_name }}.{{ app_domain }}
+  shell: readlink /opt/www/{{ gateway_vhost_name }}
   ignore_errors: true
   register: active_component
 
@@ -11,30 +11,6 @@
 - name: Check whether component is installed
   fail: msg="Component already active"
   when: ( 0 ) and ( component_dir_name != active_component.stdout)
-
-- name: Create Gateway database
-  mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-- name: Create gateway user
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_gateway_user }}
-    password={{ database_gateway_password | vault(vault_keydir) }}
-    priv={{ database_gateway_name }}.*:SELECT,EXECUTE
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-
-# Unused for now
-- name: Create deploy user with access to gateway database
-  mysql_user:
-    host=127.0.0.1
-    name={{ database_deploy_user }}
-    password={{ database_deploy_password | vault(vault_keydir) }}
-    priv={{ database_gateway_name }}.*:ALL
-    login_user=root
-    login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
 
 - name: Create stepup directory
   file: path={{ component_dir_name }} state=directory mode=a+rx
@@ -105,4 +81,4 @@
   file: path={{ component_dir_name }} state=directory mode=a+rx
 
 - name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ component_name }}.{{ app_domain }} state=link
+  file: src={{ component_dir_name }} dest=/opt/www/{{ gateway_vhost_name }} state=link

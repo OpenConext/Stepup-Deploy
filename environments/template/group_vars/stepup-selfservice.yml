@@ -1,0 +1,17 @@
+# Config for selfservice component
+
+# Used for Symfony CSRF protection
+selfservice_secret: "{{ lookup('file', inventory_dir+'/secret/selfservice') }}"
+
+
+# Public key is in all.yml
+# Format: PEM RSA PRIVATE KEY
+selfservice_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_saml_sp.key') }}"
+
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+selfservice_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_tiqr_sp.key') }}"
+# Used by the SelfService to authenticate users to the Tiqr IdP.
+# Authentication is though the Tiqr proxy
+# Format: PEM X.509 certificate
+selfservice_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_tiqr_sp.crt') }}"

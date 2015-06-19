@@ -1,0 +1,152 @@
+# Inventory for environment
+
+# Note that group_vars/ and host_vars/ directories can exist in both the playbook directory (here: Stepup-Deploy/)
+# and the inventory directory (here: Stepup-Deploy/environments/template or {{ inventory_dir }} ).
+# Variables defined in the playbook directory take precedence over variables defined in the inventory directory
+
+# IP Adresses are specified manually, this ensures that these are always available, even when --limit is used or
+# the host is down. To access the variables of another host use e.g.:
+# * IP address of host with name <hostname>: hostvars[<hostname>]['host_ipv4']
+# * IP address of first host in group <groupname>: hostvars[groups[<groupname>][0]]['host_ipv4']
+
+
+#####
+# all
+#####
+
+# The host defined below are suitable for use with the VMs creates Stepup-Deploy-VM
+
+############
+# stepup-app
+############
+
+[stepup-app]
+app.stepup.example.com host_ipv4=192.168.66.2 ansible_ssh_host=192.168.66.2 ansible_ssh_user=stepup ansible_ssh_pass=stepup
+
+########
+# manage
+########
+
+[manage]
+manage.stepup.example.com host_ipv4=192.168.66.3 ansible_ssh_host=192.168.66.3 ansible_ssh_user=stepup ansible_ssh_pass=stepup
+
+
+###########
+# keyserver
+###########
+
+[ks]
+ks.stepup.example.com host_ipv4=192.168.66.7 ansible_ssh_host=192.168.66.7 ansible_ssh_user=stepup ansible_ssh_pass=stepup
+
+
+##############
+# elsticsearch
+##############
+
+# Elasticsearch cluster
+[es]
+
+[es:children]
+# (mis)use manage server
+manage
+
+
+#######
+# proxy
+#######
+
+# Reverse https proxy for/on app servers
+[proxy]
+
+[proxy:children]
+# (mis)use app server
+app
+
+
+##########
+# dbcluser
+##########
+
+[dbcluster]
+db.stepup.example.com host_ipv4=192.168.66.5 ansible_ssh_host=192.168.66.5 ansible_ssh_user=stepup ansible_ssh_pass=stepup
+
+
+#####
+# dev
+#####
+
+[dev]
+
+
+
+# The "Stepup-XXX" groups below ae used for deployment
+
+################
+# stepup-gateway
+################
+
+[stepup-gateway]
+
+[stepup-gateway:children]
+stepup-app
+
+
+###################
+# stepup-middleware
+###################
+
+[stepup-middleware]
+
+[stepup-middleware:children]
+stepup-app
+
+
+###########
+# stepup-ra
+###########
+
+[stepup-ra]
+
+[stepup-ra:children]
+stepup-app
+
+
+####################
+# stepup-selfservice
+####################
+
+[stepup-selfservice]
+
+[stepup-selfservice:children]
+stepup-app
+
+#############
+# stepup-tiqr
+#############
+
+[stepup-tiqr]
+
+[stepup-tiqr:children]
+stepup-app
+
+
+##################
+# stepup-keyserver
+##################
+
+[stepup-keyserver]
+
+[stepup-keyserver:children]
+ks
+
+
+
+#####
+# app
+#####
+
+[app]
+
+[app:children]
+stepup-app
+ks

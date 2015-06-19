@@ -1,0 +1,41 @@
+<?php
+// local options
+
+/*
+    "identifier"      => "pilot.stepup.coin.surf.net",
+    "name"            => "Stepup Authentication Service",
+    "logoUrl"         => "https://demo.tiqr.org/img/tiqrRGB.png",
+    "infoUrl"         => $_SERVER['HTTP_HOST'], // base(),
+    "usersecretstorage" => array("type" => "file"),
+*/
+
+$options['userstorage'] = array(
+	'type' => 'pdo',
+        'table' => 'user',
+        'dsn' => "mysql:host={{ database_lb_address }};dbname={{ database_tiqr_name }}",
+        'username' => '{{ database_tiqr_user }}',
+        'password' => '{{ database_tiqr_password | vault(vault_keydir) }}',
+);
+
+$options["apns.certificate"] = "{{ component_dir_name }}/apns.pem";
+$options["apns.environment"] = "production";
+
+$options["gcm.application"] = "nl.surfnet.authenticator";
+$options["gcm.apikey"]    = "{{ tiqr_gcm_apikey | vault(vault_keydir) }}";
+
+//$options["statestorage"]    = array("type" => "memcache", "prefix"=>"tiqr_");
+
+/*
+$option["usersecretstorage"] = array(
+	"type" => "oathserviceclient",
+	"apiURL" => 'http://{{ keyserver_vhost_name }}/',
+	"consumerKey" => '{{ oath_keyserver_consumerkey | vault(vault_keydir) }}',
+);
+*/
+
+# TODO: do we need a dedicated TX service?
+$options["devicestorage"]   = array(
+	"type"  => "tokenexchange",
+        "url"   => "https://tx.tiqr.org/tokenexchange/",
+        "appid" => "tiqr"
+);

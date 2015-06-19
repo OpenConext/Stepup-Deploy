@@ -1,0 +1,8 @@
+- include: haproxy.yml
+  tag: haproxy
+
+- include: nginx.yml
+  tag: nginx
+
+- include: pacemaker.yml
+  tag: pacemaker

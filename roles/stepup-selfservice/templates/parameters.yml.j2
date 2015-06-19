@@ -14,18 +14,23 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-    gateway_api_url: http://gateway.{{ app_domain }}/
+{# Note: Gateway API acces over HTTP #}
+{# gateway vhost ip is set in /etc/hosts #}
+    gateway_api_url: http://{{ gateway_vhost_name }}/
     gateway_api_username: ss
     gateway_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
 
     middleware_credentials_username: ss
     middleware_credentials_password: {{ selfservice_api_password | vault(vault_keydir) }}
-    middleware_url_command_api: http://middleware.{{ app_domain }}/command
-    middleware_url_api: http://middleware.{{ app_domain }}/
 
-    sms_originator: SURFStepup
-    sms_otp_expiry_interval: 900 # 15 minutes
-    sms_maximum_otp_requests: 3
+{# Note: Middleware API acces over HTTP #}
+{# middleware vhost ip is set in /etc/hosts #}
+    middleware_url_command_api: http://{{ middleware_vhost_name }}/command
+    middleware_url_api: http://{{ middleware_vhost_name }}/
+
+    sms_originator: {{ sms_originator }}
+    sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
+    sms_maximum_otp_requests: {{ sms_maximum_otp_requests }}
 
     saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
 
@@ -35,15 +40,17 @@ parameters:
 
     saml_metadata_privatekey: {{ component_dir_name }}/app/config/sp.key
 
-    #saml_remote_idp_entity_id: http://gateway.{{ app_domain }}/authentication/metadata
-    #saml_remote_idp_sso_url: http://gateway.{{ app_domain }}/authentication/single-sign-on
-    #saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
+    # Connect to remote IdP through Stepup Gateway
+    saml_remote_idp_entity_id: https://{{ gateway_vhost_name }}/authentication/metadata
+    saml_remote_idp_sso_url: https://{{ gateway_vhost_name }}/authentication/single-sign-on
+    saml_remote_idp_certificate: {{ gateway_saml_idp_publickey | depem }}
 
+{#
+    # Connect to remote IdP directly
     saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
     saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}
     saml_remote_idp_certificate: {{ saml_remote_idp_certificate }}
-
-    graylog_hostname: 127.0.0.1
+#}
 
     asset_version: {{ stable_nonce }}
 
@@ -52,3 +59,6 @@ parameters:
     stepup_loa_loa3: {{ stepup_uri_loa3 }}
 
     logout_redirect_url: {{ logout_redirect_url }}
+
+    # TODO: Unused, remove requirement from component
+    graylog_hostname: ""

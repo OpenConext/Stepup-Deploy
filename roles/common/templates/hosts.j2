@@ -1,6 +1,12 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-127.0.0.1   {{ inventory_hostname }}
-{% if 'app' in group_names %}
-127.0.0.1   middleware.{{ app_domain }}
+127.0.0.1   {{ inventory_hostname }} {{ inventory_hostname.split('.')[0] }}
+{% if 'stepup-middleware' in group_names %}
+{{ host_ipv4 }} {{ middleware_vhost_name }}
+{% endif %}
+{% if 'stepup-gateway' in group_names %}
+{{ host_ipv4 }} {{ gateway_vhost_name }}
+{% endif %}
+{% if 'stepup-keyserver' in group_names %}
+{{ host_ipv4 }} {{ keyserver_vhost_name }}
 {% endif %}

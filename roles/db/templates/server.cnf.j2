@@ -10,13 +10,14 @@
 
 # this is only for the mysqld standalone daemon
 [mysqld]
-#general log
-general_log_file=/var/lib/mysql/general.log
-general_log=1
-
-#error log
-log-error=/var/lib/mysql/error.log
 log_warnings=2
+
+# this is the config used by the normal mysql service
+[mysqld_safe]
+syslog
+
+# general_log_file: log *all* queries to file
+# general_log_file=/var/lib/mysql/general.log
 
 # this is only for embedded server
 [embedded]

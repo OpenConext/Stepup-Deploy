@@ -1,11 +1,15 @@
+# Add MariaDB repo and key
 - name: Add MariaDB.org repository
   template: src='mariadb.repo.j2' dest='/etc/yum.repos.d/mariadb.repo'
 
+- name: Copy MariaDB repository key
+  copy: src=RPM-GPG-KEY-MariaDB dest={{ managed_file_dir }}/RPM-GPG-KEY-MariaDB
+
 - name: Add MariaDB.org repository key
-  rpm_key: state=present key=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+  rpm_key: state=present key={{ managed_file_dir }}/RPM-GPG-KEY-MariaDB
 
 
-- name: Install RPMs
+- name: Install MariaDB, Galera, rsync, MySQL-python
   yum: name={{item}} state=installed
   with_items:
   - MariaDB-Galera-server
@@ -15,8 +19,6 @@
   - MySQL-python  # Required for using the Ansible mysql_* modules
 
 
-# Note: Won't work with "--limit=<hostname>" because the facts of the other hosts will be missing
-# fatal: [<hostname>] => {'msg': "AnsibleUndefinedVariable: One or more undefined variables: 'dict object' has no attribute 'ansible_default_ipv4'", 'failed': True}
 - name: Put mariadb server.cnf
   template: src='server.cnf.j2' dest='/etc/my.cnf.d/server.cnf'
   notify:
@@ -24,9 +26,11 @@
 
 # MariaDB service from RedHat is called "mariadb", MariaDB service from MariaDB is called "mysql"
 - name: Check whether DB is running
-  command: /sbin/service mysql status
+  command: /bin/systemctl status mysql
   ignore_errors: true
   register: status_result
+  changed_when: False
+  failed_when: status_result.rc >= 4
 # status codes:
 #0 program is running or service is OK
 #1 program is dead and /var/run pid file exists
@@ -34,7 +38,10 @@
 #3 program is not running
 #4 program or service status is unknown
 
-- name: Start and enable the MariaDB (mysql) service on boot
+- debug:
+    msg: "Note: if no DB is running or reachable the next task takes a while to timeout. When it fails read the message about 'galera_bootstrap_node' to get the first DB node running"
+
+- name: Start and enable the MariaDB (mysql) service on boot.
   service: name=mysql state=started enabled=true
   ignore_errors: true
   register: start_result
@@ -54,15 +61,18 @@
   when: (status_result.rc != 0) and (start_result|failed) and (galera_bootstrap_node != inventory_hostname)
 
 # Only bootstrap when galera_bootstrap_node allows us to bootsrap this node, and the node is not running
-- name: Bootstrap Galera node
+- name: Bootstrap first MariaDB server
   command: /sbin/service mysql bootstrap
   when: (status_result.rc != 0) and (start_result|failed) and (galera_bootstrap_node == inventory_hostname)
 
 # Bootstrap database
 # - Set root password
 # - Remove anonymous users and test database
-- name: Bootstrap mysql database
+- name: Change mysql root password and remove test database
   script: mysql_bootstrap.sh "{{ mariadb_root_password | vault(vault_keydir) }}"
+  register: db_bootstrap_result
+  changed_when: db_bootstrap_result.rc > 0
+  failed_when: db_bootstrap_result.rc >= 2
 
 # Add cluster user
 - name: add mariadb cluster user
@@ -83,15 +93,25 @@
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
     priv: "*.*:SELECT"
     state: present
+  when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name: Add "backup" shell user
   user: name=backup
+  when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name: Put mariadb_backup script
   template: src='mariadb_backup.sh.j2' dest='/home/backup/mariadb_backup.sh' mode=500 owner=backup
+  when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name:
   authorized_key:
     user: "{{ mariadb_backup_user }}"
     key: "{{ mariadb_backup_sshkey }}"
     key_options: command="/home/backup/mariadb_backup.sh"
+  when: mariadb_enable_remote_ssh_backup | default(false)
+
+
+- include: middleware.yml
+- include: gateway.yml
+- include: tiqr.yml
+- include: keyserver.yml

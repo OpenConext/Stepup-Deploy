@@ -1,0 +1,8 @@
+#!/bin/bash
+
+read -p "This will remove all data from the eleaticsearch node at {{ inventory_hostname }}. Are you sure (y/n)? " -r
+if [[ ${REPLY} =~ ^[Yy]$ ]]
+then
+    curl -XDELETE 'http://{{ host_ipv4 }}:9200/_all'
+    echo
+fi

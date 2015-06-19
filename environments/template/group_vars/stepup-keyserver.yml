@@ -1,0 +1,4 @@
+# Config for keyserver component
+
+# Used for Symfony CSRF protection
+keyserver_secret: "{{ lookup('file', inventory_dir+'/secret/keyserver') }}"

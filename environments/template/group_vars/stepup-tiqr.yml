@@ -1,0 +1,20 @@
+# Config for tiqr component
+
+# Used for Symfony CSRF protection
+# TODO: check impl
+tiqr_secret: "{{ lookup('file', inventory_dir+'/secret/tiqr') }}"
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.key') }}"
+# TODO move Public key to all.yml?
+# Format: PEM X.509 certificate
+tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') }}"
+
+
+# OAuth consumer key for authentication to the keyserver
+oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyserver') }}"
+
+# API key
+tiqr_gcm_apikey: "{{ lookup('file', inventory_dir+'/secret/gcm_apikey') }}"
+
+tiqr_apns_pemfile: "{{ lookup('file', inventory_dir+'/ssl_cert/apns.pem') }}"

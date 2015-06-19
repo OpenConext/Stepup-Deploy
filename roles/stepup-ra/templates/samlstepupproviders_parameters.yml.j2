@@ -12,8 +12,8 @@ parameters:
     gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
 
     # EntityID of the Tiqr IdP
-    gssp_tiqr_remote_entity_id: 'https://gateway.{{ app_domain }}/gssp/tiqr/metadata'
-    gssp_tiqr_remote_sso_url: 'https://gateway.{{ app_domain }}/gssp/tiqr/single-sign-on'
+    gssp_tiqr_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'
+    gssp_tiqr_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/tiqr/single-sign-on'
 
     # base64 without pem headers
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}

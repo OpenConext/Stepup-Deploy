@@ -1,9 +1,0 @@
-filter {
-  if [type] == "symfony2_prod_log" {
-    grok {
-      break_on_match => false
-      match => ["path","%{GREEDYDATA}/%{GREEDYDATA:application}_access\.log"]
-      match => ["message", "%{COMBINEDAPACHELOG} %{QS:process_time}"]
-    }
-  }
-}

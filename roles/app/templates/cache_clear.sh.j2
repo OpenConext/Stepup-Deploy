@@ -11,7 +11,7 @@ function error_exit {
 
 CWD=`pwd`
 
-APP_DIR=/opt/www/{{ vhost_name }}.{{ app_domain }}
+APP_DIR=/opt/www/{{ vhost_name }}
 if [ -d ${APP_DIR} ]; then
     error_exit "Application not found: ${APP_DIR}"
 fi

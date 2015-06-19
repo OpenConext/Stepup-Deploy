@@ -1,17 +1,23 @@
-# Install the "REMI" repo which contain php 5.4 packages that override the default
-# packages from the core distro. The core distro ships 5.3 still
+# Install the "REMI" repo which contain newer php packages that override the default
+# that come with the distro (CentOS7: 5.4; CentOS6: 5.3)
 - name: Install REMI repo
-  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm state=present
+  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-7.rpm state=present
 
 - name: Enable REMI repo
   copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
 
 
+- name: Create deploy user
+  user: name={{app_deploy_user}} state=present
+
+
 # node.less is used by app/console assetic:dump
 # sendmail is used for sending mail from localhost (enabled in default config)
-- name: Install nginx & php-(cli,fpm) & node.less & smtpd
+- name: Install nginx, php-(cli,fpm), node.less, smtpd, mysql client libs, bzip2
   yum: name={{item}} state=present
   with_items:
+  - mysql
+  - bzip2
   - nginx
   - php-fpm
   - php-cli
@@ -22,6 +28,7 @@
   - php-dom
   - php-mysql
   - php-bcmath
+  - php-gmp
   - nodejs
   - nodejs-less.noarch
   - sendmail
@@ -35,7 +42,7 @@
 
 
 # Remove default distro conf files
-- name: Remove conf.d/welcome.conf
+- name: Remove known default distro files in /etc/nginxconf.d/ and /etc/php-fpm.d/
   file: path={{item}} state=absent
   with_items:
   - /etc/php-fpm.d/www.conf
@@ -46,6 +53,11 @@
   #- restart httpd
   - restart nginx
   - restart php-fpm
+
+- name: Put /etc/php-fpm.conf
+  copy: src='php-fpm.conf' dest='/etc/php-fpm.conf'
+  notify:
+      - restart php-fpm
 
 
 - name: Put nginx.conf
@@ -60,19 +72,25 @@
 
 
 - name: Create /opt/www/
-  file: path=/opt/www/ state=directory owner=root group={{ deploy_user }} mode=775
+  file: path=/opt/www/ state=directory owner=root group={{ app_deploy_user }} mode=775
 
 
-# Create vhosts
-- include: vhost.yml vhost_name=middleware
-- include: vhost.yml vhost_name=gateway
-- include: vhost.yml vhost_name=selfservice
-- include: vhost.yml vhost_name=ra
+# Create vhosts for stepup components
+- { include: vhost.yml, component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}", when: "inventory_hostname in groups['stepup-middleware']" }
+- { include: vhost.yml, component_name: gateway,     vhost_name: "{{ gateway_vhost_name }}", when: "inventory_hostname in groups['stepup-gateway']" }
+- { include: vhost.yml, component_name: selfservice, vhost_name: "{{ selfservice_vhost_name }}", when: "inventory_hostname in groups['stepup-selfservice']" }
+- { include: vhost.yml, component_name: ra,          vhost_name: "{{ ra_vhost_name }}", when: "inventory_hostname in groups['stepup-ra']" }
+- { include: vhost.yml, component_name: tiqr,        vhost_name: "{{ tiqr_vhost_name }}", when: "inventory_hostname in groups['stepup-tiqr']" }
+- { include: vhost.yml, component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}", when: "inventory_hostname in groups['stepup-keyserver']" }
 
 
-# nginx will start with invalid vhost config, so test config explicitly first
+# Because nginx will restart with an invalid config without service detecting this, so we test the config  first
 - name: Test nginx config
-  command: /sbin/service nginx configtest
+  command: /sbin/nginx -t
+  register: nginx_test
+  changed_when: False
+  failed_when: nginx_test.rc > 0
+
 
 - name: Start and enable nginx & php-fpm & smtp services
   service: name={{item}} state=started enabled=true
@@ -82,28 +100,6 @@
   - sendmail
 
 
-# setfacl -m u:logstash:rx .
-- name: Give logstash read access to ngix and php-fpm log directories
-  acl: name={{ item }} entity=logstash etype=user permissions="rx" state=present
-  with_items:
-  - /var/log/nginx
-  - /var/log/php-fpm
-
-
-- name: Add logstash config to get nginx and php-fpm logs
-  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
-  with_items:
-    - nginx.config
-    - php-fpm.config
-    - symfony2.config
-  notify: restart logstash
-
-
-#- name: Install NodeJS
-#  yum: name=nodejs state=present
-#
-#- name: Install NPM
-#  command: wget -O- https://www.npmjs.org/install.sh | sudo sh creates=/usr/bin/npm
-#
-#- name: Install LESS compiler
-#  npm: name=less global=yes state=present
+- name: Put rsyslog config for nginx
+  copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
+  notify: restart rsyslog

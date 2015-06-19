@@ -1,0 +1,48 @@
+---
+
+- name: Install nginx
+  yum: name=nginx state=present
+
+- name: Copy empty default.conf
+  copy: src=default.conf dest=/etc/nginx/conf.d
+
+- name: Create keys directory
+  file: dest=/etc/nginx/keys/ state=directory
+
+- include: nginx_vhost.yml
+  vhost_name: "{{ gateway_vhost_name }}"
+  component: gateway
+  vhost_certificate: "{{ nginx_gateway_certificate }}"
+  vhost_key: "{{ nginx_gateway_key }}"
+
+- include: nginx_vhost.yml
+  vhost_name: "{{ selfservice_vhost_name }}"
+  component: selfservice
+  vhost_certificate: "{{ nginx_selfservice_certificate }}"
+  vhost_key: "{{ nginx_selfservice_key }}"
+
+- include: nginx_vhost.yml
+  vhost_name: "{{ ra_vhost_name }}"
+  component: ra
+  vhost_certificate: "{{ nginx_ra_certificate }}"
+  vhost_key: "{{ nginx_ra_key }}"
+
+- include: nginx_vhost.yml
+  vhost_name: "{{ middleware_vhost_name }}"
+  component: middleware
+  vhost_certificate: "{{ nginx_middleware_certificate }}"
+  vhost_key: "{{ nginx_middleware_key }}"
+
+- include: nginx_vhost.yml
+  vhost_name: "{{ tiqr_vhost_name }}"
+  component: middleware
+  vhost_certificate: "{{ nginx_tiqr_certificate }}"
+  vhost_key: "{{ nginx_tiqr_key }}"
+
+- name: enable service
+  service: name=nginx enabled=yes
+  notify:
+    - restart nginx
+
+- name: start
+  service: name=nginx state=started

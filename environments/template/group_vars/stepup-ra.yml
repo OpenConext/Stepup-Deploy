@@ -1,0 +1,27 @@
+# Config for ra component
+
+# Message originator as displayed in SMS
+# "This can be a telephone number (including country code) or an alphanumeric string.
+#  In case of an alphanumeric string, the maximum length is 11 characters."
+sms_originator: Stepup
+# Validity time of an OTP send using SMS in seconds
+sms_otp_expiry_interval: 900
+# Maximum number of times a user may resend an SMS during authenticaton
+sms_maximum_otp_requests: 10
+
+
+# Used for Symfony CSRF protection
+ra_secret: "{{ lookup('file', inventory_dir+'/secret/ra') }}"
+
+
+# Certificate in all.yml
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+ra_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_saml_sp.key') }}"
+
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+ra_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.key') }}"
+# Used by the RA to authenticate users to the Tiqr IdP.
+# Authentication is though the Tiqr proxy
+# Format: PEM X.509 certificate
+ra_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.crt') }}"

@@ -2,9 +2,10 @@
 
 CWD=`pwd`
 BASEDIR=`dirname $0`
-COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA")
+COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "oath-service-php")
 UNARCHIVE=1
 VERBOSE=0
+ASKSUDO=""
 INVENTORY=""
 LIMIT=""
 
@@ -15,6 +16,22 @@ function error_exit {
     fi
     cd ${CWD}
     exit 1
+}
+
+
+function realpath {
+    if [ ! -d ${1} ]; then
+        return 1
+    fi
+    current_dir=`pwd`
+    cd ${1}
+    res=$?
+    if [ $? -eq "0" ]; then
+        path=`pwd`
+        cd $current_dir
+        echo $path
+    fi
+    return $res
 }
 
 
@@ -29,6 +46,7 @@ if [ -z "${COMPONENT_TARBALL}"  ]; then
 
     echo "-i|--inventory <FILE>  Location of ansible inventory file"
     echo "-l|--limit: <SUBSET>   Limit option to pass to ansible (limits hosts)"
+    echo "-K|--ask-sudo-pass     Ask for sudo password"
     echo "-n|--no-unarchive      Skip uploading and unarchiving the tarball on the remote"
     echo "-v|--verbose           Pass \"-vvvv\" verbosity to ansible"
     echo "Supported components: ${COMPONENTS[*]}"
@@ -43,6 +61,9 @@ shift
 case $option in
     -n|--no-unarchive)
     UNARCHIVE="0"
+    ;;
+    -K|--ask-sudo-pass)
+    ASKSUDO="-K"
     ;;
     -v|--verbose)
     VERBOSE="1"
@@ -145,9 +166,13 @@ if [ -n "${LIMIT}" ]; then
 fi
 
 
-playbook_root="${BASEDIR}/.."
-cd ${playbook_root}
+deploy_playbook_dir=`realpath "${BASEDIR}/../"`
 
-ansible-playbook ./deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+
+if [ "${VERBOSE}" -eq "1" ]; then
+    echo ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+fi
+
+ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
 
 cd ${CWD}

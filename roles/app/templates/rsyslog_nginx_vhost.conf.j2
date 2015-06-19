@@ -1,0 +1,17 @@
+# Nginx main error log
+$InputFileName /var/log/nginx/{{ component_name }}_error.log
+$InputFileTag nginx-error-{{ component_name }}:
+$InputFileStateFile stat-nginx-error-{{ component_name }}
+
+$InputFileSeverity error
+$InputFileFacility local0
+$InputRunFileMonitor
+
+# Nginx main access log
+$InputFileName /var/log/nginx/{{ component_name }}_access.log
+$InputFileTag nginx-access-{{ component_name }}:
+$InputFileStateFile stat-nginx-access-{{ component_name }}
+
+$InputFileSeverity notice
+$InputFileFacility local0
+$InputRunFileMonitor

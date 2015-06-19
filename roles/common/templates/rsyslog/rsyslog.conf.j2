@@ -1,0 +1,136 @@
+# Based on default Centos7 rsyslog.conf
+# CentOS 7 ships with rsyslogd 7.4.7
+# rsyslog configuration file
+
+# For more information see /usr/share/doc/rsyslog-*/rsyslog_conf.html
+# If you experience problems, see http://www.rsyslog.com/doc/troubleshoot.html
+
+{# Increase max size of messages from default 2k, must be included before before any input is defined #}
+$MaxMessageSize 32k
+
+#### MODULES ####
+
+# The imjournal module bellow is now used as a message source instead of imuxsock.
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imjournal # provides access to the systemd journal
+#$ModLoad imklog # reads kernel messages (the same are read from journald)
+#$ModLoad immark  # provides --MARK-- message capability
+
+{# For following nginx logs #}
+$ModLoad imfile # allow reading logs from file
+
+# Provides UDP syslog reception
+#$ModLoad imudp
+#$UDPServerRun 514
+
+# Provides TCP syslog reception
+#$ModLoad imtcp
+#$InputTCPServerRun 514
+
+{# Run syslog RELP server on "manage" node #}
+{% if 'manage' in group_names %}
+# RELP input
+$ModLoad imrelp
+$InputRELPServerRun 10514
+{% endif %}
+
+
+#### GLOBAL DIRECTIVES ####
+
+# Where to place auxiliary files
+{# Directory where buffered queues are stored #}
+$WorkDirectory /var/lib/rsyslog
+
+# Use default timestamp format
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+# File syncing capability is disabled by default. This feature is usually not required,
+# not useful and an extreme performance hit
+#$ActionFileEnableSync on
+
+# Include all config files in /etc/rsyslog.d/
+$IncludeConfig /etc/rsyslog.d/*.conf
+
+# Turn off message reception via local log socket;
+# local messages are retrieved through imjournal now.
+$OmitLocalLogging on
+
+# File to store the position in the journal
+$IMJournalStateFile imjournal.state
+
+
+#### RULES ####
+
+# Log all kernel messages to the console.
+# Logging much else clutters up the screen.
+#kern.*                                                 /dev/console
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+*.info;mail.none;authpriv.none;cron.none                /var/log/messages
+
+# The authpriv file has restricted access.
+authpriv.*                                              /var/log/secure
+
+# Log all the mail messages in one place.
+mail.*                                                  -/var/log/maillog
+
+
+# Log cron stuff
+cron.*                                                  /var/log/cron
+
+# Everybody gets emergency messages
+*.emerg                                                 :omusrmsg:*
+
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          /var/log/spooler
+
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
+
+
+# ### begin forwarding rule ###
+# The statement between the begin ... end define a SINGLE forwarding
+# rule. They belong together, do NOT split them. If you create multiple
+# forwarding rules, duplicate the whole block!
+# Remote Logging (we use TCP for reliable delivery)
+#
+# An on-disk queue is created for this action. If the remote host is
+# down, messages are spooled to disk and sent when it is up again.
+#$ActionQueueFileName fwdRule1 # unique name prefix for spool files
+#$ActionQueueMaxDiskSpace 1g   # 1gb space limit (use as much as possible)
+#$ActionQueueSaveOnShutdown on # save messages to disk on shutdown
+#$ActionQueueType LinkedList   # run asynchronously
+#$ActionResumeRetryCount -1    # infinite retries if host is down
+# remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
+#*.* @@remote-host:514
+# ### end of the forwarding rule ###
+
+{#
+# RSYSLOG_SyslogProtocol23Format is predefined like
+# $template RSYSLOG_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %STRUCTURED-DATA% %msg%\n"
+# Use newer RFC5424 syslog format that is natively understood by rsyslog.
+# Disable %STRUCTURED-DATA% because this is difficult to parse in logstash
+#}
+$template Forward_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% - %msg%\n"
+
+{% if 'manage' in group_names %}
+# Forward all messages to local logstash on localhost using RELP
+$ModLoad omrelp
+$ActionQueueType LinkedList    # run asynchronously
+$ActionQueueFileName omrelp-to-logstash    # set file name, also enables disk mode
+$ActionResumeRetryCount -1     # infinite retries if host is down
+$ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
+
+$template Logstash_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %msg%"
+*.* :omrelp:127.0.0.1:20514;Logstash_SyslogProtocol23Format
+{% else %}
+# Forward all messages to loghost using RELP
+$ModLoad omrelp
+$ActionQueueType LinkedList    # run asynchronously
+$ActionQueueFileName omrelp-to-loghost    # set file name, also enables disk mode
+$ActionResumeRetryCount -1     # infinite retries if host is down
+$ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
+
+*.* :omrelp:{{ loghost_relp_address }}:{{ loghost_relp_port }};Forward_SyslogProtocol23Format
+{% endif %}

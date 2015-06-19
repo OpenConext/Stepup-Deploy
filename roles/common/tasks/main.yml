@@ -1,3 +1,5 @@
+# Set of tasks to apply to all hosts
+
 - name: Set /etc/hostname to {{ inventory_hostname }}
   template: src='hostname.j2' dest='/etc/hostname'
 
@@ -10,83 +12,69 @@
   file: name={{ managed_file_dir }} state=directory
 
 
-- name: Set SELinux policy to targeted & permissive
-  selinux: policy=targeted state=permissive
+- name: Disable SELinux policy
+  selinux: state=disabled
 
 
-# Set timezone
-- name: Check current timezone
-  shell: awk -F\" '{ print $2}' /etc/sysconfig/clock
-  register: current_zone
-  changed_when: False
-
-- name: Set UTC timezone
+- name: Set timezone
   file: src=/usr/share/zoneinfo/{{ timezone }}  dest=/etc/localtime state=link force=yes
-  when: current_zone.stdout != '{{ timezone }}'
 
 
 # Extra Packages for Enterprise Linux
 # https://fedoraproject.org/wiki/EPEL
 - name: Enable EPEL repo
   yum: name=epel-release.noarch state=present
-  tags: epel
 
 
-# Add Logstash repo
-# Logstash uses the elasticsearch repo key
-- name: Copy elasticsearch repository key
-  copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
-
-- name: Add elasticsearch repository key
-  rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
-
-- name: Enable logstash repo
-  copy: src=logstash.repo dest=/etc/yum.repos.d/logstash.repo
+# Firewall changed from ip(6)tables start/stop in CentOS6 to firewalld in CentOS7
+# ip(6)tables can still be installed using iptables-services
+# First disable firewalld service
+- name: "Disable firewalld"
+  service: name=firewalld enabled=no state=stopped
 
 
-- name: Install ntp, iptables, ip6tables, rsyslog, logstash
+- name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
   with_items:
   - ntp
-  - iptables
-  - rsyslog
-  - logstash
+  - iptables-services
+  - rsyslog # Is the default syslog for RH / CentOS
+  - rsyslog-relp # For using RELP with rsyslog
 
 
 - name: Put iptables
-  template: src='iptables.j2' dest='/etc/sysconfig/iptables'
+  template: src={{ inventory_dir }}/templates/common/iptables.j2 dest='/etc/sysconfig/iptables'
   notify:
   - restart iptables
 
 - name: Put ip6tables
-  template: src='ip6tables.j2' dest='/etc/sysconfig/ip6tables'
+  template: src={{ inventory_dir }}/templates/common/ip6tables.j2 dest='/etc/sysconfig/ip6tables'
   notify:
   - restart ip6tables
 
+- name: Put ntp.conf
+  template: src={{ inventory_dir }}/templates/common/ntp.conf.j2 dest='/etc/ntp.conf'
+  notify:
+  - restart ntpd
 
-- name: Start services ntpd, iptables, iptables6
+
+- name: Start and enable services ntpd, iptables, iptables6
   service: name={{item}} state=started enabled=true
   with_items:
   - ntpd
   - iptables
   - ip6tables
-  - logstash
+
+# Create directory for rsyslog message buffer
+- name: Create rsyslog dir
+  file: name=/var/lib/rsyslog state=directory
 
 
-# Setup rsyslog to graylog
-- name: Add rsyslog config to forward logs to graylog2
-  template: src='90-graylog2.conf.j2' dest='/etc/rsyslog.d/90-graylog2.conf'
+# Setup rsyslog
+- name: Put rsyslog config
+  template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
   notify: restart rsyslog
 
-# Setup logstash to graylog
-- name: Add logstash config to output logs to graylog2
-  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
-  with_items:
-  - file.output
-  - gelf-udp.output
-  - gelf-udp.input
-  - host.config
-  notify: restart logstash
 
-
-
+# Include environment specific tasks
+- include: "{{ inventory_dir }}/tasks/common.yml"

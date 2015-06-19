@@ -1,16 +1,39 @@
-# Assumes ngix has been installed previously
+# Add config for a HTTPS proxy on the app server
+# Assumes nginx has been installed previously
 
-- name: Put proxy cert
-  copy: content="{{ proxy_certificate }}" dest=/etc/nginx/proxy.crt
-  notify:
-      - restart nginx
+# Create SSL config for proxy to local vhost
+- include: proxy.yml
+  vhost_name: "{{ gateway_vhost_name }}"
+  component_name: gateway
+  proxy_certificate: "{{ proxy_gateway_certificate }}"
+  proxy_key: "{{ proxy_gateway_key }}"
+  when: "inventory_hostname in groups['stepup-gateway']"
 
-- name: Put proxy key
-  copy: content="{{ proxy_key | vault(vault_keydir) }}" dest=/etc/nginx/proxy.key owner=root mode=400
-  notify:
-      - restart nginx
+- include: proxy.yml
+  vhost_name: "{{ selfservice_vhost_name }}"
+  component_name: selfservice
+  proxy_certificate: "{{ proxy_selfservice_certificate }}"
+  proxy_key: "{{ proxy_selfservice_key }}"
+  when: "inventory_hostname in groups['stepup-selfservice']"
 
-- name: Put proxy.conf
-  template: src='proxy.conf.j2' dest='/etc/nginx/conf.d/proxy.conf'
-  notify:
-      - restart nginx
+- include: proxy.yml
+  vhost_name: "{{ ra_vhost_name }}"
+  component_name: ra
+  proxy_certificate: "{{ proxy_ra_certificate }}"
+  proxy_key: "{{ proxy_ra_key }}"
+  when: "inventory_hostname in groups['stepup-ra']"
+
+- include: proxy.yml
+  vhost_name: "{{ tiqr_vhost_name }}"
+  component_name: tiqr
+  proxy_certificate: "{{ proxy_tiqr_certificate }}"
+  proxy_key: "{{ proxy_tiqr_key }}"
+  when: "inventory_hostname in groups['stepup-tiqr']"
+
+# TODO: adapt so that TLS terminates on key server instead of proxy/LB
+- include: proxy.yml
+  vhost_name: "{{ keyserver_vhost_name }}"
+  component_name: keyserver
+  proxy_certificate: "{{ proxy_keyserver_certificate }}"
+  proxy_key: "{{ proxy_keyserver_key }}"
+  when: "inventory_hostname in groups['stepup-keyserver']"

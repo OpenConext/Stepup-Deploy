@@ -1,33 +1,10 @@
 ---
 
-- name: Restart elasticsearch
-  service: name=elasticsearch state=restarted
+- name: Restart kibana
+  service: name=kibana4 state=restarted
 
-# Wait until port 9200 and 9300 accept connections
-# Start polling after <delay> seconds, try for max <timeout> seconds
-- name: Wait for elasticsearch
-  wait_for: delay=0 port={{ item }} timeout=30 state=started
-  with_items:
-  - 9200
-  - 9300
-
-
-- name: Restart graylog2-server
-  service: name=graylog2-server state=restarted
-
-
-# Wait until ports 9350 and 12900 (REST API) accept connections
-- name: Wait for graylog2-server
-  wait_for: delay=0 port={{ item }} timeout=30 state=started
-  with_items:
-  - 9350
-  - 12900
-
-# Requires working graylog2-server
-# web server listens on 9000
-- name: Restart graylog2-web-server
-  service: name=graylog2-web state=restarted
-
+- name: Restart logstash
+  service: name=logstash state=restarted
 
 - name: restart nginx
   service: name=nginx state=restarted

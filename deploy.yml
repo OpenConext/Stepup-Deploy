@@ -1,10 +1,18 @@
+---
+
+# To deploy all components in one go, set "tarball_location" to the directory where the tarballls to be deployed are stored. E.g.
+# ansible-playbook .../Stepup-Deploy/deploy.yml -i .../inventory -e tarball_location=`pwd`
+#
+# Use the provided deploy.sh script to deploy a single component
+
+
 - name: Intall Stepup-Gateway
   hosts: stepup-gateway
   sudo: True
   tags: stepup-gateway
 
   vars:
-      component_tarball_name: Stepup-Gateway-develop-20141202081514Z-e8ef9e8b0a34180c14fefbe3a847edc47c3ef3be.tar.bz2
+      component_tarball_name: "{{ tarball_location }}/Stepup-Gateway-1.0.0-20150619132459Z-19765431f0f30ded4bf7732dd0caa3a4ff6a9def.tar.bz2"
       component_name: gateway
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
@@ -22,7 +30,7 @@
         - stepup-middleware
 
   vars:
-      component_tarball_name: Stepup-Middleware-bugfix_api-entity-metadata-20141210091501Z-84dd3a1ff54672d9d8a3e926a8901bdc41a00dae.tar.bz2
+      component_tarball_name: "{{ tarball_location }}/Stepup-Middleware-1.0.0-20150619132803Z-92f3383bc292a3a906b6587ecb52d0b1cfdd0950.tar.bz2"
       component_name: middleware
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
@@ -37,7 +45,7 @@
         - stepup-selfservice
 
   vars:
-      component_tarball_name: Stepup-SelfService-develop-20141210133202Z-716d9a0c78ad65f5160d7572abae673c156faf36.tar.bz2
+      component_tarball_name: "{{ tarball_location }}/Stepup-SelfService-1.0.0-20150619132749Z-4c8e8d1ad209603791855a114d7843d4bc74aab4.tar.bz2"
       component_name: selfservice
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
@@ -52,7 +60,37 @@
         - stepup-ra
 
   vars:
-      component_tarball_name: Stepup-RA-develop-20141210133225Z-9c5949d14b7abbcccddcd4c46c1fe42d82690f18.tar.bz2
+      component_tarball_name: "{{ tarball_location }}/Stepup-RA-1.0.0-20150619132450Z-49bef3fe7b2759c78a66636d8b2d559f162363d6.tar.bz2"
       component_name: ra
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
+
+
+- name: Install Stepup-tiqr IDP
+  hosts: stepup-tiqr
+  sudo: True
+  tags: stepup-tiqr
+
+  roles:
+        - stepup-tiqr
+
+  vars:
+      component_tarball_name: "{{ tarball_location }}/Stepup-tiqr-1.0.0-20150619100355Z-53107ae04169d8535a5fe45c335d30ea4800337f.tar.bz2"
+      component_name: tiqr
+      component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
+
+
+- name: Install Stepup-Keyserver
+  hosts: stepup-keyserver
+  sudo: True
+  tags: oath-service-php
+
+  roles:
+        - stepup-keyserver
+
+  vars:
+      component_tarball_name: "{{ tarball_location }}/oath-service-php-1.0.0-20150612142526Z-b818c2463a68e874d0ab1cbeac3197cf92901996.tar.bz2"
+      component_name: keyserver
       component_dir_name: /opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\.tar\.bz2$', '\\1') }}
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"

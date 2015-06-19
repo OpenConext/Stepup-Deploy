@@ -7,7 +7,7 @@ parameters:
     # tiqr should be enabled
     gssp_tiqr_enabled: true
     # Entity ID's of the Tiqr SPs
-    gssp_tiqr_allowed_sps: [ 'https://selfservice.{{ app_domain }}/registration/gssf/tiqr/metadata', 'https://ra.{{ app_domain }}/vetting-procedure/gssf/tiqr/metadata' ]
+    gssp_tiqr_allowed_sps: [ 'https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata' ]
 
     # Tiqr SP Proxy for authenticating with the real tiqr IdP
     gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt

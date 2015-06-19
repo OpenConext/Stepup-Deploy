@@ -1,9 +1,0 @@
----
-- name: Test split
-  hosts: localhost
-  gather_facts: false
-  vars:
-    - my_hostname: "x.test"
-  tasks:
-    - name: Split
-      debug: msg="{{ my_hostname.split('.')[0] }}"

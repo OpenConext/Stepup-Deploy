@@ -1,0 +1,4 @@
+pacemaker_user: hacluster
+pacemaker_cluster_name: server-cluster
+pacemaker_stonith_enabled: "false"
+pacemaker_quorum_policy: ignore

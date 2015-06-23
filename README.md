@@ -81,7 +81,7 @@ Creating a keystore is done once per environment. After that the keystore is sha
 Before a component can be deployed it must be built. This creates a tarball (bar.bz2) that can then be unpacked by the deploy playbook on the application servers. The script to do that is in the [Stepup-Build](https://github.com/SURFnet/Stepup-Build) repository. This script will checkout a component from git on the host, but run composer and create the gzipped tarball to be deployed in a Vagrant VM.
 
 Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatciaaly created by GitHub. The name of the component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<commit SHA1>.tar.bz2`. For example:
-``Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2``
+`Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2`
 
 [Deploy](id:deploy)
 ------
@@ -90,12 +90,9 @@ The depoy playbook deploys a component that was build using [Stepup-Build](https
 
    `scripts/deploy.sh <filename of component tarball> -i <inventory> [-t <tags>] [-l <hosts>] [-v]`
 
-The -i, -t (tags) -l (limit) and -v (verbose) options are passed to ``ansible-playbook``
+The -i, -t (tags) -l (limit) and -v (verbose) options are passed to `ansible-playbook`
 
-To deploy all components in the ``deploy.yml`` playbook call the playbook and provide the path to the component tarball. I.e.
-
-```ansible-playbook deploy.yml -i <inventory> -e tarball_location=<path to tarball directory>''
-```
+To deploy all components in the ``deploy.yml`` playbook call the playbook and provide the path to the component tarball. I.e. `ansible-playbook deploy.yml -i <inventory> -e tarball_location=<path to tarball directory>'`
 
 Getting started
 ---------------

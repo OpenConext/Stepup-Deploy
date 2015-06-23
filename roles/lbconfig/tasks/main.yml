@@ -1,0 +1,41 @@
+- name: pcs status
+  command: pcs status
+  ignore_errors: yes
+  register: pcs_status
+
+- name: pcs cluster auth
+  command: pcs cluster auth {{ pacemaker_cluster_members }} -u {{ pacemaker_user }} -p {{ pacemaker_user_password | vault(vault_keydir) }}
+  register: pcs_cluster_auth
+
+- name: pcs cluster setup
+  command: pcs cluster setup --name {{ pacemaker_cluster_name }} {{ pacemaker_cluster_members }}
+  when: pcs_status|failed
+
+- name: pcs cluster start
+  command: pcs cluster start --all
+  when: pcs_status|failed
+
+- name: pcs cluster enable
+  command: pcs cluster enable --all
+  when: pcs_status|failed
+
+- name: Setup stonith-enabled
+  command: pcs property set stonith-enabled={{ pacemaker_stonith_enabled }}
+  when: pcs_status|failed
+
+- name: Setup no-quorum-policy
+  command: pcs property set no-quorum-policy={{ pacemaker_quorum_policy }}
+  when: pcs_status|failed
+
+- name: Get resource status
+  command: pcs resource show
+  register: resource_status
+
+- name: Configure resource
+  command: pcs resource create {{ item.name }} ocf:heartbeat:IPaddr2 ip={{ item.ip }} cidr_netmask={{ item.cidr }} op monitor interval=30s
+  with_items: "{{ pacemaker_resources }}"
+  when: item.name not in resource_status.stdout
+
+- name: Constrain resource
+  command: pcs constraint location {{ item.name }} prefers {{ groups['lb'][0] }}=INFINITY
+  with_items: "{{ pacemaker_resources }}"

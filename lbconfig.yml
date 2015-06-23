@@ -1,0 +1,12 @@
+---
+# Ansible playbook for setting up the step-up infrastructure
+# Run:
+# cd Stepup-Deploy
+# ansible-playbook -i inventory environment/<env>/inventory site.yml
+
+- name: Pacemaker configuration
+  hosts: lb
+  sudo: True
+
+  roles:
+  - lbconfig

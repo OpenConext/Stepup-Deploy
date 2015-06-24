@@ -7,6 +7,15 @@
 - name: Pacemaker configuration
   hosts: lb
   sudo: True
+  tags: lb
+
+  roles:
+  - lbconfig
+
+- name: Pacemaker configuration
+  hosts: dbcluster
+  sudo: True
+  tags: db
 
   roles:
   - lbconfig

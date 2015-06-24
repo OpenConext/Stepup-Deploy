@@ -110,6 +110,8 @@
     key_options: command="/home/backup/mariadb_backup.sh"
   when: mariadb_enable_remote_ssh_backup | default(false)
 
+- include: pacemaker.yml
+  when: groups['dbcluster']|count > 1
 
 - include: middleware.yml
 - include: gateway.yml

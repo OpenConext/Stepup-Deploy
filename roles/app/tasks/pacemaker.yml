@@ -1,0 +1,12 @@
+- name: Install Pacemaker / Corosync
+  yum: name={{ item }} state=present
+  with_items:
+    - pcs
+    - pacemaker
+    - corosync
+
+- name: Enable and start pcsd
+  service: name=pcsd state=started enabled=yes
+
+- name: Setup hacluster user
+  user: name={{ ks_pacemaker_user }} state=present password={{ ks_pacemaker_user_crypt | vault(vault_keydir) }}

@@ -103,3 +103,7 @@
 - name: Put rsyslog config for nginx
   copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
   notify: restart rsyslog
+
+- name: Include pacemaker install
+  include: pacemaker.yml
+  when: "inventory_hostname in groups['ks'] and groups['ks']|count > 1"

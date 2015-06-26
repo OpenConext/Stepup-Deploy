@@ -19,3 +19,11 @@
 
   roles:
   - lbconfig
+
+- name: Pacemaker configuration
+  hosts: ks
+  sudo: True
+  tags: ks
+
+  roles:
+  - lbconfig

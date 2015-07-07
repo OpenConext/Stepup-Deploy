@@ -12,5 +12,8 @@
 - name: restart logstash
   service: name=logstash state=restarted
 
+- name: restart ntpd
+  service: name=ntpd state=restarted
+
 # Include handlers for environment specific tasks
 - include: "{{ inventory_dir }}/handlers/common.yml"

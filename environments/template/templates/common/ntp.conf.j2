@@ -1,3 +1,4 @@
+# Based on CentOS 8 default
 # For more information about this file, see the man pages
 # ntp.conf(5), ntp_acc(5), ntp_auth(5), ntp_clock(5), ntp_misc(5), ntp_mon(5).
 
@@ -5,13 +6,14 @@ driftfile /var/lib/ntp/drift
 
 # Permit time synchronization with our time source, but do not
 # permit the source to query or modify the service on this system.
-restrict default nomodify notrap nopeer noquery
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
 
 # Permit all access over the loopback interface.  This could
 # be tightened as well, but to do so would effect some of
 # the administrative functions.
 restrict 127.0.0.1 
-restrict ::1
+restrict -6 ::1
 
 # Hosts on local network are less restricted.
 #restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap

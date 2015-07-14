@@ -1,0 +1,19 @@
+filter {
+
+  # Normalise severity levels to syslog standard
+
+  mutate {
+    lowercase => [ "severity" ]
+  }
+
+  mutate {
+    gsub => [
+      "severity", "^note.*", "notice",
+      "severity", "^warn.*", "warning",
+      "severity", "^info.*", "informational",
+      "severity", "^crit.*", "critical",
+      "severity", "^emerg.*", "emergency"
+    ]
+  }
+
+}

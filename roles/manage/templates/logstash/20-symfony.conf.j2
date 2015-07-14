@@ -1,0 +1,42 @@
+filter {
+
+  # Parse output from stepup symfony apps. These apps use the "surfnet_stepup.monolog.json_formatter" to log a
+  # structured message:
+  # {
+  #   "channel":"php",
+  #   "level":"CRITICAL",
+  #   "message":"Uncaught Exception: An exception occured in driver: SQLSTATE[HY000] [2002] No route to host",
+  #   "context":{ ... },
+  #   "extra":{
+  #     "server":"gateway.stepup.example.com",
+  #     "application":"stepup-gateway",
+  #     "request_id":"f666ebff508cccc66f5e7d0fefa7e71a"
+  #   }
+  # }
+
+
+  if [prog] == "stepup-gateway" or [prog] == "stepup-selfservice" or [prog] == "stepup-middleware" or [prog] == "stepup-ra" {
+
+    # Parse JSON into stepup_json
+    json {
+      source => "message"
+      target => "json"
+    }
+
+    mutate {
+      replace => {
+        "message" => "%{[json][message]}"
+        "severity" => "%{[json][level]}"
+        "context" => "%{[json][context]}"
+        "extra" => "%{[json][extra]}"
+      }
+    }
+
+    mutate {
+      lowercase => "severity"
+      remove => "json"
+    }
+
+  }
+
+}

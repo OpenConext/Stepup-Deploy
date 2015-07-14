@@ -39,6 +39,10 @@
   template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
   with_items:
   - 10-rsyslog_relp_input.conf
+  - 20-mysqld.conf
+  - 20-symfony.conf
+  - 20-nginx.conf
+  - 80-severity.conf
   - 90-output_logstash.conf
   - 99-output_log.conf
   notify: Restart logstash

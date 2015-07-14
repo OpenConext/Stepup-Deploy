@@ -111,7 +111,7 @@
   when: mariadb_enable_remote_ssh_backup | default(false)
 
 - include: pacemaker.yml
-  when: groups['dbcluster']|count > 1
+  when: ( groups['dbcluster']|count > 1 ) and ( groups['lb']|count > 0 )
 
 - include: middleware.yml
 - include: gateway.yml

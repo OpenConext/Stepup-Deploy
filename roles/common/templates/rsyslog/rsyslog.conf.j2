@@ -35,6 +35,9 @@ $InputRELPServerRun 10514
 {% endif %}
 
 
+$template StepupAuthnFile,"/var/log/stepup-authentication-%$YEAR%-%$MONTH%-%$DAY%.log"
+
+
 #### GLOBAL DIRECTIVES ####
 
 # Where to place auxiliary files
@@ -87,6 +90,9 @@ uucp,news.crit                                          /var/log/spooler
 
 # Save boot messages also to boot.log
 local7.*                                                /var/log/boot.log
+
+# Log stepup authentication messages to file
+if $programname == 'stepup-authentication' then         ?StepupAuthnFile
 
 
 # ### begin forwarding rule ###

@@ -29,12 +29,14 @@
   - php-mysql
   - php-bcmath
   - php-gmp
-  - php-gd
   - nodejs
   - nodejs-less.noarch
   - sendmail
   - sendmail-cf
 
+# php-gd requires libgd (>2.1.1) from remi repo
+- name: Install php-gd
+  yum: name=php-gd state=present enablerepo=remi
 
 - name: Put php.ini
   template: src='php.ini.j2' dest='/etc/php.ini'

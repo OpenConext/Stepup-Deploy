@@ -97,3 +97,7 @@ keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use addre
 # TODO: Set to address and port of logserver
 loghost_relp_address: "{{ hostvars[groups['manage'][0]]['host_ipv4'] }}"
 loghost_relp_port: 10514
+
+# The (ip) address to use to access the memcache server
+# NOTE: db nodes double as memcache servers
+memcache_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster

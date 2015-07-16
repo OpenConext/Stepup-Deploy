@@ -21,6 +21,9 @@
   - php-pecl-memcached
 
 
+- name: Start and enable memcached
+  service: name=memcached state=started enabled=true
+
 - name: Put mariadb server.cnf
   template: src='server.cnf.j2' dest='/etc/my.cnf.d/server.cnf'
   notify:

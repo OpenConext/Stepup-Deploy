@@ -23,7 +23,15 @@ $options["apns.environment"] = "production";
 $options["gcm.application"] = "nl.surfnet.authenticator";
 $options["gcm.apikey"]    = "{{ tiqr_gcm_apikey | vault(vault_keydir) }}";
 
-$options["statestorage"]    = array("type" => "memcache", "prefix"=>"tiqr_", "servers"=>array("host"=>"{{ memcache_lb_address }}"));
+$options["statestorage"]    = array(
+	"type" => "memcache",
+	 "prefix" => "tiqr_",
+	 "servers" => array(
+		array(
+		    "host" => "{{ memcache_lb_address }}"
+		)
+	)
+);
 
 /*
 $option["usersecretstorage"] = array(

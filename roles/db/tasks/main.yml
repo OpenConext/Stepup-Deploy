@@ -17,6 +17,8 @@
   - galera
   - rsync         # For galera sync
   - MySQL-python  # Required for using the Ansible mysql_* modules
+  - memcached
+  - php-pecl-memcached
 
 
 - name: Put mariadb server.cnf

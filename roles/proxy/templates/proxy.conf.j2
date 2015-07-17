@@ -17,13 +17,16 @@ server {
     error_log /var/log/nginx/proxy_{{ component_name }}_error.log;
 
     location ~ {
-        proxy_set_header    Host $host;
-        proxy_set_header    X-Real-IP $remote_addr;
-        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header    X-Forwarded-Proto $scheme;
+        # By default nginx replaces the Host header with $proxy_host. This the value of
+        # proxy_pass (i.e. localhost:80). We need to keep the real hostname here.
+        proxy_set_header    Host            $host;
 
-        # Forward to localhost (HTTP). For a production setup with dedicated LBs/Proxies
-        # this will probably some other location
+        # Append the client IP to the X-Forwarded-For header. This header is later used
+        # by the nginx vhost to get the real client IP, just like when using a separate reverse
+        # proxy (i.e. haproxy on the host)
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # Forward to localhost (HTTP)
         proxy_pass          http://localhost:80;
         proxy_read_timeout  90;
     }

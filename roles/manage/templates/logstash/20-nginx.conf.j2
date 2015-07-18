@@ -17,12 +17,11 @@ filter {
       negate => true
     }
 
-    # Multline may turn timestamp and received_at fields into an array
+    # Multline may turn timestamp fields into an array
     # Fix this by setting those fields to the first value
     if "multiline" in [tags] {
       mutate {
-        replace => [ "timestamp", "%{[timestamp][0]}" ]
-        replace => [ "received_at", "%{[received_at][0]}" ]
+        replace => [ "syslog_timestamp", "%{[syslog_timestamp][0]}" ]
       }
     }
 
@@ -41,7 +40,6 @@ filter {
   }
 
 
-
   # Handle nginx access log
   # Format:
   # $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$request_time"
@@ -50,34 +48,37 @@ filter {
   if [prog] =~ /^nginx-access*/ {
 
     grok {
-      match => { message => '%{NOTSPACE:remote_addr} - %{USER:remote_user} \[%{DATA:nginx_timestamp}\] "%{DATA:http_request}" %{NUMBER:http_status:int} %{NUMBER:bytes_sent:int} "%{DATA:http_referer}" "%{DATA:http_user_agent}" "%{NUMBER:request_time}"' }
+      match => { message => '%{NOTSPACE:remote_addr} - %{USER:remote_user} \[%{DATA:nginx_timestamp}\] "%{DATA:http_request}" %{NUMBER:http_status:int} %{NUMBER:bytes_sent:int} "%{DATA:http_referer}" "%{DATA:http_user_agent}" "%{NUMBER:request_time:float}" %{NOTSPACE:stepup_request_id}' }
     }
 
-    # Parse nginx_timestamp into generated_at
-    # Example: 11/Jul/2015:14:15:56·+0200
-    date {
-      match => [ "nginx_timestamp", "dd/MMM/yyyy:HH:mm:ss Z" ]
-      target => "generated_at"
-    }
+    # 'if's with undefined variables can crash the logstash pipeline, leading to an unresponsive logstash.
+    if "_grokparsefailure" not in [tags] {
 
-    # Assign severity based on HTTP status code
-    if [http_status] >= 400 and [http_status] < 500 {
-      mutate {
-        replace => { "severity" => "warning" }
+      # Parse nginx_timestamp into generated_at
+      # Example: 11/Jul/2015:14:15:56·+0200
+      date {
+        match => [ "nginx_timestamp", "dd/MMM/yyyy:HH:mm:ss Z" ]
+        target => "generated_at"
       }
-    }
-    if [http_status] >= 500 and [http_status] < 600 {
-      mutate {
-        replace => { "severity" => "error" }
+
+      # Assign severity based on HTTP status code
+      if [http_status] >= 400 and [http_status] < 500 {
+        mutate {
+          replace => { "severity" => "warning" }
+        }
+      }
+      if [http_status] >= 500 and [http_status] < 600 {
+        mutate {
+          replace => { "severity" => "error" }
+        }
       }
     }
 
   }
 
-
   # Non standard nginx_timestamp format causes parser trouble in ES
   mutate {
-    remove => "nginx_timestamp"
+    remove_field => "nginx_timestamp"
   }
 
 }

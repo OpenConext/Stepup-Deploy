@@ -10,23 +10,23 @@ input {
 # Decode rsyslog
 filter {
 
-  grok {
-    type => 'rsyslog'
-    match => {
-      "message" => "<%{POSINT:syslog_pri}>1 %{TIMESTAMP_ISO8601:timestamp} %{HOSTNAME:hostname} %{PROG:prog} (%{POSINT:procid}|-) (%{WORD:msgid}|-) %{GREEDYDATA:message}"
+  if [type] == "rsyslog" {
+    grok {
+      match => {
+        "message" => "<%{POSINT:syslog_pri}>1 %{TIMESTAMP_ISO8601:syslog_timestamp} %{HOSTNAME:hostname} %{PROG:prog} (%{POSINT:procid}|-) (%{WORD:msgid}|-) %{GREEDYDATA:message}"
+      }
+      # Replace existing message with decoded message
+      overwrite => 'message'
+      remove_field => "host"
+      add_tag => "syslog_parsed"
     }
-    # Replace existing message with decoded message
-    overwrite => 'message'
-    add_field => [ "received_at", "%{@timestamp}" ]
-    remove_field => "host"
-    add_tag => "syslog_parsed"
-  }
 
-  if "syslog_parsed" in [tags] {
-    syslog_pri {
-      syslog_pri_field_name => "syslog_pri"
-      remove_field => ["syslog_facility_code", "syslog_severity_code", "syslog_pri"]
-      add_field => [ "severity", "%{syslog_severity}" ]
+    if "syslog_parsed" in [tags] {
+      syslog_pri {
+        syslog_pri_field_name => "syslog_pri"
+        remove_field => ["syslog_facility_code", "syslog_severity_code", "syslog_pri"]
+        add_field => [ "severity", "%{syslog_severity}" ]
+      }
     }
   }
 

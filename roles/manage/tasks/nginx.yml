@@ -50,7 +50,8 @@
       - restart nginx
 
 - name: Write /etc/nginx/manage.htpasswd
-  htpasswd: crypt_scheme=ldap_sha1 path=/etc/nginx/manage.htpasswd name={{ manage_kibana_user }} password={{ manage_kibana_password | vault(vault_keydir) }}
+  htpasswd: crypt_scheme=ldap_sha1 path=/etc/nginx/manage.htpasswd name={{ item.user }} password={{ item.password | vault(vault_keydir) }}
+  with_items: "{{ manage_kibana_users }}"
   notify:
       - restart nginx
 

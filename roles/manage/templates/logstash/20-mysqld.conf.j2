@@ -16,12 +16,11 @@ filter {
       negate => true
     }
 
-    # Multline may turn timestamp and received_at fields into an array
+    # Multline may turn timestap fields into an array
     # Fix this by setting those fields to the first value
     if "multiline" in [tags] {
       mutate {
-        replace => [ "timestamp", "%{[timestamp][0]}" ]
-        replace => [ "received_at", "%{[received_at][0]}" ]
+        replace => [ "syslog_timestamp", "%{[syslog_timestamp][0]}" ]
       }
     }
 
@@ -31,16 +30,18 @@ filter {
       overwrite => [ "message" ]
     }
 
-    # Parse mysql_timestamp into generated_at
-    date {
-      match => [ "mysql_timestamp", "YYMMdd H:mm:ss", "YYMMdd HH:mm:ss" ]
-      target => "generated_at"
-    }
+    # 'if's with undefined variables can crash the logstash pipeline, leading to an unresponsive logstash.
+    if "_grokparsefailure" not in [tags] {
+      # Parse mysql_timestamp into generated_at
+      date {
+        match => [ "mysql_timestamp", "YYMMdd H:mm:ss", "YYMMdd HH:mm:ss" ]
+        target => "generated_at"
+      }
 
-    # Mysql syslog reports all messages at error, replace severity with severity from the actual mysql logline
-    mutate {
-      rename => [ "mysql_severity", "severity" ]
+      # Mysql syslog reports all messages at error, replace severity with severity from the actual mysql logline
+      mutate {
+        rename => [ "mysql_severity", "severity" ]
+      }
     }
-
   }
 }

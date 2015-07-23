@@ -71,6 +71,13 @@ app
 db.stepup.example.com host_ipv4=192.168.66.5 ansible_ssh_host=192.168.66.5 ansible_ssh_user=stepup ansible_ssh_pass=stepup
 
 
+####
+# lb
+####
+
+[lb]
+
+
 #####
 # dev
 #####

@@ -29,6 +29,7 @@
   - php-mysql
   - php-bcmath
   - php-gmp
+  - php-pecl-memcache
   - nodejs
   - nodejs-less.noarch
   - sendmail

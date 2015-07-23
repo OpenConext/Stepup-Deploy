@@ -27,9 +27,9 @@ keyserver_vhost_name: keyserver.stepup.example.com
 
 # The uri's that are used to define the LoA levels
 # TODO: Set LoA uri's
-stepup_uri_loa1: 'http://suaas.example.com/assurance/loa1'
-stepup_uri_loa2: 'http://suaas.example.com/assurance/loa2'
-stepup_uri_loa3: 'http://suaas.example.com/assurance/loa3'
+stepup_uri_loa1: 'http://stepup.example.com/assurance/loa1'
+stepup_uri_loa2: 'http://stepup.example.com/assurance/loa2'
+stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml

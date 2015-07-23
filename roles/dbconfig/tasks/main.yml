@@ -1,0 +1,87 @@
+- name: pcs status
+  command: pcs status
+  ignore_errors: yes
+  register: pcs_status
+
+- name: pcs cluster auth
+  command: pcs cluster auth {{ pacemaker_cluster_members }} -u {{ pacemaker_user }} -p {{ pacemaker_user_password | vault(vault_keydir) }}
+  register: pcs_cluster_auth
+
+- name: pcs cluster setup
+  command: pcs cluster setup --name {{ pacemaker_cluster_name }} {{ pacemaker_cluster_members }}
+  when: pcs_status|failed
+
+- name: pcs cluster start
+  command: pcs cluster start --all
+
+- name: pcs cluster enable
+  command: pcs cluster enable --all
+
+- name: Setup stonith-enabled
+  command: pcs property set stonith-enabled={{ pacemaker_stonith_enabled }}
+  when: pcs_status|failed
+
+- name: Setup no-quorum-policy
+  command: pcs property set no-quorum-policy={{ pacemaker_quorum_policy }}
+  when: pcs_status|failed
+
+- name: Get resource status
+  command: pcs resource show
+  register: resource_status
+
+- name: Configure resource
+  command: pcs resource create {{ item.name }} ocf:heartbeat:IPaddr2 ip={{ item.ip }} cidr_netmask={{ item.cidr }} op monitor interval=5s timeout=30s
+  with_items: "{{ pacemaker_resources }}"
+  when: item.name not in resource_status.stdout
+
+- name: Debug
+  debug: var=pacemaker_mysqlping
+
+- name: Debug 2
+  debug: var=resource_status.stdout
+
+- name: Setup mysql directory for mysqlping
+  file: state=directory dest=/usr/lib/ocf/resource.d/mysql/
+  when: pacemaker_mysqlping
+
+- name: Setup mysqlping binary
+  copy: src=mysqlping mode=0755 dest=/usr/lib/ocf/resource.d/mysql/mysqlping
+  when: pacemaker_mysqlping
+
+- name: Debug groups
+  debug: var=groups['dbcluster']
+
+- name: debug
+  local_action: shell echo name is {{ item }}
+  with_items: var=groups.dbcluster
+
+- name: Configure mysqlping resource
+  command: pcs resource create {{ mysqlping_config.name }} ocf:mysql:mysqlping dampen={{ mysqlping_config.dampen }} host_list={{ mysqlping_config.host_list }} multiplier={{ mysqlping_config.multiplier }} op monitor interval={{ mysqlping_config.monitor_interval }} timeout={{ mysqlping_config.monitor_timeout }}
+  when: mysqlping_config.name not in resource_status.stdout and pacemaker_mysqlping
+
+- name: Clone mysqlping resource
+  command: pcs resource clone {{ mysqlping_config.name }} {{ mysqlping_config.name}}-clone globally-unique=false
+  when: mysqlping_config.name not in resource_status.stdout and pacemaker_mysqlping
+
+- name: Configure mysqlping locations
+  command: pcs constraint location add {{ mysqlping_config.name }}-{{ item.split('.')[0] }} {{ mysqlping_config.name}}-clone {{ item }} 100
+  with_items: groups.dbcluster
+  when: mysqlping_config.name not in resource_status.stdout and pacemaker_mysqlping
+
+- name: Configure mysqlping IP preferred location
+  command: pcs constraint location add {{ item }}-pref-location {{ mysqlping_ip_resource }} {{ item }} 100
+  with_items: groups.dbcluster
+  when: mysqlping_config.name not in resource_status.stdout and pacemaker_mysqlping and item == groups.dbcluster[0]
+
+- name: Configure mysqlping IP alternative locations
+  command: pcs constraint location add {{ item }}-alt-location {{ mysqlping_ip_resource }} {{ item }} 10
+  with_items: groups.dbcluster
+  when: mysqlping_config.name not in resource_status.stdout and pacemaker_mysqlping and item != groups.dbcluster[0]
+
+- name: Configure mysqlping rule
+  command: pcs constraint location {{ mysqlping_ip_resource }} rule id=mysqlping score=333 defined mysqlping 
+
+- name: Constrain resource
+  command: pcs constraint location {{ item.name }} prefers {{ groups['dbcluster'][0] }}=INFINITY
+  with_items: "{{ pacemaker_resources }}"
+  when: item.prefer

@@ -16,6 +16,7 @@ server_admin_email: admin@stepup.example.com
 
 # "noreply" email address
 noreply_email: noreply@stepup.example.com
+noreply_email_name: Step-up Example
 
 # FQDN for vhosts
 middleware_vhost_name: middleware.stepup.example.com
@@ -27,9 +28,9 @@ keyserver_vhost_name: keyserver.stepup.example.com
 
 # The uri's that are used to define the LoA levels
 # TODO: Set LoA uri's
-stepup_uri_loa1: 'http://suaas.example.com/assurance/loa1'
-stepup_uri_loa2: 'http://suaas.example.com/assurance/loa2'
-stepup_uri_loa3: 'http://suaas.example.com/assurance/loa3'
+stepup_uri_loa1: 'http://stepup.example.com/assurance/loa1'
+stepup_uri_loa2: 'http://stepup.example.com/assurance/loa2'
+stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml
@@ -97,3 +98,7 @@ keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use addre
 # TODO: Set to address and port of logserver
 loghost_relp_address: "{{ hostvars[groups['manage'][0]]['host_ipv4'] }}"
 loghost_relp_port: 10514
+
+# The (ip) address to use to access the memcache server
+# NOTE: db nodes double as memcache servers
+memcache_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster

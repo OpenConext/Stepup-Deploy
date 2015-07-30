@@ -1,0 +1,29 @@
+filter {
+  # generated_at is a timestamp that is added when the log message contains a time. For instance nginx, mysql logs.
+  # syslog_timestamp is the timestamp reported by rsyslog
+  # @timestamp is the time the message was received by logstash, it is an internal field that cannot be removed
+  # and is difficult to work with (see: https://logstash.jira.com/browse/LOGSTASH-1340)
+
+  # Add a "timestamp" and set it, in order of preference, to generated_at, syslog_timestamp
+  # This creates a "timestamp" field that best matches the order on which messages were generated. Otherwise
+  # the messages read from file (e.g. mysqld, nginx) will get the timestamp at which rsyslog read them from file.
+
+  if [generated_at] {
+    # When generated_at was created with the date filter it is "special". It can not be used in the date filer again
+    # but needs to be converted to string first. The resulting string has format "YYYY-MM-dd HH:mm:ss ZZZ".
+    mutate {
+      convert => ["generated_at", "string"]
+    }
+    date {
+      match => ["generated_at", "YYYY-MM-dd HH:mm:ss ZZZ", "ISO8601"]
+      target => "timestamp"
+    }
+  }
+  else {
+    date {
+      match => ["syslog_timestamp", "YYYY-MM-dd HH:mm:ss ZZZ", "ISO8601"]
+      target => "timestamp"
+    }
+  }
+
+}

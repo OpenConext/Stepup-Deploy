@@ -17,7 +17,12 @@
   - galera
   - rsync         # For galera sync
   - MySQL-python  # Required for using the Ansible mysql_* modules
+  - memcached
+  - php-pecl-memcached
 
+
+- name: Start and enable memcached
+  service: name=memcached state=started enabled=true
 
 - name: Put mariadb server.cnf
   template: src='server.cnf.j2' dest='/etc/my.cnf.d/server.cnf'
@@ -110,6 +115,8 @@
     key_options: command="/home/backup/mariadb_backup.sh"
   when: mariadb_enable_remote_ssh_backup | default(false)
 
+- include: pacemaker.yml
+  when: ( groups['dbcluster']|count > 1 ) and ( groups['lb']|count > 0 )
 
 - include: middleware.yml
 - include: gateway.yml

@@ -11,5 +11,6 @@ manage_key: "{{ lookup('file', inventory_dir+'/ssl_cert/manage.key') }}"
 
 # Username and password for authentication to the Kibana webinterface
 # https://{{ manage_vhost_name }}/kibana4
-manage_kibana_user: stepup
-manage_kibana_password: "{{ lookup('file', inventory_dir+'/password/manage_kibana') }}"
+manage_kibana_users:
+  - { user: stepup, password: "{{ lookup('file', inventory_dir+'/password/manage_kibana') }}" }
+  #- { user: some_other_user, password: some_vaulted_password }

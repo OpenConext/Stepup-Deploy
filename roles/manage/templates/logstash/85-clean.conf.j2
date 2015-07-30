@@ -1,0 +1,8 @@
+filter {
+
+  mutate {
+    remove_tag => [ "syslog_parsed" ]
+    remove_field => [ "@version", "type" ]
+  }
+
+}

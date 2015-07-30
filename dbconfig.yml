@@ -5,25 +5,9 @@
 # ansible-playbook -i inventory environment/<env>/inventory site.yml
 
 - name: Pacemaker configuration
-  hosts: lb
-  sudo: True
-  tags: lb
-
-  roles:
-  - lbconfig
-
-- name: Pacemaker configuration
   hosts: dbcluster
   sudo: True
   tags: db
 
   roles:
-  - lbconfig
-
-- name: Pacemaker configuration
-  hosts: ks
-  sudo: True
-  tags: ks
-
-  roles:
-  - lbconfig
+  - dbconfig

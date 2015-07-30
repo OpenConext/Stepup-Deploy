@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# delete authentication logs older than 31 days
+find /var/log/ -maxdepth 1 -name "stepup-authentication-*.log.bz2" -mtime +31 -exec rm {} \;

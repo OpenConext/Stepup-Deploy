@@ -1,6 +1,9 @@
 # Add config for a HTTPS proxy on the app server
 # Assumes nginx has been installed previously
 
+- name: Put /etc/nginx/dhparams.pem
+  copy: src={{ inventory_dir }}/files/dhparams.pem dest=/etc/nginx/dhparams.pem
+
 # Create SSL config for proxy to local vhost
 - include: proxy.yml
   vhost_name: "{{ gateway_vhost_name }}"

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Compress stepup authentication logs older than 1 day
+find /var/log/ -maxdepth 1 -name "stepup-authentication-*.log" -mtime +1 -exec bzip2 -9 {} \;

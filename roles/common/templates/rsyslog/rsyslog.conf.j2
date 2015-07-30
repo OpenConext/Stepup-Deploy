@@ -59,7 +59,54 @@ $OmitLocalLogging on
 $IMJournalStateFile imjournal.state
 
 
+# stepup authentication messages are logged to file per day.
+# Cleanup and compression is handled using cron jobs (not logrotate)
+$template StepupAuthnFile,"/var/log/stepup-authentication-%$YEAR%-%$MONTH%-%$DAY%.log"
+
+# Format for forwarding messages to rsyslog on loghost
+# RSYSLOG_SyslogProtocol23Format is predefined like
+# $template RSYSLOG_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %STRUCTURED-DATA% %msg%\n"
+# Use newer RFC5424 syslog format that is natively understood by rsyslog.
+# Disable %STRUCTURED-DATA% because this is difficult to parse in logstash
+$template Forward_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% - %msg%\n"
+
+# Format for forwarding messages from rsyslog on loghost to logstash on loghost
+$template Logstash_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %msg%"
+
+
 #### RULES ####
+
+# Write stepup authentication messages to file
+# This is executed on all hosts. This means that the on the central loghost the aggregate
+# messages are written to file
+if $programname == 'stepup-authentication' then ?StepupAuthnFile
+
+
+{% if 'manage' in group_names %}
+# Forward all messages to local logstash on localhost using RELP
+$ModLoad omrelp
+$ActionQueueType LinkedList    # run asynchronously
+$ActionQueueFileName omrelp-to-logstash    # set file name, also enables disk mode
+$ActionResumeRetryCount -1     # infinite retries if host is down
+$ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
+
+*.* :omrelp:127.0.0.1:20514;Logstash_SyslogProtocol23Format
+
+# Discard all messages from other hosts
+# This rule stops further processing of the rules below so messages from remote hosts will not be logged on the loghost
+if $fromhost != '{{ inventory_hostname.split('.')[0] }}' then stop
+{% else %}
+# Forward all messages to loghost using RELP
+$ModLoad omrelp
+$ActionQueueType LinkedList    # run asynchronously
+$ActionQueueFileName omrelp-to-loghost    # set file name, also enables disk mode
+$ActionResumeRetryCount -1     # infinite retries if host is down
+$ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
+
+*.* :omrelp:{{ loghost_relp_address }}:{{ loghost_relp_port }};Forward_SyslogProtocol23Format
+{% endif %}
+
+# Log messages locally
 
 # Log all kernel messages to the console.
 # Logging much else clutters up the screen.
@@ -75,7 +122,6 @@ authpriv.*                                              /var/log/secure
 # Log all the mail messages in one place.
 mail.*                                                  -/var/log/maillog
 
-
 # Log cron stuff
 cron.*                                                  /var/log/cron
 
@@ -87,50 +133,3 @@ uucp,news.crit                                          /var/log/spooler
 
 # Save boot messages also to boot.log
 local7.*                                                /var/log/boot.log
-
-
-# ### begin forwarding rule ###
-# The statement between the begin ... end define a SINGLE forwarding
-# rule. They belong together, do NOT split them. If you create multiple
-# forwarding rules, duplicate the whole block!
-# Remote Logging (we use TCP for reliable delivery)
-#
-# An on-disk queue is created for this action. If the remote host is
-# down, messages are spooled to disk and sent when it is up again.
-#$ActionQueueFileName fwdRule1 # unique name prefix for spool files
-#$ActionQueueMaxDiskSpace 1g   # 1gb space limit (use as much as possible)
-#$ActionQueueSaveOnShutdown on # save messages to disk on shutdown
-#$ActionQueueType LinkedList   # run asynchronously
-#$ActionResumeRetryCount -1    # infinite retries if host is down
-# remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
-#*.* @@remote-host:514
-# ### end of the forwarding rule ###
-
-{#
-# RSYSLOG_SyslogProtocol23Format is predefined like
-# $template RSYSLOG_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %STRUCTURED-DATA% %msg%\n"
-# Use newer RFC5424 syslog format that is natively understood by rsyslog.
-# Disable %STRUCTURED-DATA% because this is difficult to parse in logstash
-#}
-$template Forward_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% - %msg%\n"
-
-{% if 'manage' in group_names %}
-# Forward all messages to local logstash on localhost using RELP
-$ModLoad omrelp
-$ActionQueueType LinkedList    # run asynchronously
-$ActionQueueFileName omrelp-to-logstash    # set file name, also enables disk mode
-$ActionResumeRetryCount -1     # infinite retries if host is down
-$ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
-
-$template Logstash_SyslogProtocol23Format,"<%PRI%>1 %TIMESTAMP:::date-rfc3339% %HOSTNAME% %APP-NAME% %PROCID% %MSGID% %msg%"
-*.* :omrelp:127.0.0.1:20514;Logstash_SyslogProtocol23Format
-{% else %}
-# Forward all messages to loghost using RELP
-$ModLoad omrelp
-$ActionQueueType LinkedList    # run asynchronously
-$ActionQueueFileName omrelp-to-loghost    # set file name, also enables disk mode
-$ActionResumeRetryCount -1     # infinite retries if host is down
-$ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
-
-*.* :omrelp:{{ loghost_relp_address }}:{{ loghost_relp_port }};Forward_SyslogProtocol23Format
-{% endif %}

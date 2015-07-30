@@ -36,6 +36,8 @@
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 4567 -j ACCEPT
 # Galera incremental State Transfers
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 4568 -j ACCEPT
+# memcache (NOTE: db nodes double as memcache nodes)
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 11211 -j ACCEPT
 {% endif %}
 
 # Elastic search cluster

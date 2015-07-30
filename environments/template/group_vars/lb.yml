@@ -1,10 +1,36 @@
 loadbalancing:
-  middleware: {
-    name: "middleware",
-    port: 401,
-    heartbeat: { url: "/", method: "GET" },
-    hostgroup: "app",
-  }
+  middleware:
+    port: 401
+    heartbeat: { url: "/heartbeat", method: "GET" }
+    hostgroup: "stepup-app"
+  ra:
+    port: 402
+    heartbeat: { url: "/heartbeat", method: "GET" }
+    hostgroup: "stepup-app"
+  gateway:
+    port: 403
+    heartbeat: { url: "/heartbeat", method: "GET" }
+    hostgroup: "stepup-app"
+  selfservice:
+    port: 404
+    heartbeat: { url: "/heartbeat", method: "GET" }
+    hostgroup: "stepup-app"
+  tiqr:
+    port: 405
+    heartbeat: { url: "/heartbeat", method: "GET" }
+    hostgroup: "stepup-app"
+
+# Example pacemaker_resources
+#pacemaker_resources:
+#  - { name: middleware, ip: 127.0.0.1, cidr: 24 }
+
+pacemaker_cluster_members: "{{ groups['lb']|join(' ') }}"
+
+# Pacemaker user password (user for the hacluster user)
+pacemaker_user_password: "{{ lookup('file', inventory_dir+'/password/lb_pacemaker_user_password') }}"
+
+# Pacemaker user crypt (crypted version of pacemaker_user_password as it would appear in /etc/shadow)
+pacemaker_user_crypt: "{{ lookup('file', inventory_dir+'/password/lb_pacemaker_user_crypt') }}"
 
 # Format: PEM RSA PRIVATE KEY
 nginx_gateway_key: "{{ lookup('file', inventory_dir+'/ssl_cert/gateway.key') }}"

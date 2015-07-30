@@ -9,6 +9,10 @@
 - name: Create keys directory
   file: dest=/etc/nginx/keys/ state=directory
 
+- name: Put /etc/nginx/dhparams.pem
+  copy: src={{ inventory_dir }}/files/dhparams.pem dest=/etc/nginx/dhparams.pem
+
+
 - include: nginx_vhost.yml
   vhost_name: "{{ gateway_vhost_name }}"
   component: gateway

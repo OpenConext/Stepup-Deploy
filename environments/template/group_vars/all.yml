@@ -16,6 +16,7 @@ server_admin_email: admin@stepup.example.com
 
 # "noreply" email address
 noreply_email: noreply@stepup.example.com
+noreply_email_name: Step-up Example
 
 # FQDN for vhosts
 middleware_vhost_name: middleware.stepup.example.com

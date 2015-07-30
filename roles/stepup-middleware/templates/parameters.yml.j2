@@ -29,7 +29,7 @@ parameters:
     management_password: {{ management_password | vault(vault_keydir) }}
 
     self_service_email_verification_url_template: https://{{ selfservice_vhost_name }}/verify-email?n={nonce}
-    email_sender_name: SURFnet bv
+    email_sender_name: {{ noreply_email_name }}
     email_sender_email: {{ noreply_email }}
     email_verification_window: 3600 # the number of seconds an email verification email/url is valid
 

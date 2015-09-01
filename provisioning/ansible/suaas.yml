@@ -11,6 +11,7 @@
       - php-pdo
       - php-pecl-xdebug
       - php-mysql
+      - php-gmp
     mariadb_root_password: root
   roles:
     - role: common

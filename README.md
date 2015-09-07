@@ -31,6 +31,7 @@ $ git clone git@github.com:SURFnet/Stepup-Gateway.git
 $ git clone git@github.com:SURFnet/Stepup-SelfService.git
 $ git clone git@github.com:SURFnet/Stepup-RA.git
 $ cd Stepup-Deploy
+$ (cd ssl && place-ssl-certificates-see-below)
 $ git checkout dev
 $ git submodule update --init --recursive
 $ vagrant plugin install vagrant-vbguest

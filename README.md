@@ -30,6 +30,7 @@ $ git clone git@github.com:SURFnet/Stepup-Middleware.git
 $ git clone git@github.com:SURFnet/Stepup-Gateway.git
 $ git clone git@github.com:SURFnet/Stepup-SelfService.git
 $ git clone git@github.com:SURFnet/Stepup-RA.git
+$ mkdir simplesamlphp # Place a simplesamlphp deployment here with some credentials
 $ cd Stepup-Deploy
 $ (cd ssl && place-ssl-certificates-see-below)
 $ git checkout dev

@@ -38,7 +38,7 @@ $ (cd suaas && vagrant up)
 $ (cd graylog && vagrant up)
 ```
 
-Place the SSL certificates in `./ssl`:
+Place the SSL certificates in `./Stepup-Deploy/ssl`:
 
  * `ca.crt` — CA certificate chain
  * `server.crt` — Server wildcard certificate

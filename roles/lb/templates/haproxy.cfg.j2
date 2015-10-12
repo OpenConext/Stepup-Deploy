@@ -91,7 +91,9 @@ backend {{ component }}_be
     cookie HTTPSERVERID insert nocache indirect
 
     {% for server in groups[loadbalancing[component].hostgroup] %}
+    {% if hostvars[server].host_location == physical_location %}
     server {{ server.split('.')[0] }} {{ hostvars[server].host_ipv4 }}:80 cookie {{ server.split('.')[0] }} check inter 20000 fall 2 rise 2 maxconn 1024
+    {% endif %}
     {% endfor %}
 
 {% endfor %}

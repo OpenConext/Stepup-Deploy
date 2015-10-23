@@ -28,7 +28,7 @@ The deploy requires an environment created with e.g. the `create_new_environment
 
 Use `ansible-playbook -i <environment_directory>/inventory site.yml` to depoy the infrastructure.
 
-The databases form a galera cluster. When none of the MariaDB databases is running, such as during the forst deploy, the first database must be bootstrapped by setting the Ansible varibale `galera_bootstrap_node` to the hostname of the node to bootstrap. Example:
+The databases form a galera cluster. When none of the MariaDB databases is running, such as during the forst deploy, the first database must be bootstrapped by setting the Ansible variable `galera_bootstrap_node` to the hostname of the node to bootstrap. Example:
 
 `ansible-playbook site.yml -i <environment_directory>/inventory -e "galera_bootstrap_node=app.stepup.example.com"`
 
@@ -86,7 +86,7 @@ Prebuild components can be downloaded from the release page of the component on 
 [Deploy](id:deploy)
 ------
 
-The depoy playbook deploys a component that was build using [Stepup-Build](https://github.com/SURFnet/Stepup-Build). Deploying a component requires the infrastructure to be setup first using [``site.yml``](#site). The deploy playbook is `deploy.yml`. A script is provided to use this playbook to deploy a single component. This script will override the component names in the `deploy.yml` playbook. Usage:
+The deploy playbook deploys a component that was build using [Stepup-Build](https://github.com/SURFnet/Stepup-Build). Deploying a component requires the infrastructure to be setup first using [``site.yml``](#site). The deploy playbook is `deploy.yml`. A script is provided to use this playbook to deploy a single component. This script will override the component names in the `deploy.yml` playbook. Usage:
 
    `scripts/deploy.sh <filename of component tarball> -i <inventory> [-t <tags>] [-l <hosts>] [-v]`
 
@@ -97,7 +97,7 @@ To deploy all components in the ``deploy.yml`` playbook call the playbook and pr
 Getting started
 ---------------
 
-* You need a resent Ansible installed (1.9). The bash scripts and playbooks should run on both OSX and linux (bash). For building the
+* You need a recent Ansible version installed (1.9). The bash scripts and playbooks should run on both OSX and linux (bash). For building the
   stepup components yourself you need Vagrant and a provider like OpenBox or VMWare Fusion otherwise these can be downloaded from gitHub.
 * Create an directory in a location of your choice
   `mkdir Stepup`
@@ -130,7 +130,7 @@ To build and deploy a new version of the selfservice component to the existing t
 1. `.../Stepup-Build/stepup-build.sh Stepup-SelfService`
    This creates a tarball (e.g. `Stepup-SelfService-develop-20150223143536Z-6ef51b629bc968218b582605894445b857927a4d.tar.bz2`) in the current directory
 2. `.../Stepup-Deploy/scripts/deploy.sh Stepup-SelfService-develop-20150223143536Z-6ef51b629bc968218b582605894445b857927a4d.tar.bz2 -l "app*" -i <some environment>/inventory`
-   This deploys the tarball the hosts in the referenced inventory with a name starting with "app".
+   This deploys the tarball to the hosts in the referenced inventory with a name starting with "app".
    
 [keyczar]: http://www.keyczar.org "www.keyczar.org"
 

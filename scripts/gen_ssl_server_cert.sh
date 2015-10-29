@@ -119,4 +119,7 @@ else
     cp ${tmpdir}/private_key.pem ${CERT_BASENAME}.key
 fi
 
-cp ${tmpdir}/certificate.pem ${CERT_BASENAME}.crt
+${OPENSSL} x509 -in ${tmpdir}/certificate.pem -out ${CERT_BASENAME}.crt
+if [ $? -ne "0" -o ! -e ${CERT_BASENAME}.crt ]; then
+    error_exit "Error copying certificate"
+fi

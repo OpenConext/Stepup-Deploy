@@ -19,17 +19,11 @@
 # files.
 # Please read the notice at the end of the script
 
-PASSWORD_LENGTH=15
-PASSWORDS=("middleware_selfservice_api" "middleware_registration_authority_api" "middleware_management_api" "mariadb_root" "mariadb_cluster" "mariadb_backup" "database_gateway" "database_middleware_deploy" "database_middleware" "database_keyserver_deploy" "database_keyserver" "database_tiqr" "database_tiqr_deploy" "manage_kibana")
+# Assumes there is a "template" directory to be copied at "../environments/template"
+# relative the script
 
-SECRET_LENGTH=40
-SECRETS=("gateway" "middleware" "ra" "selfservice" "tiqr" "keyserver" "oath_keyserver")
-
-SAML_CERTS=("gateway_saml_idp" "gateway_saml_sp" "gateway_tiqr_idp" "gateway_tiqr_sp" "selfservice_saml_sp" "selfservice_tiqr_sp" "ra_saml_sp" "ra_tiqr_sp" "tiqr_idp")
-
-DOMAIN='stepup.example.com' # Domain for SSL certs
-
-SSL_CERTS=("gateway" "ra" "selfservice" "manage" "middleware" "tiqr" "keyserver")
+# The configuration is read from a file called "environment.conf" that must be located in the same directory
+# as the script
 
 CWD=`pwd`
 BASEDIR=`dirname $0`
@@ -66,6 +60,14 @@ if [ -z "${ENVIRONMENT_DIR}"  ]; then
 fi
 ENVIRONMENT_NAME=`basename ${ENVIRONMENT_DIR}`
 
+
+ENVIRONMENT_CONF="${BASEDIR}/environment.conf"
+if [ ! -f "${ENVIRONMENT_CONF}" ]; then
+    error_exit "Could not find 'environment.conf' in ${BASEDIR}"
+fi
+echo "Reading configuration from: ${ENVIRONMENT_CONF}"
+. "${ENVIRONMENT_CONF}"
+echo "Done reading configuration"
 
 TEMPLATE_DIR=`realpath ${BASEDIR}/../environments/template`
 if [ $? -ne "0" ]; then
@@ -110,16 +112,21 @@ if [ ! -e ${TEMPLATES_DIR} ]; then
 fi
 
 
-# Create keystore for encypting secrets
-KEY_DIR=${ENVIRONMENT_DIR}/stepup-ansible-keystore
+KEY_DIR=""
+if [ "${USE_KEYSZAR}" -eq 1 ]; then
+    # Create keystore for encypting secrets
+    KEY_DIR=${ENVIRONMENT_DIR}/${KEYSTORE_DIR}
 
-if [ ! -e ${KEY_DIR} ]; then
-    ${BASEDIR}/create_keydir.sh ${KEY_DIR}
-    if [ $? -ne "0" ]; then
-        error_exit "Error creating keyset"
+    if [ ! -e ${KEY_DIR} ]; then
+        ${BASEDIR}/create_keydir.sh ${KEY_DIR}
+        if [ $? -ne "0" ]; then
+            error_exit "Error creating keyset"
+        fi
     fi
+    echo "Using keydir: ${KEY_DIR}"
+else
+    echo "Not using keyszar. Keys and passwords will be stored in plaintext"
 fi
-echo "Using keydir: ${KEY_DIR}"
 
 
 # Generate passwords
@@ -176,9 +183,11 @@ fi
 
 cd ${SAML_CERT_DIR}
 for cert in "${SAML_CERTS[@]}"; do
-    if [ ! -e "${SAML_CERT_DIR}/${cert}.crt" -a "${SAML_CERT_DIR}/${cert}.key" ]; then
-        echo "Creating SAML signing certificate and key for ${cert}"
-        ${BASEDIR}/gen_selfsigned_cert.sh ${cert} "/CN=${cert}" ${KEY_DIR}
+    cert_name=${cert%%:*}
+    cert_dn=${cert#*:}
+    if [ ! -e "${SAML_CERT_DIR}/${cert_name}.crt" -a "${SAML_CERT_DIR}/${cert_name}.key" ]; then
+        echo "Creating SAML signing certificate and key for ${cert_name}; DN: ${cert_dn}"
+        ${BASEDIR}/gen_selfsigned_cert.sh ${cert_name} "${cert_dn}" ${KEY_DIR}
         if [ $? -ne "0" ]; then
             error_exit "Error creating SAML signing certificate"
         fi
@@ -189,7 +198,8 @@ cd ${CWD}
 # Create Root CA for issueing SSL Server certs
 CA_DIR=${ENVIRONMENT_DIR}/ca
 if [ ! -e ${CA_DIR} ]; then
-    ${BASEDIR}/create_ca.sh ${CA_DIR} "/CN=Root CA for Stepup ${ENVIRONMENT_NAME} environment"
+    echo "Creating Root CA with DN: ${SSL_ROOT_DN}"
+    ${BASEDIR}/create_ca.sh ${CA_DIR} "${SSL_ROOT_DN}"
     if [ $? -ne "0" ]; then
         error_exit "Error creating CA"
     fi
@@ -199,15 +209,17 @@ fi
 # Create SSL server certificates
 SSL_CERT_DIR=${ENVIRONMENT_DIR}/ssl_cert
 if [ ! -e ${SSL_CERT_DIR} ]; then
-    echo "Creating ss;_cert directory"
+    echo "Creating ssl_cert directory"
     mkdir -p ${SSL_CERT_DIR}
 fi
 
 cd ${SSL_CERT_DIR}
 for cert in "${SSL_CERTS[@]}"; do
-    if [ ! -e "${SSL_CERT_DIR}/${cert}.crt" -a "${SSL_CERT_DIR}/${cert}.key" ]; then
-        echo "Creating SSL certificate and key for ${cert}"
-        ${BASEDIR}/gen_ssl_server_cert.sh ${CA_DIR} ${cert} "/CN=${cert}.${DOMAIN}" ${KEY_DIR}
+    cert_name=${cert%%:*}
+    cert_dn=${cert#*:}
+    if [ ! -e "${SSL_CERT_DIR}/${cert_name}.crt" -a "${SSL_CERT_DIR}/${cert_name}.key" ]; then
+        echo "Creating SSL certificate and key for ${cert_name}; DN: ${cert_dn}"
+        ${BASEDIR}/gen_ssl_server_cert.sh ${CA_DIR} ${cert_name} "${cert_dn}" ${KEY_DIR}
         if [ $? -ne "0" ]; then
             error_exit "Error creating SSL certificate"
         fi
@@ -216,21 +228,24 @@ done
 cd ${CWD}
 
 echo
-echo "Created (or updated) passwords, secrets and certificates for a new environment
-
-* All secrets (except the CA private key) are encrypted with a symmetic key that is stored in a "vault". The vault is
+echo "Created (or updated) passwords, secrets and certificates for a new environment. It is save to rerun this script
+as it will not overwrite existing files."
+if [ ${USE_KEYSZAR} -eq 1 ]; then
+echo "
+* All secrets (except the CA private key) are encrypted with a symmetic key that is stored in a \"vault\". The vault is
   located in ${KEY_DIR}
   You should keep this key separate from the environment. To do this:
   1) Move the stepup-ansible-keystore to another location
   2) Update vault_keydir in group_vars/all.yml to point to the new location
 
+* You can use the encrypt.sh and encrypt-file.sh scripts to encrypt and decrypt the secrets."
+fi
+echo "
 * Certificate authority
   The CA directory (${CA_DIR})
   contains the CA that is/was used for generating SSL server certificates. This CA is intended for testing purposes.
   The private key of the CA is stored *unencrypted* in ca-key.pem the CA directory. The CA directory is not required
   for running the ansible playbooks.
-
-* You can use the encrypt.sh and encrypt-file.sh scripts to encrypt and decrypt the secrets.
 
 * Complete the configuration of the environment by
   - updating the inventory file

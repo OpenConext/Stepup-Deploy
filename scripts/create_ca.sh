@@ -91,4 +91,7 @@ fi
 
 echo "Wrote CA certificate to: ${CA_DIR}/ca-cert.pem"
 
+echo "Generated CA certificate:"
+${OPENSSL} x509 -in ${CA_DIR}/ca-cert.pem -text
+
 cd ${CWD}

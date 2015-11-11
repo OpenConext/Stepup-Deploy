@@ -4,7 +4,7 @@ parameters:
     database_driver:   pdo_mysql
     database_host:     {{ database_lb_address }}
     database_port:     3306
-    database_name:     {{ database_gateway_name }}
+    database_gateway_name:     {{ database_gateway_name }}
     database_gateway_user:     {{ database_gateway_user }}
     database_gateway_password: {{ database_gateway_password | vault(vault_keydir)}}
     database_deploy_user:      {{ database_middleware_deploy_user }}

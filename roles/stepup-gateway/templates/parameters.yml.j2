@@ -53,3 +53,11 @@ parameters:
     gateway_loa_loa3: '{{ stepup_uri_loa3 }}'
 
     asset_version: {{ stable_nonce }}
+
+    enabled_second_factors:
+        - sms
+        - yubikey
+        - tiqr
+        - u2f
+
+    u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id

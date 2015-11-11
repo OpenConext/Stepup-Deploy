@@ -7,6 +7,9 @@ parameters:
     database_gateway_name:     {{ database_gateway_name }}
     database_gateway_user:     {{ database_gateway_user }}
     database_gateway_password: {{ database_gateway_password | vault(vault_keydir)}}
+    database_u2f_name:         {{ database_u2f_name }}
+    database_u2f_user:         {{ database_u2f_user }}
+    database_u2f_password:     {{ database_u2f_password | vault(vault_keydir)}}
     database_deploy_user:      {{ database_middleware_deploy_user }}
     database_deploy_password:  {{ database_middleware_deploy_password | vault(vault_keydir) }}
 

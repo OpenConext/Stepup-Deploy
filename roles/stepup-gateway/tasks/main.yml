@@ -86,3 +86,10 @@
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ gateway_vhost_name }} state=link
+
+# U2F support for facets:
+- name: Set U2F app-id directory rights
+  file: path={{ component_dir_name }}/web/u2f state=directory group={{ component_name }} mode=755
+
+- name: Put facet ids
+  template: src=app-id.json.j2 dest={{ component_dir_name }}/web/u2f/app-id mode=644 group={{ component_name }}

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 # Bootstrap a mysql installation on CentOS / Redhat
 # This is the non interactive and idempotent equivalent of the "mysql_secure_installation" installation script

@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 # Reboot a MariaDB Gallera cluster node
 #

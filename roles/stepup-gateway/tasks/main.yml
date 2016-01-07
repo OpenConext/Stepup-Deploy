@@ -55,6 +55,11 @@
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
 
+- name: Put middleware configuration scripts in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  with_items:
+  - "01-gateway-db_migrate.sh"
+
 - name: Write SP private key
   copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_name }} mode=400
 
@@ -93,3 +98,8 @@
 
 - name: Put facet ids
   template: src=app-id.json.j2 dest={{ component_dir_name }}/web/u2f/app-id mode=644 group={{ component_name }}
+
+
+- name: Show database configuration hint
+  debug:
+    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-gateway-db_migrate.sh' on an app server."

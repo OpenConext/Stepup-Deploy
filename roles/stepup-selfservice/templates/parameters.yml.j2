@@ -60,5 +60,10 @@ parameters:
 
     logout_redirect_url: {{ logout_redirect_url }}
 
+    enabled_second_factors:
+        - sms
+        - yubikey
+        - tiqr
+
     # TODO: Unused, remove requirement from component
     graylog_hostname: ""

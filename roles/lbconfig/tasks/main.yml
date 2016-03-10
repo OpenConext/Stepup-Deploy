@@ -37,3 +37,6 @@
 - name: Constrain resource
   command: pcs constraint location {{ item.name }} prefers {{ groups['lb'][0] }}=INFINITY
   with_items: "{{ pacemaker_resources }}"
+
+- name: pcs cluster start
+  command: pcs cluster start --all

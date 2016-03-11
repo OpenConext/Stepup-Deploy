@@ -1233,6 +1233,10 @@ bcmath.scale = 0
 ;browscap = extra/browscap.ini
 
 [Session]
+; Note:
+; - Some of session configuration is overridden in the per application php-fpm-pool.conf
+; - A PHP application can override session configuration defined here
+
 ; Handler used to store/retrieve data.
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.save-handler
 session.save_handler = files
@@ -1271,7 +1275,7 @@ session.save_path = "/var/lib/php/session"
 session.use_cookies = 1
 
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.cookie-secure
-;session.cookie_secure =
+session.cookie_secure = 1
 
 ; This option forces PHP to fetch and use a cookie for storing and maintaining
 ; the session id. We encourage this operation as it's very helpful in combatting
@@ -1302,7 +1306,7 @@ session.cookie_domain =
 
 ; Whether or not to add the httpOnly flag to the cookie, which makes it inaccessible to browser scripting languages such as JavaScript.
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.cookie-httponly
-session.cookie_httponly = 
+session.cookie_httponly = 1
 
 ; Handler used to serialize data.  php is the standard serializer of PHP.
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.serialize-handler
@@ -1378,17 +1382,13 @@ session.bug_compat_warn = Off
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.referer-check
 session.referer_check =
 
-; How many bytes to read from the file.
-; http://www.php.net/manual/en/session.configuration.php#ini.session.entropy-length
-session.entropy_length = 0
-
 ; Specified here to create the session id.
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.entropy-file
 ;session.entropy_file = /dev/urandom
-session.entropy_file =
+session.entropy_file = /dev/urandom
 
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.entropy-length
-;session.entropy_length = 16
+session.entropy_length = 16
 
 ; Set to {nocache,private,public,} to determine HTTP caching aspects
 ; or leave this empty to avoid sending anti-caching headers.
@@ -1416,7 +1416,7 @@ session.use_trans_sid = 0
 ;   0  (MD5 128 bits)
 ;   1  (SHA-1 160 bits)
 ; http://www.php.net/manual/en/session.configuration.php#ini.session.hash-function
-session.hash_function = 0
+session.hash_function = 1
 
 ; Define how many bits are stored in each character when converting
 ; the binary hash data to something readable.

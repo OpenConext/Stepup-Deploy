@@ -22,6 +22,14 @@ management_password: "{{ lookup('file', inventory_dir+'/password/middleware_mana
 # User for performing deploys
 app_deploy_user: stepup-deploy
 
+# The maximum duration of a session in seconds
+# 60 * 60 = 3600 ( = 1 hour )
+app_session_max_duration: 3600
+
+# Session expiry time in seconds
+# A session expires when it has been inactive (i.e. not updated) for more than the configured expiry time
+# 60 * 15 = 900
+app_session_expiry_time: 900
 
 # URL to where the user is redirected after logout.
 # TODO: Set logout URL

@@ -11,7 +11,7 @@
 
 
 - name: Create directory for vhosts to store PHP sessions
-  file: path=/var/lib/php/session/{{ component_name }} state=directory owner={{ component_name }} group=root mode=770
+  file: path=/var/lib/stepup/session/{{ component_name }} state=directory owner={{ component_name }} group=root mode=770
 
 
 # Create a default app

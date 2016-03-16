@@ -1,0 +1,11 @@
+Release 4
+* Moved the PHP session dir from /var/lib/php/session/ to /var/lib/stepup/session/. The contents of the old directory can be removed
+* Tighten PHP session configuration in php.ini. Use /dev/urandom for entropy, set session.cookie_secure = session.cookie_httponly = session.hash_function = 1;
+* Added app_session_expiry_time and (currently unused app_session_max_duration group_vars
+* Set session.cookie_domain and session.cookie_(gc_max)lifetime in fpm.ini
+* Added stepup_enabled_factors group_var to control which 2nd factors are enabled
+* A database schema for u2f was added. Added database_u2f_(name|user|password) group_vars
+* Added /root/01-gateway-db_migrate.sh script
+* A added a /etc/cron.d/curator job on manage node that runs "curator" to delete old logstash indexes. The manage_keep_logs_days group_var configures how many days of logs to keep
+* Added stepup_enabled_factors group_var to control which 2nf factors are enabled in SS, RA and GW
+* Update scripts from https://github.com/pmeulen/ansible-tools

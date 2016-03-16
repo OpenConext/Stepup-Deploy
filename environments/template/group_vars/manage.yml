@@ -14,3 +14,6 @@ manage_key: "{{ lookup('file', inventory_dir+'/ssl_cert/manage.key') }}"
 manage_kibana_users:
   - { user: stepup, password: "{{ lookup('file', inventory_dir+'/password/manage_kibana') }}" }
   #- { user: some_other_user, password: some_vaulted_password }
+
+# Number of days to keep log files in ELK
+manage_keep_logs_days: 90

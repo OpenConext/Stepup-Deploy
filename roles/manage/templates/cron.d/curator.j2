@@ -1,0 +1,13 @@
+# Run curator to expire old indexes created by logstash in elastic search
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+# +------------- min (0 - 59) 
+# | +-------------- hour (0 - 23)
+# | | +--------------- day of month (1 - 31)
+# | | | +---------------- month (1 - 12)
+# | | | | +----------------- day of week (0 - 6) (0 to 6 are Sunday to Saturday, or use names; 7 is Sunday, the same as 0)
+# | | | | |
+# | | | | |
+# * * * * * <user> <command to execute>
+  5 0 * * * logstash /bin/curator --host {{ hostvars[groups['es'][0]]['host_ipv4'] }} delete indices --older-than {{ manage_keep_logs_days }} --time-unit days --timestring "\%Y.\%m.\%d" --prefix logstash

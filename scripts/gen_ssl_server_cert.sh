@@ -1,5 +1,19 @@
 #!/bin/sh
 
+# Copyright 2015 SURFnet B.V.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # Requires a CA created with create_ca.sh
 # Usage: <CA Directory> <basename> <Certificate DN> [keyvault for encrypting private key]
 
@@ -103,6 +117,12 @@ if [ -d "${KEY_DIR}" ]; then
     echo "${crypted_private_key}" > ${CERT_BASENAME}.key
 else
     cp ${tmpdir}/private_key.pem ${CERT_BASENAME}.key
+    if [ $? -ne "0" ]; then
+        error_exit "Error copying private key"
+    fi
 fi
 
-cp ${tmpdir}/certificate.pem ${CERT_BASENAME}.crt
+${OPENSSL} x509 -in ${tmpdir}/certificate.pem -out ${CERT_BASENAME}.crt
+if [ $? -ne "0" -o ! -e ${CERT_BASENAME}.crt ]; then
+    error_exit "Error copying certificate"
+fi

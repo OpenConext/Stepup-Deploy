@@ -52,3 +52,7 @@ parameters:
     asset_version: {{ stable_nonce }}
 
     logout_redirect_url: {{ logout_redirect_url }}
+
+    enabled_second_factors: [ {{ stepup_enabled_factors }} ]
+
+    u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id

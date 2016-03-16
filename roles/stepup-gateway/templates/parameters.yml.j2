@@ -4,9 +4,12 @@ parameters:
     database_driver:   pdo_mysql
     database_host:     {{ database_lb_address }}
     database_port:     3306
-    database_name:     {{ database_gateway_name }}
+    database_gateway_name:     {{ database_gateway_name }}
     database_gateway_user:     {{ database_gateway_user }}
     database_gateway_password: {{ database_gateway_password | vault(vault_keydir)}}
+    database_u2f_name:         {{ database_u2f_name }}
+    database_u2f_user:         {{ database_u2f_user }}
+    database_u2f_password:     {{ database_u2f_password | vault(vault_keydir)}}
     database_deploy_user:      {{ database_middleware_deploy_user }}
     database_deploy_password:  {{ database_middleware_deploy_password | vault(vault_keydir) }}
 
@@ -53,3 +56,7 @@ parameters:
     gateway_loa_loa3: '{{ stepup_uri_loa3 }}'
 
     asset_version: {{ stable_nonce }}
+
+    enabled_second_factors: [ {{ stepup_enabled_factors }} ]
+
+    u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id

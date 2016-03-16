@@ -16,6 +16,7 @@
   with_items:
   - java-1.8.0-openjdk
   - logstash
+  - elastic-curator
 
 - name: Put logstash sysconfig
   copy: src=logstash.sysconfig dest=/etc/sysconfig/logstash
@@ -61,3 +62,7 @@
 
 - name: Setup nginx HTTPS reverse proxy for kibana
   include: nginx.yml
+
+
+- name: Setup curator cron job to expire old indexes (log data)
+  template: src='cron.d/curator.j2' dest='/etc/cron.d/curator' owner=root group=root mode=640

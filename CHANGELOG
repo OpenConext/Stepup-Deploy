@@ -9,3 +9,4 @@ Release 4
 * A added a /etc/cron.d/curator job on manage node that runs "curator" to delete old logstash indexes. The manage_keep_logs_days group_var configures how many days of logs to keep
 * Added stepup_enabled_factors group_var to control which 2nf factors are enabled in SS, RA and GW
 * Update scripts from https://github.com/pmeulen/ansible-tools
+* A deploy user for the gateway component was added with corresponding database_gateway_deploy_(user|password)

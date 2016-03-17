@@ -72,9 +72,9 @@ fi
 KEY_DIR=`realpath ${KEY_DIR}`
 echo "Using keydir: ${KEY_DIR}"
 
-echo "Creating keyset 'stepup'"
+echo "Creating keyset with name 'Ansible'"
 # Create new, empty, keyset
-${KEYCZART} create --location=${KEY_DIR} --purpose=crypt --name=stepup
+${KEYCZART} create --location=${KEY_DIR} --purpose=crypt --name=Ansible
 if [ $? -ne "0" ]; then
     error_exit "Error creating keyset"
 fi

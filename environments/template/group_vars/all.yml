@@ -75,6 +75,9 @@ database_middleware_deploy_password: "{{ lookup('file', inventory_dir+'/password
 database_gateway_name: gateway
 database_gateway_user: gateway
 database_gateway_password: "{{ lookup('file', inventory_dir+'/password/database_gateway') }}"
+database_gateway_deploy_user: gateway-deploy
+database_gateway_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_gateway_deploy') }}"
+
 
 # Used by stepup-tiqr role to configure tiqr
 database_tiqr_name: tiqr

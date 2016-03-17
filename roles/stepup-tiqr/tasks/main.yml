@@ -35,14 +35,6 @@
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
 
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
-
-- name: Put tiqr configuration script in /root/
-  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
-  with_items:
-  - "01-tiqr-db_init.sh"
-
 - name: Write tiqr APNS certificate
   copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/apns.pem owner={{ component_name }} mode=400
 
@@ -58,7 +50,15 @@
 - name: Write tiqr idp private key
   copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/key.pem owner={{ component_name }} mode=400
 
-# TODO: change in Stepup-tiqr
 
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
+
+# TODO: change in Stepup-tiqr
 - name: create symlink to match generic nginx config
   file: src=/opt/www/{{ tiqr_vhost_name }}/www dest=/opt/www/{{ tiqr_vhost_name }}/web state=link
+
+- name: Put tiqr configuration script in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  with_items:
+  - "01-tiqr-db_init.sh"

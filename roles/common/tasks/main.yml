@@ -64,6 +64,8 @@
   notify:
   - restart ntpd
 
+- name: Put sysctl-local.conf
+  copy: src=sysctl-local.conf dest=/etc/sysctl.d/sysctl-local.conf
 
 - name: Start and enable services ntpd, iptables, iptables6
   service: name={{item}} state=started enabled=true

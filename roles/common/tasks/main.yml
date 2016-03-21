@@ -32,6 +32,13 @@
 - name: "Disable firewalld"
   service: name=firewalld enabled=no state=stopped
 
+# Disable unused daemons
+- name: "Disable unused daemons"
+  service: name={{item}} enabled=no state=stopped
+  with_items:
+  - NetworkManager
+  - atd.service
+  - smartd.service
 
 - name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
@@ -57,6 +64,8 @@
   notify:
   - restart ntpd
 
+- name: Put sysctl-local.conf
+  copy: src=sysctl-local.conf dest=/etc/sysctl.d/sysctl-local.conf
 
 - name: Start and enable services ntpd, iptables, iptables6
   service: name={{item}} state=started enabled=true

@@ -1,21 +1,23 @@
 ---
 # Push middleware whitelist
 # This playbook writes the middleware whitelist to each targeted app host and then executes the
-# /root/04-middleware-whitelist.sh script to push the config to the middleware
+# /opt/scripts/middleware-push-whitelist.sh script to push the config to the middleware
 # "run_once: True" is used to execute the push once instead of on each trageted host
 
 - name: Push middleware whitelist
   hosts: stepup-middleware
-  sudo: True
+  sudo: No
+  remote_user: "{{ app_deploy_user }}"
 
   tasks:
-  - name: Write middleware config and whitelist to /root/
-    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400" backup=yes
+  - name: Write middleware config and whitelist to /opt/scripts/
+    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} mode="400" backup=yes
     with_items:
     - middleware-config.json
     - middleware-whitelist.json
 
+# The /opt/scripts/middleware-* scripts were written by middleware deploy
   - name: Push middleware whitelist
-    command: /root/04-middleware-whitelist.sh
+    command: /opt/scripts/middleware-push-whitelist.sh
     run_once: True
 

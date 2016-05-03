@@ -10,6 +10,14 @@
 - name: Create deploy user
   user: name={{app_deploy_user}} state=present
 
+- name: Add authorized_keys for deploy user
+  authorized_key:
+    user: "{{ app_deploy_user }}"
+    exclusive: Yes # All keys are managed through ansible
+    key_options: 'no-port-forwarding,from="{{ app_deploy_user_ssh_from }}"'
+    key: "{{ app_deploy_user_ssh_key }}"
+  when:  app_deploy_user_ssh_key is defined
+
 
 # node.less is used by app/console assetic:dump
 # sendmail is used for sending mail from localhost (enabled in default config)
@@ -74,10 +82,13 @@
 - name: Create directory for vhosts to store PHP sessions
   file: path=/var/lib/stepup/session/ state=directory mode="771" owner=root group=root
 
-
+# Directory that contains the symlinks to active applications
 - name: Create /opt/www/
   file: path=/opt/www/ state=directory owner=root group={{ app_deploy_user }} mode=775
 
+# Directory for configuration scripts
+- name: Create /opt/scripts/
+  file: path=/opt/scripts/ state=directory owner=root group={{ app_deploy_user }} mode=770
 
 # Create vhosts for stepup components
 - { include: vhost.yml, component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}", when: "inventory_hostname in groups['stepup-middleware']" }

@@ -39,6 +39,7 @@
   - NetworkManager
   - atd.service
   - smartd.service
+  ignore_errors: yes
 
 - name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present

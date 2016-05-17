@@ -32,7 +32,7 @@
   - db
 
 
-- name: Stetup elasticseach cluster
+- name: Setup elasticseach cluster
   hosts: es
   sudo: True
   tags: es

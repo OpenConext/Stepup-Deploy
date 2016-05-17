@@ -61,4 +61,4 @@ gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # SAML signing certificate of the Tiqr IdP
 # Format: Base64 encoded X.509 certificate without PEM headers
 # TODO: Set remote Tiqr IdP SAML Signing certificate
-gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey }}"
+gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"

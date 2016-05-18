@@ -4,6 +4,15 @@
 # cd Stepup-Deploy
 # ansible-playbook -i inventory environment/<env>/inventory site.yml
 
+
+- hosts: all
+  run_once: true
+  tasks:
+  - name: Require Ansible 2
+    assert:
+      that: ansible_version.major == 2
+
+
 - name: Configuration for all nodes
   hosts: all
   become: True

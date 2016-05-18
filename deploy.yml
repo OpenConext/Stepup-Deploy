@@ -1,5 +1,12 @@
 ---
 
+- hosts: all
+  run_once: true
+  tasks:
+  - name: Require Ansible 2
+    assert:
+      that: ansible_version.major == 2
+
 # To deploy all components in one go, set "tarball_location" to the directory where the tarballls to be deployed are stored. E.g.
 # ansible-playbook .../Stepup-Deploy/deploy.yml -i .../inventory -e tarball_location=`pwd`
 #

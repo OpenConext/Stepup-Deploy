@@ -8,7 +8,7 @@
 
 - name: Intall Stepup-Gateway
   hosts: stepup-gateway
-  sudo: True
+  become: True
   tags: stepup-gateway
 
   vars:
@@ -23,7 +23,7 @@
 
 - name: Install Stepup-middleware
   hosts: stepup-middleware
-  sudo: True
+  become: True
   tags: stepup-middleware
 
   roles:
@@ -38,7 +38,7 @@
 
 - name: Install Stepup-SelfService
   hosts: stepup-selfservice
-  sudo: True
+  become: True
   tags: stepup-selfservice
 
   roles:
@@ -53,7 +53,7 @@
 
 - name: Install Stepup-RA
   hosts: stepup-ra
-  sudo: True
+  become: True
   tags: stepup-ra
 
   roles:
@@ -68,7 +68,7 @@
 
 - name: Install Stepup-tiqr IDP
   hosts: stepup-tiqr
-  sudo: True
+  become: True
   tags: stepup-tiqr
 
   roles:
@@ -83,7 +83,7 @@
 
 - name: Install Stepup-Keyserver
   hosts: stepup-keyserver
-  sudo: True
+  become: True
   tags: oath-service-php
 
   roles:

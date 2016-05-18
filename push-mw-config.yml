@@ -6,7 +6,7 @@
 
 - name: Push middleware config
   hosts: stepup-middleware
-  sudo: True
+  become: True
 
   tasks:
   - name: Write middleware config and whitelist to /root/

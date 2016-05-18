@@ -124,7 +124,7 @@ fi
 
 
 # Copy directories from the template to the new environment
-directories=("group_vars" "handlers" "tasks" "templates")
+directories=("group_vars" "handlers" "tasks" "templates" "files")
 for directory in "${directories[@]}"; do
     if [ -e ${TEMPLATE_DIR}/${directory} ]; then
         if [ ! -e ${ENVIRONMENT_DIR}/${directory} ]; then

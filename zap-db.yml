@@ -16,7 +16,7 @@
 
 - name: Drop middleware and gateway databases
   hosts: dbcluster
-  sudo: True
+  become: True
 
   tasks:
   - name: Drop Middleware database

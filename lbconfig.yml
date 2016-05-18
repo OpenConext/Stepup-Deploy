@@ -6,7 +6,7 @@
 
 - name: Pacemaker configuration
   hosts: lb
-  sudo: True
+  become: True
   tags: lb
 
   roles:
@@ -14,7 +14,7 @@
 
 - name: Pacemaker configuration
   hosts: dbcluster
-  sudo: True
+  become: True
   tags: db
 
   roles:
@@ -22,7 +22,7 @@
 
 - name: Pacemaker configuration
   hosts: ks
-  sudo: True
+  become: True
   tags: ks
 
   roles:

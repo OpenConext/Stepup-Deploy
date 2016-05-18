@@ -4,9 +4,18 @@
 # cd Stepup-Deploy
 # ansible-playbook -i inventory environment/<env>/inventory site.yml
 
+
+- hosts: all
+  run_once: true
+  tasks:
+  - name: Require Ansible 2
+    assert:
+      that: ansible_version.major == 2
+
+
 - name: Configuration for all nodes
   hosts: all
-  sudo: True
+  become: True
   tags: common
   serial: 1
 
@@ -16,7 +25,7 @@
 
 - name: Setup management server
   hosts: manage
-  sudo: True
+  become: True
   tags: manage
   serial: 1
 
@@ -26,7 +35,7 @@
 
 - name: Setup mariadb database cluster
   hosts: dbcluster
-  sudo: True
+  become: True
   tags: db
   serial: 1
 
@@ -36,7 +45,7 @@
 
 - name: Setup elasticseach cluster
   hosts: es
-  sudo: True
+  become: True
   tags: es
   serial: 1
 
@@ -46,7 +55,7 @@
 
 - name: Setup application servers
   hosts: app
-  sudo: True
+  become: True
   tags: app
   serial: 1
 
@@ -56,7 +65,7 @@
 
 - name: Setup proxy on application servers
   hosts: proxy
-  sudo: True
+  become: True
   tags: proxy
   serial: 1
 
@@ -66,7 +75,7 @@
 
 - name: Dev tools
   hosts: dev
-  sudo: True
+  become: True
   tags: dev
   serial: 1
 
@@ -75,7 +84,7 @@
 
 - name: Setup loadbalancer servers
   hosts: lb
-  sudo: True
+  become: True
   tags: lb
   serial: 1
 

@@ -1,22 +1,22 @@
 ---
 # Push middleware config
 # This playbook writes the middleware configuration to each targeted app host and then executes the
-# 02-middleware-config.sh script to push the config to the middleware
+# /opt/scripts/middleware-push-config.sh script to push the config to the middleware
 # "run_once: True" is used to execute the push once instead of on each trageted host
 
 - name: Push middleware config
   hosts: stepup-middleware
-  become: True
+  become: No
+  remote_user: "{{ app_deploy_user }}"
 
   tasks:
   - name: Write middleware config and whitelist to /root/
-    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="400" backup=yes
+    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} group={{ app_deploy_user }} owner={{ app_deploy_user }} mode="400" backup=yes
     with_items:
     - middleware-config.json
     - middleware-whitelist.json
 
-
-  # The /root/middleware-* scripts were written by middleware deploy
+  # The /opt/scripts/middleware-* scripts were written by middleware deploy
   - name: Push middleware configuration
-    command: /root/02-middleware-config.sh
+    command: /opt/scripts/middleware-push-config.sh
     run_once: True

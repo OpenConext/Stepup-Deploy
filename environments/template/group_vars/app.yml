@@ -24,7 +24,7 @@ app_deploy_user: stepup-deploy
 
 # Public key of the app_deploy_user (optional)
 # Format: SSH Public key. E.g. "ssh-rsa AAA... user@host"
-app_deploy_user_ssh_key: ""{{ lookup('file', inventory_dir+'/ssh/middleware_management_api') }}""
+app_deploy_user_ssh_key: "{{ lookup('file', inventory_dir+'/ssh/deploy.pub') }}"
 
 # Limit IPs allowed to connect using the app_deploy_user_ssh_key
 # Format: ssh pattern-list.

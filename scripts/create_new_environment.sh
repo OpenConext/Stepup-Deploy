@@ -124,7 +124,7 @@ fi
 
 
 # Copy directories from the template to the new environment
-directories=("group_vars" "handlers" "tasks" "templates")
+directories=("group_vars" "handlers" "tasks" "templates" "files")
 for directory in "${directories[@]}"; do
     if [ -e ${TEMPLATE_DIR}/${directory} ]; then
         if [ ! -e ${ENVIRONMENT_DIR}/${directory} ]; then
@@ -315,7 +315,7 @@ fi
 echo
 echo "Created (or updated) passwords, secrets, certificates and/or ssh keys for the new environment as specified in
 the environment.conf: ${ENVIRONMENT_CONF}
-It is save to rerun this script as it will not overwrite existing files."
+It is safe to rerun this script as it will not overwrite existing files."
 if [ ${USE_KEYSZAR} -eq 1 ]; then
 echo "
 * All secrets (except the CA private key) are encrypted with a symmetic key that is stored in a \"vault\". The vault is

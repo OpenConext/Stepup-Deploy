@@ -39,7 +39,7 @@
 
 - include: nginx_vhost.yml
   vhost_name: "{{ tiqr_vhost_name }}"
-  component: middleware
+  component: tiqr
   vhost_certificate: "{{ nginx_tiqr_certificate }}"
   vhost_key: "{{ nginx_tiqr_key }}"
 

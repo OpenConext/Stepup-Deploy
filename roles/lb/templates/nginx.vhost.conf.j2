@@ -1,12 +1,12 @@
 server {
-    listen       0.0.0.0:80;
+    listen       {{ vhost_ip4 }}:80;
     server_name  {{ vhost_name }};
 
     return       301 https://{{ vhost_name }}$request_uri;
 }
 
 server {
-    listen       0.0.0.0:443 ssl;
+    listen       {{ vhost_ip4 }}:443 ssl;
     server_name  {{ vhost_name }};
 
     ssl                  on;
@@ -37,6 +37,7 @@ server {
 }
 
 # Port mappings (IPv6)
+# TODO: listen on dedicated IPv6 addresses instead of all interfaces cf. IPv4
 
 server {
     listen       [::]:80;

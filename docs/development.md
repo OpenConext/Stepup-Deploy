@@ -3,7 +3,8 @@ Make sure all of the applications and their dependencies have been installed cor
 and follow the installation instructions for each application.
 
 Accounts can be added to the `$config` in your git-ignored `simplesamlphp/config/authsources.php` file. 
-For development purposes, it could be useful to add the SRAA, RAA and RA accounts:
+For development purposes, it could be useful to add SRAA, RAA and RA accounts as well as users for each
+second factor.
 
 ```php
     ...
@@ -21,7 +22,22 @@ For development purposes, it could be useful to add the SRAA, RAA and RA account
             'commonName'             => 'RA',                   // displayName
             'mail'                    => 'ra@ra.example',       // email (also used for EPTI)
             'schacHomeOrganization'   => 'Example Inc',         // schacHomeOrganisation
-        )
+        ),
+        'sms:sms' => array(
+            'commonName'            => 'SMS',                   // displayName
+            'mail'                  => 'sms@sms.example',       // email (also used for EPTI)
+            'schacHomeOrganization' => 'Example Inc',           // schacHomeOrganisation
+        ),
+        'yubi:yubi' => array(
+            'commonName'            => 'Yubi',                  // displayName
+            'mail'                  => 'yubi@yubi.example',     // email (also used for EPTI)
+            'schacHomeOrganization' => 'Example Inc',           // schacHomeOrganisation
+        ),
+        'u2f:u2f' => array(
+            'commonName'            => 'U2F',                   // displayName
+            'mail'                  => 'u2f@u2f.example',       // email (also used for EPTI)
+            'schacHomeOrganization' => 'Example Inc',           // schacHomeOrganisation
+        ),
     ...
 ```
 
@@ -29,11 +45,6 @@ To whitelist the organisation of these accounts, use the [Middleware Manager API
 
 ```
     POST /app_dev.php/management/whitelist/add HTTP/1.1
-     Host: mw-dev.stepup.coin.surf.net
-     Accept: application/json
-     Content-Type: application/json
-     Authorization: Basic bWFuYWdlbWVudDpiYXI=
-     Cache-Control: no-cache
 
      {
        "institutions": [
@@ -47,11 +58,6 @@ its NameID as such:
 
 ```
       POST /app_dev.php/management/configuration HTTP/1.1
-      Host: mw-dev.stepup.coin.surf.net
-      Accept: application/json
-      Content-Type: application/json
-      Authorization: Basic bWFuYWdlbWVudDpiYXI=
-      Cache-Control: no-cache
 
       {
           "sraa": [
@@ -61,15 +67,15 @@ its NameID as such:
       }
 ```
 
-To add account `sraa` by its NameID as an SRAA, run the following for Stepup-Middleware, replacing `<YOUR_YUBIKEY_NUMBER>` 
+To add account `sraa` by its NameID as an SRAA, run the following for Stepup-Middleware, replacing `<YOUR_YUBIKEY_PUBLIC_ID` 
 with the number relating to your Yubikey (it is usually printed on it):
 
 ```
-    app/console middleware:bootstrap:identity-with-yubikey 9971dbcf01267b11f6107d9cafb43e5b4009a955 'Example Inc' 'SRAA' sraa@sraa.example nl_NL <YOUR_YUBIKEY_NUMBER>
+    app/console middleware:bootstrap:identity-with-yubikey 9971dbcf01267b11f6107d9cafb43e5b4009a955 'Example Inc' 'SRAA' sraa@sraa.example nl_NL <YOUR_YUBIKEY_PUBLIC_ID>
 ```
 
 To add `raa` and `ra` as RAA and RA respectively, they first have to go through the vetting process.
-Their verification tokens can be registered by `sraa` in RA. The accounts can then also be added as an RAA or RA.
+The first RA should be vetted by the `sraa` in RA and can be accredited as RAA.
 
 Make sure RAA's and RA's are registered conform the LoA required for RA (loa3 by default). 
 
@@ -77,11 +83,6 @@ The LoA required for RA is configured in Stepup-RA's `parameters.yml` and throug
 
 ```
     POST /app_dev.php/management/configuration HTTP/1.1
-    Host: mw-dev.stepup.coin.surf.net
-    Accept: application/json
-    Content-Type: application/json
-    Authorization: Basic bWFuYWdlbWVudDpiYXI=
-    Cache-Control: no-cache
 
     "gateway": {
         "identity_providers": [],

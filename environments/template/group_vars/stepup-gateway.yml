@@ -52,18 +52,14 @@ gateway_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.key') }}"
 
-# TODO: inconsistent naming below?
 
 # Configuration of the remote Tiqr IdP
 # Entity ID of the Tiqr Idp
-# TODO: Set remote Tiqr IdP EntityID
 gateway_tiqr_remote_entity_id: 'https://{{ tiqr_vhost_name }}/saml/metadata'
 # SingleSingOn Location of the remote Tiqr IdP
-# TODO: Set remote Tiqr IdP SSL Location
 gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # SAML signing certificate of the Tiqr IdP
 # Format: Base64 encoded X.509 certificate without PEM headers
-# TODO: Set remote Tiqr IdP SAML Signing certificate
 gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 
 

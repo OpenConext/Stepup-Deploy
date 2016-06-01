@@ -26,16 +26,11 @@
   yum: name=epel-release.noarch state=present
 
 
-# Firewall changed from ip(6)tables start/stop in CentOS6 to firewalld in CentOS7
-# ip(6)tables can still be installed using iptables-services
-# First disable firewalld service
-- name: "Disable firewalld"
-  service: name=firewalld enabled=no state=stopped
-
 # Disable unused daemons
 - name: "Disable unused daemons"
   service: name={{item}} enabled=no state=stopped
   with_items:
+  - firewalld # Because we want to use iptables-services below
   - NetworkManager
   - atd.service
   - smartd.service

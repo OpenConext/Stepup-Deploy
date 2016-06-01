@@ -27,6 +27,9 @@ yubikey_client_id: 00000
 yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
+# Whether to enable the second factor only authentication endpoint
+gateway_second_factor_only: false
+
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"
 # Format: PEM X.509 certificate

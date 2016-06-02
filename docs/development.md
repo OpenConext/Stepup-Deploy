@@ -53,8 +53,8 @@ To whitelist the organisation of these accounts, use the [Middleware Manager API
      }
 ```
 
-To allow account `sraa` to be added as an SRAA, use the [Middleware Manager API][middleware-manager] (request body has been truncated) to configure
-its NameID as such: 
+To allow account `sraa` to be added as an SRAA, use the [Middleware Manager API][middleware-manager] 
+(request body has been truncated) to configure its NameID as such: 
 
 ```
       POST /app_dev.php/management/configuration HTTP/1.1
@@ -77,7 +77,7 @@ with the number relating to your Yubikey (it is usually printed on it):
 To add `raa` and `ra` as RAA and RA respectively, they first have to go through the vetting process.
 The first RA should be vetted by the `sraa` in RA and can be accredited as RAA.
 
-Make sure RAA's and RA's are registered conform the LoA required for RA (loa3 by default). 
+Make sure RAAs and RAs are registered conform the LoA required for RA (loa3 by default). 
 
 The LoA required for RA is configured in Stepup-RA's `parameters.yml` and through the [Middleware Manager API][middleware-manager]: 
 

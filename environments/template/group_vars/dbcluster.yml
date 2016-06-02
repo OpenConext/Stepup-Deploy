@@ -19,6 +19,14 @@ mariadb_backup_password: "{{ lookup('file', inventory_dir+'/password/mariadb_bac
 # SSH public key to associate with the "backup" user shell account
 mariadb_backup_sshkey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0y73ksjdAxMbKBzEm/nZIroVLPamLG+m388f6OQ4+ogdCh/YA41pkZ6yGMlnGjKEbzeH2iDtI7qkQVGN+150aYwVvy7hlWdvg691mKDw71ZEAsgSexQ4OwKhE6UiJmoCP63I19YWf8NSz+SWUdlhmtoLiQvWcqCsa4Xv7VIRRs3TLI/n8uLPriEh/i1cnOpYNSPwznFtqjs4ViJmhLG2orxmQlgxlA8INSY2laW9vPGw3mW6ovECynmJJj141DZb0qfveXQqt2E6GmX7dSkMO4UftUmnT+TYBIPO536nztcI9p81WCM0YEuhFejFYO3uLbAMV5Idx4YkjqTnji17SQ== pieter@knikker.surf.net
 
+
+# DB accounts for providing read only access to the gateway and middleware databases
+# For external use, not required by the Stepup apps
+database_gateway_readonly_user: "gateway_ro"
+database_gateway_readonly_password: "{{ lookup('file', inventory_dir+'/password/database_gateway_readonly') }}"
+database_middleware_readonly_user: "middleware_ro"
+database_middleware_readonly_password: "{{ lookup('file', inventory_dir+'/password/database_middleware_readonly') }}"
+
 # Pacemaker config
 pacemaker_resources:
   - { name: database, ip: 127.0.0.1, cidr: 24 }

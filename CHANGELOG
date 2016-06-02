@@ -1,3 +1,42 @@
+Release 5.2
+Optionally create read-only accounts for external access to middleware and gateway databases
+
+* Configuration in group_vars/dbcluser.yml though database_(gateway|middleware)_readonly_(user|password)
+
+Install:
+* Run the dbcluster role from the site.yml playbook
+* Deploy component
+  - none
+
+
+Release 5.1 (hotfix)
+Hotfixes for loadbalancer configuration (fixes issues with tiqr registration)
+
+* Updated sysctl-local.conf to allow nonlocal binds
+* Updated nginx.yml tasks and nginx.vhost.conf.j2 template to have nginx listen on dedicated IP addresses
+
+Install:
+* Run the lb role from the site.yml playbook
+* Deploy component
+  - none
+
+
+Release 5
+Allow scripted / automated middleware configuration updates from remote
+
+* Moved the 02-middleware-config.sh and 04-middleware-whitelist.sh scripts from root to /opt/scripts and made these scripts
+  executable by the stepup-deploy user. The scripts in /root/ are replaced by symlinks
+  The configuration (middleware-config.json and middleware-whitelist.json) is now stored in /opt/scripts
+* Added app group_vars: app_deploy_user_ssh_key and app_deploy_user_ssh_from
+* Updated push-mw-config.yml and push-mw-whitelist.yml playbooks to use the stepup-deploy user
+* Added scrips/push-config.sh script
+
+Install:
+* Run the app role from the site.yml playbook
+* Deploy component
+  - Middleware 1.4.0
+
+
 Release 4
 * Moved the PHP session dir from /var/lib/php/session/ to /var/lib/stepup/session/. The contents of the old directory can be removed
 * Tighten PHP session configuration in php.ini. Use /dev/urandom for entropy, set session.cookie_secure = session.cookie_httponly = session.hash_function = 1;
@@ -23,32 +62,3 @@ Install:
 * Run DB migrations
   - /root/01-middleware-db_migrate.sh
   - /root/01-gateway-db_migrate.sh
-
-
-Release 5
-Allow scripted / automated middleware configuration updates from remote
-
-* Moved the 02-middleware-config.sh and 04-middleware-whitelist.sh scripts from root to /opt/scripts and made these scripts
-  executable by the stepup-deploy user. The scripts in /root/ are replaced by symlinks
-  The configuration (middleware-config.json and middleware-whitelist.json) is now stored in /opt/scripts
-* Added app group_vars: app_deploy_user_ssh_key and app_deploy_user_ssh_from
-* Updated push-mw-config.yml and push-mw-whitelist.yml playbooks to use the stepup-deploy user
-* Added scrips/push-config.sh script
-
-Install:
-* Run the app role from the site.yml playbook
-* Deploy component
-  - Middleware 1.4.0
-  
-  
-Release 5.1 (hotfix)
-Hotfixes for loadbalancer configuration (fixes issues with tiqr registration)
-
-* Updated sysctl-local.conf to allow nonlocal binds
-* Updated nginx.yml tasks and nginx.vhost.conf.j2 template to have nginx listen on dedicated IP addresses
-
-Install:
-* Run the lb role from the site.yml playbook
-* Deploy component
-  - none
-  

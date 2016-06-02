@@ -27,7 +27,8 @@ yubikey_client_id: 00000
 yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
-# Whether to enable the second factor only authentication endpoint
+# Whether to enable the second factor only (SFO) authentication endpoint
+# Metadata for this endpoint: /second-factor-only/metadata
 gateway_second_factor_only: false
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)

@@ -20,34 +20,34 @@ second factor.
 ```php
     ...
         'sraa:sraa' => array(
-            'commonName'             => 'SRAA',                 // displayName
-            'mail'                    => 'sraa@sraa.example',   // email (also used for EPTI)
-            'schacHomeOrganization'   => 'Example Inc',         // schacHomeOrganisation
+            'commonName'              => 'SRAA',                     // displayName
+            'mail'                    => 'sraa@sraa.example',        // email (also used for EPTI)
+            'schacHomeOrganization'   => 'dev.organisation.example', // schacHomeOrganisation
         ),
         'raa:raa' => array(
-            'commonName'             => 'RAA',                  // displayName
-            'mail'                    => 'raa@raa.example',     // email (also used for EPTI)
-            'schacHomeOrganization'   => 'Example Inc',         // schacHomeOrganisation
+            'commonName'              => 'RAA',                      // displayName
+            'mail'                    => 'raa@raa.example',          // email (also used for EPTI)
+            'schacHomeOrganization'   => 'dev.organisation.example', // schacHomeOrganisation
         ),
         'ra:ra' => array(
-            'commonName'             => 'RA',                   // displayName
-            'mail'                    => 'ra@ra.example',       // email (also used for EPTI)
-            'schacHomeOrganization'   => 'Example Inc',         // schacHomeOrganisation
+            'commonName'              => 'RA',                       // displayName
+            'mail'                    => 'ra@ra.example',            // email (also used for EPTI)
+            'schacHomeOrganization'   => 'dev.organisation.example', // schacHomeOrganisation
         ),
         'sms:sms' => array(
-            'commonName'            => 'SMS',                   // displayName
-            'mail'                  => 'sms@sms.example',       // email (also used for EPTI)
-            'schacHomeOrganization' => 'Example Inc',           // schacHomeOrganisation
+            'commonName'              => 'SMS',                      // displayName
+            'mail'                    => 'sms@sms.example',          // email (also used for EPTI)
+            'schacHomeOrganization'   => 'dev.organisation.example', // schacHomeOrganisation
         ),
         'yubi:yubi' => array(
-            'commonName'            => 'Yubi',                  // displayName
-            'mail'                  => 'yubi@yubi.example',     // email (also used for EPTI)
-            'schacHomeOrganization' => 'Example Inc',           // schacHomeOrganisation
+            'commonName'              => 'Yubi',                     // displayName
+            'mail'                    => 'yubi@yubi.example',        // email (also used for EPTI)
+            'schacHomeOrganization'   => 'dev.organisation.example', // schacHomeOrganisation
         ),
         'u2f:u2f' => array(
-            'commonName'            => 'U2F',                   // displayName
-            'mail'                  => 'u2f@u2f.example',       // email (also used for EPTI)
-            'schacHomeOrganization' => 'Example Inc',           // schacHomeOrganisation
+            'commonName'              => 'U2F',                      // displayName
+            'mail'                    => 'u2f@u2f.example',          // email (also used for EPTI)
+            'schacHomeOrganization'   => 'dev.organisation.example', // schacHomeOrganisation
         ),
     ...
 ```
@@ -59,7 +59,7 @@ To whitelist the organisation of these accounts, use the [Middleware Manager API
 
      {
        "institutions": [
-         "Example Inc"
+         "dev.organisation.example"
        ]
      }
 ```
@@ -78,12 +78,14 @@ To allow account `sraa` to be added as an SRAA, use the [Middleware Manager API]
       }
 ```
 
-To add account `sraa` by its NameID as an SRAA, run the following for Stepup-Middleware, replacing `<YOUR_YUBIKEY_PUBLIC_ID` 
-with the number relating to your Yubikey (it is usually printed on it):
+To add `sraa` by its NameID as an SRAA, run the following for Stepup-Middleware, replacing `<YOUR_YUBIKEY_PUBLIC_ID>` 
+with the public id relating to your Yubikey (it is usually printed on it):
 
 ```
-    app/console middleware:bootstrap:identity-with-yubikey 9971dbcf01267b11f6107d9cafb43e5b4009a955 'Example Inc' 'SRAA' sraa@sraa.example nl_NL <YOUR_YUBIKEY_PUBLIC_ID>
+    app/console middleware:bootstrap:identity-with-yubikey 9971dbcf01267b11f6107d9cafb43e5b4009a955 'dev.organisation.example' 'SRAA' sraa@sraa.example nl_NL <YOUR_YUBIKEY_PUBLIC_ID>
 ```
+
+Keep in mind that the SRAA should be configured with the same NameID as configured through the Middleware Management API.
 
 To add `raa` and `ra` as RAA and RA respectively, they first have to go through the vetting process.
 The first RA should be vetted by the `sraa` in RA and can be accredited as RAA.

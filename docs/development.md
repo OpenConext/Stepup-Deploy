@@ -2,6 +2,17 @@
 Make sure all of the applications and their dependencies have been installed correctly, configure the correct parameters
 and follow the installation instructions for each application.
 
+## Useful extensions
+* SAML debugging: [SAML Chrome Panel][saml-chrome-panel] or the [SAML Tracer for Firefox][firefox-saml-tracer]
+* API interactions: [Postman for Chrome][postman-chrome]
+
+Useful Postman collections can be found on LastPass under `Shared-StepUp`.
+
+## Graylog
+In order for Graylog2 to work, the correct source input should be configured. In the `System/Inputs` screen,
+add a GELF UDP with the configured settings, `port: 12201` and `bind_address: 0.0.0.0` by default.
+
+## Configuring accounts for development
 Accounts can be added to the `$config` in your git-ignored `simplesamlphp/config/authsources.php` file. 
 For development purposes, it could be useful to add SRAA, RAA and RA accounts as well as users for each
 second factor.
@@ -103,5 +114,7 @@ The LoA required for RA is configured in Stepup-RA's `parameters.yml` and throug
         ]
     }
 ```
-
+[postman-chrome]: https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop
+[saml-chrome-panel]: https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace
+[firefox-saml-tracer]: https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/
 [middleware-manager]: https://github.com/SURFnet/Stepup-Middleware/tree/e1c7017f4211728157ecd49394e870858c9789c8#management-api

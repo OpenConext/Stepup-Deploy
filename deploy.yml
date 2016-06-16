@@ -70,7 +70,7 @@
       component_tarball_name: "{{ tarball_location }}/Stepup-RA-1.3.1-20151112110541Z-331a315a0a18c329953fd5a313eb80802a6c9249.tar.bz2"
       component_name: ra
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
-      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\\\1') }}"
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
 
 
 - name: Install Stepup-tiqr IDP

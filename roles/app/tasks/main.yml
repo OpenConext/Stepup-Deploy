@@ -43,6 +43,21 @@
   - sendmail
   - sendmail-cf
 
+# Look for sendmail smarthost
+- name: Configure sendmail with smarthost
+  template: src='sendmail.cf.j2' dest='/etc/mail/sendmail.cf' 
+  when: { sendmail_smarthost }
+
+# Build sendmail config file from template
+- name: Configure sendmail
+  command: make -C /etc/mail
+  when: { sendmail_smarthost }
+
+# Restart sendmail
+- name: reload sendmail
+  service: name=sendmail state=restarted
+  when: { sendmail_smarthost }
+
 # php-gd requires libgd (>2.1.1) from remi repo
 - name: Install php-gd
   yum: name=php-gd state=present enablerepo=remi

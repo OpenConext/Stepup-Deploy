@@ -26,9 +26,9 @@ The deploy process is split in two parts
 
 The deploy requires an environment created with e.g. the `create_new_environment.sh` script.
 
-Use `ansible-playbook -i <environment_directory>/inventory site.yml` to depoy the infrastructure.
+Use `ansible-playbook -i <environment_directory>/inventory site.yml` to deploy the infrastructure.
 
-The databases form a galera cluster. When none of the MariaDB databases is running, such as during the forst deploy, the first database must be bootstrapped by setting the Ansible variable `galera_bootstrap_node` to the hostname of the node to bootstrap. Example:
+The databases form a galera cluster. When none of the MariaDB databases is running, such as during the first deploy, the first database must be bootstrapped by setting the Ansible variable `galera_bootstrap_node` to the hostname of the node to bootstrap. Example:
 
 `ansible-playbook site.yml -i <environment_directory>/inventory -e "galera_bootstrap_node=app.stepup.example.com"`
 

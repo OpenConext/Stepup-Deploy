@@ -6,7 +6,7 @@
 
 - name: Pacemaker configuration
   hosts: dbcluster
-  sudo: True
+  become: True
   tags: db
 
   roles:

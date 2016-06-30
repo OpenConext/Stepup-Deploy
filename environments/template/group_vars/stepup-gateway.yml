@@ -27,6 +27,10 @@ yubikey_client_id: 00000
 yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
+# Whether to enable the second factor only (SFO) authentication endpoint
+# Metadata for this endpoint: /second-factor-only/metadata
+gateway_second_factor_only: false
+
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"
 # Format: PEM X.509 certificate
@@ -49,16 +53,26 @@ gateway_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.key') }}"
 
-# TODO: inconsistent naming below?
 
 # Configuration of the remote Tiqr IdP
 # Entity ID of the Tiqr Idp
-# TODO: Set remote Tiqr IdP EntityID
 gateway_tiqr_remote_entity_id: 'https://{{ tiqr_vhost_name }}/saml/metadata'
 # SingleSingOn Location of the remote Tiqr IdP
-# TODO: Set remote Tiqr IdP SSL Location
 gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # SAML signing certificate of the Tiqr IdP
 # Format: Base64 encoded X.509 certificate without PEM headers
-# TODO: Set remote Tiqr IdP SAML Signing certificate
-gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey }}"
+gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
+
+
+# Configuration of the remote Biometric IdP
+# Entity ID of the Biometric Idp
+# TODO: Set remote Biometric IdP EntityID
+gateway_biometric_remote_entity_id: 'https://biometric.example.com/saml/metadata'
+# SingleSingOn Location of the remote Biometric IdP
+# TODO: Set remote Biometric IdP SSL Location
+gateway_biometric_remote_sso_url: 'https://biometric.example.com/saml/sso'
+# SAML signing certificate of the Biometric IdP
+# Format: Base64 encoded X.509 certificate without PEM headers
+# TODO: Set remote Biometric IdP SAML Signing certificate
+#gateway_biometric_remote_certificate: "{{ biometric_idp_publickey | depem }}"
+gateway_biometric_remote_certificate: ""

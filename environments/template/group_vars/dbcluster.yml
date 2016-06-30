@@ -37,4 +37,4 @@ pacemaker_cluster_members: "{{ groups['dbcluster']|join(' ') }}"
 pacemaker_user_password: "{{ lookup('file', inventory_dir+'/password/db_pacemaker_user_password') }}"
 
 # Pacemaker user crypt (crypted version of pacemaker_user_password as it would appear in /etc/shadow)
-pacemaker_user_crypt: "{{ lookup('file', inventory_dir+'/password/db_pacemaker_user_crypt') }}"t
+pacemaker_user_crypt: "{{ lookup('file', inventory_dir+'/password/db_pacemaker_user_crypt') }}"

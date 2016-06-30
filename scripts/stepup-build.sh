@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo
+echo "Note: This build script is DEPRECATED. Please use https://github.com/SURFnet/Stepup-Build"
+echo "instead for building stepup releases."
+echo
+
 CWD=`pwd`
 COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "oath-service-php")
 DEFAULT_BRANCH=develop

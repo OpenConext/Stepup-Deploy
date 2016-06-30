@@ -1,7 +1,31 @@
-Release 5.2
-Optionally create read-only accounts for external access to middleware and gateway databases
+Release 6
+Ansible 2, Second factor only authentication, biometric authentication type
 
-* Configuration in group_vars/dbcluser.yml though database_(gateway|middleware)_readonly_(user|password)
+* Deploy now requires Ansible 2
+* Set "serial: 1" in site.yml playbook, to deploy one host at a time, even when more than one host is targeted
+* Add second factory only (SFO) authentication to the GW, disabled by default
+* Add support for a "biometric" authentication type using GSSP
+* Added vars for SFO: gateway_second_factor_only, stepup_uri_sfo_loa2, stepup_uri_sfo_loa3
+* Added var for stepup cookie domain: locale_cookie_domain
+* Service providers in the middleware configuration require two new configuration keys. To keep the current
+  behaviour add:
+    "second_factor_only": false,
+    "second_factor_only_nameid_patterns": [],
+
+Install:
+* Run the app role from the site.yml playbook
+* Deploy components
+  - Middleware-1.6.0
+  - Gateway 2.0.0
+  - SelfService-1.4.0
+  - RA-1.4.0
+  - tiqr-1.1.2
+
+
+Release 5.2
+* Optionally create gateway_ro and middleware_ro accounts for read only access to the gateway and middleware databases
+  Configuration in group_vars/dbcluser.yml though database_(gateway|middleware)_readonly_(user|password)
+* Disable IPv6
 
 Install:
 * Run the dbcluster role from the site.yml playbook

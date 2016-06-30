@@ -106,12 +106,24 @@
   file: path=/opt/scripts/ state=directory owner=root group={{ app_deploy_user }} mode=770
 
 # Create vhosts for stepup components
-- { include: vhost.yml, component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}", when: "inventory_hostname in groups['stepup-middleware']" }
-- { include: vhost.yml, component_name: gateway,     vhost_name: "{{ gateway_vhost_name }}", when: "inventory_hostname in groups['stepup-gateway']" }
-- { include: vhost.yml, component_name: selfservice, vhost_name: "{{ selfservice_vhost_name }}", when: "inventory_hostname in groups['stepup-selfservice']" }
-- { include: vhost.yml, component_name: ra,          vhost_name: "{{ ra_vhost_name }}", when: "inventory_hostname in groups['stepup-ra']" }
-- { include: vhost.yml, component_name: tiqr,        vhost_name: "{{ tiqr_vhost_name }}", when: "inventory_hostname in groups['stepup-tiqr']" }
-- { include: vhost.yml, component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}", when: "inventory_hostname in groups['stepup-keyserver']" }
+- include: vhost.yml
+  vars: { component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-middleware']"
+- include: vhost.yml
+  vars: { component_name: gateway,     vhost_name: "{{ gateway_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-gateway']"
+- include: vhost.yml
+  vars: { component_name: selfservice, vhost_name: "{{ selfservice_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-selfservice']"
+- include: vhost.yml
+  vars: { component_name: ra,          vhost_name: "{{ ra_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-ra']"
+- include: vhost.yml
+  vars: { component_name: tiqr,        vhost_name: "{{ tiqr_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-tiqr']"
+- include: vhost.yml
+  vars: { component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-keyserver']"
 
 
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first

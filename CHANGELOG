@@ -11,6 +11,7 @@ Ansible 2, Second factor only authentication, biometric authentication type
   behaviour add:
     "second_factor_only": false,
     "second_factor_only_nameid_patterns": [],
+* Add translations for tiqr error messages, fix regression error in tiqr userId
 
 Install:
 * Run the app role from the site.yml playbook
@@ -19,7 +20,7 @@ Install:
   - Gateway 2.0.0
   - SelfService-1.4.0
   - RA-1.4.0
-  - tiqr-1.1.2
+  - tiqr-1.1.3
 
 
 Release 5.2

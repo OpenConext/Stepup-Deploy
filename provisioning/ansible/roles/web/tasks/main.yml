@@ -18,7 +18,7 @@
 - name: Install PHP Packages
   become: yes
   yum: pkg={{ item }} state=present
-  with_items: php_packages
+  with_items: "{{ php_packages }}"
 
 - name: Configure XDebug
   copy: src=xdebug.ini dest=/etc/php.d/xdebug.ini

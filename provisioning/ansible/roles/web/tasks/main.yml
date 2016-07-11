@@ -46,8 +46,8 @@
 - name: Copy SSL configuration
   copy: src=ssl.conf dest=/etc/nginx/conf.d/ssl.conf owner=nginx group=nginx mode=600
 
-- name: Create PHP session directory
-  shell: mkdir /var/lib/php/session creates=/var/lib/php/session
+- name: Create directory for vhosts to store PHP sessions
+  file: path=/var/lib/stepup/session/ state=directory mode="771" owner=root group=root
 
 - include: vhost.yml vhost_name=mw-dev tpl=default vhost_local_port=9000 user=middleware port=80
 - include: vhost.yml vhost_name=gw-dev tpl=default vhost_local_port=9001 user=gateway port=443

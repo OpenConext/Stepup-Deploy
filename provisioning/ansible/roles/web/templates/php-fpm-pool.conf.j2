@@ -12,8 +12,7 @@
 ; Note: This value is mandatory.
 
 ; Enable to use unix socket. Requires Apache 2.4.9 or above
-;listen = /var/run/php-fpm/{{ vhost_name }}.socket
-listen = localhost:{{ vhost_local_port }}
+listen = /var/run/php-fpm/{{ vhost_name }}.socket
 
 ; Set listen(2) backlog. A value of '-1' means unlimited.
 ; Default Value: -1

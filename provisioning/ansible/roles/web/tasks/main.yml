@@ -1,25 +1,31 @@
 ---
+- name: Install REMI repo
+  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-7.rpm state=present
+
+- name: Enable REMI repo
+  copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
+
 - name: Install Nginx
   yum: name=nginx state=present
 
 - name: Install php5-cli
-  sudo: yes
+  become: yes
   yum: pkg=php-cli state=present
 
 - name: Ensure timezone is set in cli php.ini
   lineinfile: dest=/etc/php.ini regexp='date.timezone =' line='date.timezone = {{ timezone }}'
 
 - name: Install PHP Packages
-  sudo: yes
+  become: yes
   yum: pkg={{ item }} state=present
-  with_items: php_packages
+  with_items: "{{ php_packages }}"
 
 - name: Configure XDebug
   copy: src=xdebug.ini dest=/etc/php.d/xdebug.ini
   notify: restart php-fpm
 
 - name: Install php-fpm
-  sudo: yes
+  become: yes
   yum: pkg=php-fpm state=present
 
 - name: Prepare for copying certificates
@@ -60,12 +66,12 @@
   notify: restart php-fpm
 
 - name: Add firewall rule for HTTP
-  sudo: yes
+  become: yes
   firewalld: service=http permanent=true state=enabled
   notify: Reload firewall
 
 - name: Add firewall rule for HTTPS
-  sudo: yes
+  become: yes
   firewalld: service=https permanent=true state=enabled
   notify: Reload firewall
 

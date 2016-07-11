@@ -5,8 +5,8 @@
 - name: Add user {{ user }}
   user: name={{ user }} group={{ user }} createhome=no state=present
 
-- name: Create PHP session directory
-  shell: mkdir /var/lib/php/session/{{ user }} && chown {{ user }}:{{ user }} /var/lib/php/session/{{ user }} creates=/var/lib/php/session/{{ user }}
+- name: Create directory for vhosts to store PHP sessions
+  file: path=/var/lib/stepup/session/{{ user }} state=directory owner={{ user }} group=root mode=770
 
 - name: Configure Nginx for {{ vhost_name }}.{{ app_domain }}:{{ port }}
   action: template src='nginx-vhost-{{ tpl }}.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.{{ app_domain }}.conf'

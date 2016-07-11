@@ -1,6 +1,6 @@
 ---
 - hosts: suaas
-  sudo: true
+  become: true
   vars:
     timezone: Europe/Amsterdam
     app_domain: stepup.coin.surf.net

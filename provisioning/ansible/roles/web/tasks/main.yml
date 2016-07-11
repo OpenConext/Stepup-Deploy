@@ -9,14 +9,14 @@
   yum: name=nginx state=present
 
 - name: Install php5-cli
-  sudo: yes
+  become: yes
   yum: pkg=php-cli state=present
 
 - name: Ensure timezone is set in cli php.ini
   lineinfile: dest=/etc/php.ini regexp='date.timezone =' line='date.timezone = {{ timezone }}'
 
 - name: Install PHP Packages
-  sudo: yes
+  become: yes
   yum: pkg={{ item }} state=present
   with_items: php_packages
 
@@ -25,7 +25,7 @@
   notify: restart php-fpm
 
 - name: Install php-fpm
-  sudo: yes
+  become: yes
   yum: pkg=php-fpm state=present
 
 - name: Prepare for copying certificates
@@ -66,12 +66,12 @@
   notify: restart php-fpm
 
 - name: Add firewall rule for HTTP
-  sudo: yes
+  become: yes
   firewalld: service=http permanent=true state=enabled
   notify: Reload firewall
 
 - name: Add firewall rule for HTTPS
-  sudo: yes
+  become: yes
   firewalld: service=https permanent=true state=enabled
   notify: Reload firewall
 

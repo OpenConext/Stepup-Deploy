@@ -1,18 +1,18 @@
 ---
 - name: Remove the old mariadb-libs
-  sudo: yes
+  become: yes
   yum: pkg=mariadb-libs state=absent
 
 - name: Add MariaDB.org repository
-  sudo: yes
+  become: yes
   template: src='mariadb.repo.j2' dest='/etc/yum.repos.d/mariadb.repo'
 
 - name: Add the MariaDB key
-  sudo: yes
+  become: yes
   command: rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 
 - name: Install MariaDB
-  sudo: yes
+  become: yes
   yum: pkg={{item}} state=present
   with_items:
     - MariaDB-server
@@ -25,7 +25,7 @@
   notify: Restart MariaDB
 
 - name: Start MariaDB
-  sudo: true
+  become: true
   service: name=mysql enabled=yes state=started
 
 - name: Set root password
@@ -53,6 +53,6 @@
   mysql_user: host=% name=deploy password=deploy priv=middleware.*:ALL,GRANT/gateway.*:ALL,GRANT/u2f.*:ALL,GRANT login_user=root login_password={{ mariadb_root_password }}
 
 - name: Add firewall rule for MariaDB
-  sudo: yes
+  become: yes
   firewalld: service=mysql permanent=true state=enabled
   notify: Reload firewall

@@ -8,15 +8,15 @@
   when: ansible_os_family == "RedHat"
 
 - name: Configure /etc/hosts
-  sudo: yes
+  become: yes
   template: src=hosts.j2 dest=/etc/hosts backup=yes
 
 - name: "Configure the timezone #1"
-  sudo: yes
+  become: yes
   template: src=timezone.j2 dest=/etc/timezone
 
 - name: "Configure the timezone #2"
-  sudo: yes
+  become: yes
   file: src=/usr/share/zoneinfo/{{timezone}} dest=/etc/localtime state=link force=yes backup=yes
 
 - name: Install ntp

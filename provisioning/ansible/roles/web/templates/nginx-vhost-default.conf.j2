@@ -23,7 +23,7 @@ server {
     }
 
     location ~ ^/(app|app_dev)\.php(/|$) {
-        fastcgi_pass 127.0.0.1:{{ vhost_local_port }};
+        fastcgi_pass unix:/var/run/php-fpm/{{ vhost_name }}.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;

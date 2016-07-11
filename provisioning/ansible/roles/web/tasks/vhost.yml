@@ -16,7 +16,7 @@
   action: template src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.{{ app_domain }}.conf' owner=nginx group=nginx
   notify: restart php-fpm
 
-- name: test if app_dev.php exists
+- name: Test if app_dev.php exists
   command: test -f /var/www/{{ vhost_name }}.{{ app_domain }}/app_dev.php.dist
   register: appdevexists
   ignore_errors: True

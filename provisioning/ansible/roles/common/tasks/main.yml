@@ -23,8 +23,3 @@
   yum: name=ntp state=present
   notify: start ntp
   when: ansible_os_family == "RedHat"
-
-- name: Install ntp
-  apt: name=ntp state=present
-  notify: start ntp
-  when: ansible_os_family == "Debian"

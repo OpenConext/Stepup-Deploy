@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'gelf'
-
-logger = GELF::Notifier.new("localhost", 12201)
-
-rnd = Random.new.rand(0..999)
-logger.notify!(:short_message => "test log message: " + rnd.to_s, :full_message => "This is an test log message from cron. Cronjob runs every minute.")

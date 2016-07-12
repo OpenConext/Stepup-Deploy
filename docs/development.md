@@ -10,7 +10,7 @@ Useful Postman collections can be found on LastPass under `Shared-StepUp`.
 
 ## Graylog
 Graylog should work out of the box. You can log in using the username `admin` and the password `password`.  
-Should no log messages show up, the correct source input should be configured. In the `System/Inputs` screen.
+Should no log messages show up, the correct source input should be configured, in the `System/Inputs` screen.
 Add a GELF UDP with the configured settings, `port: 12201` and `bind_address: 0.0.0.0` , this should accept
 the messages.
 

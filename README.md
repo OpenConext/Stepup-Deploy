@@ -40,6 +40,8 @@ $ (cd suaas && vagrant up)
 $ (cd graylog && vagrant up)
 ```
 
+_Do note that the installation of graylog requires the downloading of a .deb. This can take some time._
+
 Place the SSL certificates in `./Stepup-Deploy/ssl`:
 
  * `ca.crt` — CA certificate chain

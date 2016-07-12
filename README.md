@@ -40,6 +40,8 @@ $ (cd suaas && vagrant up)
 $ (cd graylog && vagrant up)
 ```
 
+_Do note that the installation of graylog requires the downloading of a .deb. This can take some time._
+
 Place the SSL certificates in `./Stepup-Deploy/ssl`:
 
  * `ca.crt` — CA certificate chain
@@ -54,7 +56,7 @@ Edit your hosts file to include the following:
 ```
 
  * To view the self-service, visit https://ss-dev.stepup.coin.surf.net/app_dev.php/.
- * To view the Graylog2 web interface, visit http://g2-dev.stepup.coin.surf.net:9000 and use username `admin` and password `yourpassword`.
+ * To view the Graylog2 web interface, visit http://g2-dev.stepup.coin.surf.net:9000 and use username `admin` and password `password`.
  * To view mails caught by Mailcatcher, visit http://mw-dev.stepup.coin.surf.net:1080/
 
 To configure the applications for development, use the [development documentation][dev-docs].

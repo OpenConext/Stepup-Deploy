@@ -1,49 +1,27 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
-
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "puphpet/debian75-x64"
-  config.vm.box_version = "2.0"
-
-  config.vm.provider "virtualbox" do |v|
-    v.name = 'SuaaS log server'
-    v.memory = 1024
-  end
-
-  config.vm.provision :puppet do |puppet|
-    puppet.manifest_file = "graylog2.pp"
-    puppet.manifests_path = "../provisioning/graylog/manifests"
-    puppet.module_path = "../provisioning/graylog/modules"
-  end
-
-  if which('ansible-playbook')
-    config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "../provisioning/ansible/graylog.yml"
-      ansible.inventory_path = "../provisioning/ansible/inventories/development"
-      ansible.limit = "all"
-    end
-  else
-      config.vm.provision :shell, inline: "env PLAYBOOK=../provisioning/ansible/graylog.yml ../provisioning/ansible/windows.sh"
-  end
-
-  # Change from forwarded ports to private network
+Vagrant.configure(2)  do |config|
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.hostname = "Stepup-log-server"
   config.vm.network :private_network, ip: "10.10.0.101"
 
-end
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+  end
 
-# Check to determine whether we're on a windows or linux/os-x host,
-# later on we use this to launch ansible in the supported way
-# source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
-def which(cmd)
-    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
-    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
-        exts.each { |ext|
-            exe = File.join(path, "#{cmd}#{ext}")
-            return exe if File.executable? exe
-        }
-    end
-    return nil
+  $script = <<SCRIPT
+    apt-get update
+    echo 'Going to download Graylog...'
+    curl -S -s -L -O https://packages.graylog2.org/releases/graylog-omnibus/ubuntu/graylog_latest.deb
+    dpkg -i graylog_latest.deb
+    rm graylog_latest.deb
+    graylog-ctl set-external-ip http://127.0.0.1:12900
+    graylog-ctl set-admin-username admin
+    graylog-ctl set-admin-password password
+    graylog-ctl set-timezone "Europe/Amsterdam"
+    graylog-ctl reconfigure
+SCRIPT
+
+  config.vm.provision "shell", inline: $script
 end

@@ -9,8 +9,12 @@ and follow the installation instructions for each application.
 Useful Postman collections can be found on LastPass under `Shared-StepUp`.
 
 ## Graylog
-In order for Graylog2 to work, the correct source input should be configured. In the `System/Inputs` screen,
-add a GELF UDP with the configured settings, `port: 12201` and `bind_address: 0.0.0.0` by default.
+Graylog should work out of the box. You can log in using the username `admin` and the password `password`.  
+Should no log messages show up, the correct source input should be configured, in the `System/Inputs` screen.
+Add a GELF UDP with the configured settings, `port: 12201` and `bind_address: 0.0.0.0` , this should accept
+the messages.
+
+You can create a custom dashboard or streams so that you can view only the relevant messages.
 
 ## Configuring accounts for development
 Accounts can be added to the `$config` in your git-ignored `simplesamlphp/config/authsources.php` file. 

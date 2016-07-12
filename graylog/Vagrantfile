@@ -3,7 +3,7 @@
 
 Vagrant.configure(2)  do |config|
   config.vm.box = "ubuntu/trusty64"
-  config.vm.hostname = "StepUp-log-Server"
+  config.vm.hostname = "Stepup-log-server"
   config.vm.network :private_network, ip: "10.10.0.101"
 
   config.vm.provider "virtualbox" do |v|

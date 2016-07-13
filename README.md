@@ -1,30 +1,32 @@
-# SuaaS development boxes
+# Stepup development boxes
 
 ## Boxes
 
- * `suaas` — Apache2, PHP-FPM, MariaDB and virtual hosts for Middleware, Gateway, Self-Service and RA;
- * `graylog` — Graylog2 server and web interface.
+ * `stepup-apps` — Apache2, PHP-FPM, MariaDB and virtual hosts for Middleware, Gateway, Self-Service and RA;
+ * `stepup-logging` — Graylog2 server and web interface.
 
 ## Requirements
 
- * VirtualBox (tested with 4.3.16)
- * Vagrant (tested with 1.6.3)
+ * VirtualBox (tested with 5.0.18)
+ * Vagrant (tested with 1.8.4)
  * Vagrant vbguest plugin (instructions below)
- * Ansible (tested with 1.7.2), fallback to self-provisioning on Windows (untested)
+ * Ansible (tested with 2.0.0.2), fallback to self-provisioning on Windows (untested)
 
 ## Installation
 
-This setup is designed to run next to the four step-up applications Middleware, Gateway, Self-Service and RA:
+This setup is designed to run next to the four step-up applications Middleware, Gateway, Self-Service and RA and uses
+a simplesamlphp installation to act as development IdP:
 
  * `Stepup-Deploy/` — Contains the application and Graylog2 boxes
  * `Stepup-Middleware/` — Contains the Middleware application code
  * `Stepup-Gateway/` — Contains the Gateway application code
  * `Stepup-SelfService/` — Contains the Self-Service application code
  * `Stepup-RA/` — Contains the RA application code
+ * `simplesamlphp/` - Contains the simplesamlphp installation
 
 ```sh-session
-$ mkdir suaas
-$ cd suaas
+$ mkdir stepup
+$ cd stepup
 $ git clone git@github.com:SURFnet/Stepup-Deploy.git
 $ git clone git@github.com:SURFnet/Stepup-Middleware.git
 $ git clone git@github.com:SURFnet/Stepup-Gateway.git
@@ -40,7 +42,7 @@ $ vagrant up
 
 _Do note that the installation of graylog requires the downloading of a .deb. This can take some time._
 
-Place the SSL certificates in `./Stepup-Deploy/ssl`:
+Place the required SSL certificates in `./Stepup-Deploy/ssl`:
 
  * `ca.crt` — CA certificate chain
  * `server.crt` — Server wildcard certificate

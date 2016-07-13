@@ -1,9 +1,8 @@
 ---
-- hosts: suaas-graylog
+- hosts: stepup-graylog
   become: true
   vars:
     timezone: Europe/Amsterdam
     app_domain: stepup.coin.surf.net
   roles:
     - common
-    - graylog2

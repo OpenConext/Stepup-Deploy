@@ -34,10 +34,8 @@ $ mkdir simplesamlphp # Place a simplesamlphp deployment here with some credenti
 $ cd Stepup-Deploy
 $ (cd ssl && place-ssl-certificates-see-below)
 $ git checkout dev
-$ git submodule update --init --recursive
 $ vagrant plugin install vagrant-vbguest
-$ (cd suaas && vagrant up)
-$ (cd graylog && vagrant up)
+$ vagrant up
 ```
 
 _Do note that the installation of graylog requires the downloading of a .deb. This can take some time._

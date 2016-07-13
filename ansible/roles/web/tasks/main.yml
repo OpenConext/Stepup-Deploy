@@ -32,13 +32,13 @@
   shell: mkdir /etc/nginx/conf.d/ssl && chown nginx:nginx /etc/nginx/conf.d/ssl creates=/etc/nginx/conf.d/ssl
 
 - name: Copy CA certificate
-  copy: src=../../../../../ssl/ca.crt dest=/etc/nginx/conf.d/ssl/ca.crt owner=nginx group=nginx mode=600
+  copy: src=../../../../ssl/ca.crt dest=/etc/nginx/conf.d/ssl/ca.crt owner=nginx group=nginx mode=600
 
 - name: Copy SSL certificate
-  copy: src=../../../../../ssl/server.crt dest=/etc/nginx/conf.d/ssl/server.crt owner=nginx group=nginx mode=600
+  copy: src=../../../../ssl/server.crt dest=/etc/nginx/conf.d/ssl/server.crt owner=nginx group=nginx mode=600
 
 - name: Copy SSL key
-  copy: src=../../../../../ssl/server.key dest=/etc/nginx/conf.d/ssl/server.key owner=nginx group=nginx mode=600
+  copy: src=../../../../ssl/server.key dest=/etc/nginx/conf.d/ssl/server.key owner=nginx group=nginx mode=600
 
 - name: Create SSL certificate chain
   shell: 'cat /etc/nginx/conf.d/ssl/server.crt /etc/nginx/conf.d/ssl/ca.crt > /etc/nginx/conf.d/ssl/server.chain.crt && chown nginx:nginx /etc/nginx/conf.d/ssl/server.chain.crt'

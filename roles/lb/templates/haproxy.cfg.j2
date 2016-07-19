@@ -71,6 +71,8 @@ frontend {{ component }} 127.0.0.1:{{ loadbalancing[component].port }}
     use_backend         {{ component }}_be       if url_all
     default_backend     {{ component }}_be
 
+    http-request del-header Proxy
+
 {% endfor %}
 
 {% for component in loadbalancing %}

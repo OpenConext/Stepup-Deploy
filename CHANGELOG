@@ -2,6 +2,7 @@ Release 5.2
 Optionally create read-only accounts for external access to middleware and gateway databases
 
 * Configuration in group_vars/dbcluser.yml though database_(gateway|middleware)_readonly_(user|password)
+* Optionally use SMTP smarthost on servers with app role. Configuration through sendmail_smarthost in group_vars/app.yml
 
 Install:
 * Run the dbcluster role from the site.yml playbook

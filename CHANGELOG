@@ -24,12 +24,18 @@ Install:
 
 
 Release 5.2
+Infrastucture changes: Read-only accounts for external access to middleware and gateway databases,
+SMTP smarthost and disable IPv6
+
+Security: Block HTTP Proxy header in haproxy and nginx (CVE-2016-5385)
+
+* Optionally use SMTP smarthost on servers with app role. Configuration through sendmail_smarthost in group_vars/app.yml
 * Optionally create gateway_ro and middleware_ro accounts for read only access to the gateway and middleware databases
   Configuration in group_vars/dbcluser.yml though database_(gateway|middleware)_readonly_(user|password)
 * Disable IPv6
 
 Install:
-* Run the dbcluster role from the site.yml playbook
+* Run the dbcluster, lb and app roles from the site.yml playbook
 * Deploy component
   - none
 

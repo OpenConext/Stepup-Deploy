@@ -14,3 +14,7 @@
 
    - name: restart rsyslog
      service: name=rsyslog state=restarted
+
+   - name: reload sendmail
+     service: name=sendmail state=restarted
+

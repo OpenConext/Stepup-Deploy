@@ -31,12 +31,13 @@ shift
 WHAT=$1
 shift
 if [ -z "${DEPLOY_DIR}" -o  -z "${INVENTORY_FILE}" -o  -z "${WHAT}" ]; then
-    echo "Usage: $0 <deploy directory> <inventory file> config|whitelist (--branch <branch name>] | [--tag <tag name>]) [--verbose] [--allow-unclean]"
+    echo "Usage: $0 <deploy directory> <inventory file> config|whitelist (--branch <branch name>] | [--tag <tag name>]) [--limit <hosts>] [--verbose] [--allow-unclean]"
     echo "Deploys a new Stepup middleware 'config'(uration) or 'whitelist'."
     echo ""
     echo "<deploy directory> : Directory containing the playbooks. Read-only, git not required"
     echo "<inventory file>   : Path to inventory file to use. Must be a clean local git checkout. The local git repository"
     echo "                   : is updated when --tag or --branch is specified."
+    echo "--limit            : Limit to specified hosts (see: Ansible --limit option)"
     echo "--verbose          : Run ansible playbook in verbose mode"
     echo "--allow-unclean    : Allow unclean inventory repository to be used"
     echo ""
@@ -142,13 +143,20 @@ fi
 
 # Switch to specified branch / tag
 if [ -n "${GIT_BRANCH}" ]; then
+    # Verify that "GIT_BRANCH" exists on the remote
     echo "Using branch: ${GIT_BRANCH}"
     if [ `git ls-remote | grep -c "refs/heads/${GIT_BRANCH}"` -ne "1" ]; then
         error_exit "No such branch on remote: '${GIT_BRANCH}'"
     fi
+    # Switch to "GIT_BRANCH" locally and ensure that it is tracking the branch with the same name on the remote
     git checkout -B ${GIT_BRANCH} --track "origin/${GIT_BRANCH}"
     if [ "$?" -ne "0" ]; then
         error_exit "Error setting branch"
+    fi
+    # Reset local branch to match remote exactly
+    git reset --hard "origin/${GIT_BRANCH}"
+    if [ "$?" -ne "0" ]; then
+        error_exit "Error restting branch"
     fi
 fi
 if [ -n "${GIT_TAG}" ]; then

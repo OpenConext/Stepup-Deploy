@@ -135,8 +135,8 @@ echo "Using GIT root: ${GIT_ROOT}"
 echo "Current branch: `git symbolic-ref --short HEAD`"
 echo "Current commit: `git log -1 --pretty='%H'`, `git log -1 --pretty='%cd' --date=iso`"
 
-echo "Fetching all from remote"
-git fetch --all --tags
+echo "Fetching from origin"
+git fetch origin
 if [ "$?" -ne "0" ]; then
     error_exit "Error fetching repo"
 fi

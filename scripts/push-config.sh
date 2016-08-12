@@ -31,8 +31,8 @@ shift
 WHAT=$1
 shift
 if [ -z "${DEPLOY_DIR}" -o  -z "${INVENTORY_FILE}" -o  -z "${WHAT}" ]; then
-    echo "Usage: $0 <deploy directory> <inventory file> config|whitelist (--branch <branch name>] | [--tag <tag name>]) [--limit <hosts>] [--verbose] [--allow-unclean]"
-    echo "Deploys a new Stepup middleware 'config'(uration) or 'whitelist'."
+    echo "Usage: $0 <deploy directory> <inventory file> config|whitelist|institution (--branch <branch name>] | [--tag <tag name>]) [--limit <hosts>] [--verbose] [--allow-unclean]"
+    echo "Deploys a new Stepup middleware 'config'(uration), 'whitelist' or 'institution' configuration."
     echo ""
     echo "<deploy directory> : Directory containing the playbooks. Read-only, git not required"
     echo "<inventory file>   : Path to inventory file to use. Must be a clean local git checkout. The local git repository"
@@ -53,8 +53,8 @@ if [ ! -d "${DEPLOY_DIR}" ]; then
     error_exit "Deploy directory '${DEPLOY_DIR}' does not exist"
 fi
 
-if [ "${WHAT}" != "config" -a "${WHAT}" != "whitelist" ]; then
-    error_exit "Expected 'config' or 'whitelist'. Got: '${WHAT}'"
+if [ "${WHAT}" != "config" -a "${WHAT}" != "whitelist" -a "${WHAT}" != "institution" ]; then
+    error_exit "Expected 'config', 'whitelist' or institution. Got: '${WHAT}'"
 fi
 
 DEPLOY_DIR=`realpath "${DEPLOY_DIR}"`
@@ -128,17 +128,17 @@ fi
 
 GIT_ROOT=`git rev-parse --show-toplevel`
 if [ "$?" -ne "0" ]; then
-    error_exit "Error finding git root"
+    error_exit "Error finding git root for inventory"
 fi
 echo "Using GIT root: ${GIT_ROOT}"
 
-echo "Current branch: `git symbolic-ref --short HEAD`"
+echo "Current branch: `git symbolic-ref -q --short HEAD`"
 echo "Current commit: `git log -1 --pretty='%H'`, `git log -1 --pretty='%cd' --date=iso`"
 
 echo "Fetching from origin"
 git fetch origin
 if [ "$?" -ne "0" ]; then
-    error_exit "Error fetching repo"
+    error_exit "Error fetching repo for inventory"
 fi
 
 # Switch to specified branch / tag
@@ -185,7 +185,7 @@ if [ ! -z "${output}" ]; then
         echo "Allowing unclean tree because the --allow-unclean option is specified"
 fi
 
-echo "Deploying branch: `git symbolic-ref --short HEAD`"
+echo "Deploying branch: `git symbolic-ref -q --short HEAD`"
 echo "Deploying commit: `git log -1 --pretty='%H'`, `git log -1 --pretty='%cd' --date=iso`"
 
 cd ${CWD}

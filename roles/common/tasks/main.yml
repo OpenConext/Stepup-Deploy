@@ -39,6 +39,7 @@
 - name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
   with_items:
+  - open-vm-tools
   - ntp
   - iptables-services
   - rsyslog # Is the default syslog for RH / CentOS

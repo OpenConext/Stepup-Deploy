@@ -1,5 +1,5 @@
 Release 7
-RA Locations, Institution configuration
+RA Locations, Institution configuration, Server-side session expiry
 
 * Added per institution configuration through the middleware API of the way the RA location are shown to users in the
   selfservice interface and email.

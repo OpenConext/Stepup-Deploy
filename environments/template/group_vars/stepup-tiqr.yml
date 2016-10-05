@@ -5,11 +5,8 @@
 tiqr_secret: "{{ lookup('file', inventory_dir+'/secret/tiqr') }}"
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
+# Certificate in all.yml group_vars
 tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.key') }}"
-# TODO move Public key to all.yml?
-# Format: PEM X.509 certificate
-tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') }}"
-
 
 # OAuth consumer key for authentication to the keyserver
 oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyserver') }}"

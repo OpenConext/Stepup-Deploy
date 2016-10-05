@@ -17,3 +17,4 @@
 
 # Include handlers for environment specific tasks
 - include: "{{ inventory_dir }}/handlers/common.yml"
+  static: yes

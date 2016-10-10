@@ -5,6 +5,7 @@ gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
 
 # Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
+# Reuired for sending SMS messages
 # TODO: Set messagebird API access key
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 

@@ -50,7 +50,7 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-middleware-db_migrate.sh"
-  - "03-middleware-bootstrap-sraa-users.sh"
+  - "06-middleware-bootstrap-sraa-users.sh"
 
 - name: Put middleware config from environment in /opt/scripts
   template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} group={{ app_deploy_user }} owner={{ app_deploy_user }} mode="400"

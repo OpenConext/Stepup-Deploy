@@ -37,6 +37,7 @@
 
 - name: Write tiqr APNS certificate
   copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/apns.pem owner={{ component_name }} mode=400
+  when: tiqr_apns_pemfile is defined
 
 # TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
 - name: Write tiqr sp certificate

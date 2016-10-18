@@ -1,0 +1,156 @@
+# Inventory for the docker environment used for automated tests
+
+#####
+# all
+#####
+
+# The host defined below are suitable for use with the VMs creates Stepup-Deploy-VM
+
+############
+# stepup-app
+############
+
+[stepup-app]
+app.stepup.example.com host_ipv4=127.0.0.1 backend_ipv4=127.0.0.1 ansible_connection=local
+
+########
+# manage
+########
+
+[manage]
+manage.stepup.example.com host_ipv4=127.0.0.1 ansible_connection=local
+
+
+###########
+# keyserver
+###########
+
+[ks]
+
+[ks:children]
+# Put keyserver on same VM as the other stepup apps
+stepup-app
+
+
+##############
+# elsticsearch
+##############
+
+# Elasticsearch cluster
+[es]
+
+[es:children]
+# (mis)use manage server
+manage
+
+
+#######
+# proxy
+#######
+
+# Reverse https proxy for/on app servers
+[proxy]
+
+[proxy:children]
+# Use nginx as a simple TLS reverse proxy on the app nodes instead of deploying de lb role on a
+# separate server
+app
+
+
+##########
+# dbcluser
+##########
+
+[dbcluster]
+
+[dbcluster:children]
+# Put database on the app server
+app
+
+
+####
+# lb
+####
+
+[lb]
+# Do not use a dedicated loadbalancer
+
+#####
+# dev
+#####
+
+[dev]
+
+
+
+# The "Stepup-XXX" groups below ae used for deployment
+
+################
+# stepup-gateway
+################
+
+[stepup-gateway]
+
+[stepup-gateway:children]
+stepup-app
+
+
+###################
+# stepup-middleware
+###################
+
+[stepup-middleware]
+
+[stepup-middleware:children]
+stepup-app
+
+
+###########
+# stepup-ra
+###########
+
+[stepup-ra]
+
+[stepup-ra:children]
+stepup-app
+
+
+####################
+# stepup-selfservice
+####################
+
+[stepup-selfservice]
+
+[stepup-selfservice:children]
+stepup-app
+
+#############
+# stepup-tiqr
+#############
+
+[stepup-tiqr]
+
+[stepup-tiqr:children]
+stepup-app
+
+
+##################
+# stepup-keyserver
+##################
+
+[stepup-keyserver]
+
+[stepup-keyserver:children]
+ks
+
+
+
+#####
+# app
+#####
+
+[app]
+
+[app:children]
+stepup-app
+ks

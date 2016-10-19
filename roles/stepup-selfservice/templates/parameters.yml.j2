@@ -70,3 +70,6 @@ parameters:
 
     # TODO: Unused, remove requirement from component
     graylog_hostname: ""
+    
+    session_max_absolute_lifetime: {{ app_session_max_duration }}
+    session_max_relative_lifetime: {{ app_session_expiry_time }}

@@ -1,0 +1,24 @@
+---
+# Push middleware institution configuration
+# This playbook writes the middleware institution configuration to each targeted app host and then executes the
+# /opt/scripts/middleware-push-institution.sh script to push the config to the middleware
+# "run_once: True" is used to execute the push once instead of on each trageted host
+
+- name: Push middleware institution configuration
+  hosts: stepup-middleware
+  become: No
+  remote_user: "{{ app_deploy_user }}"
+
+  tasks:
+  - name: Write middleware (institution) config and whitelist to /opt/scripts/
+    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} mode="400" backup=yes
+    with_items:
+    - middleware-config.json
+    - middleware-whitelist.json
+    - middleware-institution.json
+
+# The /opt/scripts/middleware-* scripts were written by middleware deploy
+  - name: Push middleware istitution configuration
+    command: /opt/scripts/middleware-push-institution.sh
+    run_once: True
+

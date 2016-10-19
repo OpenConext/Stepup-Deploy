@@ -1,3 +1,5 @@
+# Note: the variables in this groups_vars file (app.yml) override those in the stepup-* group_vars
+
 # Remote IdP, this is the IdP that is used as first factor in step-up (i.e. OpenConext, SURFconext)
 # Remote IdP entityID
 # TODO: Set Remote IdP entityID
@@ -32,12 +34,15 @@ app_deploy_user_ssh_key: "{{ lookup('file', inventory_dir+'/ssh/deploy.pub') }}"
 app_deploy_user_ssh_from: "*"
 
 
-# The maximum duration of a session in seconds
+# The maximum duration of a browser session with the SS or the RA since the creation of the session
+# (i.e. since autentication of the user). Aka absolute session timeout
+# Session expiry time in seconds
 # 60 * 60 = 3600 ( = 1 hour )
 app_session_max_duration: 3600
 
+# A session expires when it has been inactive (i.e. no client requests) for more than the configured expiry time
+# Aka relative session timeout
 # Session expiry time in seconds
-# A session expires when it has been inactive (i.e. not updated) for more than the configured expiry time
 # 60 * 15 = 900
 app_session_expiry_time: 900
 

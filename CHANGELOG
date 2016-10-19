@@ -1,5 +1,45 @@
+Release 7
+RA Locations, Institution configuration, Server-side session expiry
+
+* Added per institution configuration through the middleware API of the way the RA location are shown to users in the
+  selfservice interface and email.
+  - The RAA contacts can be hidden, so only RA contacts are shown. Defaults to old behaviour (show both RA and RAA contacts)
+  - Instead of RA(A) contacts RA locations can be shown. When enabled the RAA of an institution can edit the list of the
+    RA locations through the RA interface. Defaults to old behaviour (show RA(A) contacts)
+  - Added an institution configuration for enabling/disabling the above two options. Configuration though the template
+    in <inventory>/templates/middleware/middleware-institution.json
+    See https://github.com/SURFnet/Stepup-Middleware/blob/2.0.2/README.md for configuration format
+  - The email template for 'registration_code' in middleware-config.json.j2 is replaced by 'registration_code_with_ras'
+    and 'registration_code_with_ra_locations'.
+    See https://github.com/SURFnet/Stepup-Middleware/blob/2.0.2/README.md for configuration format
+* Added server side session timeouts based on absolute (since login) and relative (since last client interaction with the
+  server) through "app_session_max_duration" and "app_session_expiry_time" group_vars.
+* RA interface changes
+  - Show the document number in the tokens overview in the RA interface (requires event replay)
+  - The time in the audit log is now shown in the timezone configured in the webbrowser instead of in UTC
+* Various minor UI layout fixes/impovements.
+
+
+Install:
+* Deploy components
+  - Middleware 2.0.2
+  - Gateway 2.1.0
+  - Selfservice 2.0.0
+  - RA 2.0.0
+
+* Run database migrations
+  - Run "/root/01-middleware-db_migrate.sh" on an app server
+
+* Replay eventlog
+  - Prevent changes during the replay by taken middleware offline (or take the SS and RA offline)
+  - Change to middleware directory (e.g. /opt/www/middleware.example.org)
+  - Run "php app/console middleware:event:replay --env=prod_event_replay" on an app server
+    The replay runs in a single database transaction. It replays all events en recreates the projections. This may take
+    some time depending on the number of events in the events table.
+
+
 Release 6
-Ansible 2, Second factor only authentication, biometric authentication type
+Ansible 2, Second factor only (SFO) authentication, biometric authentication type
 
 * Deploy now requires Ansible 2
 * Set "serial: 1" in site.yml playbook, to deploy one host at a time, even when more than one host is targeted
@@ -16,11 +56,11 @@ Ansible 2, Second factor only authentication, biometric authentication type
 Install:
 * Run the app role from the site.yml playbook
 * Deploy components
-  - Middleware-1.6.0
+  - Middleware 1.6.0
   - Gateway 2.0.0
-  - SelfService-1.4.0
-  - RA-1.4.0
-  - tiqr-1.1.3
+  - SelfService 1.4.0
+  - RA 1.4.0
+  - tiqr 1.1.3
 
 
 Release 5.2
@@ -66,6 +106,8 @@ Install:
 * Run the app role from the site.yml playbook
 * Deploy component
   - Middleware 1.4.0
+    Note: Do redeploy if 1.4.0 is already installed because of updates in the stepup-middleware that update the middleware
+          configuration scrips
 
 
 Release 4

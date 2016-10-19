@@ -19,6 +19,7 @@ noreply_email: noreply@stepup.example.com
 noreply_email_name: Step-up Example
 
 # FQDN for vhosts
+# TODO: Set vhostnames
 middleware_vhost_name: middleware.stepup.example.com
 selfservice_vhost_name: selfservice.stepup.example.com
 ra_vhost_name: ra.stepup.example.com
@@ -28,6 +29,7 @@ keyserver_vhost_name: keyserver.stepup.example.com
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
 # user's locale preference with other (stepup) components
+# TODO: Set cookie domain
 locale_cookie_domain: stepup.example.com
 
 

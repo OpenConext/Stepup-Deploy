@@ -50,19 +50,21 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-middleware-db_migrate.sh"
-  - "03-middleware-bootstrap-sraa-users.sh"
+  - "06-middleware-bootstrap-sraa-users.sh"
 
 - name: Put middleware config from environment in /opt/scripts
   template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} group={{ app_deploy_user }} owner={{ app_deploy_user }} mode="400"
   with_items:
   - "middleware-config.json"
   - "middleware-whitelist.json"
+  - "middleware-institution.json"
 
 - name: Put middleware configuration scripts in /opt/scripts
   template: src={{ item}}.j2 dest=/opt/scripts/{{ item }} group={{ app_deploy_user }} owner=root mode=550
   with_items:
   - "middleware-push-config.sh"
   - "middleware-push-whitelist.sh"
+  - "middleware-push-institution.sh"
 
 
 - name: Put symlinks to middleware configuration scripts in /root
@@ -70,6 +72,7 @@
   with_dict:
     "middleware-push-config.sh": "02-middleware-config.sh"
     "middleware-push-whitelist.sh": "04-middleware-whitelist.sh"
+    "middleware-push-institution.sh": "05-middleware-institution.sh"
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755

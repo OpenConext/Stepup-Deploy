@@ -17,6 +17,8 @@ RA Locations, Institution configuration, Server-side session expiry
 * RA interface changes
   - Show the document number in the tokens overview in the RA interface (requires event replay)
   - The time in the audit log is now shown in the timezone configured in the webbrowser instead of in UTC
+* The Selfservice, RA and Gateway now set/update a HTTP cookie named "stepup_locale" with the current known preferred
+  locale of the user. The domain for which the cookie is set is configured through the "locale_cookie_domain" group_var.
 * Various minor UI layout fixes/improvements.
 
 

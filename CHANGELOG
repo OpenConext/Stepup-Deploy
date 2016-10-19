@@ -89,7 +89,7 @@ Hotfixes for loadbalancer configuration (fixes issues with tiqr registration)
 Install:
 * Run the lb role from the site.yml playbook
 * Deploy component
-- none
+  - none
 
 
 Release 5
@@ -101,8 +101,6 @@ Allow scripted / automated middleware configuration updates from remote
 * Added app group_vars: app_deploy_user_ssh_key and app_deploy_user_ssh_from
 * Updated push-mw-config.yml and push-mw-whitelist.yml playbooks to use the stepup-deploy user
 * Added scrips/push-config.sh script
-* Added gateway_ro and middleware_ro accounts for read only access to the gateway and middleware databases
-* Disable IPv6
 
 Install:
 * Run the app role from the site.yml playbook
@@ -137,4 +135,3 @@ Install:
 * Run DB migrations
   - /root/01-middleware-db_migrate.sh
   - /root/01-gateway-db_migrate.sh
-

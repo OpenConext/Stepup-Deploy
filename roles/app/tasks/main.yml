@@ -51,16 +51,14 @@
 - name: Configure sendmail with smarthost
   template: src='sendmail.cf.j2' dest='/etc/mail/sendmail.cf' 
   when: sendmail_smarthost is defined
+  register: sendmail_smarthost_result
+  notify: 
+    - reload sendmail
 
 # Build sendmail config file from template
 - name: Configure sendmail
   command: make -C /etc/mail
-  when: sendmail_smarthost is defined
-
-# Restart sendmail
-- name: reload sendmail
-  service: name=sendmail state=restarted
-  when: sendmail_smarthost is defined
+  when: (sendmail_smarthost is defined) and (sendmail_smarthost_result|changed)
 
 # php-gd requires libgd (>2.1.1) from remi repo
 - name: Install php-gd
@@ -70,7 +68,6 @@
   template: src='php.ini.j2' dest='/etc/php.ini'
   notify:
     - restart php-fpm
-
 
 # Remove default distro conf files
 - name: Remove known default distro files in /etc/nginxconf.d/ and /etc/php-fpm.d/

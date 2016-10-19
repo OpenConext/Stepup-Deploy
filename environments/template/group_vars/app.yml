@@ -52,4 +52,3 @@ logout_redirect_url: https://engine.surfconext.nl/logout
 
 # Hostname of sendmail smarthost (optional)
 #sendmail_smarthost: smtp.example.com
-

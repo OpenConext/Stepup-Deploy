@@ -6,37 +6,42 @@
 
 # Create SSL config for proxy to local vhost
 - include: proxy.yml
-  vhost_name: "{{ gateway_vhost_name }}"
-  component_name: gateway
-  proxy_certificate: "{{ proxy_gateway_certificate }}"
-  proxy_key: "{{ proxy_gateway_key }}"
+  vars:
+    vhost_name: "{{ gateway_vhost_name }}"
+    component_name: gateway
+    proxy_certificate: "{{ proxy_gateway_certificate }}"
+    proxy_key: "{{ proxy_gateway_key }}"
   when: "inventory_hostname in groups['stepup-gateway']"
 
 - include: proxy.yml
-  vhost_name: "{{ selfservice_vhost_name }}"
-  component_name: selfservice
-  proxy_certificate: "{{ proxy_selfservice_certificate }}"
-  proxy_key: "{{ proxy_selfservice_key }}"
+  vars:
+    vhost_name: "{{ selfservice_vhost_name }}"
+    component_name: selfservice
+    proxy_certificate: "{{ proxy_selfservice_certificate }}"
+    proxy_key: "{{ proxy_selfservice_key }}"
   when: "inventory_hostname in groups['stepup-selfservice']"
 
 - include: proxy.yml
-  vhost_name: "{{ ra_vhost_name }}"
-  component_name: ra
-  proxy_certificate: "{{ proxy_ra_certificate }}"
-  proxy_key: "{{ proxy_ra_key }}"
+  vars:
+    vhost_name: "{{ ra_vhost_name }}"
+    component_name: ra
+    proxy_certificate: "{{ proxy_ra_certificate }}"
+    proxy_key: "{{ proxy_ra_key }}"
   when: "inventory_hostname in groups['stepup-ra']"
 
 - include: proxy.yml
-  vhost_name: "{{ tiqr_vhost_name }}"
-  component_name: tiqr
-  proxy_certificate: "{{ proxy_tiqr_certificate }}"
-  proxy_key: "{{ proxy_tiqr_key }}"
+  vars:
+    vhost_name: "{{ tiqr_vhost_name }}"
+    component_name: tiqr
+    proxy_certificate: "{{ proxy_tiqr_certificate }}"
+    proxy_key: "{{ proxy_tiqr_key }}"
   when: "inventory_hostname in groups['stepup-tiqr']"
 
 # TODO: adapt so that TLS terminates on key server instead of proxy/LB
 - include: proxy.yml
-  vhost_name: "{{ keyserver_vhost_name }}"
-  component_name: keyserver
-  proxy_certificate: "{{ proxy_keyserver_certificate }}"
-  proxy_key: "{{ proxy_keyserver_key }}"
+  vars:
+    vhost_name: "{{ keyserver_vhost_name }}"
+    component_name: keyserver
+    proxy_certificate: "{{ proxy_keyserver_certificate }}"
+    proxy_key: "{{ proxy_keyserver_key }}"
   when: "inventory_hostname in groups['stepup-keyserver']"

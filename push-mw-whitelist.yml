@@ -6,7 +6,7 @@
 
 - name: Push middleware whitelist
   hosts: stepup-middleware
-  sudo: No
+  become: No
   remote_user: "{{ app_deploy_user }}"
 
   tasks:

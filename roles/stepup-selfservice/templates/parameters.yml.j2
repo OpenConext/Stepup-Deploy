@@ -6,9 +6,10 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
 
-    default_locale:    nl_NL
-    locales:           [nl_NL, en_GB]
-    secret:            {{ selfservice_secret | vault(vault_keydir) }}
+    default_locale:       nl_NL
+    locales:              [nl_NL, en_GB]
+    secret:               {{ selfservice_secret | vault(vault_keydir) }}
+    locale_cookie_domain: {{ locale_cookie_domain }}
 
     debug_toolbar:          true
     debug_redirects:        false
@@ -63,6 +64,9 @@ parameters:
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
+
+    tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en
+    tiqr_app_ios_url: https://itunes.apple.com/us/app/tiqr/id430838214?mt=8&ls=1
 
     # TODO: Unused, remove requirement from component
     graylog_hostname: ""

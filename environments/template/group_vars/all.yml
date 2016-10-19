@@ -26,11 +26,20 @@ gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
 
-# The uri's that are used to define the LoA levels
+# Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
+# user's locale preference with other (stepup) components
+locale_cookie_domain: stepup.example.com
+
+
+# The uri's that are used to define the LoA levels used in AuthnContextClassRef
 # TODO: Set LoA uri's
 stepup_uri_loa1: 'http://stepup.example.com/assurance/loa1'
 stepup_uri_loa2: 'http://stepup.example.com/assurance/loa2'
 stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
+# uri's used by the second factor only (SFO) endpoint
+stepup_uri_sfo_loa2: 'http://stepup.example.com/assurance/sfo-level2'
+stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
+
 
 # The second factor types to enable in the SS and the RA
 # Format: comma separated list of factors to enable

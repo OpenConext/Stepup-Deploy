@@ -6,9 +6,10 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
 
-    default_locale:    nl_NL
-    locales:           [nl_NL, en_GB]
-    secret:            {{ ra_secret | vault(vault_keydir) }}
+    default_locale:       nl_NL
+    locales:              [nl_NL, en_GB]
+    secret:               {{ ra_secret | vault(vault_keydir) }}
+    locale_cookie_domain: {{ locale_cookie_domain }}
 
     debug_toolbar:          true
     debug_redirects:        false
@@ -56,3 +57,5 @@ parameters:
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
+
+    footer_link_url: https://wiki.surfnet.nl/display/surfconextdev/Handleiding+RA+Management+portal

@@ -26,23 +26,20 @@
   yum: name=epel-release.noarch state=present
 
 
-# Firewall changed from ip(6)tables start/stop in CentOS6 to firewalld in CentOS7
-# ip(6)tables can still be installed using iptables-services
-# First disable firewalld service
-- name: "Disable firewalld"
-  service: name=firewalld enabled=no state=stopped
-
 # Disable unused daemons
 - name: "Disable unused daemons"
   service: name={{item}} enabled=no state=stopped
   with_items:
+  - firewalld # Because we want to use iptables-services below
   - NetworkManager
   - atd.service
   - smartd.service
+  ignore_errors: yes
 
 - name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
   with_items:
+  - open-vm-tools
   - ntp
   - iptables-services
   - rsyslog # Is the default syslog for RH / CentOS
@@ -80,6 +77,8 @@
 
 
 # Setup rsyslog
+# Note: Default template requires a host in the "manage" group.
+# If it's missing you get the error "AnsibleUndefinedVariable: list object has no element 0"
 - name: Put rsyslog config
   template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
   notify: restart rsyslog

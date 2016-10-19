@@ -13,6 +13,10 @@
     "registration_code": {
       "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is bijna klaar voor gebruik. Ga naar de Service Desk om je token te laten activeren. </p><p>Neem aub het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De registratiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'><code>{{ registrationCode }}</code></p><p>Service Desk medewerkers die je token kunnen activeren:</p>{% if ras is empty %}<p>Er zijn geen Service Desk medewerkers beschikbaar.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />>{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
       "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token, you are almost ready now. Please visit the Service Desk to activate your token.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid identity document (passport, drivers license or national ID-card.</li><li>The registration code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'><code>{{ registrationCode }}</code></p><p>Service Desk employees authorized to activate your token:</p>{% if ras is empty %}<p>No Service Desk employees are available.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />>{{ ra.location }}<br />>{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
+    },
+    "vetted": {
+      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is nu klaar voor gebruik. Je kunt dit token gebruiken wanneer op SURFconext aangesloten services een tweede inlogstap vereisen. In deze e-mail vind je meer informatie over het gebruik van je token.</p><p><strong>Ga zorgvuldig om met je token</strong><ul><li>Je token is persoonlijk, deel deze niet met anderen</li><li>Laat je token nooit onbeheerd achter</li><li>Vergrendel je telefoon met bijvoorbeeld een code of vingerafdruk</li></ul></p><p><strong>Token verloren?</strong><br />Wat moet je doen als je jouw token verloren bent? Ga naar <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a> en verwijder je tokenregistratie. Zo kan niemand misbruik maken van jouw token.</p><p><strong>Nieuw token aanvragen</strong><br />Wil je jouw token vervangen? Log in op <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a>, verwijder je geactiveerde token en doorloop het registratieproces opnieuw.</p><p>Voor meer informatie kun je terecht op onze wiki: <a href='https://support.surfconext.nl'>https://support.surfconext.nl</a></p><p>Met vriendelijke groet,</p><p>SURFnet</p>{% endraw %}",
+      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token. Your token is ready to use. You can use this token for services connected to SURFconext that require two-step authentication. This e-mail contains more info on how to use your token.</p><p><strong>Handle your token with care</strong><ul><li>Your token is private, do not share your token with others</li><li>Never leave your token unattended</li><li>Lock your phone, e.g. with a code or fingerprint</li></ul></p><p><strong>Token lost?</strong><br />Did you lose your token? Please visit <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a> and remove your token registration. This way no one can take advantage of your token.</p><p><strong>Replace token</strong><br />Do you want to replace your token? Please visit <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a>, remove your activated token and start the token registration process again.</p><p>For more info please visit our wiki: <a href='https://support.surfconext.nl'>https://support.surfconext.nl</a></p><p>Best regards,</p><p>SURFnet</p>{% endraw %}"
     }
   },
 
@@ -28,6 +32,8 @@
           "__default__": "{{ stepup_uri_loa1 }}"
         },
         "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
       {
@@ -40,6 +46,8 @@
           "__default__": "{{ stepup_uri_loa1 }}"
         },
         "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
       {
@@ -52,6 +60,8 @@
           "__default__": "{{ stepup_uri_loa1 }}"
         },
         "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
       {
@@ -64,6 +74,8 @@
           "__default__": "{{ stepup_uri_loa3 }}"
         },
         "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
 
@@ -78,10 +90,26 @@
           "__default__": "{{ stepup_uri_loa1 }}"
         },
         "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
+        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "acs": [
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [ "urn:collab:pieter.aai.surfnet.nl:*" ],
         "blacklisted_encryption_algorithms": []
       }
     ],
-    'identity_providers': [
+    "identity_providers": [
     ]
   }
 }

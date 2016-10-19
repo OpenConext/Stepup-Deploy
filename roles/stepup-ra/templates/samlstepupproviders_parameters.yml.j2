@@ -3,6 +3,12 @@ parameters:
     gssp_routes_consume_assertion: ra_vetting_gssf_verify
     gssp_routes_metadata: ra_vetting_gssf_metadata
 
+
+    # Authentication flow:
+    # Real Tiqr IdP <--> GSSP Tiqr SP <--> GSSP Tiqr IdP <--> SelfService
+    # AuthnRequests from the RA and SS are proxied through the Tiqr GSSP proxy on the Gateway
+    # The GSSP Tiqr SP and IdP are hosted on the gateway
+
     # Tiqr SP used to authenticate to Tiqr IdP though Tiqr IdP proxy in the gateway
     gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
     gssp_tiqr_sp_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
@@ -11,9 +17,30 @@ parameters:
     gssp_tiqr_metadata_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
     gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
 
-    # EntityID of the Tiqr IdP
+    # EntityID and SSO Location of the Tiqr IdP Proxy on the Gateway
     gssp_tiqr_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'
     gssp_tiqr_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/tiqr/single-sign-on'
 
     # base64 without pem headers
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}
+
+
+    # Authentication flow:
+    # Real Biometric IdP <--> GSSP Biometric SP <--> GSSP Biometric IdP <--> SelfService
+    # AuthnRequests from the RA and SS are proxied through the Biometric GSSP proxy on the Gateway
+    # The GSSP Biometric SP and IdP are hosted on the gateway
+
+    # Biometric SP used to authenticate to Biometric IdP though Biometric IdP proxy in the gateway
+    gssp_biometric_sp_publickey: {{ component_dir_name }}/app/config/sp_biometric.crt
+    gssp_biometric_sp_privatekey: {{ component_dir_name }}/app/config/sp_biometric.key
+
+    # Certificate used to sign metadata of the Biometric SP
+    gssp_biometric_metadata_publickey: {{ component_dir_name }}/app/config/sp_biometric.crt
+    gssp_biometric_metadata_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+
+    # EntityID and SSO Location of the Biometric IdP Proxy on the Gateway
+    gssp_biometric_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/biometric/metadata'
+    gssp_biometric_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/biometric/single-sign-on'
+
+    # base64 without pem headers
+    gssp_biometric_remote_certificate: {{ gateway_biometric_idp_publickey | default('') | depem }}

@@ -26,9 +26,9 @@ The deploy process is split in two parts
 
 The deploy requires an environment created with e.g. the `create_new_environment.sh` script.
 
-Use `ansible-playbook -i <environment_directory>/inventory site.yml` to depoy the infrastructure.
+Use `ansible-playbook -i <environment_directory>/inventory site.yml` to deploy the infrastructure.
 
-The databases form a galera cluster. When none of the MariaDB databases is running, such as during the forst deploy, the first database must be bootstrapped by setting the Ansible variable `galera_bootstrap_node` to the hostname of the node to bootstrap. Example:
+The databases form a galera cluster. When none of the MariaDB databases is running, such as during the first deploy, the first database must be bootstrapped by setting the Ansible variable `galera_bootstrap_node` to the hostname of the node to bootstrap. Example:
 
 `ansible-playbook site.yml -i <environment_directory>/inventory -e "galera_bootstrap_node=app.stepup.example.com"`
 
@@ -80,7 +80,7 @@ Creating a keystore is done once per environment. After that the keystore is sha
 
 Before a component can be deployed it must be built. This creates a tarball (bar.bz2) that can then be unpacked by the deploy playbook on the application servers. The script to do that is in the [Stepup-Build](https://github.com/SURFnet/Stepup-Build) repository. This script will checkout a component from git on the host, but run composer and create the gzipped tarball to be deployed in a Vagrant VM.
 
-Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatciaaly created by GitHub. The name of the component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<commit SHA1>.tar.bz2`. For example:
+Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatically created by GitHub. The name of the component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<commit SHA1>.tar.bz2`. For example:
 `Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2`
 
 [Deploy](id:deploy)

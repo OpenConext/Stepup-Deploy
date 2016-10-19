@@ -17,15 +17,15 @@ RA Locations, Institution configuration, Server-side session expiry
 * RA interface changes
   - Show the document number in the tokens overview in the RA interface (requires event replay)
   - The time in the audit log is now shown in the timezone configured in the webbrowser instead of in UTC
-* Various minor UI layout fixes/impovements.
+* Various minor UI layout fixes/improvements.
 
 
 Install:
 * Deploy components
   - Middleware 2.0.2
-  - Gateway 2.1.0
-  - Selfservice 2.0.0
-  - RA 2.0.0
+  - Gateway 2.2.0
+  - Selfservice 2.2.0
+  - RA 2.2.0
 
 * Run database migrations
   - Run "/root/01-middleware-db_migrate.sh" on an app server

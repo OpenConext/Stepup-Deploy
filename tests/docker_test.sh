@@ -46,7 +46,7 @@ if [ $SHOW_HELP == "1" ]; then
     echo "All tests run in the docker container."
     echo
     echo "Usage: docker_test.sh <test> [--clean]"
-    echo "<test> specifys the test to run:"
+    echo "<test> specifies the test to run:"
     echo "'app' : Deploy an app server"
     echo "'manage' : Deploy a manage server"
     echo

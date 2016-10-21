@@ -14,3 +14,8 @@ after_failure:
 
 after_script:
   - sudo docker kill ansible-test
+
+branches:
+  only:
+    - master
+    - develop

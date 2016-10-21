@@ -5,6 +5,7 @@
 
 - name: Write /etc/hosts with {{ inventory_hostname }}
   template: src='hosts.j2' dest='/etc/hosts'
+  tags: skip_docker_test # Skip when running inside docker, /etc/host cannot be written then
 
 
 # Directory for keeping misc ansible files
@@ -14,6 +15,7 @@
 
 - name: Disable SELinux policy
   selinux: state=disabled
+  tags: skip_docker_test
 
 
 - name: Set timezone
@@ -48,11 +50,13 @@
 
 - name: Put iptables
   template: src={{ inventory_dir }}/templates/common/iptables.j2 dest='/etc/sysconfig/iptables'
+  tags: skip_docker_test
   notify:
   - restart iptables
 
 - name: Put ip6tables
   template: src={{ inventory_dir }}/templates/common/ip6tables.j2 dest='/etc/sysconfig/ip6tables'
+  tags: skip_docker_test
   notify:
   - restart ip6tables
 
@@ -66,6 +70,7 @@
 
 - name: Start and enable services ntpd, iptables, iptables6
   service: name={{item}} state=started enabled=true
+  tags: skip_docker_test
   with_items:
   - ntpd
   - iptables

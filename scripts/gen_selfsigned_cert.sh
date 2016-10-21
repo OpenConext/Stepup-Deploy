@@ -49,7 +49,7 @@ if [ -e ${CERT_BASENAME}.key -o -e ${CERT_BASENAME}.crt ]; then
 fi
 
 OPENSSL=`which openssl`
-if [ -z "${OPENSSL}" -o ! -x ${OPENSSL} ]; then
+if [ -z "${OPENSSL}" -o ! -x "${OPENSSL}" ]; then
     echo "openssl is not in path or not executable. Please install openssl"
     exit 1;
 fi

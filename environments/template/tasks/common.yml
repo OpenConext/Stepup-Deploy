@@ -3,3 +3,4 @@
 - name: Disallow SSH root login
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin\s" line="PermitRootLogin no"
   notify: restart sshd
+  tags: skip_docker_test

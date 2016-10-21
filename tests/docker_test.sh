@@ -147,7 +147,7 @@ docker exec -t ansible-test env TERM=xterm ANSIBLE_CONFIG=/ansible/ansible.cfg \
 if [ ${SERVER} == "app" ]; then
     echo '===== Ansible deploy of site.yml for app.stepup.example.com ====='
     # Deploy site.yml to app server. This excludes
-    docker exec -t ansible-test env TERM=xterm ANSIBLE_CONFIG=/ansible/ansible.cfg \
+    docker exec ansible-test env TERM=xterm ANSIBLE_CONFIG=/ansible/ansible.cfg \
       ansible-playbook -i /ansible/environments/docker/inventory /ansible/site.yml \
       --limit app.stepup.example.com --skip-tags skip_docker_test -e "galera_bootstrap_node=app.stepup.example.com"
 

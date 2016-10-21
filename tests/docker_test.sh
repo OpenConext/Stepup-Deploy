@@ -189,7 +189,7 @@ if [ ${SERVER} == "app" ]; then
     echo 'Running: 05-middleware-institution.sh'
     docker exec -t ansible-test sh -c '/root/05-middleware-institution.sh'
     echo 'Running: 06-middleware-bootstrap-sraa-users.sh'
-    docker exec -t ansible-test sh -c 'echo y | /root/06-middleware-bootstrap-sraa-users.sh'
+    docker exec -t ansible-test sh -c '/root/06-middleware-bootstrap-sraa-users.sh --always-yes'
 fi
 
 if [ ${SERVER} == "manage" ]; then

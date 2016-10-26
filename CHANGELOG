@@ -8,10 +8,10 @@ RA Locations, Institution configuration, Server-side session expiry
     RA locations through the RA interface. Defaults to old behaviour (show RA(A) contacts)
   - Added an institution configuration for enabling/disabling the above two options. Configuration though the template
     in <inventory>/templates/middleware/middleware-institution.json
-    See https://github.com/SURFnet/Stepup-Middleware/blob/2.0.2/README.md for configuration format
+    See https://github.com/SURFnet/Stepup-Middleware/blob/2.1.0/README.md for configuration format
   - The email template for 'registration_code' in middleware-config.json.j2 is replaced by 'registration_code_with_ras'
     and 'registration_code_with_ra_locations'.
-    See https://github.com/SURFnet/Stepup-Middleware/blob/2.0.2/README.md for configuration format
+    See https://github.com/SURFnet/Stepup-Middleware/blob/2.1.0/README.md for configuration format
 * Added server side session timeouts based on absolute (since login) and relative (since last client interaction with the
   server) through "app_session_max_duration" and "app_session_expiry_time" group_vars.
 * RA interface changes
@@ -20,14 +20,14 @@ RA Locations, Institution configuration, Server-side session expiry
 * The Selfservice, RA and Gateway now set/update a HTTP cookie named "stepup_locale" with the current known preferred
   locale of the user. The domain for which the cookie is set is configured through the "locale_cookie_domain" group_var.
 * Various minor UI layout fixes/improvements.
+* Fix: middleware:event:replay may fail with Middleware < 2.1.0.
 * tiqr fixes
   - solves a problem with iOS10 devices
   - small layout en translation improvements
 
-
 Install:
 * Deploy components
-  - Middleware 2.0.2
+  - Middleware 2.1.0
   - Gateway 2.2.0
   - Selfservice 2.2.0
   - RA 2.2.0

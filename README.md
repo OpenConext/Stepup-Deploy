@@ -52,7 +52,7 @@ For any other environment than one that targets the Stepup-VM you will need to m
 
 More information on the "environment" concept can be found in [ansible-tools](https://github.com/pmeulen/ansible-tools)
 
-### Step 2: Create / update infrastructure](id:site) ###
+### [Step 2: Create / update infrastructure](id:site) ###
 
 The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x and uses the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
 

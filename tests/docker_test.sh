@@ -154,7 +154,7 @@ if [ ${SERVER} == "app" ]; then
     echo '===== Downloading component tarballs ====='
     tarballs=(
         "https://github.com/SURFnet/Stepup-Gateway/releases/download/2.2.0-20161018092553Z-bc6bbf8e2006d15cbe883d8045724cdb1166e759/Stepup-Gateway-2.2.0-20161018092553Z-bc6bbf8e2006d15cbe883d8045724cdb1166e759.tar.bz2"
-        "https://github.com/SURFnet/Stepup-Middleware/releases/download/2.0.2-20160810101855Z-d8d88d778ea30379b606cbca58d9634ff0541b42/Stepup-Middleware-2.0.2-20160810101855Z-d8d88d778ea30379b606cbca58d9634ff0541b42.tar.bz2"
+        "https://github.com/SURFnet/Stepup-Middleware/releases/download/2.1.0-20161026074332Z-6fade533b1516d4c13613cf91ac4963b6919feab/Stepup-Middleware-2.1.0-20161026074332Z-6fade533b1516d4c13613cf91ac4963b6919feab.tar.bz2"
         "https://github.com/SURFnet/Stepup-SelfService/releases/download/2.2.0-20161018092804Z-8792083b95fe2e073318ba68e4f92329249673ad/Stepup-SelfService-2.2.0-20161018092804Z-8792083b95fe2e073318ba68e4f92329249673ad.tar.bz2"
         "https://github.com/SURFnet/Stepup-RA/releases/download/2.2.0-20161018093029Z-8dc3497ba0fc70701abeb1c890b6956a80ca24e9/Stepup-RA-2.2.0-20161018093029Z-8dc3497ba0fc70701abeb1c890b6956a80ca24e9.tar.bz2"
         "https://github.com/SURFnet/Stepup-tiqr/releases/download/1.1.3-20160708120851Z-e5d8000f03e81f780cab77a439a86db6e0b37ad8/Stepup-tiqr-1.1.3-20160708120851Z-e5d8000f03e81f780cab77a439a86db6e0b37ad8.tar.bz2"

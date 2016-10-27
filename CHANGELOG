@@ -20,6 +20,9 @@ RA Locations, Institution configuration, Server-side session expiry
 * The Selfservice, RA and Gateway now set/update a HTTP cookie named "stepup_locale" with the current known preferred
   locale of the user. The domain for which the cookie is set is configured through the "locale_cookie_domain" group_var.
 * Various minor UI layout fixes/improvements.
+* tiqr fixes
+  - solves a problem with iOS10 devices
+  - small layout en translation improvements
 
 
 Install:
@@ -28,6 +31,7 @@ Install:
   - Gateway 2.2.0
   - Selfservice 2.2.0
   - RA 2.2.0
+  - tiqr 1.1.4
 
 * Run database migrations
   - Run "/root/01-middleware-db_migrate.sh" on an app server

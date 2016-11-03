@@ -19,7 +19,7 @@
   tags: stepup-gateway
 
   vars:
-      component_tarball_name: "{{ tarball_location }}/Stepup-Gateway-2.0.0-20160622113853Z-c2d51252786c3ab4d654aac03cc9480d355197a7.tar.bz2"
+      component_tarball_name: "{{ tarball_location }}/Stepup-Gateway-2.2.0-20161018092553Z-bc6bbf8e2006d15cbe883d8045724cdb1166e759.tar.bz2"
       component_name: gateway
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
@@ -37,7 +37,7 @@
         - stepup-middleware
 
   vars:
-      component_tarball_name: "{{ tarball_location }}/Stepup-Middleware-1.6.0-20160601094227Z-183ea4ab5da5dddac9c04cde1298039fa4a23c95.tar.bz2"
+      component_tarball_name: "{{ tarball_location }}/Stepup-Middleware-2.0.2-20160810101855Z-d8d88d778ea30379b606cbca58d9634ff0541b42.tar.bz2"
       component_name: middleware
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
@@ -52,7 +52,7 @@
         - stepup-selfservice
 
   vars:
-      component_tarball_name: "{{ tarball_location }}/Stepup-SelfService-1.4.0-20160429093549Z-d21da7ab90731fec64c5c180633259a4029682f6.tar.bz2"
+      component_tarball_name: "{{ tarball_location }}/Stepup-SelfService-2.2.0-20161018092804Z-8792083b95fe2e073318ba68e4f92329249673ad.tar.bz2"
       component_name: selfservice
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
@@ -67,7 +67,7 @@
         - stepup-ra
 
   vars:
-      component_tarball_name: "{{ tarball_location }}/Stepup-RA-1.4.0-20160429093546Z-84364517532989f4dc0b398347b1a8a6af232da4.tar.bz2"
+      component_tarball_name: "{{ tarball_location }}/Stepup-RA-2.2.0-20161018093029Z-8dc3497ba0fc70701abeb1c890b6956a80ca24e9.tar.bz2"
       component_name: ra
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"

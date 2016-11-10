@@ -27,6 +27,7 @@
   with_items:
   - parameters.yml
   - samlstepupproviders_parameters.yml
+  - global_view_parameters.yml
 
 - name: assets:install
   command: php app/console assets:install --symlink --env=prod --no-debug

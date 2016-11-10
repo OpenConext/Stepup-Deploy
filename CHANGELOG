@@ -1,3 +1,23 @@
+Release 8
+
+* RA interface:
+  - Add a link to the manual in the footer. URLs must be set through "ra_manual_url" in "stepup-ra.yml"
+  - Added help text under the search box in the "Token Activation" screen
+  - Limited input in the document number field to 6 characters
+  - Remove text 'optional' in tokens screen
+  - Fix: sorting the audit log fails for some fields
+
+* Selfservice interface:
+  - Help link URL in the footer is now per language and must be set through "ss_support_url" in
+    "stepup-selfservice.yml"
+
+Install:
+* Deploy components
+  - Middleware x.x.x
+  - Selfservice x.x.x
+  - RA x.x.x
+
+
 Release 7
 RA Locations, Institution configuration, Server-side session expiry
 

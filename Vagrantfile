@@ -17,7 +17,8 @@ required_directories = [
     "Stepup-Gateway",
     "Stepup-Middleware",
     "Stepup-RA",
-    "Stepup-SelfService"
+    "Stepup-SelfService",
+    "Stepup-tiqr"
 ]
 
 Vagrant.configure("2") do |config|
@@ -53,11 +54,13 @@ Vagrant.configure("2") do |config|
         apps.vm.synced_folder "../Stepup-SelfService", "/var/www/ss-dev.stepup.coin.surf.net"
         apps.vm.synced_folder "../Stepup-RA",          "/var/www/ra-dev.stepup.coin.surf.net"
         apps.vm.synced_folder "../simplesamlphp",      "/var/www/idp-dev.stepup.coin.surf.net"
+        apps.vm.synced_folder "../Stepup-tiqr",      "/var/www/tiqr-dev.stepup.coin.surf.net"
         apps.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=middleware,gid=middleware   var_www_mw-dev.stepup.coin.surf.net /var/www/mw-dev.stepup.coin.surf.net"
         apps.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=gateway,gid=gateway         var_www_gw-dev.stepup.coin.surf.net /var/www/gw-dev.stepup.coin.surf.net"
         apps.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=selfservice,gid=selfservice var_www_ss-dev.stepup.coin.surf.net /var/www/ss-dev.stepup.coin.surf.net"
         apps.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=ra,gid=ra                   var_www_ra-dev.stepup.coin.surf.net /var/www/ra-dev.stepup.coin.surf.net"
         apps.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=simplesaml,gid=simplesaml   var_www_idp-dev.stepup.coin.surf.net /var/www/idp-dev.stepup.coin.surf.net"
+        apps.vm.provision :shell, run: "always", inline: "mount -t vboxsf -o uid=tiqr,gid=tiqr   var_www_tiqr-dev.stepup.coin.surf.net /var/www/tiqr-dev.stepup.coin.surf.net"
         apps.vm.provision :shell, run: "always", inline: "pkill mailcatcher || true"
         apps.vm.provision :shell, run: "always", inline: "/usr/local/bin/mailcatcher --ip=0.0.0.0"
     end

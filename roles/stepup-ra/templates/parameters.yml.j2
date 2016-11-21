@@ -60,3 +60,6 @@ parameters:
 
     session_max_absolute_lifetime: {{ app_session_max_duration }}
     session_max_relative_lifetime: {{ app_session_expiry_time }}
+
+    # URL of the selfselrvice interface, for display in (error) messages to the user
+    self_service_url: https://{{ selfservice_vhost_name }}

@@ -161,7 +161,7 @@ if [ ${SERVER} == "app" ]; then
         "https://github.com/SURFnet/oath-service-php/releases/download/1.0.1-20150723081351Z-56c990e62b4ba64ac755ca99093c9e8fce3e8fe9/oath-service-php-1.0.1-20150723081351Z-56c990e62b4ba64ac755ca99093c9e8fce3e8fe9.tar.bz2"
         )
     for url in "${tarballs[@]}"; do
-        docker exec -t ansible-test sh -c "wget -P /ansible -N ${url}"
+        docker exec -t ansible-test sh -c "wget -P /ansible --continue ${url}"
     done
 
     echo '===== Deploying components ====='

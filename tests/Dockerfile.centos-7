@@ -20,7 +20,9 @@ RUN yum clean all && \
     yum -y install PyYAML python-jinja2 python-httplib2 python-paramiko python-setuptools git python-pip which openssl wget sudo cronie
 RUN mkdir /etc/ansible/
 RUN echo -e '[local]\nlocalhost' > /etc/ansible/hosts
-RUN pip install ansible
+
+# Fix ansible version
+RUN pip install ansible==2.1.2.0
 RUN pip install python-keyczar
 
 VOLUME [ "/sys/fs/cgroup" ]

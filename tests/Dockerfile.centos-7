@@ -17,11 +17,11 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 RUN yum clean all && \
     yum -y update && \
     yum -y install epel-release && \
-    yum -y install PyYAML python-jinja2 python-httplib2 python-keyczar python-paramiko python-setuptools git python-pip which openssl wget sudo cronie
+    yum -y install PyYAML python-jinja2 python-httplib2 python-paramiko python-setuptools git python-pip which openssl wget sudo cronie
 RUN mkdir /etc/ansible/
 RUN echo -e '[local]\nlocalhost' > /etc/ansible/hosts
 RUN pip install ansible
-RUN pip install python-keyczar --upgrade
+RUN pip install python-keyczar
 
 VOLUME [ "/sys/fs/cgroup" ]
 

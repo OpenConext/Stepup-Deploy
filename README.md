@@ -1,6 +1,8 @@
 Ansible deploy scripts for Stepup Infrastructure
 ================================================
 
+[![Build Status](https://travis-ci.org/SURFnet/Stepup-Deploy.svg?branch=develop)](https://travis-ci.org/SURFnet/Stepup-Deploy)
+
 These are the Ansible playbooks and scripts to create, deploy and manage a step-up infrastructure and to deploy the stepup components (i.e. stepup-middleware, stepup-gateway, stepup-ra, stepup-selfserve, stepup-tiq and oath-server-php) to this infrastructure. The playbooks are targeted to a CentOS 7 image and should be usable with any environment (i.e. not be specific to a test or a production environment).
 
 The Ansible playbooks and the deploy script require an "environment". An "environment" is the part of the playbook that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template can be used as a starting point for creating your new environment. When using ansible playbook the environment to use is selected by specifying the ``inventory`` file of the environment using the ``-i`` option.

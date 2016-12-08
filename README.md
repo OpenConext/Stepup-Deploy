@@ -11,7 +11,7 @@ The Ansible playbooks and the deploy script require an "environment". An "enviro
 What is Stepup?
 ---------------
 
-Stepup authentication as-a-service is an open source project that was started by [SURFnet](http://surfnet.nl) to create what is now called "SURFconext Strong Authentication". It works seamlessly with [OpenConext](http://openconext.org) to add Step-up authentication for (SAML) Service Providers. The Stepup system manages authentication _and_ registration of the second factors without requiring technical integration with the identity provider, which is great if you need to support many different identity providers. For SAML service providers (SPs) an "always require stepup" policy is available that allows SPs to connect to Stepup with very little to no integration effort. For a more feature rich integration SAML Scoping with RequestedAuthnContext is supported.
+Stepup authentication as-a-service, or Stepup for short, is an open source project that was started by [SURFnet](http://surfnet.nl) to create what is now called "SURFconext Strong Authentication". It works seamlessly with [OpenConext](http://openconext.org) to add Step-up authentication for (SAML) Service Providers. The Stepup system manages authentication _and_ registration of the second factors without requiring technical integration with the identity provider, which is great if you need to support many different identity providers. For SAML service providers (SPs) an "always require stepup" policy is available that allows SPs to connect to Stepup with very little to no integration effort. For a more feature rich integration SAML Scoping with RequestedAuthnContext is supported.
 
 Stepup is not limited to be used with OpenConext. There is nothing that precludes it from being used by itself to add Step-up authentication to:
 
@@ -147,10 +147,6 @@ This in turn use many components and bundles that are stored in other repositori
 
 [Stepup-Build](https://github.com/SURFnet/Stepup-Build) is used for building releases of the stepup components. Prebuild components can be downloaded from the release page of the component on github.
 
-### Tests ###
-
-[`docker_test.sh`](tests/docker_test.sh) does a complete [deploy](#deploy) of an application server and a management server in a CentOS 7 docker container. Apart from running automatically through Travis-ci.org, is serves a working example of a complete Stepup deploy. 
-
 ### Stepup VM ####
 
 [Stepup-VM](https://github.com/SURFnet/Stepup-VM) contains scripts for setting up a VM for testing/development
@@ -167,7 +163,24 @@ Other Documentation
 
 The first study on the architecture and processes: https://www.surf.nl/en/knowledge-base/2012/report-step-up-authentication-as-a-service.html
 
+Testing
+-------
+
+[`docker_test.sh`](tests/docker_test.sh) does a complete [deploy](#deploy) of an application server and a management server in a CentOS 7 docker container. Apart from running automatically through Travis-ci.org, is serves a working example of a complete Stepup deploy.
+
+The tests create a docker container named 'ansible-test' and work with both a local docker and a remote docker-machine. To run the tests:
+
+- `./tests/docker_test.sh app --clean` -- Test the deployment of the database and all the stepup components
+- `./tests/docker_test.sh manage --clean` -- Test the deployment of the management server (ELK stack)
+
+The '--clean' option runs the tests in a clean docker container. Omit the flag to rerun the test in an existing container.
+
+Tests must be run from the root of the git repository (i.e. where this file is located).
+
+Use `docker exec -i -t ansible-test /bin/bash` to get a shell in the running container.
+
+
 Contributing
-============
+------------
 
 Contributions are welcome. Please open an Issue or a PR in the relevant github repository. Note that much of the discussion takes place in [Pivotal](#pivotal).

@@ -1,22 +1,32 @@
 Release 8
+Revocation email, UI improvements,
+
+* Middleware:
+  - Send an email when an active second factor is revoked. Added a "second_factor_revoked" mail template to
+    "template/middleware/middleware-config.json.j2"
 
 * RA interface:
-  - Add a link to the manual in the footer. URLs must be set through "ra_manual_url" in "stepup-ra.yml"
+  - Fix: sorting the audit log fails for some fields
+  - Fix: no error message was shown when a user with an expired registration code was vetted
+  - Fix: RA's could vet users belonging to other institutions
   - Added help text under the search box in the "Token Activation" screen
   - Limited input in the document number field to 6 characters
   - Remove text 'optional' in tokens screen
-  - Fix: sorting the audit log fails for some fields
+  - The Manual link URL in the footer is now per language and must be set through "ra_manual_url" in
+    "stepup-ra.yml"
+  - Check the Issuer in the SAML Response. It must matches the saml_remote_idp_entity_id set in "paramters.yml"
 
 * Selfservice interface:
   - Help link URL in the footer is now per language and must be set through "ss_support_url" in
     "stepup-selfservice.yml"
+  - Check the Issuer in the SAML Response. It must matches the saml_remote_idp_entity_id set in "paramters.yml"
 
 Install:
 * Deploy components
-  - Middleware x.x.x
-  - Selfservice x.x.x
-  - RA x.x.x
-
+  - Middleware 2.3.1
+  - Selfservice 2.3.0
+  - RA 2.4.0
+  
 
 Release 7
 RA Locations, Institution configuration, Server-side session expiry

@@ -158,7 +158,7 @@ if [ ${SERVER} == "app" ]; then
     tarballs=(
         "https://github.com/SURFnet/Stepup-Gateway/releases/download/2.2.0-20161018092553Z-bc6bbf8e2006d15cbe883d8045724cdb1166e759/Stepup-Gateway-2.2.0-20161018092553Z-bc6bbf8e2006d15cbe883d8045724cdb1166e759.tar.bz2"
         "https://github.com/SURFnet/Stepup-Middleware/releases/download/2.3.1-20161202111856Z-842810702ab76ce36b9fef8c00ba56f91f4bd935/Stepup-Middleware-2.3.1-20161202111856Z-842810702ab76ce36b9fef8c00ba56f91f4bd935.tar.bz2"
-        "https://github.com/SURFnet/Stepup-SelfService/releases/download/2.2.0-20161018092804Z-8792083b95fe2e073318ba68e4f92329249673ad/Stepup-SelfService-2.2.0-20161018092804Z-8792083b95fe2e073318ba68e4f92329249673ad.tar.bz2"
+        "https://github.com/SURFnet/Stepup-SelfService/releases/download/2.3.0-20161118105735Z-eebc000542020fa8518edf016221e9b973874bd2/Stepup-SelfService-2.3.0-20161118105735Z-eebc000542020fa8518edf016221e9b973874bd2.tar.bz2"
         "https://github.com/SURFnet/Stepup-RA/releases/download/2.4.0-20161130155145Z-bafb84b3ee966990f5b2115d56b04988e7f0cc6b/Stepup-RA-2.4.0-20161130155145Z-bafb84b3ee966990f5b2115d56b04988e7f0cc6b.tar.bz2"
         "https://github.com/SURFnet/Stepup-tiqr/releases/download/release-1.1.4-20161027120418Z-6616dd165903ff4e849b26b755612a3da6fb0409/Stepup-tiqr-release-1.1.4-20161027120418Z-6616dd165903ff4e849b26b755612a3da6fb0409.tar.bz2"
         "https://github.com/SURFnet/oath-service-php/releases/download/1.0.1-20150723081351Z-56c990e62b4ba64ac755ca99093c9e8fce3e8fe9/oath-service-php-1.0.1-20150723081351Z-56c990e62b4ba64ac755ca99093c9e8fce3e8fe9.tar.bz2"

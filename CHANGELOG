@@ -1,11 +1,12 @@
 Release 8
-Revocation email, UI improvements,
+Revocation email, UI improvements, saml2 library security fix
 
 * Middleware:
   - Send an email when an active second factor is revoked. Added a "second_factor_revoked" mail template to
     "template/middleware/middleware-config.json.j2"
 
 * RA interface:
+  - Security: Update simplesamlphp/saml2 because of https://github.com/simplesamlphp/saml2/pull/81
   - Fix: sorting the audit log fails for some fields
   - Fix: no error message was shown when a user with an expired registration code was vetted
   - Fix: RA's could vet users belonging to other institutions
@@ -17,15 +18,20 @@ Revocation email, UI improvements,
   - Check the Issuer in the SAML Response. It must matches the saml_remote_idp_entity_id set in "paramters.yml"
 
 * Selfservice interface:
+  - Security: Update simplesamlphp/saml2 because of https://github.com/simplesamlphp/saml2/pull/81
   - Help link URL in the footer is now per language and must be set through "ss_support_url" in
     "stepup-selfservice.yml"
-  - Check the Issuer in the SAML Response. It must matches the saml_remote_idp_entity_id set in "paramters.yml"
+  - Check the Issuer in the SAML Response. It must matches the saml_remote_idp_entity_id set in "parameters.yml"
+
+* Gateway:
+  - Security: Update simplesamlphp/saml2 because of https://github.com/simplesamlphp/saml2/pull/81
 
 Install:
 * Deploy components
   - Middleware 2.3.1
-  - Selfservice 2.3.0
-  - RA 2.4.0
+  - Gateway 2.3.0
+  - Selfservice 2.4.0
+  - RA 2.5.0
   
 
 Release 7

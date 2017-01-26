@@ -1,7 +1,7 @@
 Ansible deploy scripts for Stepup Infrastructure
 ================================================
 
-[![Build Status](https://travis-ci.org/SURFnet/Stepup-Deploy.svg?branch=develop)](https://travis-ci.org/SURFnet/Stepup-Deploy)
+[![Build Status](https://travis-ci.org/OpenConext/Stepup-Deploy.svg?branch=develop)](https://travis-ci.org/OpenConext/Stepup-Deploy)
 
 These are the Ansible playbooks and scripts to create, deploy and manage a step-up infrastructure and to deploy the stepup components (i.e. stepup-middleware, stepup-gateway, stepup-ra, stepup-selfserve, stepup-tiq and oath-server-php) to this infrastructure. The playbooks are targeted to a CentOS 7 image and should be usable with any environment (i.e. not be specific to a test or a production environment).
 
@@ -79,11 +79,11 @@ If you are using the minimal configuration in the inventory from the template, y
 
 Stepup components are the applications that together make up the Stepup. These are:
 
-* [Stepup-Middleware](https://github.com/SURFnet/Stepup-Middleware). Is used by the Selfservice component and the RA component. The middleware component is the only component that writes to the database. The other components do not communicate with the middleware. The middleware component maintains the middleware and the gateway databases. Updating the configuration of the Stepup system is performed by sending commands to the middleware. 
-* [Stepup-Gateway](https://github.com/SURFnet/Stepup-Gateway). The gateway reads its configuration from the gateway database. It is a SAML proxy and handles all authentication request in the Stepup system by interacting with external authentication providers (1st factor SAML IdP, Messagebird SMS gateway, Stepup-tiqr or the Yubico Cloud). SAML Service Provides use this gateway for authentication.
-* [Stepup-Selfservice](https://github.com/SURFnet/Stepup-Selfservice). This is the web application where end users register to get stepup token (Yubikey, SMS, tiqr or U2F), can see its status and can revoke their token.
-* [Stepup-RA](https://github.com/SURFnet/Stepup-RA). This is the web application where registration authorities (RAs) approve (vet) token registrations.  
-* [Stepup-tiqr](https://github.com/SURFnet/Stepup-tiqr). This is the web application that handles tiqr registration and authentications.
+* [Stepup-Middleware](https://github.com/OpenConext/Stepup-Middleware). Is used by the Selfservice component and the RA component. The middleware component is the only component that writes to the database. The other components do not communicate with the middleware. The middleware component maintains the middleware and the gateway databases. Updating the configuration of the Stepup system is performed by sending commands to the middleware. 
+* [Stepup-Gateway](https://github.com/OpenConext/Stepup-Gateway). The gateway reads its configuration from the gateway database. It is a SAML proxy and handles all authentication request in the Stepup system by interacting with external authentication providers (1st factor SAML IdP, Messagebird SMS gateway, Stepup-tiqr or the Yubico Cloud). SAML Service Provides use this gateway for authentication.
+* [Stepup-Selfservice](https://github.com/OpenConext/Stepup-Selfservice). This is the web application where end users register to get stepup token (Yubikey, SMS, tiqr or U2F), can see its status and can revoke their token.
+* [Stepup-RA](https://github.com/OpenConext/Stepup-RA). This is the web application where registration authorities (RAs) approve (vet) token registrations.  
+* [Stepup-tiqr](https://github.com/OpenConext/Stepup-tiqr). This is the web application that handles tiqr registration and authentications.
 * [oath-service-php](https://github.com/SURFnet/oath-service-php). This a server for storing the secrets used by tiqr.
 
 Stepup components are deployed on a machine this is previously prepared as described in the previous steps. The playbook used for deploying the stepup components requires a [prebuild](#build) tarball of the component. Prebuild components can be downloaded from the release page of the component on GitHub.
@@ -98,7 +98,7 @@ optionally, to deploy all components in the `deploy.yml` playbook in one go, you
 
 #### [Building Components](id:build) ####
 
-Before a component can be deployed it must be built. This creates a tarball (tar.bz2) that can then be unpacked by the deploy playbook on the application servers. The script to do that is in the [Stepup-Build](https://github.com/SURFnet/Stepup-Build) repository. This script will checkout a component from git on the host, but run composer and create the gzipped tarball to be deployed in a Vagrant VM.
+Before a component can be deployed it must be built. This creates a tarball (tar.bz2) that can then be unpacked by the deploy playbook on the application servers. The script to do that is in the [Stepup-Build](https://github.com/OpenConext/Stepup-Build) repository. This script will checkout a component from git on the host, but run composer and create the gzipped tarball to be deployed in a Vagrant VM.
 
 Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatically created by GitHub. The name of a component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<git commit SHA1>.tar.bz2`. For example: `Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2`
 
@@ -120,7 +120,7 @@ To perform the post installation configuration you must execute each of these sc
 CHANGELOG
 ---------
 
-The [https://github.com/SURFnet/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scrips, but also the changes in the stepup components.
+The [https://github.com/OpenConext/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scrips, but also the changes in the stepup components.
 
 [Pivotal Issue tracker](id:pivotal)
 ---------------------
@@ -134,22 +134,22 @@ Releated github repositories
 
 These are the main repositories for the Stepup components that can be deployed on the Stepup infrastructure 
 
-* [Stepup-Middleware](https://github.com/SURFnet/Stepup-Middleware)
-* [Stepup-Gateway](https://github.com/SURFnet/Stepup-Gateway)
-* [Stepup-Selfservice](https://github.com/SURFnet/Stepup-Selfservice)
-* [Stepup-RA](https://github.com/SURFnet/Stepup-RA)
-* [Stepup-tiqr](https://github.com/SURFnet/Stepup-tiqr)
+* [Stepup-Middleware](https://github.com/OpenConext/Stepup-Middleware)
+* [Stepup-Gateway](https://github.com/OpenConext/Stepup-Gateway)
+* [Stepup-Selfservice](https://github.com/OpenConext/Stepup-Selfservice)
+* [Stepup-RA](https://github.com/OpenConext/Stepup-RA)
+* [Stepup-tiqr](https://github.com/OpenConext/Stepup-tiqr)
 * [oath-service-php](https://github.com/SURFnet/oath-service-php)
 
 This in turn use many components and bundles that are stored in other repositories.
 
 ### Build Server ###
 
-[Stepup-Build](https://github.com/SURFnet/Stepup-Build) is used for building releases of the stepup components. Prebuild components can be downloaded from the release page of the component on github.
+[Stepup-Build](https://github.com/OpenConext/Stepup-Build) is used for building releases of the stepup components. Prebuild components can be downloaded from the release page of the component on github.
 
 ### Stepup VM ####
 
-[Stepup-VM](https://github.com/SURFnet/Stepup-VM) contains scripts for setting up a VM for testing/development
+[Stepup-VM](https://github.com/OpenConext/Stepup-VM) contains scripts for setting up a VM for testing/development
 
 Documentation from SURFnet's SURFconext Strong Authentication service
 ---------------------------------------------------------------------

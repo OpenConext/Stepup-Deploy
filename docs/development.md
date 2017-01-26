@@ -123,4 +123,4 @@ The LoA required for RA is configured in Stepup-RA's `parameters.yml` and throug
 [postman-chrome]: https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop
 [saml-chrome-panel]: https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace
 [firefox-saml-tracer]: https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/
-[middleware-manager]: https://github.com/SURFnet/Stepup-Middleware/tree/e1c7017f4211728157ecd49394e870858c9789c8#management-api
+[middleware-manager]: https://github.com/OpenConext/Stepup-Middleware/tree/e1c7017f4211728157ecd49394e870858c9789c8#management-api

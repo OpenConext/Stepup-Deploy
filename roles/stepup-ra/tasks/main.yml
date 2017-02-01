@@ -1,27 +1,5 @@
 # Infra suff for RA
 
-- name: Get active component
-  shell: readlink /opt/www/{{ ra_vhost_name }}
-  ignore_errors: true
-  register: active_component
-
-- debug:
-    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
-
-- name: Check whether component is installed
-  fail: msg="Component already active"
-  when: ( 0 ) and ( component_dir_name != active_component.stdout)
-
-- name: Create stepup directory
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
-
-- name: Untar component
-  unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
-  when: ( {{ component_unarchive | default(1) }} == 1)
-
-- name: Remove group and world write
-  file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
-
 - name: Put parameters.yml
   template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
   with_items:
@@ -30,24 +8,25 @@
   - global_view_parameters.yml
 
 - name: assets:install
-  command: php app/console assets:install --symlink --env=prod --no-debug
+  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: mopa:bootstrap:symlink:less
-  command: php app/console mopa:bootstrap:symlink:less --env=prod --no-debug
+  command: php app/console mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: Dump Assetic Assets
-  command: php app/console assetic:dump --env=prod --no-debug
+  command: php app/console assetic:dump --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
-- name: Clear cache
-  command: php app/console cache:clear --env=prod --no-debug
+- name: Clear and warmup cache
+  command: php app/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
+  when: "not {{ develop | default(false) }}"
 
 - name: Restrict app dir to the application
   file: path={{item}} group={{ component_name }} mode="o=" recurse=yes

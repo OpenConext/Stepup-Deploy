@@ -5,7 +5,7 @@ gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
 
 # Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
-# Reuired for sending SMS messages
+# Required for sending SMS messages
 # TODO: Set messagebird API access key
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
@@ -30,7 +30,8 @@ yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeho
 
 # Whether to enable the second factor only (SFO) authentication endpoint
 # Metadata for this endpoint: /second-factor-only/metadata
-gateway_second_factor_only: false
+# TODO: Disable the SFO endpoint when it will not be used
+gateway_second_factor_only: true
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"

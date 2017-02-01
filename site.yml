@@ -74,7 +74,7 @@
 
 
 - name: Dev tools
-  hosts: dev
+  hosts: app
   become: True
   tags: dev
   serial: 1

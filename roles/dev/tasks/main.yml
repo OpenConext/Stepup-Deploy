@@ -1,18 +1,18 @@
 ---
-#- name: Install NodeJS
-#  yum: name=nodejs state=present
-
-#- name: Install xdebug
-#  yum: name=php-pecl-xdebug state=present
-
-#- name: Install NPM
-#  yum: name=npm state=present
-
-#- name: Install LESS compiler
-#  npm: name=less global=yes state=present
 
 - name: Download /usr/local/bin/composer from https://getcomposer.org/composer.phar
   get_url: url=https://getcomposer.org/composer.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
 
+
+# Starting normally will fail as it requires an existing cluster to join and we're running a one node cluser
+- name: Disable MariaDB (mysql) service on boot.
+  service: name=mysql enabled=false
+
+# Bootstrap Mysql Galera cluster on boot
+- name: Put /root/bootstrap_mysql_galera.sh
+  copy: src=bootstrap_mysql_galera.sh dest=/root/bootstrap_mysql_galera.sh mode=550
+
+- name: Put /etc/rc.d/rc.local
+  copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
 
 

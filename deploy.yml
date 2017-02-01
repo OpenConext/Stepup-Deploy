@@ -22,15 +22,14 @@
   become: True
   tags: stepup-gateway
 
+  roles:
+      - stepup-gateway
+
   vars:
       component_tarball_name: "{{ tarball_location }}/Stepup-Gateway-2.2.0-20161018092553Z-bc6bbf8e2006d15cbe883d8045724cdb1166e759.tar.bz2"
       component_name: gateway
-      component_group: gateway
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
-
-  roles:
-      - stepup-gateway
 
 
 - name: Install Stepup-middleware

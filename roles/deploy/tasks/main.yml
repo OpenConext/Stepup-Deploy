@@ -1,3 +1,4 @@
+---
 
 - name: Get active component
   shell: readlink /opt/www/{{ gateway_vhost_name }}
@@ -7,17 +8,30 @@
 - debug:
     msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
 
-
-
 - block:
   - name: Create stepup directory
-    file: path={{ component_dir_name }} state=directory group={{ component_group }} mode=755
+    file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
 
   - name: Untar component
-    unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_group }}
+    unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
     when: ({{ component_unarchive | default(1) }} == 1)
 
   - name: Remove group and world write
-    file: dest={{ component_dir_name }} group={{ component_group }} recurse=yes mode="g-w,o-w"
-  when: not {{ develop | default(false) }}
+    file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
 
+  - name: Set debug_flag to --no-debug
+    set_fact:
+        debug_flag: --no-debug
+  when: "not {{ develop | default(false) }}"
+
+- block:
+    - name: DEVELOP - Composer install
+      shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
+
+    - name: DEVELOP - Clear cache
+      shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
+
+    - name: DEVELOP - Set debug_flag
+      set_fact:
+          debug_flag:
+  when: "{{ develop | default(false) }}"

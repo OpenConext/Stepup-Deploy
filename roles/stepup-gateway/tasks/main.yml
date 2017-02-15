@@ -1,7 +1,7 @@
 # Install gateway component
 
 - name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_group }}
   with_items:
   - parameters.yml
   - samlstepupproviders_parameters.yml
@@ -26,15 +26,48 @@
 
 
 - name: Restrict app dir to the application
-  file: path={{item}} group={{ component_name }} mode="o=" recurse=yes
+  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
   - "{{ component_dir_name }}/app"
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_name }} mode=770 recurse=yes
+  file: path={{item}} group={{ component_group }} mode=770 recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
+
+
+- name: Write SP private key
+  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+
+- name: Write SP certificate
+  copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
+
+- name: Write SP Tiqr private key
+  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
+
+- name: Write SP Tiqr certificate
+  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt  group={{ component_group }} mode={{ component_mode_640 }}
+
+- name: Write IdP private key
+  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+
+- name: Write IdP certificate
+  copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt group={{ component_group }} mode={{ component_mode_640 }}
+
+- name: Write IdP Tiqr private key
+  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
+
+- name: Write IdP Tiqr certificate
+  copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt group={{ component_group }} mode={{ component_mode_640 }}
+
+
+# U2F support for facets:
+- name: Set U2F app-id directory rights
+  file: path={{ component_dir_name }}/web/u2f state=directory group={{ component_group }} mode={{ component_mode_755 }}
+
+- name: Put facet ids
+  template: src=app-id.json.j2 dest={{ component_dir_name }}/web/u2f/app-id group={{ component_group }} mode={{ component_mode_644 }}
 
 
 - name: Put middleware configuration scripts in /root/
@@ -43,41 +76,8 @@
   - "01-gateway-db_migrate.sh"
 
 
-- name: Write SP private key
-  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_name }} mode=400
-
-- name: Write SP certificate
-  copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_name }} mode=640
-
-- name: Write SP Tiqr private key
-  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_name }} mode=400
-
-- name: Write SP Tiqr certificate
-  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt  group={{ component_name }} mode=640
-
-- name: Write IdP private key
-  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_name }} mode=400
-
-- name: Write IdP certificate
-  copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt group={{ component_name }} mode=640
-
-- name: Write IdP Tiqr private key
-  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_name }} mode=400
-
-- name: Write IdP Tiqr certificate
-  copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt group={{ component_name }} mode=640
-
-
-# U2F support for facets:
-- name: Set U2F app-id directory rights
-  file: path={{ component_dir_name }}/web/u2f state=directory group={{ component_name }} mode=755
-
-- name: Put facet ids
-  template: src=app-id.json.j2 dest={{ component_dir_name }}/web/u2f/app-id mode=644 group={{ component_name }}
-
-
 - name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ gateway_vhost_name }} state=link

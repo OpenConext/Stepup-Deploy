@@ -19,9 +19,15 @@
   - name: Remove group and world write
     file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
 
-  - name: Set debug_flag to --no-debug
+  - name: Set debug, mode, owner and group for production
     set_fact:
         debug_flag: --no-debug
+        component_group: "{{ component_name }}"
+        component_owner: "{{ component_name }}"
+        component_mode_400: "400" # r-- --- ---
+        component_mode_640: "640" # rw- r-- ---
+        component_mode_644: "644" # rw- r-- r--
+        component_mode_755: "755" # rwx r-x r-x
   when: "not {{ develop | default(false) }}"
 
 - block:
@@ -30,8 +36,15 @@
 
     - name: DEVELOP - Clear cache
       shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
+      when: component_name != "tiqr"
 
-    - name: DEVELOP - Set debug_flag
+    - name: DEVELOP - Set debug, mode, owner and group for develop
       set_fact:
           debug_flag:
+          component_group: vagrant
+          component_owner: vagrant
+          component_mode_400: "444"
+          component_mode_640: "666"
+          component_mode_644: "666"
+          component_mode_755: "777"
   when: "{{ develop | default(false) }}"

@@ -1,5 +1,22 @@
+Release 9
+Limit token types per institution, AuthnRequest signature validation error
+
+* Middleware:
+  - The institution configuration requires a "allowed_second_factors" option. This option can be used
+    limit the available token types.
+
+* SelfService interface:
+  - The available token types that a user can select can be limited on a per institution basis
+
+* Gateway:
+  - Security: Use HTTPS instead of HTTP when validating a yubikey challenge at the Yubico validation service.
+    This makes validation more robust against attacks on the message signatures.
+  - Fix: Mishandeling of the URL encoding of SAML AuthnRequests leads to valid signatures to be considered
+    invalid by the Gateway
+
+
 Release 8
-Revocation email, UI improvements,
+Revocation email, UI improvements
 
 * Middleware:
   - Send an email when an active second factor is revoked. Added a "second_factor_revoked" mail template to

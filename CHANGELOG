@@ -1,18 +1,32 @@
 Release 9
-Limit token types per institution, AuthnRequest signature validation error
+Limit token types per institution, AuthnRequest signature validation error bug,
+Mixed case schacHomeOrganization bug
+
+* The repositories were moved from the GitHub SURFnet organization to the OpenConext organization
 
 * Middleware:
-  - The institution configuration requires a "allowed_second_factors" option. This option can be used
-    limit the available token types.
-
-* SelfService interface:
-  - The available token types that a user can select can be limited on a per institution basis
+  - Fix: Error when applying an institution configuration when to institution is using a mixed case
+    schacHomeOrganization
+  - The institution configuration now requires an "allowed_second_factors" option. This option can be used
+    limit the available token types
 
 * Gateway:
   - Security: Use HTTPS instead of HTTP when validating a yubikey challenge at the Yubico validation service.
     This makes validation more robust against attacks on the message signatures.
-  - Fix: Mishandeling of the URL encoding of SAML AuthnRequests leads to valid signatures to be considered
+  - Fix: Mishandeling of the URL encoding of SAML AuthnRequests causes valid signatures to be considered
     invalid by the Gateway
+
+* SelfService interface:
+  - The available token types that a user can select can be limited on a per institution basis
+
+Install:
+* Deploy components:
+  - Middleware x.x.x
+  - Gateway x.x.x
+  - SelfService x.x.x
+
+* Run database migrations
+  - Run "/root/01-middleware-db_migrate.sh" on an app server
 
 
 Release 8

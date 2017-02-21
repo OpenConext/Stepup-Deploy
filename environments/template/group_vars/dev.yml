@@ -1,0 +1,9 @@
+# SAML signing certificates for SimpleSAMLphp
+ssp_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_idp.key') }}"
+ssp_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_idp.crt') }}"
+
+ssp_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.key') }}"
+ssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') }}"
+
+ssp_sp2_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.key') }}"
+ssp_sp2_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.crt') }}"

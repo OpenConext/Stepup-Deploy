@@ -59,23 +59,23 @@
 - name: Put SSP attributemap
   template: src=SURFconext_short_to_urn.php.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/attributemap/SURFconext_short_to_urn.php
 
-#- name: Put SSP IdP private key
-#  copy: content="{{ ssp_idp_key | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.key owner=root group=ssp mode=440
-#
-#- name: Put SSP IdP cert
-#  copy: content="{{ ssp_idp_cert }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.crt owner=root group=ssp mode=440
-#
-#- name: Put SSP SP private key
-#  copy: content="{{ ssp_sp_key | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.key owner=root group=ssp mode=440
-#
-#- name: Put SSP SP cert
-#  copy: content="{{ ssp_sp_cert }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.crt owner=root group=ssp mode=440
-#
-#- name: Put SSP SP2 private key
-#  copy: content="{{ ssp_sp2_key | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.key owner=root group=ssp mode=440
-#
-#- name: Put SSP SP2 cert
-#  copy: content="{{ ssp_sp2_cert }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.crt owner=root group=ssp mode=440
+- name: Put SSP IdP private key
+  copy: content="{{ ssp_idp_privatekey | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.key owner=root group=ssp mode=440
+
+- name: Put SSP IdP cert
+  copy: content="{{ ssp_idp_publickey }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.crt owner=root group=ssp mode=440
+
+- name: Put SSP SP private key
+  copy: content="{{ ssp_sp_privatekey | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.key owner=root group=ssp mode=440
+
+- name: Put SSP SP cert
+  copy: content="{{ ssp_sp_publickey }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.crt owner=root group=ssp mode=440
+
+- name: Put SSP SP2 private key
+  copy: content="{{ ssp_sp2_privatekey | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.key owner=root group=ssp mode=440
+
+- name: Put SSP SP2 cert
+  copy: content="{{ ssp_sp2_publickey }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.crt owner=root group=ssp mode=440
 
 - name: Put SSP metadata's
   template: src={{ item }}.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/metadata/{{ item }} owner=root group=ssp mode=440

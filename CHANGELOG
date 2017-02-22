@@ -21,9 +21,9 @@ Mixed case schacHomeOrganization bug
 
 Install:
 * Deploy components:
-  - Middleware x.x.x
-  - Gateway x.x.x
-  - SelfService x.x.x
+  - Middleware 2.4.0
+  - Gateway 2.4.1
+  - SelfService 2.5.0
 
 * Run database migrations
   - Run "/root/01-middleware-db_migrate.sh" on an app server

@@ -22,7 +22,7 @@ Mixed case schacHomeOrganization bug
 Install:
 * Deploy components:
   - Middleware 2.4.0
-  - Gateway 2.4.1
+  - Gateway 2.4.2
   - SelfService 2.5.0
 
 * Run database migrations

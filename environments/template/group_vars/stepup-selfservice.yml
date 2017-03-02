@@ -15,3 +15,10 @@ selfservice_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/sel
 # Authentication is though the Tiqr proxy
 # Format: PEM X.509 certificate
 selfservice_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_tiqr_sp.crt') }}"
+
+
+# URLs to the support documentation in the footer of the SS interface
+# Format: yaml dictornary of locale: url
+ss_support_url:
+    en_GB: "https://support.surfconext.nl/faq-strong-authentication"
+    nl_NL: "https://support.surfconext.nl/faq-sterke-authenticatie"

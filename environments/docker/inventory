@@ -1,14 +1,4 @@
-# Inventory for environment
-
-# Note that group_vars/ and host_vars/ directories can exist in both the playbook directory (here: Stepup-Deploy/)
-# and the inventory directory (here: Stepup-Deploy/environments/template or {{ inventory_dir }} ).
-# Variables defined in the playbook directory take precedence over variables defined in the inventory directory
-
-# IP Adresses are specified manually, this ensures that these are always available, even when --limit is used or
-# the host is down. To access the variables of another host use e.g.:
-# * IP address of host with name <hostname>: hostvars[<hostname>]['host_ipv4']
-# * IP address of first host in group <groupname>: hostvars[groups[<groupname>][0]]['host_ipv4']
-
+# Inventory for the docker environment used for automated tests
 
 #####
 # all
@@ -21,14 +11,14 @@
 ############
 
 [stepup-app]
-app.stepup.example.com host_ipv4=192.168.66.2 backend_ipv4=127.0.0.1
+app.stepup.example.com host_ipv4=127.0.0.1 backend_ipv4=127.0.0.1 ansible_connection=local
 
 ########
 # manage
 ########
 
 [manage]
-manage.stepup.example.com host_ipv4=192.168.66.3
+manage.stepup.example.com host_ipv4=127.0.0.1 ansible_connection=local
 
 
 ###########

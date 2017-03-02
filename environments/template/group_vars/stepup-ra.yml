@@ -25,3 +25,10 @@ ra_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.k
 # Authentication is though the Tiqr proxy
 # Format: PEM X.509 certificate
 ra_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.crt') }}"
+
+
+# URLs to documentation for the "Manual" link in the footer of the RA interface
+# Format: yaml dictornary of locale: url
+ra_manual_url:
+    en_GB: "https://wiki.surfnet.nl/display/surfconextdev/Manual+RA+Management+portal"
+    nl_NL: "https://wiki.surfnet.nl/display/surfconextdev/Handleiding+RA+Management+portal"

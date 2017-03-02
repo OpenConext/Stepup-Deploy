@@ -79,6 +79,7 @@ $config = array(
         'cn' => array('Test User'),
     ),
     */
+);
 
 // Accounts for accountgen script
 // Allows read email addresses to be used for multiple accounts
@@ -108,6 +109,10 @@ foreach ($accounts as $user => $email) {
 
 // Hack to change the configuration of the hosted SPs "default-sp" and "second-sp" using global vars from the
 // SP test web form
+
+if (! isset($GLOBALS['gSP_redirect_sign']) ) {
+    $GLOBALS['gSP_redirect_sign'] = FALSE;
+}
 $config['default-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
 $config['second-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
 if ( isset($GLOBALS['gSP_signature_algorithm']) && strlen($GLOBALS['gSP_signature_algorithm']) > 0 ) {

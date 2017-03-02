@@ -1,7 +1,11 @@
 server {
     listen       80;
     server_name  {{ vhost_name }};
+{% if component_name == "ssp" %}
+    root /opt/www/{{ vhost_name }}/www;
+{% else %}
     root /opt/www/{{ vhost_name }}/web;
+{% endif %}
 
     error_log /var/log/nginx/{{ component_name }}_error.log;
     access_log /var/log/nginx/{{ component_name }}_access.log combinedProxy;
@@ -24,8 +28,21 @@ server {
 
 {% if component_name == "ssp" %}
 
-    location ...
+    location / {
+        try_files $uri $uri/ =404;
+        index index.php index.html;
+    }
 
+    location ~ \.php(/|$) {
+        fastcgi_pass unix:/var/run/php-fpm/ssp.socket;
+
+        fastcgi_split_path_info ^(.+?\.php)(/.+)$;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+        include fastcgi_params;
+    }
 {% elseif component_name == "tiqr" %}
     location /tiqr/ {
         # try to serve file directly, otherwise forward to tiqr/index.php

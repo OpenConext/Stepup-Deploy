@@ -25,11 +25,15 @@ $config = array (
 	 * external url, no matter where you come from (direct access or via the
 	 * reverse proxy).
 	 */
-	'baseurlpath'           => '/simplesamlphp/',
+	'baseurlpath'           => 'https://{{ ssp_vhost_name}}/',
+
+     /**
+      * Locations on the filesystem:
+      */
 	'certdir'               => '/usr/local/share/simplesamlphp/cert/',
 	'loggingdir'            => '/var/log/simplesamlphp/',
 	'datadir'               => '/var/lib/simplesamlphp/data/',
-	'metadatadir'		=> '/usr/local/share/simplesamlphp/metadata/',
+	'metadatadir'		    => '/usr/local/share/simplesamlphp/metadata/',
 	'attributenamemapdir'	=> '/usr/local/share/simplesamlphp/attributemap/',
 
 	/*
@@ -223,7 +227,7 @@ $config = array (
 	 * Example:
 	 *  'session.cookie.path' => '/simplesaml/',
 	 */
-	'session.cookie.path' => '/simplesamlphp/',
+	'session.cookie.path' => '/',
 
 	/*
 	 * Cookie domain.

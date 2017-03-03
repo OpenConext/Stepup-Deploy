@@ -88,10 +88,10 @@
       },
 
       {
-        "entity_id": "https://simplesaml.stepup.example.com/module.php/saml/sp/metadata.php/default-sp",
+        "entity_id": "https://ssp.stepup.example.com/module.php/saml/sp/metadata.php/default-sp",
         "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
-          "https://simplesaml.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"

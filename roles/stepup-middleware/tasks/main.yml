@@ -1,7 +1,7 @@
 # Infra suff for middleware
 
 - name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode=640 group={{ component_name }}
+  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
 
 - name: assets:install
   command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
@@ -15,12 +15,12 @@
   when: "not {{ develop | default(false) }}"
 
 - name: Restrict app dir to the application
-  file: path={{item}} group={{ component_name }} mode="o=" recurse=yes
+  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
   - "{{ component_dir_name }}/app"
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_name }} mode=770 recurse=yes
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
@@ -54,7 +54,7 @@
     "middleware-push-institution.sh": "05-middleware-institution.sh"
 
 - name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link

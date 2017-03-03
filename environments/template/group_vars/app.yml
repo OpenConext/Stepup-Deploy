@@ -60,5 +60,9 @@ app_session_expiry_time: 900
 # TODO: Set logout URL
 logout_redirect_url: https://engine.surfconext.nl/logout
 
-# Hostname of sendmail smarthost (optional)
+# Hostname of sendmail SMTP smarthost (optional)
 #sendmail_smarthost: smtp.example.com
+
+# Port of sendmail SMTP smarthost (optional)
+# Only define when using a non standard port (i.e. other than port 25)
+#sendmail_smarthost_port:

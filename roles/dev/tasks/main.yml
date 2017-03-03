@@ -5,8 +5,41 @@
   with_items:
     - git
 
+    # For Mailcatcher
+    - ruby
+    - ruby-devel
+    - gcc
+    - gcc-c++
+    - sqlite
+    - sqlite-devel
+    - make
+
+
+## Composer ##
+
+# Install systemwide composer
 - name: Download /usr/local/bin/composer from https://getcomposer.org/composer.phar
   get_url: url=https://getcomposer.org/composer.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
+
+
+## Mailcatcher ##
+
+- name: Install mailcatcher
+  command: gem install mailcatcher creates=/usr/local/bin/mailcatcher
+
+# Create user and group for running the mailcatcher daemon
+- name: Add group mailcatcher
+  group: name=mailcatcher state=present
+
+- name: Add user mailcatcher
+  user: name=mailcatcher group=mailcatcher createhome=yes state=present
+
+- name: Run mailcatcher as service
+  template: src=mailcatcher.service.j2 dest=/usr/lib/systemd/system/mailcatcher.service
+
+- name: Start and enable mailcatcher service
+  service: name=mailcatcher state=started enabled=true
+
 
 ## Maria DB ##
 

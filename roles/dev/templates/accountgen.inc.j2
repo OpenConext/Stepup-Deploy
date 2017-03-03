@@ -25,6 +25,7 @@ function account_gen(&$config, $prefix, $email, $scope, $slugs)
     {
         $uid=$prefix.$slug;
         $account=array(
+            'NameID' => 'urn:collab:person:'.$scope.':'.$uid,
             'uid' => array($uid),
             'eduPersonPrincipalName' => $uid.'@'.$scope,
             'givenName' => 'gn-'.$uid,

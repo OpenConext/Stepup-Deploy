@@ -29,3 +29,19 @@ $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/module.php/saml/sp/metadat
     'certificate' => 'sp.crt'
 );
 
+
+///////////////////////////////////////////////////////////////////////////////////
+// Stepup Gateway in it's SP role
+
+$metadata['https://{{ gateway_vhost_name }}/authentication/metadata'] = array(
+    'AssertionConsumerService' =>
+        array (
+            0 =>
+                array (
+                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+                    'Location' => 'https://{{ gateway_vhost_name }}/authentication/consume-assertion',
+                    'index' => 0,
+                ),
+        ),
+    'certificate' => '{{ gateway_saml_sp_publickey | depem }}'
+);

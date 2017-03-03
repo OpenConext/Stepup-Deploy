@@ -1,7 +1,7 @@
 # Infra suff for RA
 
 - name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_group }}
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
   - parameters.yml
   - samlstepupproviders_parameters.yml
@@ -35,27 +35,27 @@
   - "{{ component_dir_name }}/app"
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode=770 recurse=yes
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
 
 
 - name: Write SP private key
-  copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode=400
+  copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write SP certificate
-  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode=640
+  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write Tiqr SP private key
-  copy: content="{{ ra_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_owner }} mode=400
+  copy: content="{{ ra_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write Tiqr SP certificate
-  copy: content="{{ ra_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt group={{ component_group }} mode=640
+  copy: content="{{ ra_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
 - name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode=755
+  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ ra_vhost_name }} state=link

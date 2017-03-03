@@ -17,6 +17,53 @@ $config = array(
         'core:AdminPassword',
     ),
 
+    'example-userpass' => array(
+        'exampleauth:UserPass',
+
+        'admin:admin' => array(
+            'NameID' => 'urn:collab:person:stepup.example.com:admin',
+            'uid' => array('admin'),
+            'mail' => 'admin@stepup.example.com',
+            'eduPersonPrincipalName' => 'admin@stepup.example.com',
+            'givenName' => 'Admin',
+            'sn' => 'Admin',
+            'cn' => 'Admin',
+            'displayName' => 'Admin',
+            'eduPersonAffiliation' => array('employee'),
+            'schacHomeOrganization' => 'stepup.example.com',
+            'schacHomeOrganizationType' => 'urn:mace:terena.org:schac:homeOrganizationType:int:university',
+        ),
+
+        'pieter:pieter' => array(
+            'NameID' => 'urn:collab:person:stepup.example.com:pieter',
+            'uid' => array('pieter'),
+            'mail' => 'pieter.vanderMeulen@surfnet.nl',
+            'eduPersonPrincipalName' => 'pieter@stepup.example.com',
+            'givenName' => 'Pieter',
+            'sn' => 'van der Meulen',
+            'cn' => 'Pieter van der Meulen',
+            'displayName' => 'Pieter van der Meulen',
+            'eduPersonAffiliation' => array('employee'),
+            'schacHomeOrganization' => 'stepup.example.com',
+            'schacHomeOrganizationType' => 'urn:mace:terena.org:schac:homeOrganizationType:int:NREN',
+        ),
+
+        'joost:joost' => array(
+            'NameID' => 'urn:collab:person:stepup.example.com:joost',
+            'uid' => array('joost'),
+            'mail' => 'joost.vanDijk@surfnet.nl',
+            'eduPersonPrincipalName' => 'joost@stepup.example.com',
+            'givenName' => 'Joost',
+            'sn' => 'van Dijk',
+            'cn' => 'Joost van Dijk',
+            'displayName' => 'Joost van Dijk',
+            'eduPersonAffiliation' => array('employee'),
+            'schacHomeOrganization' => 'stepup.example.com',
+            'schacHomeOrganizationType' => 'urn:mace:terena.org:schac:homeOrganizationType:int:NREN',
+        ),
+
+    ),
+
 
     // An authentication source which can authenticate against both SAML 2.0
     // and Shibboleth 1.3 IdPs.

@@ -43,7 +43,7 @@ server {
 
         include fastcgi_params;
     }
-{% elseif component_name == "tiqr" %}
+{% elif component_name == "tiqr" %}
     location /tiqr/ {
         # try to serve file directly, otherwise forward to tiqr/index.php
         try_files $uri /tiqr/index.php$is_args$args;

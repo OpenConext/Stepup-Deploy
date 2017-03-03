@@ -31,32 +31,32 @@
   - "{{ component_dir_name }}/app"
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode=770 recurse=yes
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
 
 
 - name: Write SP private key
-  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write SP certificate
   copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write SP Tiqr private key
-  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write SP Tiqr certificate
   copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt  group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write IdP private key
-  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write IdP certificate
   copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write IdP Tiqr private key
-  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write IdP Tiqr certificate
   copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt group={{ component_group }} mode={{ component_mode_640 }}

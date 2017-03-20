@@ -64,12 +64,13 @@ server {
         fastcgi_param HTTPS on;
     }
 {% else %}
+    {% if 'dev' in group_names and component_name != "middleware" %}
     location / {
-        # try to serve file directly, fallback to app.php
-        try_files $uri /app.php$is_args$args;
+        # try to serve file directly, fallback to app_dev.php
+        try_files $uri /app_dev.php$is_args$args;
     }
 
-    location ~ ^/app\.php(/|$) {
+    location ~ ^/app_dev\.php(/|$) {
         fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         # Include fastcgi_params from /etc/nginx/fastcgi_params, then
@@ -79,5 +80,21 @@ server {
         fastcgi_param HTTPS on;
         fastcgi_param SYMFONY_ENV prod;
     }
+    {% else %}
+    location / {
+        # try to serve file directly, fallback to app.php
+        try_files $uri /app.php$is_args$args;
+    }
+    location ~ ^/app_dev\.php(/|$) {
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        # Include fastcgi_params from /etc/nginx/fastcgi_params, then
+        # override some of them
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS on;
+        fastcgi_param SYMFONY_ENV prod;
+    }
+    {% endif %}
 {% endif %}
 }

@@ -84,6 +84,7 @@ $config = array(
 
         'certificate' => 'sp.crt',
         'privatekey' => 'sp.key',
+
         // See end of file for request.sign and signature alg config!
     ),
     'second-sp' => array(
@@ -103,29 +104,12 @@ $config = array(
 
         'certificate' => 'sp.crt',
         'privatekey' => 'sp.key',
+
+        // See end of file for request.sign and signature.algorithm config!
         //'redirect.sign' => TRUE,
         //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     ),
 
-
-    /*
-    'example-sql' => array(
-        'sqlauth:SQL',
-        'dsn' => 'pgsql:host=sql.example.org;port=5432;dbname=simplesaml',
-        'username' => 'simplesaml',
-        'password' => 'secretpassword',
-        'query' => 'SELECT "username", "name", "email" FROM "users" WHERE "username" = :username AND "password" = :password',
-    ),
-    */
-
-    /*
-    'example-static' => array(
-        'exampleauth:Static',
-        'uid' => array('testuser'),
-        'eduPersonAffiliation' => array('member', 'employee'),
-        'cn' => array('Test User'),
-    ),
-    */
 );
 
 // Accounts for accountgen script
@@ -148,14 +132,15 @@ $slugs=array(
 // For all accounts the username is equal to the password. E.g. "joe-a1" / "joe-a1"
 foreach ($accounts as $user => $email) {
     //                   username   , email,  schachomeorganization
-    account_gen($config, "${user}-a", $email, 'institution-a.nl', $slugs);
-    account_gen($config, "${user}-b", $email, 'institution-b.nl', $slugs);
-    account_gen($config, "${user}-c", $email, 'institution-c.nl', $slugs);
+    account_gen($config, "${user}-a", $email, 'institution-a.example.com', $slugs);
+    account_gen($config, "${user}-b", $email, 'institution-b.example.com', $slugs);
+    account_gen($config, "${user}-c", $email, 'institution-c.example.com', $slugs);
+    account_gen($config, "${user}-d", $email, 'Institution-D.example.com', $slugs);
 }
 
 
 // Hack to change the configuration of the hosted SPs "default-sp" and "second-sp" using global vars from the
-// SP test web form
+// SP test web form (sp.php)
 
 if (! isset($GLOBALS['gSP_redirect_sign']) ) {
     $GLOBALS['gSP_redirect_sign'] = FALSE;

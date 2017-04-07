@@ -10,16 +10,6 @@ gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
-# Message originator as displayed in SMS
-# "This can be a telephone number (including country code) or an alphanumeric string.
-#  In case of an alphanumeric string, the maximum length is 11 characters."
-sms_originator: Stepup
-# Validity time of an OTP send using SMS in seconds
-sms_otp_expiry_interval: 900
-# Maximum number of times a user may resend an SMS during authenticaton
-sms_maximum_otp_requests: 3
-
-
 # Yubikey client_id (Plain) and secret (Vaulted) for accessing the yubico authentication service
 # Create one at: https://upgrade.yubico.com/getapikey/
 # TODO: Set yubikey client id

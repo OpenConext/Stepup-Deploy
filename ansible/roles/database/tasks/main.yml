@@ -43,6 +43,9 @@
 - name: Grant middleware access to database middleware
   mysql_user: host=% name=middleware password=middleware priv=middleware.*:DELETE,INSERT,SELECT,UPDATE,EXECUTE login_user=root login_password={{ mariadb_root_password }}
 
+- name: Grant middleware access to database gateway
+  mysql_user: host=% name=middleware password=middleware priv=gateway.*:DELETE,INSERT,SELECT,UPDATE,EXECUTE login_user=root login_password={{ mariadb_root_password }}
+
 - name: Grant gateway access to database gateway
   mysql_user: host=% name=gateway password=gateway priv=gateway.*:SELECT,EXECUTE login_user=root login_password={{ mariadb_root_password }}
 

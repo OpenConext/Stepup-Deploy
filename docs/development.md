@@ -17,7 +17,15 @@ the messages.
 You can create a custom dashboard or streams so that you can view only the relevant messages.
 
 ## Configuring accounts for development
-Accounts can be added to the `$config` in your git-ignored `simplesamlphp/config/authsources.php` file. 
+
+### SimpleSAMLphp
+For development we use the SimpleSAMLphp installation as IdP. This means that all users are identified by this installation
+and as such need to be configured here. In order to be able to use the configured accounts, the first thing to do is
+to add en empty `enabled` file to the `modules/exampleauth` directory of SimpleSAMLphp:
+In the SimpleSAMLphp directory, run `touch modules/exampleauth/enabled`
+
+Accounts can be added to the `$config` array in your git-ignored `simplesamlphp/config/authsources.php` file.
+They should be added under the `exampleauth` key.
 For development purposes, it could be useful to add SRAA, RAA and RA accounts as well as users for each
 second factor.
 
@@ -55,6 +63,12 @@ second factor.
         ),
     ...
 ```
+
+### Configuring the Middleware
+
+First of all, in the Stepup-Middleware directory, please ensure all migrations ran by running `app/console mid:mig:mig`.
+
+All these calls can be made using the Postman collections as provided in the Stepup-Middelware/docs/postman directory.
 
 To whitelist the organisation of these accounts, use the [Middleware Manager API][middleware-manager]:
 

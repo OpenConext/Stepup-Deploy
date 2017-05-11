@@ -25,7 +25,7 @@ to add en empty `enabled` file to the `modules/exampleauth` directory of SimpleS
 In the SimpleSAMLphp directory, run `touch modules/exampleauth/enabled`
 
 Accounts can be added to the `$config` array in your git-ignored `simplesamlphp/config/authsources.php` file.
-They should be added under the `exampleauth` key.
+They should be added under the `example-userpass` key.
 For development purposes, it could be useful to add SRAA, RAA and RA accounts as well as users for each
 second factor.
 

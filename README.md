@@ -34,6 +34,7 @@ $ git clone git@github.com:SURFnet/Stepup-SelfService.git
 $ git clone git@github.com:SURFnet/Stepup-RA.git
 $ mkdir simplesamlphp # Place a simplesamlphp deployment here with some credentials and set the baseurlpath to "/"
 $ cd Stepup-Deploy
+$ mkdir ssl
 $ (cd ssl && place-ssl-certificates-see-below)
 $ git checkout dev
 $ vagrant plugin install vagrant-vbguest

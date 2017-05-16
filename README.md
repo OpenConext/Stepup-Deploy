@@ -32,7 +32,21 @@ $ git clone git@github.com:SURFnet/Stepup-Middleware.git
 $ git clone git@github.com:SURFnet/Stepup-Gateway.git
 $ git clone git@github.com:SURFnet/Stepup-SelfService.git
 $ git clone git@github.com:SURFnet/Stepup-RA.git
-$ mkdir simplesamlphp # Place a simplesamlphp deployment here with some credentials and set the baseurlpath to "/"
+$ mkdir simplesamlphp # Place a [simplesamlphp deployment](https://github.com/simplesamlphp/simplesamlphp) here with some credentials and set the baseurlpath to "/"
+```
+__Install third party dependencies:__
+
+Run composer install --ignore-platform-reqs from your host in the following projects:
+
+* simplesamlphp
+* Stepup-Gateway
+* Stepup-Middleware
+* Stepup-RA
+* Stepup-SelfService
+ 
+__Then continue with installation:__
+
+```
 $ cd Stepup-Deploy
 $ mkdir ssl
 $ (cd ssl && place-ssl-certificates-see-below)

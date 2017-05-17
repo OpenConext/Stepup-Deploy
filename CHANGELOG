@@ -13,7 +13,10 @@ Add option to test 2nd factor in SelfService, bugfixes
   - Fix: bootstrapping an identity leads to unusable identity
 
 * Tiqr:
-  - TODO
+  - Fix: no push notifications received when changing phones
+  - Fix: minor layout and translation issues
+  - Accounts are blocked after 5 authentication failures
+  - Improved support for browsers on mobile devices
 
 Install:
 * Deploy components:

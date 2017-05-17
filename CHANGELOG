@@ -20,9 +20,9 @@ Add option to test 2nd factor in SelfService, bugfixes
 
 Install:
 * Deploy components:
-  - Middleware 2.5.9
-  - Gateway 2.5.9
-  - SelfService 2.6.1
+  - Middleware 2.5.0
+  - Gateway 2.5.0
+  - SelfService 2.6.2
   - RA 2.6.1
   - Tiqr 1.1.5
 

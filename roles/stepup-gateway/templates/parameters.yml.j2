@@ -40,17 +40,43 @@ parameters:
     selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
     registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
 
+    # The private key and certificate that are used by the Gateway SP to sign SAML AuthnRequests
+    # Filename of the PEM CERTIFICATE
     saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
+    # Filename of the PEM RSA PRIVATE KEY
     saml_sp_privatekey: {{ component_dir_name }}/app/config/sp.key
 
+    # The private key and certificate that are used by the Gateway IdP to sign SAML Responses/Assertions
+    # Filename of the PEM CERTIFICATE
     saml_idp_publickey: {{ component_dir_name }}/app/config/idp.crt
+    # Filename of the PEM RSA PRIVATE KEY
     saml_idp_privatekey: {{ component_dir_name }}/app/config/idp.key
 
+    # The certificate and private key that are used by the Gateway to sign the metadata that it publishes
+    # Filename of the PEM CERTIFICATE
     saml_metadata_publickey: {{ component_dir_name }}/app/config/idp.crt
+    # Filename of the PEM RSA PRIVATE KEY
     saml_metadata_privatekey: {{ component_dir_name }}/app/config/idp.key
 
+    # The remote IdP (i.e. not the local IdP that is part of the Gateway) is the IdP that provides the first
+    # factor authentication of users to the Gateway.
+    # The Gateway does publish very basic SAML Metadata that can be used by the Remote IdP (it currently does
+    # not include the signing certificate in the SPSSODescriptor). The Stepup-Gateway cannot import
+    # SAML Metadata published by the Remote IdP, you must configure that here by hand.
+    # The location of the metadata is: https://{{ gateway_vhost_name }}/authentication/metadata
+    # The Gateway uses the HTTP-Redirect binding to send the AuthnRequest to the Remote IdP. The AuthnRequest
+    # is signed using SHA256 (`http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`)
+    # The Remote IdP must use the HTTP-POST Binding to send the Response back to to the Gateway
+    # The Remote IdP may sign the Assertion in the Response using either:
+    # - SHA-1 (http://www.w3.org/2000/09/xmldsig#rsa-sha1); or
+    # - SHA256 (http://www.w3.org/2001/04/xmldsig-more#rsa-sha256)
+    # The ACS location is: https://{{ gateway_vhost_name }}/authentication/consume-assertion
+
+    # The SAML EntityID of the Remote IdP
     saml_remote_idp_entity_id: {{ saml_remote_idp_entity_id }}
+    # The SAML SSO Location of the Remote IdP
     saml_remote_idp_sso_url: {{ saml_remote_idp_sso_url }}
+    # The SAML
     saml_remote_idp_certificate: {{ saml_remote_idp_certificate }}
 
     gateway_loa_loa1: '{{ stepup_uri_loa1 }}'

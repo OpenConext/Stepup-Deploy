@@ -27,11 +27,12 @@ a simplesamlphp installation to act as development IdP:
 ```sh-session
 $ mkdir stepup
 $ cd stepup
-$ git clone git@github.com:SURFnet/Stepup-Deploy.git
-$ git clone git@github.com:SURFnet/Stepup-Middleware.git
-$ git clone git@github.com:SURFnet/Stepup-Gateway.git
-$ git clone git@github.com:SURFnet/Stepup-SelfService.git
-$ git clone git@github.com:SURFnet/Stepup-RA.git
+
+$ git clone git@github.com:OpenConext/Stepup-Deploy.git
+$ git clone git@github.com:OpenConext/Stepup-Middleware.git
+$ git clone git@github.com:OpenConext/Stepup-Gateway.git
+$ git clone git@github.com:OpenConext/Stepup-SelfService.git
+$ git clone git@github.com:OpenConext/Stepup-RA.git
 $ mkdir simplesamlphp # Place a [simplesamlphp deployment](https://github.com/simplesamlphp/simplesamlphp) here with some credentials and set the baseurlpath to "/"
 ```
 __Install third party dependencies:__

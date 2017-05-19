@@ -94,7 +94,7 @@ j6aOJv/Xj/2NzAiY97z61XqndWHPsO0E4zBM/YVqXOLdngnnNEva5w==
 
 ### Metadata
 
-Add the following to `{ssp-root}/metadata/saml20-sp-remote.php`, this registers the Gateway as SP for SimpleSAMLphp
+Copy the files in `{ssp-root}/metadata-templates` to the `{ssp-root}/metadata` folder. Then add the following to `{ssp-root}/metadata/saml20-sp-remote.php`, this registers the Gateway as SP for SimpleSAMLphp
 
 Remove the examples in this file and put: 
 

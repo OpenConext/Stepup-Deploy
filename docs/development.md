@@ -138,8 +138,8 @@ $metadata['https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/metadata'] 
 ### Enabling the auth module
 
 In order to be able to use SimpleSAMLphp as easily configurable IdP, some form of authentication must be enabled. In
-order to do this, we must add an empty `enabled` file to the `modules/exampleauth` directory of SimpleSAMLphp, e.g.
-in the SimpleSAMLphp directory, run `touch modules/exampleauth/enabled`.
+order to do this, we must add an empty `enable` file to the `modules/exampleauth` directory of SimpleSAMLphp, e.g.
+in the SimpleSAMLphp directory, run `touch modules/exampleauth/enable`.
 
 ### User Accounts
 

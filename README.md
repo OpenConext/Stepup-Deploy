@@ -58,12 +58,6 @@ $ vagrant up
 
 _Do note that the installation of graylog requires the downloading of a .deb. This can take some time._
 
-Place the required SSL certificates in `./Stepup-Deploy/ssl`:
-
- * `ca.crt` — CA certificate chain
- * `server.crt` — Server wildcard certificate
- * `server.key` — Server wildcard private key
-
 Edit your hosts file to include the following:
 
 ```

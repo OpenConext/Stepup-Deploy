@@ -40,11 +40,21 @@
 - name: Copy SSL key
   copy: src=../../../../ssl/server.key dest=/etc/nginx/conf.d/ssl/server.key owner=nginx group=nginx mode=600
 
+- name: Set nginx ssl key passphrase
+  shell: 'echo surf > /etc/nginx/conf.d/ssl/passphrase'
+
 - name: Create SSL certificate chain
   shell: 'cat /etc/nginx/conf.d/ssl/server.crt /etc/nginx/conf.d/ssl/ca.crt > /etc/nginx/conf.d/ssl/server.chain.crt && chown nginx:nginx /etc/nginx/conf.d/ssl/server.chain.crt'
 
 - name: Copy SSL configuration
   copy: src=ssl.conf dest=/etc/nginx/conf.d/ssl.conf owner=nginx group=nginx mode=600
+
+- name: Trust CA certificate
+  copy: src=../../../../ssl/ca.crt dest=/etc/pki/ca-trust/source/anchors/ca.crt
+
+- name: Regenerate ca trust
+  become: yes
+  shell: update-ca-trust
 
 - name: Create directory for vhosts to store PHP sessions
   file: path=/var/lib/stepup/session/ state=directory mode="771" owner=root group=root

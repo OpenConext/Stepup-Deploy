@@ -7,8 +7,12 @@ requests validate out-of-the-box (e.g. selfservice preforming a
 request over https to middleware) this CA is added to the CentOS
 trusted CA keystore.
 
-Developers should trust this local CA once in their browser on first
-visit to a Stepup application.
+Developers should trust the server certificate once in their browser
+on first visit to a Stepup application.
+
+NOTE: Do **not** trust the local CA certificate on your host machine
+because anyone can create new certificates with the private key
+contained in this repository.
 
 The ansible 'web' role (web/tasks/main.yml specifically) is
 responsible for configuring nginx and the CA keystore.

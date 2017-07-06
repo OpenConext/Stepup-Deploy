@@ -42,11 +42,17 @@ stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
 stepup_uri_sfo_loa2: 'http://stepup.example.com/assurance/sfo-level2'
 stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 
-
-# The second factor types to enable in the SS and the RA
+# The build in second factor types to enable in the SS and the RA
 # Format: comma separated list of factors to enable
-# Supported factors: sms, yubikey, tiqr, u2f
-stepup_enabled_factors: sms, yubikey, tiqr, u2f
+# Supported factors: sms, yubikey, u2f
+stepup_enabled_factors: sms, yubikey, u2f
+
+# The generic second factor types to enable in the SS and the RA
+stepup_enabled_generic_second_factors:
+  tiqr:
+    loa: 2
+  biometric:
+    loa: 2
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml

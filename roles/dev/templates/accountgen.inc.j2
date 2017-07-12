@@ -1,0 +1,42 @@
+<?php
+
+/*
+$config: php config array
+$group: account name prefix
+$email: A pollibly existing email addres so you can receive mail
+$scope: Used as schachome, EPPN scope and names
+$count: number of accounts to generate
+
+Example:
+
+account_gen($config, 'pieter-a', 'pieter@surfnet.nl', 'institution-a.nl', 5);
+account_gen($config, 'pieter-b', 'pieter@surfnet.nl', 'institution-b.nl', 5);
+account_gen($config, 'pieter-c', 'pieter@surfnet.nl', 'institution-c.nl', 5);
+
+Creates accounts with u/p:
+pieter-a1, pieter-a2, ...
+pieter-b1, pieter-b2, ...
+pieter-c1, pieter-c2, ...
+*/
+
+function account_gen(&$config, $prefix, $email, $scope, $slugs)
+{
+    foreach($slugs as $slug)
+    {
+        $uid=$prefix.$slug;
+        $account=array(
+            'NameID' => 'urn:collab:person:'.$scope.':'.$uid,
+            'uid' => array($uid),
+            'eduPersonPrincipalName' => $uid.'@'.$scope,
+            'givenName' => 'gn-'.$uid,
+            'sn' => 'sn-'.$scope,
+            'cn' => $uid.' '.$scope,
+            'mail' => str_replace('@', '+'.$uid.'@', $email),
+            'displayName' => 'd-'.$uid.' '.$scope,
+            'eduPersonAffiliation' => array('student'),
+            'schacHomeOrganization' => $scope,
+            'schacHomeOrganizationType' => 'urn:mace:terena.org:schac:homeOrganizationType:int:university',
+        );
+        $config['example-userpass'][$uid.':'.$uid]=$account;
+    }
+}

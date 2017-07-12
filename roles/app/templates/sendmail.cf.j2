@@ -1778,7 +1778,7 @@ Mdsmtp,		P=[IPC], F=mDFMuXa%, S=EnvFromSMTP/HdrFromSMTP, R=EnvToSMTP, E=\r\n, L=
 		A=TCP $h
 Mrelay,		P=[IPC], F=mDFMuXa8, S=EnvFromSMTP/HdrFromSMTP, R=MasqSMTP, E=\r\n, L=2040,
 		T=DNS/RFC822/SMTP,
-		A=TCP $h
+		A=TCP $h {{ sendmail_smarthost_port | default('') }}
 
 
 ######################*****##############

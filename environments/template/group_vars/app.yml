@@ -4,19 +4,25 @@
 # For the Stepup-VM this is a SimpleSAMLphp IdP
 # Remote IdP entityID
 # TODO: Set Remote IdP entityID
+# SURFconext production gateway
 #saml_remote_idp_entity_id: https://engine.surfconext.nl/authentication/idp/metadata
-saml_remote_idp_entity_id: https://simplesaml.stepup.example.com/saml2/idp/metadata.php
+# The local SimpleSAMLphp IdP from the "dev" role, intended for development/testing purposes
+saml_remote_idp_entity_id: "{{ ssp_vhost_name }}/saml2/idp/metadata.php"
 
 # Remote IdP SingleSignOnService Location of HTTP-Redirect Binding
 # TODO: Set Remote IdP SSO Location
+# SURFconext production gateway
 #saml_remote_idp_sso_url: https://engine.surfconext.nl/authentication/idp/single-sign-on
-saml_remote_idp_sso_url: https://simplesaml.stepup.example.com/saml2/idp/SSOService.php
+# The local SimpleSAMLphp IdP from the "dev" role, intended for development/testing purposes
+saml_remote_idp_sso_url: "{{ ssp_vhost_name }}/saml2/idp/SSOService.php"
 
 # Remote IdP SAML Siging key
 # Format: Certificate as found in SAML metadata (i.e. PEM X.509 certificate, but without PEM headers and whitespace)
 # TODO: Set Remote IdP SAML Signing X509Certificate
+# SURFconext production gateway
 #saml_remote_idp_certificate: MIID3zCCAsegAwIBAgIJAMVC9xn1ZfsuMA0GCSqGSIb3DQEBCwUAMIGFMQswCQYDVQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMGA1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MSYwJAYDVQQDDB1lbmdpbmUuc3VyZmNvbmV4dC5ubCAyMDE0MDUwNTAeFw0xNDA1MDUxNDIyMzVaFw0xOTA1MDUxNDIyMzVaMIGFMQswCQYDVQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMGA1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MSYwJAYDVQQDDB1lbmdpbmUuc3VyZmNvbmV4dC5ubCAyMDE0MDUwNTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKthMDbB0jKHefPzmRu9t2h7iLP4wAXr42bHpjzTEk6gttHFb4l/hFiz1YBI88TjiH6hVjnozo/YHA2c51us+Y7g0XoS7653lbUN/EHzvDMuyis4Xi2Ijf1A/OUQfH1iFUWttIgtWK9+fatXoGUS6tirQvrzVh6ZstEp1xbpo1SF6UoVl+fh7tM81qz+Crr/Kroan0UjpZOFTwxPoK6fdLgMAieKSCRmBGpbJHbQ2xxbdykBBrBbdfzIX4CDepfjE9h/40ldw5jRn3e392jrS6htk23N9BWWrpBT5QCk0kH3h/6F1Dm6TkyG9CDtt73/anuRkvXbeygI4wml9bL3rE8CAwEAAaNQME4wHQYDVR0OBBYEFD+Ac7akFxaMhBQAjVfvgGfY8hNKMB8GA1UdIwQYMBaAFD+Ac7akFxaMhBQAjVfvgGfY8hNKMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAC8L9D67CxIhGo5aGVu63WqRHBNOdo/FAGI7LURDFeRmG5nRw/VXzJLGJksh4FSkx7aPrxNWF1uFiDZ80EuYQuIv7bDLblK31ZEbdg1R9LgiZCdYSr464I7yXQY9o6FiNtSKZkQO8EsscJPPy/Zp4uHAnADWACkOUHiCbcKiUUFu66dX0Wr/v53Gekz487GgVRs8HEeT9MU1reBKRgdENR8PNg4rbQfLc3YQKLWK7yWnn/RenjDpuCiePj8N8/80tGgrNgK/6fzM3zI18sSywnXLswxqDb/J+jgVxnQ6MrsTf1urM8MnfcxG/82oHIwfMh/sXPCZpo+DTLkhQxctJ3M= # SURFconext Siging cert
-saml_remote_idp_certificate: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_idp.crt') }}"
+# The local SimpleSAMLphp IdP from the "dev" role, intended for development/testing purposes
+saml_remote_idp_certificate: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_idp.crt') | depem }}"
 
 
 # Passwords for accessing the Middleware REST API
@@ -54,5 +60,9 @@ app_session_expiry_time: 900
 # TODO: Set logout URL
 logout_redirect_url: https://engine.surfconext.nl/logout
 
-# Hostname of sendmail smarthost (optional)
+# Hostname of sendmail SMTP smarthost (optional)
 #sendmail_smarthost: smtp.example.com
+
+# Port of sendmail SMTP smarthost (optional)
+# Only define when using a non standard port (i.e. other than port 25)
+#sendmail_smarthost_port:

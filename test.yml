@@ -1,0 +1,12 @@
+- hosts: app
+
+  vars:
+     arg:
+       state: directory
+       mode: 700
+       owner: vagrant
+       group: vagrant
+
+  tasks:
+  - name: Test arguments
+    file: "{{ arg }}"

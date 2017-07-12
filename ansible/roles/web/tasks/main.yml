@@ -64,12 +64,13 @@
 - include: vhost.yml vhost_name=ss-dev tpl=default vhost_local_port=9002 user=selfservice port=443
 - include: vhost.yml vhost_name=ra-dev tpl=default vhost_local_port=9003 user=ra port=443
 - include: vhost.yml vhost_name=idp-dev tpl=simplesaml vhost_local_port=9004 user=simplesaml port=443
+- include: vhost.yml vhost_name=tiqr-dev tpl=tiqr vhost_local_port=9005 user=tiqr port=443
   notify:
    - restart nginx
    - restart php-fpm
 
 - name: Add nginx to user groups
-  user: name=nginx groups=nginx,middleware,gateway,selfservice,ra createhome=no state=present
+  user: name=nginx groups=nginx,middleware,gateway,selfservice,ra,tiqr createhome=no state=present
 
 - name: Remove default PHP-FPM vhost 'www'
   file: path=/etc/php-fpm.d/www.conf state=absent

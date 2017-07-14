@@ -1,3 +1,32 @@
+Release 10
+Add option to test 2nd factor in SelfService, bugfixes
+
+* Upgrade Guzzle4 to Guzzle6
+
+* SelfService:
+  - The user now has the option to test authentication with their token in the self service interface.
+
+* Gateway:
+  - Fix: wrong entity added for saml:AuthenticatingAuthority
+
+* Middleware:
+  - Fix: bootstrapping an identity leads to unusable identity
+
+* Tiqr:
+  - Fix: no push notifications received when changing phones
+  - Fix: minor layout and translation issues
+  - Accounts are blocked after 5 authentication failures
+  - Improved support for browsers on mobile devices
+
+Install:
+* Deploy components:
+  - Middleware 2.5.0
+  - Gateway 2.5.0
+  - SelfService 2.6.2
+  - RA 2.6.1
+  - Tiqr 1.1.5
+
+
 Release 9
 Limit token types per institution, AuthnRequest signature validation error bug,
 Mixed case schacHomeOrganization bug

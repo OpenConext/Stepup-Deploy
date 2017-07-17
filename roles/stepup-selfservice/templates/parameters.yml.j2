@@ -67,6 +67,12 @@ parameters:
 
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
+    enabled_generic_second_factors:
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+      {{ key }}:
+        loa: {{ value.loa }}
+{% endfor %}
+
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 
     tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en

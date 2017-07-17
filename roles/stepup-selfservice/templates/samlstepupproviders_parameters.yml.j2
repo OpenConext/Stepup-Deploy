@@ -1,11 +1,4 @@
 parameters:
-    # the routes should be kept as is, they map to specific URLs on the gateway
-    #gssp_routes_consume_assertion: gssp_consume_assertion
-    #gssp_routes_metadata: gssp_saml_metadata
-    gssp_routes_consume_assertion: ss_registration_gssf_consume_assertion
-    gssp_routes_metadata: ss_registration_gssf_saml_metadata
-
-
     # Authentication flow:
     # Real Tiqr IdP <--> GSSP Tiqr SP <--> GSSP Tiqr IdP <--> SelfService
     # AuthnRequests from the RA and SS are proxied through the Tiqr GSSP proxy on the Gateway
@@ -25,6 +18,38 @@ parameters:
 
     # base64 without pem headers
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}
+
+    # GUI
+    gssp_tiqr_logo: /images/second-factor/tiqr.png
+
+    # Translations
+    gssp_tiqr_alt:
+        en_GB: 'Tiqr'
+        nl_NL: 'Tiqr'
+    gssp_tiqr_title:
+        en_GB: 'Tiqr'
+        nl_NL: 'Tiqr'
+    gssp_tiqr_description:
+        en_GB: 'Log in with a smartphone app. For all smartphones with %%tiqr_ios_link_start%%Apple iOS%%tiqr_ios_link_end%% or %%tiqr_android_link_start%%Android%%tiqr_android_link_end%%.'
+        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%tiqr_ios_link_start%%Apple iOS%%tiqr_ios_link_end%% of %%tiqr_android_link_start%%Android%%tiqr_android_link_end%%.'
+    gssp_tiqr_button_use:
+        en_GB: 'Select'
+        nl_NL: 'Selecteer'
+    gssp_tiqr_initiate_title:
+        en_GB: 'Register with Tiqr'
+        nl_NL: 'Registreren bij Tiqr'
+    gssp_tiqr_initiate_button:
+        en_GB: 'Register with Tiqr'
+        nl_NL: 'Registreer gauth apparaat'
+    gssp_tiqr_explanation:
+        en_GB: 'Click the button below to register with Tiqr.'
+        nl_NL: 'Klik op de knop hieronder om je bij Tiqr te registreren.'
+    gssp_tiqr_authn_failed:
+        en_GB: 'Registration with Tiqr has failed. Please try again.'
+        nl_NL: 'Registratie bij Tiqr is mislukt. Probeer het nogmaals.'
+    gssp_tiqr_pop_failed:
+        en_GB: 'Registration of your token failed. Please try again.'
+        nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
 
 
     # Authentication flow:
@@ -46,3 +71,35 @@ parameters:
 
     # base64 without pem headers
     gssp_biometric_remote_certificate: {{ gateway_biometric_idp_publickey | default('') | depem }}
+
+    # GUI
+    gssp_biometric_logo: '/images/second-factor/biometric.png'
+
+    # Translations
+    gssp_biometric_alt:
+        en_GB: 'Biometric device'
+        nl_NL: 'Biometrisch apparaat'
+    gssp_biometric_title:
+        en_GB: 'Biometric device'
+        nl_NL: 'Biometrisch apparaat'
+    gssp_biometric_description:
+        en_GB: 'Log in using a biometric device.'
+        nl_NL: 'Log in met een biometrisch apparaat.'
+    gssp_biometric_button_use:
+        en_GB: 'Select'
+        nl_NL: 'Selecteer'
+    gssp_biometric_initiate_title:
+        en_GB: 'Register a biometric device'
+        nl_NL: 'Registratie biometrisch apparaat'
+    gssp_biometric_initiate_button:
+        en_GB: 'Register biometric device'
+        nl_NL: 'Registreer biometrisch apparaat'
+    gssp_biometric_explanation:
+        en_GB: 'Click the button below to register a biometric device.'
+        nl_NL: 'Klik op de knop hieronder om je biometrisch apparaat te registreren.'
+    gssp_biometric_authn_failed:
+        en_GB: 'Registration of biometric device has failed. Please try again.'
+        nl_NL: 'Registratie biometrisch apparaat is mislukt. Probeer het nogmaals.'
+    gssp_biometric_pop_failed:
+        en_GB: 'Registration of your token failed. Please try again.'
+        nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'

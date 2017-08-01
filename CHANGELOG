@@ -1,3 +1,29 @@
+Release 11
+Fix for per institution LoA configuration, add GSSP though configuration, update Swiftmailer because of CVE-2016-10074,
+show error when missing EPTI attribute.
+
+* Gateway
+- Fix: Update swiftmailer because of CVE-2016-10074. Exploitation requires the attacker to control the email address.
+- Fix: Per IdP LoA configuration for an SP by institution ID. Institution ID's are now recognised in the loa definition of
+  an SP as described in https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#service-providers
+- Fix: The gateway would generate a SAML Assertion without a Subject when the Assertion from the remote IdP did not
+  contain a eduPersonTargetedID attribute with a NameID. Now an error is shown on the gateway when this occurs.
+
+* Middleware, Gateway, SelfService and RA
+- A new GSSP can be though configuration. The Ansible environment must be updated:
+  - A new parameter "stepup_enabled_generic_second_factors" was introduced
+  - The "stepup_enabled_factors" parameter was updated
+  When using the existing GSSPs "tiqr" and "biometric", the changes are minimal. The requied changes are described in
+  docs/add-gssf-to-stepup.md
+
+Install:
+* Deploy components:
+  - Middleware 2.6.0
+  - Gateway 2.6.0
+  - RA x.x.x
+  - SelfService x.x.x
+
+
 Release 10
 Add option to test 2nd factor in SelfService, bugfixes
 

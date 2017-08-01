@@ -51,8 +51,8 @@ stepup_enabled_factors: sms, yubikey, u2f
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
-  biometric:
-    loa: 2
+#  biometric:
+#    loa: 2
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml

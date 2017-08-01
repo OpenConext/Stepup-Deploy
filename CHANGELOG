@@ -20,8 +20,8 @@ Install:
 * Deploy components:
   - Middleware 2.6.0
   - Gateway 2.6.0
-  - RA x.x.x
-  - SelfService x.x.x
+  - RA 2.7.0
+  - SelfService 2.7.0
 
 
 Release 10

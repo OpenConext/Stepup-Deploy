@@ -82,13 +82,4 @@
   roles:
   - dev
 
-- name: Setup loadbalancer servers
-  hosts: lb
-  become: True
-  tags: lb
-  serial: 1
-
-  roles:
-  - lb
-
 

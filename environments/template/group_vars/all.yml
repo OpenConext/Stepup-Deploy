@@ -126,7 +126,7 @@ keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use addre
 # The ip address of the loghost server to receive logs
 # TODO: Set to address and port of logserver
 # Set to the host_ipv4 for the first host in the manage group, set to "False" if the manage group is empty
-loghost_relp_address: "{{ (groups['manage'][0] | default( {'host_ipv4': false} ))['host_ipv4'] }}"
+loghost_relp_address: "{{ (groups['manage'][0] | default(false)) | ternary(hostvars[groups['manage'][0]|default(inventory_hostname)]['host_ipv4'], false) }}"
 loghost_relp_port: 10514
 
 # The (ip) address to use to access the memcache server

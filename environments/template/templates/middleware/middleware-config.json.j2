@@ -82,6 +82,7 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+{% if 'tiqr' in stepup_enabled_generic_second_factors %}
       {# The Stepup-SelfService Tiqr GSSP SP #}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata",
@@ -112,6 +113,39 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+{% endif %}
+{% if 'biometric' in stepup_enabled_generic_second_factors %}
+      {# The Stepup-SelfService Biometric GSSP SP #}
+      {
+        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/metadata",
+        "public_key": "{{ selfservice_biometric_sp_publickey | depem }}",
+        "acs": [
+          "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {# The Stepup-RA Biometric GSSP SP #}
+      {
+       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/metadata",
+        "public_key": "{{ ra_biometric_sp_publickey | depem }}",
+        "acs": [
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/verify"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa3 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+{% endif %}
 
       {# SP definition Template
       {

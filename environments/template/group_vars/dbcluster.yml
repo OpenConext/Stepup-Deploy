@@ -2,6 +2,9 @@
 mariadb_cluster_name: stepup-cluster
 
 # Password for mariaDB root user
+# Note: unlike the other passwords, the db role does not support changeing the MariaDB root password once it has been
+#       set. To change the root passsword, set the new password in the enironment and change the MariaDb password
+#       manually.
 mariadb_root_password: "{{ lookup('file', inventory_dir+'/password/mariadb_root') }}"
 
 # Name and password for MariaDB account for inter node communication in the cluser

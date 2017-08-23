@@ -1,3 +1,7 @@
+* Make the default locale and the available locales for the stepup applications configurable using group_vars.
+  See the playbook variables "default_locale" and "enabled_locales" in group_vars/all.yml. These two variables
+  must be added to existing environments.
+
 Release 11
 Fix for per institution LoA configuration, add GSSP though configuration, update Swiftmailer because of CVE-2016-10074,
 show error when missing EPTI attribute.

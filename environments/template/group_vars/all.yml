@@ -32,6 +32,15 @@ keyserver_vhost_name: keyserver.stepup.example.com
 # TODO: Set cookie domain
 locale_cookie_domain: stepup.example.com
 
+# The default locale for the stepup applications. Supported: nl_NL or en_GB
+default_locale: en_GB
+
+# Locales enabled in the stepup applications
+# Supported locales: nl_NL and en_GB
+enabled_locales:
+  - nl_NL
+  - en_GB
+
 
 # The uri's that are used to define the LoA levels used in AuthnContextClassRef
 # TODO: Set LoA uri's

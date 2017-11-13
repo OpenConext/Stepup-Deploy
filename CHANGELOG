@@ -1,3 +1,27 @@
+Release 12
+Add support for the SFO extension for Microsoft ADFS (https://github.com/SURFnet/ADFS-MFA-SAML2.0-Extension) to the
+Setup-Gateway
+
+* Gateway
+- Add support for receiving SAML AuthnRequests using the the HTTP-POST binding
+- When the ADFS specific "AuthMethod" and "Context" are present the SFO endpoint will switch to "SFO extension for ADFS"
+  mode:
+  - It adds "AuthMethod" and "Context" HTTP POST variables from the request to the response
+  - It returns the SAMLResponse in a HTTP POST variable "_SAMLResponse" instead of "SAMLResponse"
+
+* Deploy
+- "app" role: Added "lb_addresses" variable to specify trusted IPs for the X-Forwarded-For header. Stopped using hosts
+  from lb group for this purpose as the lb role is going to be removed from the playbook. If you are using the lb role
+  you should set "lb_addresses" variable add redeploy the app role.
+
+Install:
+* Deploy components:
+  - Gateway 2.7.0
+
+* Rerun app role (for lb_addresses)
+  ansible-playbook site.yml -i <inventory> -t app -l <host>
+
+
 Release 11
 Fix for per institution LoA configuration, add GSSP though configuration, update Swiftmailer because of CVE-2016-10074,
 show error when missing EPTI attribute.

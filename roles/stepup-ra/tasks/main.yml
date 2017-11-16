@@ -22,10 +22,11 @@
 - name: Remove group and world write
   file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
 
-- name: Put parameters.yml
+- name: Put parameters.yml, samlstepupproviders(_parameters).yml and global_view_parameters.yml
   template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
   with_items:
   - parameters.yml
+  - samlstepupproviders.yml
   - samlstepupproviders_parameters.yml
   - global_view_parameters.yml
 

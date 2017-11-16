@@ -42,11 +42,17 @@ stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
 stepup_uri_sfo_loa2: 'http://stepup.example.com/assurance/sfo-level2'
 stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 
-
-# The second factor types to enable in the SS and the RA
+# The build in second factor types to enable in the SS and the RA
 # Format: comma separated list of factors to enable
-# Supported factors: sms, yubikey, tiqr, u2f
-stepup_enabled_factors: sms, yubikey, tiqr, u2f
+# Supported factors: sms, yubikey, u2f
+stepup_enabled_factors: sms, yubikey, u2f
+
+# The generic second factor types to enable in the SS and the RA
+stepup_enabled_generic_second_factors:
+  tiqr:
+    loa: 2
+#  biometric:
+#    loa: 2
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml
@@ -108,6 +114,14 @@ database_keyserver_deploy_password: "{{ lookup('file', inventory_dir+'/password/
 database_u2f_name: u2f
 database_u2f_user: u2f
 database_u2f_password: "{{ lookup('file', inventory_dir+'/password/database_u2f') }}"
+
+
+# Set the addres(ses) of the loadbalancer(s)
+# These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.
+# Note: Specify the IP addresses of the loadbalancers themselves (i.e. what the app server will see at the source IP,
+#       and not the loadbalanced address.
+# TODO: Set to the IP addres(ses) of the loadbalancer(s) that proxy the http requests to the app servers.
+lb_addresses: []
 
 # The (ip) address to use to access the mariadb database
 # TODO: Set to loadbalanced address when using > 1 DB nodes

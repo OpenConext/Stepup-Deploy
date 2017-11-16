@@ -56,6 +56,12 @@ parameters:
 
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
+    enabled_generic_second_factors:
+      biometric:
+        loa: 2
+      tiqr:
+        loa: 2
+
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 
     session_max_absolute_lifetime: {{ app_session_max_duration }}

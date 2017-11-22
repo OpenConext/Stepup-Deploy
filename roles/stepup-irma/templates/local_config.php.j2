@@ -1,0 +1,7 @@
+<?php
+// local config
+$config['sp']['https://{{ gateway_vhost_name }}/gssp/irma/metadata'] = array(
+	'acs' => "https://{{ gateway_vhost_name }}/gssp/irma/consume-assertion",
+        'certfile' => dirname(__FILE__) . '/gateway.crt',
+
+);

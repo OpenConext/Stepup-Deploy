@@ -6,6 +6,7 @@ Since release 11 a new GSSP can be added through configuration only, no code cha
 The Ansible playbooks in Stepup-Deploy were updated to work with the two GSSPs that existed prior to this release, namely: "tiqr" and "biometric". The only change required is updating the `all.yml` group_var in the Ansible environment:
 
 1. Add `stepup_enabled_generic_second_factors`:
+
     ``` yaml
     stepup_enabled_generic_second_factors:
       tiqr:
@@ -28,12 +29,13 @@ The sections below describe the changes to the individual configuration files of
 ### Stepup-Middleware
 
 1. Add the new GSSP to: `Stepup-Middleware/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
+
     ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
         tiqr:
-            loa: 3
+            loa: 2
         gauth:
             loa: 2
     ```
@@ -41,16 +43,18 @@ The sections below describe the changes to the individual configuration files of
 ### Stepup-Gateway
 
 1. Add the new GSSP to: `Stepup-Gateway/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
+
     ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
         tiqr:
-            loa: 3
+            loa: 2
         gauth:
             loa: 2
     ```
 2. Add the new GSSP to: `Stepup-Gateway/app/config/samlstepupproviders.yml`
+
     ``` yaml
     imports:
     
@@ -80,8 +84,8 @@ The sections below describe the changes to the individual configuration files of
                     entity_id: %gssp_tiqr_remote_entity_id%
                     sso_url: %gssp_tiqr_remote_sso_url%
                     certificate: %gssp_tiqr_remote_certificate%
-...
-...
+	...
+	...
             gauth:
                 enabled: true
                 hosted:
@@ -103,6 +107,7 @@ The sections below describe the changes to the individual configuration files of
     ```
 
 3. And add the parameters to `Stepup-Gateway/app/config/samlstepupproviders_parameters.yml`:
+
     ```yaml
     parameters:
         # A list of service provider entity IDs that are allowed to send authn requests to the GSSPs
@@ -140,8 +145,8 @@ The sections below describe the changes to the individual configuration files of
         gssp_tiqr_remote_entity_id: 'https://tiqr.tld/saml/metadata'
         gssp_tiqr_remote_sso_url: 'https://tiqr.tld//saml/sso'
         gssp_tiqr_remote_certificate: 'The contents of the certificate published by the gssp, excluding PEM headers'
-...
-...       
+	...
+	...       
         # Configuration of the "gauth" GSSP
         gssp_gauth_sp_publickey: '/full/path/to/the/gateway-as-sp/public-key-file.cer'
         gssp_gauth_sp_privatekey: '/full/path/to/the/gateway-as-sp/private-key-file.pem'        
@@ -157,16 +162,18 @@ The sections below describe the changes to the individual configuration files of
 ### Stepup-SelfService
 
 1.  Add the new GSSP to: `Stepup-SelfService/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
+
     ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
         tiqr:
-            loa: 3
+            loa: 2
         gauth:
             loa: 2
     ```
  2. Add the new GSSP to `providers` found in `Stepup-SelfService/app/config/samlstepupproviders.yml`. Example:
+
     ```yaml
     gauth:
         hosted:
@@ -195,6 +202,7 @@ The sections below describe the changes to the individual configuration files of
     ```
 3. Add the newly added parameters to `Stepup-SelfService/app/config/samlstepupproviders_parameters.yml`. Note that 
 translations are specified in the parameters.
+
     ```yaml
     gssp_gauth_sp_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
     gssp_gauth_sp_privatekey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
@@ -237,16 +245,18 @@ translations are specified in the parameters.
 ### Stepup-RA
 
 1.  Add the new gssf to: `Stepup-RA/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
+
     ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
         tiqr:
-            loa: 3
+            loa: 2
         gauth:
             loa: 2
     ```
 2. Add the new gssf to `providers` found in `Stepup-RA/app/config/samlstepupproviders.yml`. Example:
+
     ```yaml
     gauth:
         hosted:
@@ -268,6 +278,7 @@ translations are specified in the parameters.
     ```
 3. Add the newly added parameters to `Stepup-RA/app/config/samlstepupproviders_parameters.yml`. Note that 
 translations are specified in the parameters.
+
     ```yaml
      gssp_gauth_sp_publickey: /full/path/to/the/gateway-as-sp/public-key-file.cer
      gssp_gauth_sp_privatekey: /full/path/to/the/gateway-as-sp/private-key-file.pem

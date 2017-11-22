@@ -55,6 +55,28 @@ gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 
 
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+gateway_irma_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_sp.key') }}"
+# Used by the gateway to authenticate users to the real IRMA IdP
+# Format: PEM X.509 certificate
+gateway_irma_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_sp.crt') }}"
+
+
+# Public key is in all, so RA and SS have access to it.
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+gateway_irma_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_idp.key') }}"
+
+
+# Configuration of the remote IRMA IdP
+# Entity ID of the IRMA Idp
+gateway_irma_remote_entity_id: 'https://{{ irma_vhost_name }}/saml/metadata'
+# SingleSingOn Location of the remote IRMA IdP
+gateway_irma_remote_sso_url: 'https://{{ irma_vhost_name }}/saml/sso'
+# SAML signing certificate of the IRMA IdP
+# Format: Base64 encoded X.509 certificate without PEM headers
+gateway_irma_remote_certificate: "{{ irma_idp_publickey | depem }}"
+
+
 # Configuration of the remote Biometric IdP
 # Entity ID of the Biometric Idp
 # TODO: Set remote Biometric IdP EntityID

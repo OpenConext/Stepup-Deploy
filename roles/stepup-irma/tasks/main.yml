@@ -1,0 +1,56 @@
+# Infra stuff for irma IDP
+
+- name: Get active component
+  shell: readlink /opt/www/{{ irma_vhost_name }}
+  ignore_errors: true
+  register: active_component
+
+- debug:
+    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+- name: Check whether component is installed
+  fail: msg="Component already active"
+  when: ( 0 ) and ( component_dir_name != active_component.stdout)
+
+- name: Create stepup directory
+  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+
+- name: Untar component
+  unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
+  when: ( {{ component_unarchive | default(1) }} == 1)
+
+- name: Remove group and world write
+  file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
+
+# config stuff
+
+- name: Put local config
+  template: src=local_config.php.j2 dest={{ component_dir_name }}/local_config.php group={{ component_name }} mode=640
+
+- name: Put local options
+  template: src=local_options.php.j2 dest={{ component_dir_name }}/local_options.php group={{ component_name }} mode=640
+
+# Finish
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+
+# TODO: Put cert in config. Hint: {{ gateway_irma_sp_publickey | depem }}
+- name: Write irma sp certificate
+  copy: content="{{ gateway_irma_sp_publickey }}" dest={{ component_dir_name }}/gateway.crt group={{ component_name }} mode=640
+
+# TODO: Explicitly config filenames
+- name: Write irma idp certificate
+  copy: content="{{ irma_idp_publickey }}" dest={{ component_dir_name }}/cert.pem group={{ component_name }} mode=640
+
+# TODO: Explicitly config filenames
+- name: Write irma idp private key
+  copy: content="{{ irma_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/key.pem owner={{ component_name }} mode=400
+
+
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ irma_vhost_name }} state=link
+
+# TODO: change in Stepup-irma
+- name: create symlink to match generic nginx config
+  file: src=/opt/www/{{ irma_vhost_name }}/www dest=/opt/www/{{ irma_vhost_name }}/web state=link

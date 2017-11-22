@@ -25,6 +25,7 @@ selfservice_vhost_name: selfservice.stepup.example.com
 ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
+irma_vhost_name: irma.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
@@ -60,6 +61,8 @@ stepup_enabled_factors: sms, yubikey, u2f
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
+  irma:
+    loa: 2
 #  biometric:
 #    loa: 2
 
@@ -88,6 +91,17 @@ gateway_tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway
 # Private key in stepup-tiqr.yml
 # Format: PEM X.509 certificate
 tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') }}"
+
+# Public SAML signing key of the IRMA gateway
+# IdP for the IRMA authentication gateway that is used by the SS and RA IRMA SP endpoints
+# Private key in stepup-gateway.yml
+# Format: PEM X.509 certificate
+gateway_irma_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_idp.crt') }}"
+
+# Public SAML signing key of the IRMA IDP
+# Private key in stepup-irma.yml
+# Format: PEM X.509 certificate
+irma_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/irma_idp.crt') }}"
 
 # Database tables and users for Stepup applications, keyserver
 # Used by dbcluster role to create users and tables

@@ -33,8 +33,8 @@
 - name: Put api server pubkey
   copy: src={{ inventory_dir }}/files/apiserver.pem dest={{ component_dir_name }}/apiserver.pem group={{ component_name }} mode=640
 
-- name: Put irma issuer key
-  copy: src={{ inventory_dir }}/files/irma_key.pem dest={{ component_dir_name }}/irma_key.pem owner={{ component_name }} mode=400
+- name: Put irma request signing key
+  copy: content="{{ irma_req_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/irma_key.pem owner={{ component_name }} mode=400
 
 # Finish
 

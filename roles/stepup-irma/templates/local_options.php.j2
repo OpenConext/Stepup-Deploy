@@ -2,6 +2,13 @@
 // local options
 
 // TODO: dedicated api server for TEST/PILOT/ACC/PROD
-$options['irma_api_server'] = 'https://irma.surfconext.nl';                  // Our IRMA API server
+$options['irma_api_server'] = 'https://irma.surfconext.nl';
 // TODO: host these files locally
-$options['irma_web_server'] = 'https://privacybydesign.foundation/tomcat/irma_api_server'; // Hosts some static files
+$options['irma_web_server'] = 'https://privacybydesign.foundation/tomcat/irma_api_server';
+
+$option['irma_keyfile'] = dirname(__FILE__) . "/irma_key.pem";
+$option['irma_apiserver_publickey'] = dirname(__FILE__) . "/apiserver.pem";
+$option['irma_attribute_id'] = "pbdf.pbdf.surfnet.id"; // TODO: what attribute to use?
+$option['irma_attribute_label'] = "User ID"; // TODO: eppn?
+$option['irma_keyid'] = "surfnet_stepup";
+$option['irma_issuer'] = "SURFconext Strong Authentication";

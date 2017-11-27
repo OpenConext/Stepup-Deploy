@@ -30,6 +30,12 @@
 - name: Put local options
   template: src=local_options.php.j2 dest={{ component_dir_name }}/local_options.php group={{ component_name }} mode=640
 
+- name: Put api server pubkey
+  copy: src={{ inventory_dir }}/files/apiserver.pem dest={{ component_dir_name }}/apiserver.pem group={{ component_name }} mode=640
+
+- name: Put irma issuer key
+  copy: src={{ inventory_dir }}/files/irma_key.pem dest={{ component_dir_name }}/irma_key.pem owner={{ component_name }} mode=400
+
 # Finish
 
 - name: Set stepup directory rights

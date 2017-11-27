@@ -111,7 +111,7 @@
         - stepup-irma
 
   vars:
-      component_tarball_name: "{{ tarball_location }}/Stepup-irma-1.0.0-20171121112809Z-1a4176c4778d90607aab0093f5d54a3f67fb672c.tar.bz"
+      component_tarball_name: "{{ tarball_location }}/Stepup-irma-1.0.0-20171121112809Z-1a4176c4778d90607aab0093f5d54a3f67fb672c.tar.bz2"
       component_name: irma
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"

@@ -42,7 +42,7 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param HTTPS on;
     }
-{% else if component_name == "irma" %}
+{% elif component_name == "irma" %}
     location /irma/ {
         # try to serve file directly, otherwise forward to irma/index.php
         try_files $uri /irma/index.php$is_args$args;

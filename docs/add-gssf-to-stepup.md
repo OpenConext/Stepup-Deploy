@@ -1,11 +1,11 @@
-# Adding new Gssf to Stepup
+# Adding new Gssp to Stepup
 This document shows the steps to register a new generic second factor to the Stepup project. This is text was written 
 during testing of the addition of the feature. The actual implementation is not described in this document.
  
 Middleware
 ---
 1. Add the new gssf to: `Stepup-Middleware/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
-    ```
+    ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
@@ -18,7 +18,7 @@ Middleware
 Gateway
 ---
 1.  Add the new gssf to: `Stepup-Gateway/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
-    ```
+    ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
@@ -31,7 +31,7 @@ Gateway
 SelfService
 ---
 1.  Add the new gssf to: `Stepup-SelfService/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
-    ```
+    ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
@@ -41,7 +41,7 @@ SelfService
             loa: 2
     ```
  2. Add the new gssf to `providers` found in `Stepup-SelfService/app/config/samlstepupproviders.yml`. Example:
-    ```
+    ```yaml
     gauth:
         hosted:
             service_provider:
@@ -66,10 +66,11 @@ SelfService
             explanation: %gssp_gauth_initiate_title%
             authn_failed: %gssp_gauth_authn_failed%
             pop_failed: %gssp_gauth_pop_failed%
-    ```
+    ```  
+    
 3. Add the newly added parameters to `Stepup-SelfService/app/config/samlstepupproviders_parameters.yml`. Note that 
 translations are specified in the parameters.
-    ```
+    ```yaml
     gssp_gauth_sp_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
     gssp_gauth_sp_privatekey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
     gssp_gauth_metadata_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
@@ -108,10 +109,59 @@ translations are specified in the parameters.
         nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
     ```
 
+## Configuring app url's for profiders
+Set the Android and/or iOs URL in `samlstepupprovidres.yml` like this:
+
+```yaml
+surfnet_stepup_self_service_saml_stepup_provider:
+    routes:
+	...
+    providers:
+        tiqr:
+            hosted:
+                ...
+            remote:
+                ...
+            view_config:
+                ...
+                description: %gssp_tiqr_description%                
+                app_android_url: %gssp_tiqr_app_android_url%
+                app_ios_url: %gssp_tiqr_app_ios_url%
+		...
+        miko:
+            hosted:
+                ...
+            remote:
+                ...
+            view_config:
+                ...
+                description: %gssp_miko_description%                
+                app_android_url: %gssp_miko_app_android_url%
+		...
+```
+
+Note that the app url's are optional config settings. 
+
+When adding one of the two supported app url's the description must be set accordingly. The `samlstepupproviders_parameters.yml` file for the explanation above:
+
+```yaml
+gssp_tiqr_description:
+parameters:
+    gssp_tiqr_description:
+        en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+gssp_miko_description:
+        en_GB: 'Log in with a Miko smartphone app. For all smartphones with %%android_link_start%%Android%%android_link_end%%.'
+        nl_NL: 'Log in met een Miko app op je smartphone. Geschikt voor smartphones met %%android_link_start%%Android%%android_link_end%%.'
+    
+```
+
+The application wil validate the descriptions for the correct app url tokens.
+
 RA
 ---
-1.  Add the new gssf to: `Stepup-RA/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
-    ```
+1.  Add the new gssp to: `Stepup-RA/app/config/parameters.yml`. Example value for the `enabled_generic_second_factors`:
+    ```yaml
     enabled_generic_second_factors:
         biometric:
             loa: 3
@@ -120,8 +170,8 @@ RA
         gauth:
             loa: 2
     ```
-2. Add the new gssf to `providers` found in `Stepup-RA/app/config/samlstepupproviders.yml`. Example:
-    ```
+2. Add the new gssp to `providers` found in `Stepup-RA/app/config/samlstepupproviders.yml`. Example:
+    ```yaml
     gauth:
         hosted:
             service_provider:
@@ -142,7 +192,7 @@ RA
     ```
 3. Add the newly added parameters to `Stepup-RA/app/config/samlstepupproviders_parameters.yml`. Note that 
 translations are specified in the parameters.
-    ```
+    ```yaml
      gssp_gauth_sp_publickey: /full/path/to/the/gateway-as-sp/public-key-file.cer
      gssp_gauth_sp_privatekey: /full/path/to/the/gateway-as-sp/private-key-file.pem
      gssp_gauth_metadata_publickey: /full/path/to/the/gateway-metadata/public-key-file.cer

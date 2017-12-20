@@ -1,3 +1,15 @@
+Release 13
+Bugfix release solving two issues:
+- fix an issue with pushing institution config changes, which was broken in release 12
+- fix an issue with determining an institution-specific LoA for unknown users
+
+Install:
+* Deploy components:
+  - Gateway 2.7.2
+  - Middleware 2.6.4
+  - RA 2.7.1
+
+
 Release 12
 Add support for the SFO extension for Microsoft ADFS (https://github.com/SURFnet/ADFS-MFA-SAML2.0-Extension) to the
 Setup-Gateway

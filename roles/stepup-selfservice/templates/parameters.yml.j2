@@ -73,6 +73,8 @@ parameters:
         loa: {{ value.loa }}
 {% endfor %}
 
+    number_of_tokens_per_identity: {{ number_of_tokens_per_identity }}
+
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 
     tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en

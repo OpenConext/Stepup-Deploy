@@ -54,6 +54,9 @@ stepup_enabled_generic_second_factors:
 #  biometric:
 #    loa: 2
 
+# Sets the number of tokens allowed for each identity
+number_of_tokens_per_identity: 3
+
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml
 # Format: PEM X.509 certificate

@@ -6,6 +6,7 @@
     app_domain: stepup.coin.surf.net
     php_packages:
       - php-bcmath
+      - php-gd
       - php-intl
       - php-mbstring
       - php-mcrypt

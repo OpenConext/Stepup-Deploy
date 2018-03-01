@@ -50,13 +50,13 @@
 
 - name: Put iptables
   template: src={{ inventory_dir }}/templates/common/iptables.j2 dest='/etc/sysconfig/iptables'
-  tags: skip_docker_test
+  tags: skip_docker_test, iptables
   notify:
   - restart iptables
 
 - name: Put ip6tables
   template: src={{ inventory_dir }}/templates/common/ip6tables.j2 dest='/etc/sysconfig/ip6tables'
-  tags: skip_docker_test
+  tags: skip_docker_test, iptables
   notify:
   - restart ip6tables
 

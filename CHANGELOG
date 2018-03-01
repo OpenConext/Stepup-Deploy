@@ -1,13 +1,26 @@
+Release 13.1 (hotfix)
+Hotfix for matching case-insensitive identifiers
+
+Install:
+* Deploy component
+  - Gateway 2.7.3
+
+
 Release 13
 Bugfix release solving two issues:
 - fix an issue with pushing institution config changes, which was broken in release 12
 - fix an issue with determining an institution-specific LoA for unknown users
+
+In addition, Kibana log retention is extended from 90 to 120 days.
 
 Install:
 * Deploy components:
   - Gateway 2.7.2
   - Middleware 2.6.4
   - RA 2.7.1
+
+* run manage role (for manage_keep_logs_days)
+  ansible-playbook site.tyml -i <inventory> -t manage -l <host>
 
 
 Release 12

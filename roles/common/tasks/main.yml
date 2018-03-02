@@ -47,6 +47,9 @@
   - rsyslog # Is the default syslog for RH / CentOS
   - rsyslog-relp # For using RELP with rsyslog
 
+- debug:
+    msg: groups_names = {{ group_names | join(', ') }}
+  tags: iptables
 
 - name: Put iptables
   template: src={{ inventory_dir }}/templates/common/iptables.j2 dest='/etc/sysconfig/iptables'

@@ -1,3 +1,21 @@
+Release 13.2 (hotfix)
+- Hotfix for two SimpleSAMLphp vulnerabilities
+- Fix Tiqr authentication from Microsoft Office 365 applications
+
+* All Stepup components:
+- Update SimpleSAMLphp with fixes for 201802-01 and 201803-01
+
+* Stepup-tiqr
+- Fix a Script error when authenticating with Tiqr from Microsoft Office 365 applications
+
+Install:
+* Deploy components:
+  - Stepup-Gateway 2.7.5
+  - Stepup-SelfService 2.7.2
+  - Stepup-RA 2.7.3
+  - Stepup-tiqr 1.1.8
+
+
 Release 13.1 (hotfix)
 Hotfix for matching case-insensitive identifiers
 

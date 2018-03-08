@@ -2,6 +2,74 @@
   See the playbook variables "default_locale" and "enabled_locales" in group_vars/all.yml. These two variables
   must be added to existing environments.
 
+
+Release 13.2 (hotfix)
+- Hotfix for two SimpleSAMLphp vulnerabilities
+- Fix Tiqr authentication from Microsoft Office 365 applications
+
+* All Stepup components:
+- Update SimpleSAMLphp with fixes for 201802-01 and 201803-01
+
+* Stepup-tiqr
+- Fix a Script error when authenticating with Tiqr from Microsoft Office 365 applications
+
+Install:
+* Deploy components:
+  - Stepup-Gateway 2.7.5
+  - Stepup-SelfService 2.7.2
+  - Stepup-RA 2.7.3
+  - Stepup-tiqr 1.1.8
+
+
+Release 13.1 (hotfix)
+Hotfix for matching case-insensitive identifiers
+
+Install:
+* Deploy component
+  - Gateway 2.7.3
+
+
+Release 13
+Bugfix release solving two issues:
+- fix an issue with pushing institution config changes, which was broken in release 12
+- fix an issue with determining an institution-specific LoA for unknown users
+
+In addition, Kibana log retention is extended from 90 to 120 days.
+
+Install:
+* Deploy components:
+  - Gateway 2.7.2
+  - Middleware 2.6.4
+  - RA 2.7.1
+
+* run manage role (for manage_keep_logs_days)
+  ansible-playbook site.tyml -i <inventory> -t manage -l <host>
+
+
+Release 12
+Add support for the SFO extension for Microsoft ADFS (https://github.com/SURFnet/ADFS-MFA-SAML2.0-Extension) to the
+Setup-Gateway
+
+* Gateway
+- Add support for receiving SAML AuthnRequests using the the HTTP-POST binding
+- When the ADFS specific "AuthMethod" and "Context" are present the SFO endpoint will switch to "SFO extension for ADFS"
+  mode:
+  - It adds "AuthMethod" and "Context" HTTP POST variables from the request to the response
+  - It returns the SAMLResponse in a HTTP POST variable "_SAMLResponse" instead of "SAMLResponse"
+
+* Deploy
+- "app" role: Added "lb_addresses" variable to specify trusted IPs for the X-Forwarded-For header. Stopped using hosts
+  from lb group for this purpose as the lb role is going to be removed from the playbook. If you are using the lb role
+  you should set "lb_addresses" variable add redeploy the app role.
+
+Install:
+* Deploy components:
+  - Gateway 2.7.0
+
+* Rerun app role (for lb_addresses)
+  ansible-playbook site.yml -i <inventory> -t app -l <host>
+
+
 Release 11
 Fix for per institution LoA configuration, add GSSP though configuration, update Swiftmailer because of CVE-2016-10074,
 show error when missing EPTI attribute.
@@ -24,8 +92,8 @@ Install:
 * Deploy components:
   - Middleware 2.6.0
   - Gateway 2.6.0
-  - RA x.x.x
-  - SelfService x.x.x
+  - RA 2.7.0
+  - SelfService 2.7.0
 
 
 Release 10

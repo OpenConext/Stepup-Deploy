@@ -138,6 +138,14 @@ database_u2f_name: u2f
 database_u2f_user: u2f
 database_u2f_password: "{{ lookup('file', inventory_dir+'/password/database_u2f') }}"
 
+
+# Set the addres(ses) of the loadbalancer(s)
+# These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.
+# Note: Specify the IP addresses of the loadbalancers themselves (i.e. what the app server will see at the source IP,
+#       and not the loadbalanced address.
+# TODO: Set to the IP addres(ses) of the loadbalancer(s) that proxy the http requests to the app servers.
+lb_addresses: []
+
 # The (ip) address to use to access the mariadb database
 # TODO: Set to loadbalanced address when using > 1 DB nodes
 database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster

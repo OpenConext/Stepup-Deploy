@@ -1,6 +1,8 @@
 * Make the default locale and the available locales for the stepup applications configurable using group_vars.
   See the playbook variables "default_locale" and "enabled_locales" in group_vars/all.yml. These two variables
   must be added to existing environments.
+* Add "lb_addresses" in group_vars/all.yml. When using a load balancer, set this variable to an array of IP addresses
+  of the loadbalancers. Used in nginx config and default ip(6)tables config.
 
 
 Release 13.2 (hotfix)

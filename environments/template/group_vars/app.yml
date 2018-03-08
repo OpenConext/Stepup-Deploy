@@ -66,3 +66,14 @@ logout_redirect_url: https://engine.surfconext.nl/logout
 # Port of sendmail SMTP smarthost (optional)
 # Only define when using a non standard port (i.e. other than port 25)
 #sendmail_smarthost_port:
+
+# Message originator as displayed in SMS
+# "This can be a telephone number (including country code) or an alphanumeric string.
+#  In case of an alphanumeric string, the maximum length is 11 characters."
+# Used by Gateway, SelfService and RA components
+sms_originator: Stepup
+# Validity time of an OTP send using SMS in seconds
+sms_otp_expiry_interval: 900
+# Maximum number of times a user may resend an SMS during authenticaton
+sms_maximum_otp_requests: 3
+

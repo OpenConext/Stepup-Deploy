@@ -1,20 +1,14 @@
 parameters:
-    # the routes should be kept as is, they map to specific URLs on the gateway
-    gssp_routes_sso: gssp_verify
-    gssp_routes_consume_assertion: gssp_consume_assertion
-    gssp_routes_metadata: gssp_saml_metadata
-
     # A list of service provider entity IDs that are allowed to send AuthnRequests to the GSSPs
     gssp_allowed_sps: [ 'https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata' ]
 
-
-    # tiqr should be enabled
-    gssp_tiqr_enabled: true
-
+{% if 'tiqr' in stepup_enabled_generic_second_factors %}
     # Authentication flow:
     # Real Tiqr IdP <--> GSSP Tiqr SP <--> GSSP Tiqr IdP <--> RA | SS
     # AuthnRequests from the RA and SS are proxied through the Tiqr GSSP proxy on the Gateway
     # The GSSP Tiqr SP and IdP are hosted on the gateway
+    #
+    # Metadata URL: https://<gateway>/gssp/tiqr/metadata
 
     # Tiqr SP Proxy for authenticating with the real (i.e. external) tiqr IdP
     gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
@@ -32,15 +26,15 @@ parameters:
     gssp_tiqr_remote_entity_id: {{ gateway_tiqr_remote_entity_id }}
     gssp_tiqr_remote_sso_url: {{ gateway_tiqr_remote_sso_url }}
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_remote_certificate }}
+{% endif %}
 
-
-    # Biometric GSSP is disabled
-    gssp_biometric_enabled: false
-
+{% if 'biometric' in stepup_enabled_generic_second_factors %}
     # Authentication flow:
     # Real Biometric IdP <--> GSSP Biometric SP <--> GSSP Biometric IdP <--> RA | SS
     # AuthnRequests from the RA and SS are proxied through the Biometric GSSP proxy on the Gateway
     # The GSSP Biometric SP and IdP are hosted on the gateway
+    #
+    # Metadata URL: https://<gateway>/gssp/biometric/metadata
 
     # Biometric SP Proxy for authenticating with the real (i.e. external) biometric IdP
     gssp_biometric_sp_publickey: {{ component_dir_name }}/app/config/sp_biometric.crt
@@ -58,3 +52,4 @@ parameters:
     gssp_biometric_remote_entity_id: {{ gateway_biometric_remote_entity_id }}
     gssp_biometric_remote_sso_url: {{ gateway_biometric_remote_sso_url }}
     gssp_biometric_remote_certificate: {{ gateway_biometric_remote_certificate }}
+{% endif %}

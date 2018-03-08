@@ -21,7 +21,7 @@
 
   - name: Set debug, mode, owner and group for production
     set_fact:
-        debug_flag: --no-debug
+        debug_flag: "--no-debug"
         component_group: "{{ component_name }}"
         component_owner: "{{ component_name }}"
         component_mode_400: "400" # r-- --- ---
@@ -29,7 +29,7 @@
         component_mode_644: "644" # rw- r-- r--
         component_mode_755: "755" # rwx r-x r-x
         component_mode_770: "770" # rwx rwx ---
-  when: "not {{ develop | default(false) }}"
+  when: not develop | default(false)
 
 - block:
     - name: DEVELOP - Composer install
@@ -41,17 +41,22 @@
 
     - name: DEVELOP - Set debug, mode, owner and group for develop
       set_fact:
-          debug_flag:
-          component_group: vagrant
-          component_owner: vagrant
-          component_mode_400: "400" # 444
-          component_mode_640: "640" # 666
-          component_mode_644: "644" # 666
-          component_mode_755: "755" # 777
-          component_mode_770: "770" # 777
+          debug_flag: ""
+          component_group:
+          component_owner:
+          #component_mode_400: "400" # 444
+          #component_mode_640: "640" # 666
+          #component_mode_644: "644" # 666
+          #component_mode_755: "755" # 777
+          #component_mode_770: "770" # 777
+          component_mode_400: "0444"
+          component_mode_640: "0666"
+          component_mode_644: "0666"
+          component_mode_755: "0777"
+          component_mode_770: "0777"
 
     - name: DEVELOP - put app_dev.php
       copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
       when: component_name != "tiqr" and component_name != "keyserver"
 
-  when: "{{ develop | default(false) }}"
+  when: develop | default(false)

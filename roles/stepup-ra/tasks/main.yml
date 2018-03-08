@@ -1,9 +1,10 @@
 # Infra suff for RA
 
-- name: Put parameters.yml
+- name: Put parameters.yml, samlstepupproviders(_parameters).yml and global_view_parameters.yml
   template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
   - parameters.yml
+  - samlstepupproviders.yml
   - samlstepupproviders_parameters.yml
   - global_view_parameters.yml
 
@@ -32,12 +33,14 @@
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
   - "{{ component_dir_name }}/app"
+  when: not (develop | default(false))
 
 - name: Grant app write access to cache and log dirs
   file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
+  when: not (develop | default(false))
 
 
 - name: Write SP private key
@@ -51,7 +54,6 @@
 
 - name: Write Tiqr SP certificate
   copy: content="{{ ra_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt group={{ component_group }} mode={{ component_mode_640 }}
-
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}

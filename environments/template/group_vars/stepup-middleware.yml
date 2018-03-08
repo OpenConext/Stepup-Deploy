@@ -1,10 +1,18 @@
-# Config for middleware component
+# Configuration for middleware component
 
 # Used for Symfony CSRF protection
 middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
 
-#TODO: Define SRAA's
-# List of Super RA Administrators for first time manual provisioning
+# List of users (identities) that have Super RA Administrators rights
+# The nameid's in the list below are used in "../templates/middleware/middleware-config.json.j2"
+# To add/remove SRAA's add/remove them to the list below and then push a new middleware configuration.
+# For more information see: "../templates/middleware/middleware-config.json.j2"
+#
+# The information beyond nameid is *only* used by the middleware bootstrap script on the app server:
+# /root/06-middleware-bootstrap-sraa-users.sh
+# To update this script file after making changes here, redeploy the Stepup-Middleware component
+
+# TODO: Define SRAA's
 middleware_sraa:
     - { nameid: "urn:collab:person:stepup.example.com:admin", institution: stepup.example.com, cn: "Admin", email: admin@stepup.example.com, lang: en_GB, yubikey_id: 00000000 }
     - { nameid: "urn:collab:person:stepup.example.com:pieter", institution: stepup.example.com, cn: "Pieter van der Meulen", email: pieter.vandermeulen@surfnet.nl, lang: nl_NL, yubikey_id: 01906374 }

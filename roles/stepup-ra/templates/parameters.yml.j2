@@ -6,10 +6,11 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
 
-    default_locale:       nl_NL
-    locales:              [nl_NL, en_GB]
-    secret:               {{ ra_secret | vault(vault_keydir) }}
+    default_locale:       {{ default_locale }}
+    locales:              [{{ enabled_locales | join(",") }}]
     locale_cookie_domain: {{ locale_cookie_domain }}
+
+    secret:               {{ ra_secret | vault(vault_keydir) }}
 
     debug_toolbar:          true
     debug_redirects:        false
@@ -55,6 +56,12 @@ parameters:
     logout_redirect_url: {{ logout_redirect_url }}
 
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
+
+    enabled_generic_second_factors:
+      biometric:
+        loa: 2
+      tiqr:
+        loa: 2
 
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 

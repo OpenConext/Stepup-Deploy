@@ -155,14 +155,20 @@
       },
 {% endif %}
 
-      {# Add additional SPs below #}
-
+<<<<<<< HEAD
+      {
+        "entity_id": "https://simplesaml.stepup.example.com/module.php/saml/sp/metadata.php/default-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
+        "acs": [
+          "https://simplesaml.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
+=======
       {# SP definition Template
       {
         "entity_id": "",
         "public_key": "",
         "acs": [
           ""
+>>>>>>> develop
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -172,20 +178,23 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+<<<<<<< HEAD
+=======
       #}
+
+      {# Add additional SPs below #}
+>>>>>>> develop
 
       {# A test SP #}
       {
-        "entity_id": "https://simplesaml.stepup.example.com/module.php/saml/sp/metadata.php/default-sp",
-        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
-
+        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
+        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "acs": [
+          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+        ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
         },
-        "acs": [
-          "https://simplesaml.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
-          }
-
         "assertion_encryption_enabled": false,
         "second_factor_only": false,
         "second_factor_only_nameid_patterns": [],

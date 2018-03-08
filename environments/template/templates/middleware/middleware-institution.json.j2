@@ -1,3 +1,18 @@
+{#
+# This template is used to generate the institution-config
+#
+# For more information see:
+# https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#using-the-institution-configuration-api
+#
+# To apply changes made here you need to push a new insitution configuration to Stepup-Middleware component
+# on an app server. There are two ways to do this using Stepup-Deploy:
+# 1) Use the push-config.sh script in the Stepup-Deploy repo
+# 2) Redeploy the Stepup-Middleware component using the deploy.sh script in the Stepup-Deploy repo and then
+#    on the app sever execute /root/05-middleware-institution.sh
+#
+# TODO: Set institution specific configuration here. If no configuration is specified for an institution,
+#       the default values are used
+#}
 {
    {#
     "institution.example.org": {

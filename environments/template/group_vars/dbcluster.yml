@@ -2,6 +2,9 @@
 mariadb_cluster_name: stepup-cluster
 
 # Password for mariaDB root user
+# Note: unlike the other passwords, the db role does not support changeing the MariaDB root password once it has been
+#       set. To change the root passsword, set the new password in the enironment and change the MariaDb password
+#       manually.
 mariadb_root_password: "{{ lookup('file', inventory_dir+'/password/mariadb_root') }}"
 
 # Name and password for MariaDB account for inter node communication in the cluser
@@ -26,15 +29,3 @@ database_gateway_readonly_user: "gateway_ro"
 database_gateway_readonly_password: "{{ lookup('file', inventory_dir+'/password/database_gateway_readonly') }}"
 database_middleware_readonly_user: "middleware_ro"
 database_middleware_readonly_password: "{{ lookup('file', inventory_dir+'/password/database_middleware_readonly') }}"
-
-# Pacemaker config
-pacemaker_resources:
-  - { name: database, ip: 127.0.0.1, cidr: 24 }
-
-pacemaker_cluster_members: "{{ groups['dbcluster']|join(' ') }}"
-
-# Pacemaker user password (user for the hacluster user)
-pacemaker_user_password: "{{ lookup('file', inventory_dir+'/password/db_pacemaker_user_password') }}"
-
-# Pacemaker user crypt (crypted version of pacemaker_user_password as it would appear in /etc/shadow)
-pacemaker_user_crypt: "{{ lookup('file', inventory_dir+'/password/db_pacemaker_user_crypt') }}"

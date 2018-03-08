@@ -33,6 +33,15 @@ ssp_vhost_name: ssp.stepup.example.com # For debugging only
 # TODO: Set cookie domain
 locale_cookie_domain: stepup.example.com
 
+# The default locale for the stepup applications. Supported: nl_NL or en_GB
+default_locale: en_GB
+
+# Locales enabled in the stepup applications
+# Supported locales: nl_NL and en_GB
+enabled_locales:
+  - nl_NL
+  - en_GB
+
 
 # The uri's that are used to define the LoA levels used in AuthnContextClassRef
 # TODO: Set LoA uri's
@@ -43,11 +52,17 @@ stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
 stepup_uri_sfo_loa2: 'http://stepup.example.com/assurance/sfo-level2'
 stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 
-
-# The second factor types to enable in the SS and the RA
+# The build in second factor types to enable in the SS and the RA
 # Format: comma separated list of factors to enable
-# Supported factors: sms, yubikey, tiqr, u2f
-stepup_enabled_factors: sms, yubikey, tiqr, u2f
+# Supported factors: sms, yubikey, u2f
+stepup_enabled_factors: sms, yubikey, u2f
+
+# The generic second factor types to enable in the SS and the RA
+stepup_enabled_generic_second_factors:
+  tiqr:
+    loa: 2
+#  biometric:
+#    loa: 2
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml
@@ -110,6 +125,14 @@ database_u2f_name: u2f
 database_u2f_user: u2f
 database_u2f_password: "{{ lookup('file', inventory_dir+'/password/database_u2f') }}"
 
+
+# Set the addres(ses) of the loadbalancer(s)
+# These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.
+# Note: Specify the IP addresses of the loadbalancers themselves (i.e. what the app server will see at the source IP,
+#       and not the loadbalanced address.
+# TODO: Set to the IP addres(ses) of the loadbalancer(s) that proxy the http requests to the app servers.
+lb_addresses: []
+
 # The (ip) address to use to access the mariadb database
 # TODO: Set to loadbalanced address when using > 1 DB nodes
 database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster
@@ -120,7 +143,8 @@ keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use addre
 
 # The ip address of the loghost server to receive logs
 # TODO: Set to address and port of logserver
-loghost_relp_address: "{{ hostvars[groups['manage'][0]]['host_ipv4'] }}"
+# Set to the host_ipv4 for the first host in the manage group, set to "False" if the manage group is empty
+loghost_relp_address: "{{ (groups['manage'][0] | default(false)) | ternary(hostvars[groups['manage'][0]|default(inventory_hostname)]['host_ipv4'], false) }}"
 loghost_relp_port: 10514
 
 # The (ip) address to use to access the memcache server

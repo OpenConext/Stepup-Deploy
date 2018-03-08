@@ -22,22 +22,23 @@
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
   - "{{ component_dir_name }}/app"
+  when: not (develop | default(false))
 
 - name: Grant app write access to cache and log dirs
   file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
+  when: not (develop | default(false))
 
-# Finish
+- name: Put keyserver configuration script in /root/
+  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  with_items:
+  - "01-keyserver-db_init.sh"
+
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ keyserver_vhost_name }} state=link
-
-- name: Put keyserver configuration script in /root/
-  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
-  with_items:
-  - "01-keyserver-db_init.sh"

@@ -1,7 +1,7 @@
 parameters:
     # the routes should be kept as is, they map to specific URLs on the gateway
-    gssp_routes_consume_assertion: ra_vetting_gssf_verify
-    gssp_routes_metadata: ra_vetting_gssf_metadata
+    #gssp_routes_consume_assertion: ra_vetting_gssf_verify
+    #gssp_routes_metadata: ra_vetting_gssf_metadata
 
 
     # Authentication flow:
@@ -24,6 +24,19 @@ parameters:
     # base64 without pem headers
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}
 
+    # Translations
+    gssp_tiqr_page_title:
+        en_GB: 'Verify with Tiqr'
+        nl_NL: 'Tiqr verifiëren'
+    gssp_tiqr_explanation:
+        en_GB: 'Click the button below to verify the registrant owns the Tiqr account he or she registered with in the Self-Service application.'
+        nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+    gssp_tiqr_initiate:
+        en_GB: 'Verify with Tiqr'
+        nl_NL: 'Verifiëren bij Tiqr'
+    gssp_tiqr_gssf_id_mismatch:
+        en_GB: "The Tiqr server responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
+        nl_NL: 'De Tiqr-server heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
 
     # Authentication flow:
     # Real Biometric IdP <--> GSSP Biometric SP <--> GSSP Biometric IdP <--> SelfService
@@ -44,3 +57,18 @@ parameters:
 
     # base64 without pem headers
     gssp_biometric_remote_certificate: {{ gateway_biometric_idp_publickey | default('') | depem }}
+
+    # Translations
+    gssp_biometric_page_title:
+        en_GB: 'Verify biometrics'
+        nl_NL: 'Biometrie verifiëren'
+    gssp_biometric_explanation:
+        en_GB: 'Click the button below to verify the registrant biometrically.'
+        nl_NL: 'Klik de knop hieronder om de registrant biometrisch te verifiëren.'
+    gssp_biometric_initiate:
+        en_GB: 'Verify biometrics'
+        nl_NL: 'Biometrie verifiëren'
+    gssp_biometric_gssf_id_mismatch:
+        en_GB: 'The biometric device returned a different ID than was registered in the Self-Service application.'
+        nl_NL: 'Het biometrisch apparaat heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+

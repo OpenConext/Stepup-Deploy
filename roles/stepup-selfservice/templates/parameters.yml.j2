@@ -6,10 +6,11 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
 
-    default_locale:       nl_NL
-    locales:              [nl_NL, en_GB]
-    secret:               {{ selfservice_secret | vault(vault_keydir) }}
+    default_locale:       {{ default_locale }}
+    locales:              [{{ enabled_locales | join(",") }}]
     locale_cookie_domain: {{ locale_cookie_domain }}
+
+    secret:               {{ selfservice_secret | vault(vault_keydir) }}
 
     debug_toolbar:          true
     debug_redirects:        false
@@ -67,6 +68,12 @@ parameters:
 
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
+    enabled_generic_second_factors:
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+      {{ key }}:
+        loa: {{ value.loa }}
+{% endfor %}
+
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 
     tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en
@@ -77,3 +84,6 @@ parameters:
     
     session_max_absolute_lifetime: {{ app_session_max_duration }}
     session_max_relative_lifetime: {{ app_session_expiry_time }}
+
+    # The maximum number of tokens each identity (person) can register.
+    number_of_tokens_per_identity: 2

@@ -49,10 +49,10 @@
 
 # Look for sendmail smarthost
 - name: Configure sendmail with smarthost
-  template: src='sendmail.cf.j2' dest='/etc/mail/sendmail.cf' 
+  template: src='sendmail.cf.j2' dest='/etc/mail/sendmail.cf'
   when: sendmail_smarthost is defined
   register: sendmail_smarthost_result
-  notify: 
+  notify:
     - reload sendmail
 
 # TODO: Why is this here ???
@@ -151,10 +151,6 @@
 - name: Put rsyslog config for nginx
   copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
   notify: restart rsyslog
-
-- name: Include pacemaker install
-  include: pacemaker.yml
-  when: "inventory_hostname in groups['ks'] and groups['ks']|count > 1"
 
 
   # /var/log/stepup-authentication-*.log is written by rsyslog (common role)

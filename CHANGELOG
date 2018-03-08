@@ -1,3 +1,132 @@
+* Make the default locale and the available locales for the stepup applications configurable using group_vars.
+  See the playbook variables "default_locale" and "enabled_locales" in group_vars/all.yml. These two variables
+  must be added to existing environments.
+* Add "lb_addresses" in group_vars/all.yml. When using a load balancer, set this variable to an array of IP addresses
+  of the loadbalancers. Used in nginx config and default ip(6)tables config.
+
+
+Release 13.2 (hotfix)
+- Hotfix for two SimpleSAMLphp vulnerabilities
+- Fix Tiqr authentication from Microsoft Office 365 applications
+
+* All Stepup components:
+- Update SimpleSAMLphp with fixes for 201802-01 and 201803-01
+
+* Stepup-tiqr
+- Fix a Script error when authenticating with Tiqr from Microsoft Office 365 applications
+
+Install:
+* Deploy components:
+  - Stepup-Gateway 2.7.5
+  - Stepup-SelfService 2.7.2
+  - Stepup-RA 2.7.3
+  - Stepup-tiqr 1.1.8
+
+
+Release 13.1 (hotfix)
+Hotfix for matching case-insensitive identifiers
+
+Install:
+* Deploy component
+  - Gateway 2.7.3
+
+
+Release 13
+Bugfix release solving two issues:
+- fix an issue with pushing institution config changes, which was broken in release 12
+- fix an issue with determining an institution-specific LoA for unknown users
+
+In addition, Kibana log retention is extended from 90 to 120 days.
+
+Install:
+* Deploy components:
+  - Gateway 2.7.2
+  - Middleware 2.6.4
+  - RA 2.7.1
+
+* run manage role (for manage_keep_logs_days)
+  ansible-playbook site.tyml -i <inventory> -t manage -l <host>
+
+
+Release 12
+Add support for the SFO extension for Microsoft ADFS (https://github.com/SURFnet/ADFS-MFA-SAML2.0-Extension) to the
+Setup-Gateway
+
+* Gateway
+- Add support for receiving SAML AuthnRequests using the the HTTP-POST binding
+- When the ADFS specific "AuthMethod" and "Context" are present the SFO endpoint will switch to "SFO extension for ADFS"
+  mode:
+  - It adds "AuthMethod" and "Context" HTTP POST variables from the request to the response
+  - It returns the SAMLResponse in a HTTP POST variable "_SAMLResponse" instead of "SAMLResponse"
+
+* Deploy
+- "app" role: Added "lb_addresses" variable to specify trusted IPs for the X-Forwarded-For header. Stopped using hosts
+  from lb group for this purpose as the lb role is going to be removed from the playbook. If you are using the lb role
+  you should set "lb_addresses" variable add redeploy the app role.
+
+Install:
+* Deploy components:
+  - Gateway 2.7.0
+
+* Rerun app role (for lb_addresses)
+  ansible-playbook site.yml -i <inventory> -t app -l <host>
+
+
+Release 11
+Fix for per institution LoA configuration, add GSSP though configuration, update Swiftmailer because of CVE-2016-10074,
+show error when missing EPTI attribute.
+
+* Gateway
+- Fix: Update swiftmailer because of CVE-2016-10074. Exploitation requires the attacker to control the email address.
+- Fix: Per IdP LoA configuration for an SP by institution ID. Institution ID's are now recognised in the loa definition of
+  an SP as described in https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#service-providers
+- Fix: The gateway would generate a SAML Assertion without a Subject when the Assertion from the remote IdP did not
+  contain a eduPersonTargetedID attribute with a NameID. Now an error is shown on the gateway when this occurs.
+
+* Middleware, Gateway, SelfService and RA
+- A new GSSP can be though configuration. The Ansible environment must be updated:
+  - A new parameter "stepup_enabled_generic_second_factors" was introduced
+  - The "stepup_enabled_factors" parameter was updated
+  When using the existing GSSPs "tiqr" and "biometric", the changes are minimal. The requied changes are described in
+  docs/add-gssf-to-stepup.md
+
+Install:
+* Deploy components:
+  - Middleware 2.6.0
+  - Gateway 2.6.0
+  - RA 2.7.0
+  - SelfService 2.7.0
+
+
+Release 10
+Add option to test 2nd factor in SelfService, bugfixes
+
+* Upgrade Guzzle4 to Guzzle6
+
+* SelfService:
+  - The user now has the option to test authentication with their token in the self service interface.
+
+* Gateway:
+  - Fix: wrong entity added for saml:AuthenticatingAuthority
+
+* Middleware:
+  - Fix: bootstrapping an identity leads to unusable identity
+
+* Tiqr:
+  - Fix: no push notifications received when changing phones
+  - Fix: minor layout and translation issues
+  - Accounts are blocked after 5 authentication failures
+  - Improved support for browsers on mobile devices
+
+Install:
+* Deploy components:
+  - Middleware 2.5.0
+  - Gateway 2.5.0
+  - SelfService 2.6.2
+  - RA 2.6.1
+  - Tiqr 1.1.5
+
+
 Release 9
 Limit token types per institution, AuthnRequest signature validation error bug,
 Mixed case schacHomeOrganization bug
@@ -21,9 +150,9 @@ Mixed case schacHomeOrganization bug
 
 Install:
 * Deploy components:
-  - Middleware x.x.x
-  - Gateway x.x.x
-  - SelfService x.x.x
+  - Middleware 2.4.0
+  - Gateway 2.4.2
+  - SelfService 2.5.0
 
 * Run database migrations
   - Run "/root/01-middleware-db_migrate.sh" on an app server
@@ -82,6 +211,9 @@ RA Locations, Institution configuration, Server-side session expiry
   locale of the user. The domain for which the cookie is set is configured through the "locale_cookie_domain" group_var.
 * Various minor UI layout fixes/improvements.
 * Fix: middleware:event:replay may fail with Middleware < 2.1.0.
+* tiqr fixes
+  - solves a problem with iOS10 devices
+  - small layout en translation improvements
 
 Install:
 * Deploy components
@@ -89,6 +221,7 @@ Install:
   - Gateway 2.2.0
   - Selfservice 2.2.0
   - RA 2.2.0
+  - tiqr 1.1.4
 
 * Run database migrations
   - Run "/root/01-middleware-db_migrate.sh" on an app server

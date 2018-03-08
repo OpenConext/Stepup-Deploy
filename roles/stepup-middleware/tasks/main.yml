@@ -55,6 +55,7 @@
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
+  when: not (develop | default(false))
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link

@@ -4,6 +4,7 @@
   template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_group }}
   with_items:
   - parameters.yml
+  - samlstepupproviders.yml
   - samlstepupproviders_parameters.yml
   - global_view_parameters.yml
 

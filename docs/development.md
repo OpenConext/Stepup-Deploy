@@ -258,3 +258,139 @@ The LoA required for RA is configured in Stepup-RA's `parameters.yml` and throug
 [saml-chrome-panel]: https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace
 [firefox-saml-tracer]: https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/
 [middleware-manager]: https://github.com/OpenConext/Stepup-Middleware/tree/e1c7017f4211728157ecd49394e870858c9789c8#management-api
+
+## Howto: configure a dummy GSSP
+
+This section describes how the [GSSP example application](https://github.com/OpenConext/Stepup-gssp-example/) can be used in Stepup to test the GSSP mechanism. Below configuration allows registration and authentication on the development environment using Tiqr as second factor, using the GSSP example application instead of a real tiqr implementation.
+
+First, install, configure and run the example application. You can do that in the VM, but that's not required. Doing it on your host machine with only PHP installed might be easier.
+
+    git clone https://github.com/OpenConext/Stepup-gssp-example.git
+    cd Stepup-gssp-example
+    composer install
+
+Now configure gateway as the remote SP in `app/config/parameters.yml`:
+
+    saml_remote_sp_entity_id: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/metadata'
+    saml_remote_sp_sso_url: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/single-sign-on'
+    saml_remote_sp_certificate: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
+    saml_remote_sp_acs: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/consume-assertion'
+
+Finally, compile the assets and run the example application:
+
+    composer encore dev
+    cd web
+    php -S localhost:1234
+
+Note: You need npm and yarn installed on the machine you're running the example application on. An alternative is using the Vagrantfile included in the GSSP example repository.
+
+Verify the GSSP example application is running without error on http://localhost:1234.
+
+Now configure `Stepup-Gateway/app/config/samlstepupproviders_parameters.yml`:
+
+    gssp_allowed_sps:
+        - 'https://ra-dev.stepup.coin.surf.net/app_dev.php/vetting-procedure/gssf/tiqr/metadata'
+        - 'https://ss-dev.stepup.coin.surf.net/app_dev.php/registration/gssf/tiqr/metadata'
+
+    gssp_tiqr_sp_publickey: /var/www/gw-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer
+    gssp_tiqr_sp_privatekey: /var/www/gw-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem
+    gssp_tiqr_idp_publickey: /var/www/gw-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer
+    gssp_tiqr_idp_privatekey: /var/www/gw-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem
+    gssp_tiqr_metadata_publickey: /var/www/gw-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer
+    gssp_tiqr_metadata_privatekey: /var/www/gw-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem
+    gssp_tiqr_remote_entity_id: 'http://localhost:1234/app_dev.php/saml/metadata'
+    gssp_tiqr_remote_sso_url: 'http://localhost:1234/app_dev.php/saml/sso'
+    gssp_tiqr_remote_certificate: |
+                                  MIIEJTCCAw2gAwIBAgIJANug+o++1X5IMA0GCSqGSIb3DQEBCwUAMIGoMQswCQYD
+                                  VQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMG
+                                  A1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MRwwGgYDVQQD
+                                  DBNTVVJGbmV0IERldmVsb3BtZW50MSswKQYJKoZIhvcNAQkBFhxzdXJmY29uZXh0
+                                  LWJlaGVlckBzdXJmbmV0Lm5sMB4XDTE0MTAyMDEyMzkxMVoXDTE0MTExOTEyMzkx
+                                  MVowgagxCzAJBgNVBAYTAk5MMRAwDgYDVQQIDAdVdHJlY2h0MRAwDgYDVQQHDAdV
+                                  dHJlY2h0MRUwEwYDVQQKDAxTVVJGbmV0IEIuVi4xEzARBgNVBAsMClNVUkZjb25l
+                                  eHQxHDAaBgNVBAMME1NVUkZuZXQgRGV2ZWxvcG1lbnQxKzApBgkqhkiG9w0BCQEW
+                                  HHN1cmZjb25leHQtYmVoZWVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUA
+                                  A4IBDwAwggEKAoIBAQDXuSSBeNJY3d4p060oNRSuAER5nLWT6AIVbv3XrXhcgSwc
+                                  9m2b8u3ksp14pi8FbaNHAYW3MjlKgnLlopYIylzKD/6Ut/clEx67aO9Hpqsc0HmI
+                                  P0It6q2bf5yUZ71E4CN2HtQceO5DsEYpe5M7D5i64kS2A7e2NYWVdA5Z01DqUpQG
+                                  RBc+uMzOwyif6StBiMiLrZH3n2r5q5aVaXU4Vy5EE4VShv3Mp91sgXJj/v155fv0
+                                  wShgl681v8yf2u2ZMb7NKnQRA4zM2Ng2EUAyy6PQ+Jbn+rALSm1YgiJdVuSlTLhv
+                                  gwbiHGO2XgBi7bTHhlqSrJFK3Gs4zwIsop/XqQRBAgMBAAGjUDBOMB0GA1UdDgQW
+                                  BBQCJmcoa/F7aM3jIFN7Bd4uzWRgzjAfBgNVHSMEGDAWgBQCJmcoa/F7aM3jIFN7
+                                  Bd4uzWRgzjAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBd80GpWKjp
+                                  1J+Dgp0blVAox1s/WPWQlex9xrx1GEYbc5elp3svS+S82s7dFm2llHrrNOBt1HZV
+                                  C+TdW4f+MR1xq8O5lOYjDRsosxZc/u9jVsYWYc3M9bQAx8VyJ8VGpcAK+fLqRNab
+                                  YlqTnj/t9bzX8fS90sp8JsALV4g84Aj0G8RpYJokw+pJUmOpuxsZN5U84MmLPnVf
+                                  mrnuCVh/HkiLNV2c8Pk8LSomg6q1M1dQUTsz/HVxcOhHLj/owwh3IzXf/KXV/E8v
+                                  SYW8o4WWCAnruYOWdJMI4Z8NG1Mfv7zvb7U3FL1C/KLV04DqzALXGj+LVmxtDvux
+                                  qC042apoIDQV
+
+And configure `Stepup-SelfService/app/config/samlstepupproviders_parameters.yml`:
+
+    gssp_tiqr_sp_publickey: /var/www/ss-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer
+    gssp_tiqr_sp_privatekey: /var/www/ss-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem
+    gssp_tiqr_idp_publickey: /var/www/ss-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer
+    gssp_tiqr_idp_privatekey: /var/www/ss-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem
+    gssp_tiqr_metadata_publickey: /var/www/ss-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer
+    gssp_tiqr_metadata_privatekey: /var/www/ss-dev.stepup.coin.surf.net/vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem
+    gssp_tiqr_remote_entity_id: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/metadata'
+    gssp_tiqr_remote_sso_url: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/single-sign-on'
+    gssp_tiqr_remote_certificate: |
+                                  MIIEJTCCAw2gAwIBAgIJANug+o++1X5IMA0GCSqGSIb3DQEBCwUAMIGoMQswCQYD
+                                  VQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMG
+                                  A1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MRwwGgYDVQQD
+                                  DBNTVVJGbmV0IERldmVsb3BtZW50MSswKQYJKoZIhvcNAQkBFhxzdXJmY29uZXh0
+                                  LWJlaGVlckBzdXJmbmV0Lm5sMB4XDTE0MTAyMDEyMzkxMVoXDTE0MTExOTEyMzkx
+                                  MVowgagxCzAJBgNVBAYTAk5MMRAwDgYDVQQIDAdVdHJlY2h0MRAwDgYDVQQHDAdV
+                                  dHJlY2h0MRUwEwYDVQQKDAxTVVJGbmV0IEIuVi4xEzARBgNVBAsMClNVUkZjb25l
+                                  eHQxHDAaBgNVBAMME1NVUkZuZXQgRGV2ZWxvcG1lbnQxKzApBgkqhkiG9w0BCQEW
+                                  HHN1cmZjb25leHQtYmVoZWVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUA
+                                  A4IBDwAwggEKAoIBAQDXuSSBeNJY3d4p060oNRSuAER5nLWT6AIVbv3XrXhcgSwc
+                                  9m2b8u3ksp14pi8FbaNHAYW3MjlKgnLlopYIylzKD/6Ut/clEx67aO9Hpqsc0HmI
+                                  P0It6q2bf5yUZ71E4CN2HtQceO5DsEYpe5M7D5i64kS2A7e2NYWVdA5Z01DqUpQG
+                                  RBc+uMzOwyif6StBiMiLrZH3n2r5q5aVaXU4Vy5EE4VShv3Mp91sgXJj/v155fv0
+                                  wShgl681v8yf2u2ZMb7NKnQRA4zM2Ng2EUAyy6PQ+Jbn+rALSm1YgiJdVuSlTLhv
+                                  gwbiHGO2XgBi7bTHhlqSrJFK3Gs4zwIsop/XqQRBAgMBAAGjUDBOMB0GA1UdDgQW
+                                  BBQCJmcoa/F7aM3jIFN7Bd4uzWRgzjAfBgNVHSMEGDAWgBQCJmcoa/F7aM3jIFN7
+                                  Bd4uzWRgzjAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBd80GpWKjp
+                                  1J+Dgp0blVAox1s/WPWQlex9xrx1GEYbc5elp3svS+S82s7dFm2llHrrNOBt1HZV
+                                  C+TdW4f+MR1xq8O5lOYjDRsosxZc/u9jVsYWYc3M9bQAx8VyJ8VGpcAK+fLqRNab
+                                  YlqTnj/t9bzX8fS90sp8JsALV4g84Aj0G8RpYJokw+pJUmOpuxsZN5U84MmLPnVf
+                                  mrnuCVh/HkiLNV2c8Pk8LSomg6q1M1dQUTsz/HVxcOhHLj/owwh3IzXf/KXV/E8v
+                                  SYW8o4WWCAnruYOWdJMI4Z8NG1Mfv7zvb7U3FL1C/KLV04DqzALXGj+LVmxtDvux
+                                  qC042apoIDQV
+
+Finally, configure `Stepup-RA/app/config/samlstepupproviders_parameters.yml`:
+
+    gssp_tiqr_sp_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
+    gssp_tiqr_sp_privatekey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
+    gssp_tiqr_metadata_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
+    gssp_tiqr_metadata_privatekey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
+    gssp_tiqr_remote_entity_id: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/metadata'
+    gssp_tiqr_remote_sso_url: 'https://gw-dev.stepup.coin.surf.net/app_dev.php/gssp/tiqr/single-sign-on'
+    gssp_tiqr_remote_certificate: |
+                                  MIIEJTCCAw2gAwIBAgIJANug+o++1X5IMA0GCSqGSIb3DQEBCwUAMIGoMQswCQYD
+                                  VQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMG
+                                  A1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MRwwGgYDVQQD
+                                  DBNTVVJGbmV0IERldmVsb3BtZW50MSswKQYJKoZIhvcNAQkBFhxzdXJmY29uZXh0
+                                  LWJlaGVlckBzdXJmbmV0Lm5sMB4XDTE0MTAyMDEyMzkxMVoXDTE0MTExOTEyMzkx
+                                  MVowgagxCzAJBgNVBAYTAk5MMRAwDgYDVQQIDAdVdHJlY2h0MRAwDgYDVQQHDAdV
+                                  dHJlY2h0MRUwEwYDVQQKDAxTVVJGbmV0IEIuVi4xEzARBgNVBAsMClNVUkZjb25l
+                                  eHQxHDAaBgNVBAMME1NVUkZuZXQgRGV2ZWxvcG1lbnQxKzApBgkqhkiG9w0BCQEW
+                                  HHN1cmZjb25leHQtYmVoZWVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUA
+                                  A4IBDwAwggEKAoIBAQDXuSSBeNJY3d4p060oNRSuAER5nLWT6AIVbv3XrXhcgSwc
+                                  9m2b8u3ksp14pi8FbaNHAYW3MjlKgnLlopYIylzKD/6Ut/clEx67aO9Hpqsc0HmI
+                                  P0It6q2bf5yUZ71E4CN2HtQceO5DsEYpe5M7D5i64kS2A7e2NYWVdA5Z01DqUpQG
+                                  RBc+uMzOwyif6StBiMiLrZH3n2r5q5aVaXU4Vy5EE4VShv3Mp91sgXJj/v155fv0
+                                  wShgl681v8yf2u2ZMb7NKnQRA4zM2Ng2EUAyy6PQ+Jbn+rALSm1YgiJdVuSlTLhv
+                                  gwbiHGO2XgBi7bTHhlqSrJFK3Gs4zwIsop/XqQRBAgMBAAGjUDBOMB0GA1UdDgQW
+                                  BBQCJmcoa/F7aM3jIFN7Bd4uzWRgzjAfBgNVHSMEGDAWgBQCJmcoa/F7aM3jIFN7
+                                  Bd4uzWRgzjAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBd80GpWKjp
+                                  1J+Dgp0blVAox1s/WPWQlex9xrx1GEYbc5elp3svS+S82s7dFm2llHrrNOBt1HZV
+                                  C+TdW4f+MR1xq8O5lOYjDRsosxZc/u9jVsYWYc3M9bQAx8VyJ8VGpcAK+fLqRNab
+                                  YlqTnj/t9bzX8fS90sp8JsALV4g84Aj0G8RpYJokw+pJUmOpuxsZN5U84MmLPnVf
+                                  mrnuCVh/HkiLNV2c8Pk8LSomg6q1M1dQUTsz/HVxcOhHLj/owwh3IzXf/KXV/E8v
+                                  SYW8o4WWCAnruYOWdJMI4Z8NG1Mfv7zvb7U3FL1C/KLV04DqzALXGj+LVmxtDvux
+                                  qC042apoIDQV
+
+You should now be able to register a Tiqr token in selfservice, vet it in RA and use it for authentication.

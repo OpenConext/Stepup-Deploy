@@ -200,7 +200,7 @@ translations are specified in the parameters.
      gssp_gauth_remote_entity_id: 'https://actual-gssp.entity-id.tld'
      gssp_gauth_remote_sso_url: 'https://actual-gssp.entity-id.tld/single-sign-on/url'
      gssp_gauth_remote_certificate: 'The contents of the certificate published by the gssp'
-     gssp_gauth_name:
+     gssp_gauth_title:
           en_GB: 'EN the English name for the provider'
           nl_NL: 'NL the Dutch name for the provider'
      gssp_gauth_page_title:

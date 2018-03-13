@@ -73,8 +73,10 @@
   - proxy
 
 
+# Add development tooling to app server
+# not for production use
 - name: Dev tools
-  hosts: app
+  hosts: dev
   become: True
   tags: dev
   serial: 1

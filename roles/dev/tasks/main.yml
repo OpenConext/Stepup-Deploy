@@ -71,13 +71,21 @@
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
 
+
 ## SSP ##
+
+# Setup a SimpleSAMLphp installation and configure it to be:
+# - An IdP that behaves similar to OpenConext engine, making it suitable to be used as a "remote IdP" for the
+#   Stepup-Gateway running at https://<ssp_vhost_name>/
+#   Admin U/P: admin/admin
+# - A SP that has a web interface that can be used to test authentication to the Stepup-Gateway
+#   Accessible at https://<ssp_vhost_name>/sp.php
 
 - name: Create SSP tmp directory
   file: dest=/tmp/simplesaml owner=apache state=directory
 
 - name: Clone SSP repo
-  git: repo={{ ssp_source_repo }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }} force=yes
+  git: repo={{ ssp_source_repo }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }} version={{ ssp_version }} force=yes
 
 - name: Create config and metadata from templates
   shell: cp -r /usr/local/share/simplesamlphp-{{ ssp_version }}/{{ item }}-templates /usr/local/share/simplesamlphp-{{ ssp_version }}/{{ item }}

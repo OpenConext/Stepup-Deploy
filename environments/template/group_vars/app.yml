@@ -7,14 +7,14 @@
 # SURFconext production gateway
 #saml_remote_idp_entity_id: https://engine.surfconext.nl/authentication/idp/metadata
 # The local SimpleSAMLphp IdP from the "dev" role, intended for development/testing purposes
-saml_remote_idp_entity_id: "{{ ssp_vhost_name }}/saml2/idp/metadata.php"
+saml_remote_idp_entity_id: "https://{{ ssp_vhost_name }}/saml2/idp/metadata.php"
 
 # Remote IdP SingleSignOnService Location of HTTP-Redirect Binding
 # TODO: Set Remote IdP SSO Location
 # SURFconext production gateway
 #saml_remote_idp_sso_url: https://engine.surfconext.nl/authentication/idp/single-sign-on
 # The local SimpleSAMLphp IdP from the "dev" role, intended for development/testing purposes
-saml_remote_idp_sso_url: "{{ ssp_vhost_name }}/saml2/idp/SSOService.php"
+saml_remote_idp_sso_url: "https://{{ ssp_vhost_name }}/saml2/idp/SSOService.php"
 
 # Remote IdP SAML Siging key
 # Format: Certificate as found in SAML metadata (i.e. PEM X.509 certificate, but without PEM headers and whitespace)

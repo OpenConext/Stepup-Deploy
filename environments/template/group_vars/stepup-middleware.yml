@@ -14,6 +14,6 @@ middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
 
 # TODO: Define SRAA's
 middleware_sraa:
-    - { nameid: "urn:collab:person:stepup.example.com:admin", institution: stepup.example.com, cn: "Admin", email: admin@stepup.example.com, lang: en_GB, yubikey_id: 00000000 }
-    - { nameid: "urn:collab:person:stepup.example.com:pieter", institution: stepup.example.com, cn: "Pieter van der Meulen", email: pieter.vandermeulen@surfnet.nl, lang: nl_NL, yubikey_id: 01906374 }
-    - { nameid: "urn:collab:person:stepup.example.com:joost", institution: stepup.example.com, cn: "Joost van Dijk", email: joost.vandijk@surfnet.nl, lang: nl_NL, yubikey_id: 01960573 }
+    - { nameid: "urn:collab:person:stepup.example.com:admin", institution: stepup.example.com, cn: "Admin", email: admin@stepup.example.com, lang: en_GB, yubikey_id: "{{ lookup('file', inventory_dir+'/yubikey_id') }}" }
+    - { nameid: "urn:collab:person:stepup.example.com:pieter", institution: stepup.example.com, cn: "Pieter van der Meulen", email: pieter.vandermeulen@surfnet.nl, lang: nl_NL, yubikey_id: "01622612" }
+    - { nameid: "urn:collab:person:stepup.example.com:joost", institution: stepup.example.com, cn: "Joost van Dijk", email: joost.vandijk@surfnet.nl, lang: nl_NL, yubikey_id: "01960573" }

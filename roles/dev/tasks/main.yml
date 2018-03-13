@@ -14,6 +14,9 @@
     - sqlite-devel
     - make
 
+    # xdebug, the PHP debug extension
+    - php-pecl-xdebug
+
 
 ## Composer ##
 
@@ -23,6 +26,18 @@
 
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
+
+
+## XDebug ##
+
+# Configure XDebug for remote debugging
+
+# Replace the /etc/php.d/15-xdebug.ini that was installed by yum
+# Enable remote debugging with connect back to client @ port 9000
+
+- name: Put /etc/php.d/15-xdebug.ini
+  template: src=15-xdebug.ini.j2 dest=/etc/php.d/15-xdebug.ini
+  notify: Restart php-fpm
 
 ## Mailcatcher ##
 

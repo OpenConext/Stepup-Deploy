@@ -58,7 +58,8 @@ app_session_expiry_time: 900
 
 # URL to where the user is redirected after logout.
 # TODO: Set logout URL
-logout_redirect_url: https://engine.surfconext.nl/logout
+#logout_redirect_url: https://engine.surfconext.nl/logout
+logout_redirect_url: https://stepup.example.com/logout
 
 # Hostname of sendmail SMTP smarthost (optional)
 #sendmail_smarthost: smtp.example.com

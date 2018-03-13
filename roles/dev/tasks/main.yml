@@ -1,8 +1,12 @@
 ---
 
+# Development tools for on app server
+# Not safe for production use
+
 - name: Install development specific RPM's
   yum: name={{ item }}
   with_items:
+    # For SSP install
     - git
 
     # For Mailcatcher
@@ -14,8 +18,14 @@
     - sqlite-devel
     - make
 
+    # For jsonlint -- use "jsonlint <filename>" to do a syntax check on a JSON file
+    - python-demjson
+
     # xdebug, the PHP debug extension
     - php-pecl-xdebug
+
+    # telnet client
+    - telnet
 
 
 ## Composer ##
@@ -41,6 +51,8 @@
 
 ## Mailcatcher ##
 
+# Accessible at http://<server>:1080/
+
 - name: Install mailcatcher
   command: gem install mailcatcher creates=/usr/local/bin/mailcatcher
 
@@ -60,7 +72,14 @@
 
 ## Maria DB ##
 
-# Starting normally will fail as it requires an existing cluster to join and we're running a one node cluser
+# Assume there is a single MariaDB node that is running on the app server
+
+# Starting a single MariaDB node normally (i.e. "service mysql start") will fail as this requires an existing cluster
+# to join and we're running a one node cluster
+# The first node in the cluster must be "bootstrapped" using "service mysql bootstrap"
+# Below we disable the normal "mysql start" on VMs start, and instead install a script that issues a
+# "mysql bootstrap" when the VM is started
+
 - name: Disable MariaDB (mysql) service on boot.
   service: name=mysql enabled=false
 

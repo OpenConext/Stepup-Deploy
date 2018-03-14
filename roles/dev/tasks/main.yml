@@ -167,9 +167,16 @@
   - exampleauth
   - saml2debug
 
-- name: Put Demo SP
-  template: src=sp.php.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/sp.php
-  tags: demosp
+- name: Put Test SP
+  copy: src={{ item }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/{{ item }}
+  with_items:
+  - sp.php
+  - sp-utils.inc
+  tags: testsp
+
+- name: Put Test SP config
+  template: src=sp-config.inc.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/sp-config.inc
+  tags: testsp
 
 - name: Enable SSP version
   file: src=/usr/local/share/simplesamlphp-{{ ssp_version }} dest=/usr/local/share/simplesamlphp state=link

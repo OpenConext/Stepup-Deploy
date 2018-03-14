@@ -17,7 +17,7 @@ $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php'] =
         array (
             0 =>
                 array (
-                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                    'Binding' => $GLOBALS['gSP_SSOBinding'],
                     'Location' => 'https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/SSOService.php',
                 ),
         ),
@@ -52,7 +52,7 @@ $metadata['https://{{ gateway_vhost_name }}/authentication/metadata'] = array (
         array (
             0 =>
                 array (
-                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                    'Binding' => $GLOBALS['gSP_SSOBinding'],
                     'Location' => 'https://{{ gateway_vhost_name }}/authentication/single-sign-on',
                 ),
         ),
@@ -89,7 +89,7 @@ $metadata['https://{{ gateway_vhost_name }}/second-factor-only/metadata'] = arra
         array (
             0 =>
                 array (
-                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                    'Binding' => $GLOBALS['gSP_SSOBinding'],
                     'Location' => 'https://{{ gateway_vhost_name }}/second-factor-only/single-sign-on',
                 ),
         ),

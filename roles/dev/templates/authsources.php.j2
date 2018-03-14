@@ -62,8 +62,9 @@ $config = array(
             'schacHomeOrganizationType' => 'urn:mace:terena.org:schac:homeOrganizationType:int:NREN',
         ),
 
-    ),
+        // Test accounts are added using account_gen below
 
+    ),
 
     // An authentication source which can authenticate against both SAML 2.0
     // and Shibboleth 1.3 IdPs.
@@ -109,14 +110,94 @@ $config = array(
         //'redirect.sign' => TRUE,
         //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     ),
+    'third-sp' => array(
+        'saml:SP',
+
+        // The entity ID of this SP.
+        // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
+        'entityID' => 'https://{{ ssp_vhost_name }}/simplesamlphp/module.php/saml/sp/metadata.php/third-sp',
+
+        // The entity ID of the IdP this should SP should contact.
+        // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
+        'idp' => NULL,
+
+        // The URL to the discovery service.
+        // Can be NULL/unset, in which case a builtin discovery service will be used.
+        'discoURL' => NULL,
+
+        'certificate' => 'sp.crt',
+        'privatekey' => 'sp.key',
+
+        // See end of file for request.sign and signature.algorithm config!
+        //'redirect.sign' => TRUE,
+        //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    ),
+    'fourth-sp' => array(
+        'saml:SP',
+
+        // The entity ID of this SP.
+        // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
+        'entityID' => 'https://{{ ssp_vhost_name }}/simplesamlphp/module.php/saml/sp/metadata.php/fourth-sp',
+
+        // The entity ID of the IdP this should SP should contact.
+        // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
+        'idp' => NULL,
+
+        // The URL to the discovery service.
+        // Can be NULL/unset, in which case a builtin discovery service will be used.
+        'discoURL' => NULL,
+
+        'certificate' => 'sp.crt',
+        'privatekey' => 'sp.key',
+
+        // See end of file for request.sign and signature.algorithm config!
+        //'redirect.sign' => TRUE,
+        //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    ),
 
 );
+
+
+// Use the the global variables that were set in sp.php to modify the hosted SP configuration on the fly
+// They won't always be set (e.g. when SSP is used as IdP) so we use isset() to reduce notices
+
+if ( isset($GLOBALS['gSP_redirect_sign']) ) {
+  $config['default-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
+  $config['second-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
+  $config['third-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
+  $config['fourth-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
+}
+if ( isset($GLOBALS['gSP_signature_algorithm']) && strlen($GLOBALS['gSP_signature_algorithm']) > 0 ) {
+    $config['default-sp']['signature.algorithm'] = $GLOBALS['gSP_signature_algorithm'];
+    $config['second-sp']['signature.algorithm'] = $GLOBALS['gSP_signature_algorithm'];
+    $config['third-sp']['signature.algorithm'] = $GLOBALS['gSP_signature_algorithm'];
+    $config['fourth-sp']['signature.algorithm'] = $GLOBALS['gSP_signature_algorithm'];
+}
+if ( isset($GLOBALS['gSP_secondary_key']) && $GLOBALS['gSP_secondary_key']) {
+    $config['default-sp']['certificate']='sp2.crt';
+    $config['default-sp']['privatekey']='sp2.key';
+    $config['second-sp']['certificate']='sp2.crt';
+    $config['second-sp']['privatekey']='sp2.key';
+    $config['third-sp']['certificate']='sp2.crt';
+    $config['third-sp']['privatekey']='sp2.key';
+    $config['fourth-sp']['certificate']='sp2.crt';
+    $config['fourth-sp']['privatekey']='sp2.key';
+}
+
+if ( isset($GLOBALS['gSP_ProtocolBinding']) ) {
+    $config['default-sp']['ProtocolBinding'] = $GLOBALS['gSP_ProtocolBinding'];
+    $config['second-sp']['ProtocolBinding'] = $GLOBALS['gSP_ProtocolBinding'];
+    $config['third-sp']['ProtocolBinding'] = $GLOBALS['gSP_ProtocolBinding'];
+    $config['fourth-sp']['ProtocolBinding'] = $GLOBALS['gSP_ProtocolBinding'];
+}
+
 
 // Accounts for accountgen script
 // Allows read email addresses to be used for multiple accounts
 // The accountsgen scrip mangles the email address to e.g. joe+slug@stepup.example.com
 $accounts=array(
     // username => email (this can be a real email address)
+    'user' => 'user@stepup.example.com',
     'joe' =>  'joe@stepup.example.com',
     'jane' => 'jane@stepup.example.com',
 );
@@ -135,30 +216,7 @@ foreach ($accounts as $user => $email) {
     account_gen($config, "${user}-a", $email, 'institution-a.example.com', $slugs);
     account_gen($config, "${user}-b", $email, 'institution-b.example.com', $slugs);
     account_gen($config, "${user}-c", $email, 'institution-c.example.com', $slugs);
-    account_gen($config, "${user}-d", $email, 'Institution-D.example.com', $slugs);
-}
-
-
-// Hack to change the configuration of the hosted SPs "default-sp" and "second-sp" using global vars from the
-// SP test web form (sp.php)
-
-if (! isset($GLOBALS['gSP_redirect_sign']) ) {
-    $GLOBALS['gSP_redirect_sign'] = FALSE;
-}
-$config['default-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
-$config['second-sp']['redirect.sign'] = $GLOBALS['gSP_redirect_sign'] ? TRUE : FALSE;
-if ( isset($GLOBALS['gSP_signature_algorithm']) && strlen($GLOBALS['gSP_signature_algorithm']) > 0 ) {
-    $config['default-sp']['signature.algorithm'] = $GLOBALS['gSP_signature_algorithm'];
-    $config['second-sp']['signature.algorithm'] = $GLOBALS['gSP_signature_algorithm'];
-}
-if ( isset($GLOBALS['gSP_secondary_key']) && $GLOBALS['gSP_secondary_key']) {
-    $config['default-sp']['certificate']='sp2.crt';
-    $config['default-sp']['privatekey']='sp2.key';
-    $config['second-sp']['certificate']='sp2.crt';
-    $config['second-sp']['privatekey']='sp2.key';
-}
-
-if ( isset($GLOBALS['gSP_ProtocolBinding']) ) {
-    $config['default-sp']['ProtocolBinding'] = $GLOBALS['gSP_ProtocolBinding'];
-    $config['second-sp']['ProtocolBinding'] = $GLOBALS['gSP_ProtocolBinding'];
+    account_gen($config, "${user}-d", $email, 'Institution-D.EXAMPLE.COM', $slugs); // Note: uppercase "I" and "D"
+    account_gen($config, "${user}-d", $email, 'Institution-e.example.com', $slugs);
+    account_gen($config, "${user}-d", $email, 'Institution-f.example.com', $slugs);
 }

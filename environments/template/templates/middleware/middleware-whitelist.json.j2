@@ -10,6 +10,7 @@
 # 2) Redeploy the Stepup-Middleware component using the deploy.sh script in the Stepup-Deploy repo and then
 #    on the app sever execute /root/04-middleware-whitelist.sh
 #
+# TODO: Remove the example configuraton
 # TODO: Add the schacHomeOrganization attributes values of the institutions that are allowd to use the
 #       second factor functionality to the list below. Only users with a schacHomeOrganization on this
 #       list are allowed to authenticate with a second factor or login to the SelfService and RA portals.
@@ -17,8 +18,11 @@
 {
     "institutions": [
         "stepup.example.com",
-        "institution-a.nl",
-        "institution-b.nl",
-        "institution-d.nl"
+        "institution-a.example.com",
+        "institution-b.example.com",
+        {# no institution-c.example.com #}
+        "institution-d.example.com",
+        "institution-e.example.com",
+        "institution-f.example.com"
     ]
 }

@@ -25,6 +25,9 @@ parameters:
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}
 
     # Translations
+    gssp_tiqr_title:
+        en_GB: 'Tiqr'
+        nl_NL: 'Tiqr'
     gssp_tiqr_page_title:
         en_GB: 'Verify with Tiqr'
         nl_NL: 'Tiqr verifiëren'
@@ -59,6 +62,9 @@ parameters:
     gssp_biometric_remote_certificate: {{ gateway_biometric_idp_publickey | default('') | depem }}
 
     # Translations
+    gssp_biometric_title:
+        en_GB: 'Biometrics'
+        nl_NL: 'Biometrie'
     gssp_biometric_page_title:
         en_GB: 'Verify biometrics'
         nl_NL: 'Biometrie verifiëren'
@@ -94,6 +100,9 @@ parameters:
     gssp_irma_remote_certificate: {{ gateway_irma_idp_publickey | depem }}
 
     # Translations
+    gssp_irma_title:
+        en_GB: 'IRMA'
+        nl_NL: 'IRMA'
     gssp_irma_page_title:
         en_GB: 'Verify with IRMA'
         nl_NL: 'IRMA verifiëren'

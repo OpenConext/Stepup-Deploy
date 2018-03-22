@@ -6,7 +6,7 @@ echo "instead for building stepup releases."
 echo
 
 CWD=`pwd`
-COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "oath-service-php" "Stepup-irma")
+COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "oath-service-php")
 DEFAULT_BRANCH=develop
 BUILD_ENV=build
 

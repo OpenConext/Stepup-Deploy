@@ -125,10 +125,6 @@
 - include: vhost.yml
   vars: { component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-keyserver']"
-- include: vhost.yml
-  vars: { component_name: irma,        vhost_name: "{{ irma_vhost_name }}" }
-  when: "inventory_hostname in groups['stepup-irma']"
-
 
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first
 - name: Test nginx config

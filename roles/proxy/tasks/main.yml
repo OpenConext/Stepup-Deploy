@@ -37,14 +37,6 @@
     proxy_key: "{{ proxy_tiqr_key }}"
   when: "inventory_hostname in groups['stepup-tiqr']"
 
-- include: proxy.yml
-  vars:
-    vhost_name: "{{ irma_vhost_name }}"
-    component_name: irma
-    proxy_certificate: "{{ proxy_irma_certificate }}"
-    proxy_key: "{{ proxy_irma_key }}"
-  when: "inventory_hostname in groups['stepup-irma']"
-
 # TODO: adapt so that TLS terminates on key server instead of proxy/LB
 - include: proxy.yml
   vars:

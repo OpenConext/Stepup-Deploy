@@ -96,7 +96,7 @@ parameters:
     gssp_irma_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/irma/single-sign-on'
 
     # base64 without pem headers
-    gssp_irma_remote_certificate: {{ gateway_irma_idp_publickey | depem }}
+    gssp_irma_remote_certificate: {{ gateway_irma_idp_publickey | default('') | depem }}
 
     # Translations
     gssp_irma_title:

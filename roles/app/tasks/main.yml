@@ -126,6 +126,7 @@
 - include: vhost.yml
   vars: { component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-keyserver']"
+
 # Add vhost for running simplesaml php for developement
 - include: vhost.yml
   vars: { component_name: ssp,   vhost_name: "{{ ssp_vhost_name }}" }

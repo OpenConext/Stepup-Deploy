@@ -30,8 +30,10 @@ parameters:
         en_GB: 'Tiqr'
         nl_NL: 'Tiqr'
     gssp_tiqr_description:
-        en_GB: 'Log in with a smartphone app. For all smartphones with %%tiqr_ios_link_start%%Apple iOS%%tiqr_ios_link_end%% or %%tiqr_android_link_start%%Android%%tiqr_android_link_end%%.'
-        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%tiqr_ios_link_start%%Apple iOS%%tiqr_ios_link_end%% of %%tiqr_android_link_start%%Android%%tiqr_android_link_end%%.'
+        en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+    gssp_tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en
+    gssp_tiqr_app_ios_url: https://itunes.apple.com/us/app/tiqr/id430838214?mt=8&ls=1
     gssp_tiqr_button_use:
         en_GB: 'Select'
         nl_NL: 'Selecteer'
@@ -83,8 +85,8 @@ parameters:
         en_GB: 'Biometric device'
         nl_NL: 'Biometrisch apparaat'
     gssp_biometric_description:
-        en_GB: 'Log in using a biometric device.'
-        nl_NL: 'Log in met een biometrisch apparaat.'
+        en_GB: 'Log in using a biometric device. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+        nl_NL: 'Log in met een biometrisch apparaat. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
     gssp_biometric_button_use:
         en_GB: 'Select'
         nl_NL: 'Selecteer'
@@ -103,3 +105,58 @@ parameters:
     gssp_biometric_pop_failed:
         en_GB: 'Registration of your token failed. Please try again.'
         nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+    # Authentication flow:
+    # Real IRMA IdP <--> GSSP IRMA SP <--> GSSP IRMA IdP <--> SelfService
+    # AuthnRequests from the RA and SS are proxied through the IRMA GSSP proxy on the Gateway
+    # The GSSP IRMA SP and IdP are hosted on the gateway
+
+    # IRMA SP used to authenticate to IRMA IdP though IRMA IdP proxy in the gateway
+    gssp_irma_sp_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
+    gssp_irma_sp_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
+
+    # Certificate used to sign metadata of the IRMA SP
+    gssp_irma_metadata_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
+    gssp_irma_metadata_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
+
+    # EntityID and SSO Location of the IRMA IdP Proxy on the Gateway
+    gssp_irma_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/irma/metadata'
+    gssp_irma_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/irma/single-sign-on'
+
+    # base64 without pem headers
+    gssp_irma_remote_certificate: {{ gateway_irma_idp_publickey | depem }}
+
+    # GUI
+    gssp_irma_logo: /images/second-factor/irma.png
+
+    # Translations
+    gssp_irma_alt:
+        en_GB: 'IRMA'
+        nl_NL: 'IRMA'
+    gssp_irma_title:
+        en_GB: 'IRMA'
+        nl_NL: 'IRMA'
+    gssp_irma_description:
+        en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+    gssp_irma_app_android_url: https://play.google.com/store/apps/details?id=org.irmacard.cardemu
+    gssp_irma_app_ios_url: https://itunes.apple.com/us/app/irma-authentication/id1294092994
+    gssp_irma_button_use:
+        en_GB: 'Select'
+        nl_NL: 'Selecteer'
+    gssp_irma_initiate_title:
+        en_GB: 'Register with IRMA'
+        nl_NL: 'Registreren bij IRMA'
+    gssp_irma_initiate_button:
+        en_GB: 'Register with IRMA'
+        nl_NL: 'Registreer bij IRMA'
+    gssp_irma_explanation:
+        en_GB: 'Click the button below to register with IRMA.'
+        nl_NL: 'Klik op de knop hieronder om je bij IRMA te registreren.'
+    gssp_irma_authn_failed:
+        en_GB: 'Registration with IRMA has failed. Please try again.'
+        nl_NL: 'Registratie bij IRMA is mislukt. Probeer het nogmaals.'
+    gssp_irma_pop_failed:
+        en_GB: 'Registration of your token failed. Please try again.'
+        nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+

@@ -2,7 +2,8 @@
 # Note: For production this would be set in app.yml group_var
 
 # Hostname of sendmail SMTP smarthost (optional)
-sendmail_smarthost: localhost
+# Square brackets disable DNS lookup
+sendmail_smarthost: [localhost]
 
 # Port of sendmail SMTP smarthost (optional)
 # Only define when using a non standard port (i.e. other than port 25)

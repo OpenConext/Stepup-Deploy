@@ -1,18 +1,37 @@
+{#
+# This template is used to generate the middleware-config
+#
+# For more information see:
+# https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#using-the-middleware-configuration-api
+#
+# To apply changes made here you need to push a new middleware configuration to Stepup-Middleware component
+# on an app server. There are two ways to do this:
+# 1) Use the push-config.sh script in the Stepup-Deploy repo
+# 2) Redeploy the Stepup-Middleware component using the deploy.sh script in the Stepup-Deploy repo and then
+#    on the app sever execute /root/02-middleware-config.sh
+#
+# TODO: Define new service providers here
+#}
+
 {
+{# Super RA Administrators
+# Defined in group_vars/stepup-middleware.yml
+#}
   "sraa": [
       {% for sraa in middleware_sraa %}"{{ sraa.nameid }}"{% if not loop.last %},{% endif %}
 
       {% endfor %}
   ],
 
+{# Email templates #}
   "email_templates": {
     "confirm_email": {
       "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Klik op onderstaande link om je e-mailadres te bevestigen:</p><p><a href='{{ verificationUrl }}'>{{ verificationUrl }}</a></p><p>Is klikken op de link niet mogelijk? Kopieer dan de link en plak deze in de adresbalk van je browser.</p><p>SURFnet</p>{% endraw %}",
       "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token. Please visit this link to verify your email address:</p><p><a href='{{ verificationUrl }}'>{{ verificationUrl }}</a></p><p>If you can not click on the URL, please copy the link and paste it in the address bar of your browser.</p><p>SURFnet</p>{% endraw %}"
     },
     "registration_code_with_ras": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is bijna klaar voor gebruik. Ga binnen 14 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if ras is empty %}<p>Er zijn geen RAs bekend.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token, you are almost done. Please visit one of the locations below to get your token activated. Your activation code expires after 14 days.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if ras is empty %}<p>No RAs are known.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
+      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is bijna klaar voor gebruik. Je kunt tot en met {{ expirationDate }} bij een van de onderstaande locaties terecht om je token te laten activeren.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if ras is empty %}<p>Er zijn geen RAs bekend.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
+      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token, you are almost done. Please activate your token no later than {{ expirationDate }} at one of the locations mentioned below.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if ras is empty %}<p>No RAs are known.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
     },
     "registration_code_with_ra_locations": {
       "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is bijna klaar voor gebruik. Ga binnen 14 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if raLocations is empty %}<p>Er zijn geen Locaties bekend.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
@@ -25,11 +44,23 @@
     "second_factor_revoked": {
       "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>{% if isRevokedByRa %}De registratie van je {{ tokenType }} token met ID {{ tokenIdentifier }} is verwijderd door een beheerder.{% else %}Je hebt de registratie voor je {{ tokenType }} token met ID {{ tokenIdentifier }} verwijderd. Neem direct contact op met de helpdesk van je instelling als je dit zelf niet gedaan hebt, omdat dit kan betekenen dat je account gecompromitteerd is.{% endif %}</p><p>Je kunt dit token niet meer gebruiken om in te loggen bij op SURFconext aangesloten services die een tweede inlogstap vereisen.</p><p> Wil je een nieuw token aanvragen? Ga dan naar <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> en doorloop het registratieproces opnieuw.</p>{% endraw %}",
       "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>{% if isRevokedByRa %}The registration of your {{ tokenType }} with ID {{ tokenIdentifier }} was deleted by an administrator.{% else %}You have deleted the registration of your {{ tokenType }} token with ID {{ tokenIdentifier }}. If you did not delete your token you must immediately contact the support desk of your institution, as this may indicate that your account has been compromised.{% endif %}</p><p>You can no longer use this token to access SURFconext services that require two-step authentication.</p><p>Do you want to replace your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> and register a new token.</p>{% endraw %}"
+    },
+    "second_factor_verification_reminder_with_ras": {
+      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Vorige week heb je een token geregistreerd. Hierbij herinneren we je eraan om tijdig je token te activeren. Ga binnen 7 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if ras is empty %}<p>Er zijn geen RAs bekend.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
+      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Last week you have registered a token. Please visit one of the locations below to get your token activated. Your activation code expires after 7 days.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if ras is empty %}<p>No RAs are known.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
+    },
+    "second_factor_verification_reminder_with_ra_locations": {
+      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Vorige week heb je een token geregistreerd. Hierbij herinneren we je eraan om tijdig je token te activeren. Ga binnen 7 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if raLocations is empty %}<p>Er zijn geen Locaties bekend.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
+      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Last week you have registered a token. Please visit one of the locations below to get your token activated. Your activation code expires after 7 days.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if raLocations is empty %}<p>No locations known.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
     }
   },
 
   "gateway": {
+
+  {# Service providers metadata and configuration #}
     "service_providers": [
+    {# START SP DEFINITIONS #}
+      {# The Stepup-RA SP #}
       {
         "entity_id": "https://{{ ra_vhost_name }}/authentication/metadata",
         "public_key": "{{ ra_saml_sp_publickey | depem }}",
@@ -44,6 +75,7 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+      {# The Stepup-SelfService SP #}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/authentication/metadata",
         "public_key": "{{ selfservice_saml_sp_publickey | depem }}",
@@ -58,6 +90,8 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+{% if 'tiqr' in stepup_enabled_generic_second_factors %}
+      {# The Stepup-SelfService Tiqr GSSP SP #}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata",
         "public_key": "{{ selfservice_tiqr_sp_publickey | depem }}",
@@ -72,6 +106,7 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+      {# The Stepup-RA Tiqr GSSP SP #}
       {
        "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata",
         "public_key": "{{ ra_tiqr_sp_publickey | depem }}",
@@ -86,8 +121,92 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+{% endif %}
+{% if 'irma' in stepup_enabled_generic_second_factors %}
+      {# The Stepup-SelfService IRMA GSSP SP #}
+      {
+        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/irma/metadata",
+        "public_key": "{{ selfservice_irma_sp_publickey | depem }}",
+        "acs": [
+          "https://{{ selfservice_vhost_name }}/registration/gssf/irma/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {# The Stepup-RA IRMA GSSP SP #}
+      {
+       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/metadata",
+        "public_key": "{{ ra_irma_sp_publickey | depem }}",
+        "acs": [
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/verify"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa3 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+{% endif %}
+{% if 'biometric' in stepup_enabled_generic_second_factors %}
+      {# The Stepup-SelfService Biometric GSSP SP #}
+      {
+        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/metadata",
+        "public_key": "{{ selfservice_biometric_sp_publickey | depem }}",
+        "acs": [
+          "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {# The Stepup-RA Biometric GSSP SP #}
+      {
+       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/metadata",
+        "public_key": "{{ ra_biometric_sp_publickey | depem }}",
+        "acs": [
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/verify"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa3 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+{% endif %}
 
+      {# SP definition Template
+      {
+        "entity_id": "",
+        "public_key": "",
+        "acs": [
+          ""
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      #}
 
+      {# Add additional SPs below #}
+
+      {# A test SP #}
       {
         "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
         "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
@@ -102,6 +221,8 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
+
+      {# Another test SP #}
       {
         "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
         "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
@@ -116,7 +237,13 @@
         "second_factor_only_nameid_patterns": [ "urn:collab:pieter.aai.surfnet.nl:*" ],
         "blacklisted_encryption_algorithms": []
       }
+
+    {# END SP DEFINITIONS #}
     ],
+
+{# identity_providers
+# This is an un(der-)developed feature
+#}
     "identity_providers": [
     ]
   }

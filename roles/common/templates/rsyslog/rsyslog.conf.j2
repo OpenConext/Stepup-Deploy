@@ -95,7 +95,7 @@ $ActionQueueSaveOnShutdown on  # save in-memory data if rsyslog shuts down
 # Discard all messages from other hosts
 # This rule stops further processing of the rules below so messages from remote hosts will not be logged on the loghost
 if $fromhost != '{{ inventory_hostname.split('.')[0] }}' then stop
-{% else %}
+{% elif loghost_relp_address != false %}
 # Forward all messages to loghost using RELP
 $ModLoad omrelp
 $ActionQueueType LinkedList    # run asynchronously

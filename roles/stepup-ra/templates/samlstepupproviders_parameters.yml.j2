@@ -25,6 +25,9 @@ parameters:
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}
 
     # Translations
+    gssp_tiqr_title:
+        en_GB: 'Tiqr'
+        nl_NL: 'Tiqr'
     gssp_tiqr_page_title:
         en_GB: 'Verify with Tiqr'
         nl_NL: 'Tiqr verifiëren'
@@ -59,6 +62,9 @@ parameters:
     gssp_biometric_remote_certificate: {{ gateway_biometric_idp_publickey | default('') | depem }}
 
     # Translations
+    gssp_biometric_title:
+        en_GB: 'Biometrics'
+        nl_NL: 'Biometrie'
     gssp_biometric_page_title:
         en_GB: 'Verify biometrics'
         nl_NL: 'Biometrie verifiëren'
@@ -71,3 +77,41 @@ parameters:
     gssp_biometric_gssf_id_mismatch:
         en_GB: 'The biometric device returned a different ID than was registered in the Self-Service application.'
         nl_NL: 'Het biometrisch apparaat heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
+
+    # Authentication flow:
+    # Real IRMA IdP <--> GSSP IRMA SP <--> GSSP IRMA IdP <--> SelfService
+    # AuthnRequests from the RA and SS are proxied through the IRMA GSSP proxy on the Gateway
+    # The GSSP IRMA SP and IdP are hosted on the gateway
+
+    # IRMA SP used to authenticate to IRMA IdP though IRMA IdP proxy in the gateway
+    gssp_irma_sp_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
+    gssp_irma_sp_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
+
+    # Certificate used to sign metadata of the IRMA SP
+    gssp_irma_metadata_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
+    gssp_irma_metadata_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
+
+    # EntityID and SSO Location of the IRMA IdP Proxy on the Gateway
+    gssp_irma_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/irma/metadata'
+    gssp_irma_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/irma/single-sign-on'
+
+    # base64 without pem headers
+    gssp_irma_remote_certificate: {{ gateway_irma_idp_publickey | depem }}
+
+    # Translations
+    gssp_irma_title:
+        en_GB: 'IRMA'
+        nl_NL: 'IRMA'
+    gssp_irma_page_title:
+        en_GB: 'Verify with IRMA'
+        nl_NL: 'IRMA verifiëren'
+    gssp_irma_explanation:
+        en_GB: 'Click the button below to verify the registrant owns the IRMA account he or she registered with in the Self-Service application.'
+        nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het IRMA-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+    gssp_irma_initiate:
+        en_GB: 'Verify with IRMA'
+        nl_NL: 'Verifiëren bij IRMA'
+    gssp_irma_gssf_id_mismatch:
+        en_GB: "The IRMA server responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
+        nl_NL: 'De IRMA-server heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'

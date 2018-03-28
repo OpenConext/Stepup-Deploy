@@ -31,8 +31,28 @@ server {
         # try to serve file directly, otherwise forward to saml/index.php
         try_files $uri /saml/index.php$is_args$args;
     }
-    # Forward: /tiqr/tiqr.php, /tiqr/indexp.php and /saml/index.php
+    # Forward: /tiqr/tiqr.php, /tiqr/index.php and /saml/index.php
     location ~ ^/(tiqr|saml)/(tiqr|index)\.php(/|$) {
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+
+        # Include fastcgi_params from /etc/nginx/fastcgi_params, then
+        # override some of them
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS on;
+    }
+{% elif component_name == "irma" %}
+    location /irma/ {
+        # try to serve file directly, otherwise forward to irma/index.php
+        try_files $uri /irma/index.php$is_args$args;
+    }
+    location /saml/ {
+        # try to serve file directly, otherwise forward to saml/index.php
+        try_files $uri /saml/index.php$is_args$args;
+    }
+    # Forward: /irma/irma.php, /irma/index.php and /saml/index.php
+    location ~ ^/(irma|saml)/(irma|index)\.php(/|$) {
         fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
 

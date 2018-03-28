@@ -16,6 +16,13 @@ selfservice_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/sel
 # Format: PEM X.509 certificate
 selfservice_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_tiqr_sp.crt') }}"
 
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+selfservice_irma_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_irma_sp.key') }}"
+# Used by the SelfService to authenticate users to the IRMA IdP.
+# Authentication is though the IRMA proxy
+# Format: PEM X.509 certificate
+selfservice_irma_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_irma_sp.crt') }}"
+
 
 # URLs to the support documentation in the footer of the SS interface
 # Format: yaml dictornary of locale: url

@@ -1,6 +1,6 @@
 parameters:
     # A list of service provider entity IDs that are allowed to send AuthnRequests to the GSSPs
-    gssp_allowed_sps: [ 'https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata' ]
+    gssp_allowed_sps: [ 'https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata', 'https://{{ selfservice_vhost_name }}/registration/gssf/irma/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/metadata' ]
 
 {% if 'tiqr' in stepup_enabled_generic_second_factors %}
     # Authentication flow:
@@ -52,4 +52,30 @@ parameters:
     gssp_biometric_remote_entity_id: {{ gateway_biometric_remote_entity_id }}
     gssp_biometric_remote_sso_url: {{ gateway_biometric_remote_sso_url }}
     gssp_biometric_remote_certificate: {{ gateway_biometric_remote_certificate }}
+{% endif %}
+
+{% if 'irma' in stepup_enabled_generic_second_factors %}
+    # Authentication flow:
+    # Real IRMA IdP <--> GSSP IRMA SP <--> GSSP IRMA IdP <--> RA | SS
+    # AuthnRequests from the RA and SS are proxied through the IRMA GSSP proxy on the Gateway
+    # The GSSP IRMA SP and IdP are hosted on the gateway
+    #
+    # Metadata URL: https://<gateway>/gssp/irma/metadata
+
+    # IRMA SP Proxy for authenticating with the real (i.e. external) irma IdP
+    gssp_irma_sp_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
+    gssp_irma_sp_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
+
+    # Certificate and private key of IRMA SAML IdP Proxy for use by RA and SS
+    gssp_irma_idp_publickey: {{ component_dir_name }}/app/config/idp_irma.crt
+    gssp_irma_idp_privatekey: {{ component_dir_name }}/app/config/idp_irma.key
+
+    # Metadata signing cert and key for irma SP/IdP proxy
+    gssp_irma_metadata_publickey: {{ component_dir_name }}/app/config/idp_irma.crt
+    gssp_irma_metadata_privatekey: {{ component_dir_name }}/app/config/idp_irma.key
+
+    # Real (i.e. external) IRMA IdP
+    gssp_irma_remote_entity_id: {{ gateway_irma_remote_entity_id }}
+    gssp_irma_remote_sso_url: {{ gateway_irma_remote_sso_url }}
+    gssp_irma_remote_certificate: {{ gateway_irma_remote_certificate }}
 {% endif %}

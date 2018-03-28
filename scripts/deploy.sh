@@ -174,5 +174,7 @@ if [ "${VERBOSE}" -eq "1" ]; then
 fi
 
 ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
-
+res=$?
 cd ${CWD}
+
+exit $res

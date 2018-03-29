@@ -1,14 +1,16 @@
 Release 14
 Export RA token overview, add GSSP tokens though configuraton, registration code expiry reminder emails support for
-multiple tokens per user (expirimental)
+multiple tokens per user (experimental)
 
-* Allow multiple tokens per user (Expirimental). Tokens must be of a different type. I.e when set to 2, a user could
+* Allow multiple tokens per user (experimental). Tokens must be of a different type. I.e when set to 2, a user could
   register a Tiqr token and a yubiKey token, but not two YubiKey tokens or two Tiqr tokens.
   This is a global setting that is configured though 'number_of_tokens_per_identity' in group_vars/all.yml. Setting this
   to "1" retains pre Release 14 behaviour. This variable must be added to existing environments.
-* Email verification can be disabled on a per institution basis in the middleware-institution config. A new
-  mandatory configuration option "verify_email" was added to the institution configuration. Set to "true" to
-  keep the pre Release 14 behaviour. This option must be added to the institution config of existing environments.
+* Email verification can be disabled on a per institution basis in the middleware-institution config.
+  (https://www.pivotaltracker.com/story/show/153358379)
+  - A new mandatory configuration option "verify_email" was added to the institution configuration. Set to "true" to
+    keep the pre Release 14 behaviour. This option must be added to the institution config of existing environments.
+  - During registration a user can print and/or download a pdf of the registration code confirmation email.
 * Make the default locale and the available locales for the stepup applications configurable using group_vars.
   See the playbook variables "default_locale" and "enabled_locales" in group_vars/all.yml. These two variables
   must be added to existing environments.

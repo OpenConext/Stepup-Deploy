@@ -49,9 +49,11 @@ Install:
   - Stepup-SelfService 2.8.0
   - Stepup-RA 2.8.1
 
-* Update middleware database schema to 20180131150800 (from 20170216085513)
-  - On an app server run "/root/01-middleware-db_migrate.sh" update the middleware database schema.
-    Replay of the event log is not required.
+* Update middleware database schema to 20180330094402 (from 20170216085513)
+  - On an app server run "/root/01-middleware-db_migrate.sh" update the middleware and gateway database schemas.
+    Replay of the event log is not required, nor desired.
+    The new middleware, selfservice and RA require the new database schema to work. The new gateway should be able to work
+    with the schema of the previous release.
 
 
 Release 13.2 (hotfix)

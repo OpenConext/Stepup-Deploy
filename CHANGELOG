@@ -45,7 +45,7 @@ multiple tokens per user (experimental)
 Install:
 * Deploy components:
   - Stepup-Middleware 2.7.1
-  - Stepup-Gateway 2.8.2
+  - Stepup-Gateway 2.8.3
   - Stepup-SelfService 2.8.0
   - Stepup-RA 2.8.1
 

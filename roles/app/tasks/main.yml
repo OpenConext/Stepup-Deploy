@@ -126,7 +126,6 @@
   vars: { component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-keyserver']"
 
-
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first
 - name: Test nginx config
   command: /sbin/nginx -t
@@ -146,10 +145,6 @@
 - name: Put rsyslog config for nginx
   copy: src=rsyslog_nginx.conf dest=/etc/rsyslog.d/nginx.conf
   notify: restart rsyslog
-
-- name: Include pacemaker install
-  include: pacemaker.yml
-  when: "inventory_hostname in groups['ks'] and groups['ks']|count > 1"
 
 
   # /var/log/stepup-authentication-*.log is written by rsyslog (common role)

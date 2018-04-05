@@ -73,6 +73,12 @@
 - name: Write SP Tiqr certificate
   copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt  group={{ component_name }} mode=640
 
+- name: Write SP IRMA private key
+  copy: content="{{ gateway_irma_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_irma.key owner={{ component_name }} mode=400
+
+- name: Write SP IRMA certificate
+  copy: content="{{ gateway_irma_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_irma.crt  group={{ component_name }} mode=640
+
 
 
 - name: Write IdP private key
@@ -86,6 +92,12 @@
 
 - name: Write IdP Tiqr certificate
   copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt group={{ component_name }} mode=640
+
+- name: Write IdP IRMA private key
+  copy: content="{{ gateway_irma_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_irma.key owner={{ component_name }} mode=400
+
+- name: Write IdP IRMA certificate
+  copy: content="{{ gateway_irma_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_irma.crt group={{ component_name }} mode=640
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755

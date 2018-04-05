@@ -16,6 +16,13 @@ ra_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.k
 # Format: PEM X.509 certificate
 ra_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.crt') }}"
 
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+ra_irma_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_irma_sp.key') }}"
+# Used by the RA to authenticate users to the IRMA IdP.
+# Authentication is though the IRMA proxy
+# Format: PEM X.509 certificate
+ra_irma_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_irma_sp.crt') }}"
+
 
 # URLs to documentation for the "Manual" link in the footer of the RA interface
 # Format: yaml dictornary of locale: url

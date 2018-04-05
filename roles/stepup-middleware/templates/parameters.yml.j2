@@ -18,8 +18,9 @@ parameters:
     mailer_user:       ~
     mailer_password:   ~
 
-    default_locale:    nl_NL
-    locales:           [nl_NL, en_GB]
+    default_locale:       {{ default_locale }}
+    locales:              [{{ enabled_locales | join(",") }}]
+
     secret:            {{ middleware_secret | vault(vault_keydir) }}
 
     use_assetic_controller: true
@@ -40,7 +41,9 @@ parameters:
     self_service_url:  https://{{ selfservice_vhost_name }}
 
     enabled_generic_second_factors:
-      biometric:
-        loa: 2
-      tiqr:
-        loa: 2
+{% for sf in stepup_enabled_generic_second_factors.keys() %}
+      {{ sf }}:
+        loa: {{ stepup_enabled_generic_second_factors[sf].loa }}
+{% endfor %}
+
+    number_of_tokens_per_identity: {{ number_of_tokens_per_identity }}

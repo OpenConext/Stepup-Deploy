@@ -2,7 +2,7 @@
 
 
 - name: Put parameters.yml and samlstepupproviders(_parameters).yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640
   with_items:
   - parameters.yml
   - samlstepupproviders.yml

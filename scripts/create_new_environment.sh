@@ -56,7 +56,7 @@ shift
 if [ -z "${ENVIRONMENT_DIR}"  ]; then
     echo "Usage: $0 <environment directory> [--template <template directory>]"
     echo "
-Creates or updates an Ansible 'enviroment' from a template, generating certificates and passwords as specified in the
+Creates or updates an Ansible 'environment' from a template, generating certificates and passwords as specified in the
 'environment.conf' file in the template. The <environment directory> is created if it does not exists. Existing files in
 the <environment directory> will never be changed by this script.
 
@@ -318,7 +318,7 @@ the environment.conf: ${ENVIRONMENT_CONF}
 It is safe to rerun this script as it will not overwrite existing files."
 if [ ${USE_KEYSZAR} -eq 1 ]; then
 echo "
-* All secrets (except the CA private key) are encrypted with a symmetic key that is stored in a \"vault\". The vault is
+* All secrets (except the CA private key) are encrypted with a symmetric key that is stored in a \"vault\". The vault is
   located in ${KEY_DIR}
 
 * You can use the encrypt.sh and encrypt-file.sh scripts to encrypt and decrypt the secrets.

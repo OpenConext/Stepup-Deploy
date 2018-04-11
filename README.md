@@ -3,7 +3,7 @@ Ansible deploy scripts for Stepup Infrastructure
 
 These are the Ansible playbooks and scripts to create, deploy and manage a step-up infrastructure and to deploy the stepup components (i.e. stepup-middleware, stepup-gateway, stepup-ra, stepup-selfservice, stepup-tiqr and oath-server-php) to this infrastructure. The playbooks are targeted to a CentOS 7 image and should be usable with any environment (i.e. not be specific to a test or a production environment).
 
-The Ansible playbooks and the deploy script require an "environment". An "environment" is the part of the playbook that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template can be used as a starting point for creating your new environment. When using ansible playbook the environment to use is selected by specifying the ``inventory`` file of the environment using the ``-i`` option.
+The Ansible playbooks and the deploy script require an "environment". An "environment" is the part of the playbook that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template is the starting point for creating your own new environment. When using ansible playbook the environment to use is selected by specifying the ``inventory`` file of the environment using the ``-i`` option.
 
 
 What is Stepup?
@@ -33,13 +33,15 @@ Setting up a new Stepup infrastructure consists of 4 steps:
 
 ### <a name="create-environment"></a> [Step 1: Creating a new Environment] (id:create-environment) ###
 
-Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) script a new environment can be created based on a [template](environments/template/). This new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. The secrets (private keys, password etc) in the environment are stored in files that are encrypted with a symmetric key using [python-keyczar](https://pypi.python.org/pypi/python-keyczar). This keyczar key can be stored in a safe location (e.g. on a deploy host), separate from the environment. The standard Ansible vault is not used in this process. The template contains an [`environment.conf`](environments/template/environment.conf) file that specifies the secrets to create.
+Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) script a new environment can be created based on a [template](environments/template/). This new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. The secrets (private keys, password etc) in the environment are stored in files that are encrypted with a symmetric key using [python-keyczar](https://pypi.python.org/pypi/python-keyczar). This keyczar key can be stored in a safe location (e.g. on a deploy host), separate from the environment. The standard Ansible vault is not used in this process.
+
+The template contains an [`environment.conf`](environments/template/environment.conf) file that specifies the secrets to create. Update this file to match your configuration, likely places to update are marked with "TODO". You can copy the `environments/template` directory to a new location to make your changes. The environment can be used as-is to deploy to VMs created with the scripts in [Stepup-VM](https://github.com/SURFnet/Stepup-VM).
 
 Requirements for running the script:
 - *openssl*
 - *python-keyczar*. You can use `pip install python-keyczar` to install this tool. This makes `keyczart` command available.
 
-Use `create_new_environment.sh <environment_directory>` to create a new environment. This new environment can be used as-is to deploy to VMs created with the scripts in [Stepup-VM](https://github.com/SURFnet/Stepup-VM). The script will generate passwords, secrets, SAML signing certificates and SSL/TLS server certificates for use with HTTPS for the environment. All passwords, (private) keys and secrets are encrypted with a keyczar key that is specific for the environment. To issue the server certificates a self-signed CA is created using openssl. The configuration is read from 
+Use `create_new_environment.sh <new_environment_directory> --template <template_environment_directory>` to create a new environment. The script will generate passwords, secrets, SAML signing certificates and SSL/TLS server certificates for use with HTTPS for the environment. All passwords, (private) keys and secrets are encrypted with a keyczar key that is specific for the environment. To issue the server certificates a self-signed CA is created using openssl.
 
 For any other environment than one that targets the Stepup-VM you will need to make changes to the new environment. Because the Stepup software depends on external systems, additional configuration and setup is required to be able to actually use a Stepup environment. The locations in the new environment where you may need to make changes to match the requirements of your setup are marked with "TODO". Changes to make include:
 
@@ -54,12 +56,15 @@ More information on the "environment" concept can be found in [ansible-tools](ht
 
 ### <a name="site"></a>[Step 2: Create / update infrastructure] (id:site)###
 
-The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x and uses the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
+The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x (and < 2.4) and uses the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
 
-You must adjust the Ansible inventory file that was copied over from the template to match your infrastructure. The default inventory assumes you will use two (virtual) machines for running Stepup. This is a minimum setup. The two machines are:
+Note: In Ansible version 2.4 the handling of the `inventory_dir` variable was changed in a way that breaks how Stepup-Deploy uses the `inventory_dir`. Either use Ansible 2.3 or set the `inventory_dir` manually be specifying it as an "extra var" on the command line using the ansible-playbook `-e` option. E.g:
+`ansible-playbook site.yml -i /home/user/workspace/environment/inventory -e "inventory_dir=/home/user/workspace/environment/"` With this change deploying using ansible 2.4 and 2.5 should work.
+
+You must adjust the Ansible inventory file that was copied over from the template to match your infrastructure. The default inventory assumes you will use two (virtual) machines for running Stepup. This is a minimal setup. The two machines are:
 
 1. An application server ("app.stepup.example.com"), running an nginx+php-fpm web stack and also the database (mariadb+galera) in the template inventory).
-2. A management server ("manage.stepup.example.com" in the template inventory), running ELK for log processing. Although you _must_ configure this server in your inventory to successfully deploy you application server, you can skip actually deploying it and have a functional application server.
+2. A management server ("manage.stepup.example.com" in the template inventory), running ELK for log processing. Although you _must_ configure this server in your inventory to successfully deploy you application server, you can skip actually deploying the management server and have a functional application server.
 
 The (virtual) machine(s) must be running CentOS 7. It is very unlikely that the playbook will work with another CentOS version or with another Linux distribution. 2 GB memory with 15 GB disk is sufficient to install the app server. 
 
@@ -84,7 +89,7 @@ Stepup components are the applications that together make up the Stepup service.
 * [Stepup-tiqr](https://github.com/OpenConext/Stepup-tiqr). This is the web application that handles tiqr registration and authentications.
 * [oath-service-php](https://github.com/SURFnet/oath-service-php). This a server for storing the secrets used by tiqr.
 
-Stepup components are deployed on a machine this is previously prepared as described in the previous steps. The playbook used for deploying the stepup components requires a [prebuild](#build) tarball of the component. Prebuild components can be downloaded from the release page of the component on GitHub.
+Stepup components are deployed on a machine that is previously prepared as described in the previous steps. The playbook used for deploying the stepup components requires a [prebuild](#build) tarball of the component. Prebuild components can be downloaded from the release page of the component on GitHub.
  
 The deploy playbook is [`deploy.yml`](deploy.yml). A [`deploy.sh`](scrips/deply.sh) script is provided to use this ansible-playbook to deploy a single component. This script will override the component names in the `deploy.yml` playbook. Usage:
  
@@ -118,7 +123,7 @@ To perform the post installation configuration you must execute each of these sc
 CHANGELOG
 ---------
 
-The [https://github.com/OpenConext/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scripts, but also the changes in the stepup components.
+The [https://github.com/OpenConext/Stepup-Deploy/blob/master/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scripts, but also the changes in the stepup components.
 
 [Pivotal Issue tracker](id:pivotal)
 ---------------------
@@ -176,6 +181,8 @@ The '--clean' option runs the tests in a clean docker container. Omit the flag t
 Tests must be run from the root of the git repository (i.e. where this file is located).
 
 Use `docker exec -i -t ansible-test /bin/bash` to get a shell in the running container.
+
+Note: disabled Travis docker tests (for now)
 
 
 Contributing

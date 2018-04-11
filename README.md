@@ -107,7 +107,7 @@ The fourth and last step is to perform post installation configuration. This con
 - Creating database schema's for the applications
 - Writing the configuration to the database
 
-The databases schemas and users for the Stepup components were created by the db role in [Step 2](#site), but were not further initialised. In [Step 3](#deploy) each component added one or more scripts to the /root/ directory on the machines(s) where it was deployed.  
+The databases schemas and users for the Stepup components were created by the db role in [Step 2](#site), but were not further initialised. In [Step 3](#deploy) each component added one or more scripts to the /root/ directory on the machine(s) where it was deployed.  
 
 To perform the post installation configuration you must execute each of these scripts once. Because some scripts are order dependent they are numbered in the order they should be executed. If two scrips have the same number, their order is not important. All the scripts except "06-middleware-bootstrap-sraa-users.sh" are idempotent, meaning they can be called multiple times without ill effect.
 
@@ -118,7 +118,7 @@ To perform the post installation configuration you must execute each of these sc
 CHANGELOG
 ---------
 
-The [https://github.com/OpenConext/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scrips, but also the changes in the stepup components.
+The [https://github.com/OpenConext/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scripts, but also the changes in the stepup components.
 
 [Pivotal Issue tracker](id:pivotal)
 ---------------------
@@ -139,7 +139,7 @@ These are the main repositories for the Stepup components that can be deployed o
 * [Stepup-tiqr](https://github.com/OpenConext/Stepup-tiqr)
 * [oath-service-php](https://github.com/SURFnet/oath-service-php)
 
-This in turn use many components and bundles that are stored in other repositories.
+These in turn use many components and bundles that are stored in other repositories.
 
 ### Build Server ###
 
@@ -149,12 +149,12 @@ This in turn use many components and bundles that are stored in other repositori
 
 [Stepup-VM](https://github.com/OpenConext/Stepup-VM) contains scripts for setting up a VM for testing/development
 
-Documentation from SURFnet's SURFconext Strong Authentication service
----------------------------------------------------------------------
+Documentation from SURFnet's SecureID service (f.k.a. SURFconext Strong Authentication)
+---------------------------------------------------------------------------------------
 
-SURFnet runs an instance of the Stepup software and offers it as a service to its members. To that end it provides documentation aimed at Identity Providers, Service Provides and users of the service in the SURFconext Strong Authenticaton section of the [Get Conexted wiki](https://wiki.surfnet.nl/display/surfconextdev/SURFconext+Strong+Authentication).
+SURFnet runs an instance of the Stepup software and offers it as a service to its members. To that end it provides documentation aimed at Identity Providers, Service Provides and users of the service in the SURF SecureID section of the [Get Conexted wiki](https://wiki.surfnet.nl/display/surfconextdev/SURFconext+Strong+Authentication).
 
-Animation introducing SURFconext Strong authentication https://www.surf.nl/en/knowledge-base/2015/animation-surfconext-strong-authentication.html
+Animation introducing SURF SecureID https://www.surf.nl/en/knowledge-base/2015/animation-surfconext-strong-authentication.html
 
 Other Documentation
 -------------------

@@ -31,7 +31,7 @@ Setting up a new Stepup infrastructure consists of 4 steps:
 3. [Deploy the Stepup components](#deploy). This installs the stepup applications ("components") and writes the application configuration: stepup-gateway, stepup-middleware, stepup-selfservice, stepup-ra, steup-tiqr and oath-server-php. 
 4. [Post installation configuration](#postinstall). This includes executing the scripts on the application server that initialise or update the database and running the scripts that push the configuration to the database.  
 
-### [Step 1: Creating a new Environment](name:create-environment) ###
+###  <a name="create-environment"></a> [Step 1: Creating a new Environment](name:create-environment) ###
 
 Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) script a new environment can be created based on a [template](environments/template/). This new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. The secrets (private keys, password etc) in the environment are stored in files that are encrypted with a symmetric key using [python-keyczar](https://pypi.python.org/pypi/python-keyczar). This keyczar key can be stored in a safe location (e.g. on a deploy host), separate from the environment. The standard Ansible vault is not used in this process. The template contains an [`environment.conf`](environments/template/environment.conf) file that specifies the secrets to create.
 

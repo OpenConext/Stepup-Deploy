@@ -31,7 +31,7 @@ Setting up a new Stepup infrastructure consists of 4 steps:
 3. [Deploy the Stepup components](#deploy). This installs the stepup applications ("components") and writes the application configuration: stepup-gateway, stepup-middleware, stepup-selfservice, stepup-ra, steup-tiqr and oath-server-php. 
 4. [Post installation configuration](#postinstall). This includes executing the scripts on the application server that initialise or update the database and running the scripts that push the configuration to the database.  
 
-###  <a name="create-environment"></a> [Step 1: Creating a new Environment](name:create-environment) ###
+### <a name="create-environment"></a> [Step 1: Creating a new Environment] ###
 
 Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) script a new environment can be created based on a [template](environments/template/). This new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. The secrets (private keys, password etc) in the environment are stored in files that are encrypted with a symmetric key using [python-keyczar](https://pypi.python.org/pypi/python-keyczar). This keyczar key can be stored in a safe location (e.g. on a deploy host), separate from the environment. The standard Ansible vault is not used in this process. The template contains an [`environment.conf`](environments/template/environment.conf) file that specifies the secrets to create.
 
@@ -52,7 +52,7 @@ For any other environment than one that targets the Stepup-VM you will need to m
 
 More information on the "environment" concept can be found in [ansible-tools](https://github.com/pmeulen/ansible-tools)
 
-### [Step 2: Create / update infrastructure](id:site) ###
+### <a name="site"></a>[Step 2: Create / update infrastructure] ###
 
 The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x and uses the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
 
@@ -73,7 +73,7 @@ The inventory consists of one database running on the application server. The pl
 
 If you are using the minimal configuration in the inventory from the template, you have one database that is running on the application server. This database is configured as a cluster consisting of one node (you could add more nodes later). In this case the most important difference between a normal mysql/mariaDB and the Galera cluster version is that you ever need to start the database you must use `service mysql bootstrap` instead of `service mysql start`.
 
-### [Step 3: Deploy the Stepup components](id:deploy) ###
+### <a name="deploy"></a> [Step 3: Deploy the Stepup components] ###
 
 Stepup components are the applications that together make up the Stepup service. These are:
 
@@ -101,7 +101,7 @@ Before a component can be deployed it must be built. This creates a tarball (tar
 Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatically created by GitHub. The name of a component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<git commit SHA1>.tar.bz2`. For example: `Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2`
 
 
-### [Step 4: Post Installation Configuration](id:postinstall) ###
+### <a name="postinstall"></a> [Step 4: Post Installation Configuration] ###
 
 The fourth and last step is to perform post installation configuration. This consists of:
 - Creating database schema's for the applications

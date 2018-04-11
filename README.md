@@ -1,7 +1,7 @@
 Ansible deploy scripts for Stepup Infrastructure
 ================================================
 
-These are the Ansible playbooks and scripts to create, deploy and manage a step-up infrastructure and to deploy the stepup components (i.e. stepup-middleware, stepup-gateway, stepup-ra, stepup-selfserve, stepup-tiq and oath-server-php) to this infrastructure. The playbooks are targeted to a CentOS 7 image and should be usable with any environment (i.e. not be specific to a test or a production environment).
+These are the Ansible playbooks and scripts to create, deploy and manage a step-up infrastructure and to deploy the stepup components (i.e. stepup-middleware, stepup-gateway, stepup-ra, stepup-selfservice, stepup-tiqr and oath-server-php) to this infrastructure. The playbooks are targeted to a CentOS 7 image and should be usable with any environment (i.e. not be specific to a test or a production environment).
 
 The Ansible playbooks and the deploy script require an "environment". An "environment" is the part of the playbook that contains the configuration (e.g. passwords, certificates, urls, email addresses, hostnames, ...) of the infrastructure that is being targeted. A template environment is provided in "environments/template". This template can be used as a starting point for creating your new environment. When using ansible playbook the environment to use is selected by specifying the ``inventory`` file of the environment using the ``-i`` option.
 
@@ -9,7 +9,7 @@ The Ansible playbooks and the deploy script require an "environment". An "enviro
 What is Stepup?
 ---------------
 
-Stepup authentication as-a-service, or Stepup for short, is an open source project that was started by [SURFnet](http://surfnet.nl) to create what is now called "SURFconext Strong Authentication". It works seamlessly with [OpenConext](http://openconext.org) to add Step-up authentication for (SAML) Service Providers. The Stepup system manages authentication _and_ registration of the second factors without requiring technical integration with the identity provider, which is great if you need to support many different identity providers. For SAML service providers (SPs) an "always require stepup" policy is available that allows SPs to connect to Stepup with very little to no integration effort. For a more feature rich integration SAML Scoping with RequestedAuthnContext is supported.
+Stepup authentication as-a-service, or Stepup for short, is an open source project that was started by [SURFnet](http://surfnet.nl) to create what is now called "SURF SecureID" (and "SURFconext Strong Authentication" before that). It works seamlessly with [OpenConext](http://openconext.org) to add Step-up authentication for (SAML) Service Providers. The Stepup system manages authentication _and_ registration of the second factors without requiring technical integration with the identity provider, which is great if you need to support many different identity providers. For SAML service providers (SPs) an "always require stepup" policy is available that allows SPs to connect to Stepup with very little to no integration effort. For a more feature rich integration SAML Scoping with RequestedAuthnContext is supported.
 
 Stepup is not limited to be used with OpenConext. There is nothing that precludes it from being used by itself to add Step-up authentication to:
 
@@ -17,7 +17,7 @@ Stepup is not limited to be used with OpenConext. There is nothing that preclude
 - one or many SAML service providers
 - other SAML proxies or hubs
 
-How SURFnet uses Stepup to offer string authentication to cloud services: https://www.surf.nl/en/knowledge-base/2015/animation-surfconext-strong-authentication.html
+How SURFnet uses Stepup to offer strong authentication to cloud services: https://www.surf.nl/en/knowledge-base/2015/animation-surfconext-strong-authentication.html
 
 More information resources can be found at the [end of the readme](#moreinfo). 
 
@@ -37,14 +37,14 @@ Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) scrip
 
 Requirements for running the script:
 - *openssl*
-- *python-keyczar*. You can use `pip install python-keyczar` to install this tool. This makes `keycart` command available.
+- *python-keyczar*. You can use `pip install python-keyczar` to install this tool. This makes `keyczart` command available.
 
-Use `create_new_environment.sh <environment_directory>` to create a new environment. This new environment can be used as-is to deploy to VMs created with the scripts in [Stepup-VM](https://github.com/SURFnet/Stepup-VM). The script will generate passwords, secrets, SAML signing certificates and SSL/TLS server certificates for use with HTTPS for the environment. All passwords, (private) keys and secrets are encrypted these with a keyczar key that is specific for the environment. To issue the server certificates a self-signed CA is created using openssl. The configuration is read from 
+Use `create_new_environment.sh <environment_directory>` to create a new environment. This new environment can be used as-is to deploy to VMs created with the scripts in [Stepup-VM](https://github.com/SURFnet/Stepup-VM). The script will generate passwords, secrets, SAML signing certificates and SSL/TLS server certificates for use with HTTPS for the environment. All passwords, (private) keys and secrets are encrypted with a keyczar key that is specific for the environment. To issue the server certificates a self-signed CA is created using openssl. The configuration is read from 
 
 For any other environment than one that targets the Stepup-VM you will need to make changes to the new environment. Because the Stepup software depends on external systems, additional configuration and setup is required to be able to actually use a Stepup environment. The locations in the new environment where you may need to make changes to match the requirements of your setup are marked with "TODO". Changes to make include:
 
 * Set hostnames, domains, email addresses
-* Replace the SSL Server certificates (for production, the certificate work fine for test in most browsers, but with warnings)
+* Replace the SSL Server certificates (for production, the certificates work fine for test in most browsers, but with warnings)
 * Configure API keys for messagebird, yubikey
 * Configure the remote "first factor" IdP
 * Adjust firewall rules (for production)
@@ -75,7 +75,7 @@ If you are using the minimal configuration in the inventory from the template, y
 
 ### [Step 3: Deploy the Stepup components](id:deploy) ###
 
-Stepup components are the applications that together make up the Stepup. These are:
+Stepup components are the applications that together make up the Stepup service. These are:
 
 * [Stepup-Middleware](https://github.com/OpenConext/Stepup-Middleware). Is used by the Selfservice component and the RA component. The middleware component is the only component that writes to the database. The other components do not communicate with the middleware. The middleware component maintains the middleware and the gateway databases. Updating the configuration of the Stepup system is performed by sending commands to the middleware. 
 * [Stepup-Gateway](https://github.com/OpenConext/Stepup-Gateway). The gateway reads its configuration from the gateway database. It is a SAML proxy and handles all authentication request in the Stepup system by interacting with external authentication providers (1st factor SAML IdP, Messagebird SMS gateway, Stepup-tiqr or the Yubico Cloud). SAML Service Provides use this gateway for authentication.
@@ -107,7 +107,7 @@ The fourth and last step is to perform post installation configuration. This con
 - Creating database schema's for the applications
 - Writing the configuration to the database
 
-The databases schemas and users for the Stepup components were created by the db role in [Step 2](#site), but were not further initialised. In [Step 3](#deploy) each component added one or more scripts to the /root/ directory on the machines(s) where it was deployed.  
+The databases schemas and users for the Stepup components were created by the db role in [Step 2](#site), but were not further initialised. In [Step 3](#deploy) each component added one or more scripts to the /root/ directory on the machine(s) where it was deployed.  
 
 To perform the post installation configuration you must execute each of these scripts once. Because some scripts are order dependent they are numbered in the order they should be executed. If two scrips have the same number, their order is not important. All the scripts except "06-middleware-bootstrap-sraa-users.sh" are idempotent, meaning they can be called multiple times without ill effect.
 
@@ -118,7 +118,7 @@ To perform the post installation configuration you must execute each of these sc
 CHANGELOG
 ---------
 
-The [https://github.com/OpenConext/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scrips, but also the changes in the stepup components.
+The [https://github.com/OpenConext/Stepup-Deploy/blob/develop/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scripts, but also the changes in the stepup components.
 
 [Pivotal Issue tracker](id:pivotal)
 ---------------------
@@ -139,7 +139,7 @@ These are the main repositories for the Stepup components that can be deployed o
 * [Stepup-tiqr](https://github.com/OpenConext/Stepup-tiqr)
 * [oath-service-php](https://github.com/SURFnet/oath-service-php)
 
-This in turn use many components and bundles that are stored in other repositories.
+These in turn use many components and bundles that are stored in other repositories.
 
 ### Build Server ###
 
@@ -149,12 +149,12 @@ This in turn use many components and bundles that are stored in other repositori
 
 [Stepup-VM](https://github.com/OpenConext/Stepup-VM) contains scripts for setting up a VM for testing/development
 
-Documentation from SURFnet's SURFconext Strong Authentication service
----------------------------------------------------------------------
+Documentation from SURFnet's SecureID service (f.k.a. SURFconext Strong Authentication)
+---------------------------------------------------------------------------------------
 
-SURFnet runs an instance of the Stepup software and offers it as a service to its members. To that end it provides documentation aimed at Identity Providers, Service Provides and users of the service in the SURFconext Strong Authenticaton section of the [Get Conexted wiki](https://wiki.surfnet.nl/display/surfconextdev/SURFconext+Strong+Authentication).
+SURFnet runs an instance of the Stepup software and offers it as a service to its members. To that end it provides documentation aimed at Identity Providers, Service Provides and users of the service in the SURF SecureID section of the [Get Conexted wiki](https://wiki.surfnet.nl/display/surfconextdev/SURFconext+Strong+Authentication).
 
-Animation introducing SURFconext Strong authentication https://www.surf.nl/en/knowledge-base/2015/animation-surfconext-strong-authentication.html
+Animation introducing SURF SecureID https://www.surf.nl/en/knowledge-base/2015/animation-surfconext-strong-authentication.html
 
 Other Documentation
 -------------------

@@ -52,7 +52,7 @@ For any other environment than one that targets the Stepup-VM you will need to m
 
 More information on the "environment" concept can be found in [ansible-tools](https://github.com/pmeulen/ansible-tools)
 
-### <a name="site"></a>[Step 2: Create / update infrastructure] ###
+### <a name="site"></a>[Step 2: Create / update infrastructure] (id:site)###
 
 The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x and uses the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
 
@@ -73,7 +73,7 @@ The inventory consists of one database running on the application server. The pl
 
 If you are using the minimal configuration in the inventory from the template, you have one database that is running on the application server. This database is configured as a cluster consisting of one node (you could add more nodes later). In this case the most important difference between a normal mysql/mariaDB and the Galera cluster version is that you ever need to start the database you must use `service mysql bootstrap` instead of `service mysql start`.
 
-### <a name="deploy"></a> [Step 3: Deploy the Stepup components] ###
+### <a name="deploy"></a> [Step 3: Deploy the Stepup components] (id:deploy> ###
 
 Stepup components are the applications that together make up the Stepup service. These are:
 
@@ -101,7 +101,7 @@ Before a component can be deployed it must be built. This creates a tarball (tar
 Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatically created by GitHub. The name of a component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<git commit SHA1>.tar.bz2`. For example: `Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2`
 
 
-### <a name="postinstall"></a> [Step 4: Post Installation Configuration] ###
+### <a name="postinstall"></a> [Step 4: Post Installation Configuration] (id:postinstall) ###
 
 The fourth and last step is to perform post installation configuration. This consists of:
 - Creating database schema's for the applications

@@ -64,7 +64,7 @@ server {
         fastcgi_param HTTPS on;
     }
 {% else %}
-    {% if 'dev' in group_names and component_name != "middleware" %}
+    {% if 'dev' in group_names %}
     location / {
         # try to serve file directly, fallback to app_dev.php
         try_files $uri /app_dev.php$is_args$args;

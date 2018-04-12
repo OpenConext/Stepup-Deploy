@@ -17,7 +17,7 @@
 
 - name: Untar component
   unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
-  when: ( {{ component_unarchive | default(1) }} == 1)
+  when: component_unarchive | bool | default(true)
 
 - name: Remove group and world write
   file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"

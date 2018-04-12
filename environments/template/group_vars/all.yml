@@ -1,7 +1,11 @@
 # group_vars/all: Variables visible in all roles
 
+# The "create_new_environment.sh" script generates a key in {{ inventory_dir }}/stepup-ansible-keystore
+# You can move the keydir to another location. When you do, update vault_keydir below
 # Location of the keystore directory on the deploy host
+#vault_keydir: "~/stepup-staging-ansible-keystore"
 vault_keydir: "{{ inventory_dir }}/stepup-ansible-keystore"
+
 
 # Directory for keeping files on the remote host for use
 # by the playbook
@@ -9,16 +13,35 @@ managed_file_dir: /opt/ansible/managed_files
 
 # Timezone
 # Format: IANA tz zone name (e.g. "Europe/Amsterdam")
+# TODO: Set timezone
 timezone: Europe/Amsterdam
 
 # Administrative email address
+# TODO: Set admin email address
 server_admin_email: admin@stepup.example.com
 
 # "noreply" email address
+# This address is used as sender address for emails sent to users by by Stepup applications
+# TODO: Set noreply address
 noreply_email: noreply@stepup.example.com
 noreply_email_name: Step-up Example
 
 # FQDN for vhosts
+# These are the hostnames for the stepup web applications.
+#
+# Your users will use (i.e. browse to):
+# - selfservice_vhost_name - Stepup-SelfService (i.e. the SelfService web interface for registiring / revoking tokens)
+# - ra_vhost_name - Stepup-RA (i.e., the web interface for registration authorities for vetting users and managing tokens)
+#
+# Your users will see (i.e. may be redirected to):
+# - gateway_vhost_name - Stepup- Gateway (This is the Stepup SAML proxy, it will show the webinterface for SMS, Tiqr and
+#                        U2F authentication and, when required, a WAYG)
+# - tiqr_vhost_name - Stepup-Tiqr (The GSSP for Tiqr) (optional)
+# - irma_vhost_name - (The GSSP for IRMA) (optional)
+#
+# REST interfaces (i.e. not visited using a webbrowser)
+# - middleware_vhost_name - Stepup-Middleware
+# - keyserver_vhost_name - Stepup-keyserver (optionally used by Tiqr)
 # TODO: Set vhostnames
 middleware_vhost_name: middleware.stepup.example.com
 selfservice_vhost_name: selfservice.stepup.example.com
@@ -30,7 +53,7 @@ keyserver_vhost_name: keyserver.stepup.example.com
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
 # user's locale preference with other (stepup) components
-# TODO: Set cookie domain
+# TODO: Set cookie domain to match the vhostnames of the stepup applications
 locale_cookie_domain: stepup.example.com
 
 # The default locale for the stepup applications. Supported: nl_NL or en_GB
@@ -44,6 +67,7 @@ enabled_locales:
 
 
 # The uri's that are used to define the LoA levels used in AuthnContextClassRef
+# These are identifiers, use a namespace (domain) that you control.
 # TODO: Set LoA uri's
 stepup_uri_loa1: 'http://stepup.example.com/assurance/loa1'
 stepup_uri_loa2: 'http://stepup.example.com/assurance/loa2'
@@ -52,12 +76,15 @@ stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
 stepup_uri_sfo_loa2: 'http://stepup.example.com/assurance/sfo-level2'
 stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 
-# The build in second factor types to enable in the SS and the RA
+# The build in second factor types of the Stepup-Gateway to enable in the SS and the RA
 # Format: comma separated list of factors to enable
 # Supported factors: sms, yubikey, u2f
+# TODO: Select second factors to enable
 stepup_enabled_factors: sms, yubikey, u2f
 
 # The generic second factor types to enable in the SS and the RA
+# TODO: Select GSSPs to enabale, and specify the LoA level to assign to the GSSP
+# Available LoA levels: 2 and 3
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
@@ -65,6 +92,33 @@ stepup_enabled_generic_second_factors:
     loa: 2
 #  biometric:
 #    loa: 2
+
+
+# Set the addres(ses) of the loadbalancer(s)
+# These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.
+# Note: Specify the IP addresses of the loadbalancers themselves (i.e. what the nginx on the app servers will see at the
+#       source IP address of the HTTP requests it receives)
+# TODO: Set to the IP addres(ses) of the loadbalancer(s) that proxy the http requests to the app servers.
+lb_addresses: []
+
+# The (ip) address to use to access the mariadb database
+# TODO: Set to loadbalanced / HA address of the database when using > 1 DB nodes
+database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster
+
+# The (ip) address to use to access the keyserver
+# TODO: Set to loadbalanced / HA address of the keyserver when using > 1 keyservers
+keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use address of first ks
+
+# The ip address of the loghost server to receive logs
+# TODO: Set to address and port of logserver
+# Set to the host_ipv4 for the first host in the manage group, set to "False" if the manage group is empty
+loghost_relp_address: "{{ (groups['manage'][0] | default(false)) | ternary(hostvars[groups['manage'][0]|default(inventory_hostname)]['host_ipv4'], false) }}"
+loghost_relp_port: 10514
+
+# The (ip) address to use to access the memcache server
+# The mencache server is used by Stepup-tiqr only. The db role installs a memcache
+memcache_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster
+
 
 # Public SAML signing key of the gateway IdP
 # Private key in stepup-gateway.yml
@@ -103,6 +157,7 @@ gateway_irma_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway
 # Format: PEM X.509 certificate
 irma_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/irma_idp.crt') }}"
 
+
 # Database tables and users for Stepup applications, keyserver
 # Used by dbcluster role to create users and tables
 
@@ -137,29 +192,3 @@ database_keyserver_deploy_password: "{{ lookup('file', inventory_dir+'/password/
 database_u2f_name: u2f
 database_u2f_user: u2f
 database_u2f_password: "{{ lookup('file', inventory_dir+'/password/database_u2f') }}"
-
-
-# Set the addres(ses) of the loadbalancer(s)
-# These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.
-# Note: Specify the IP addresses of the loadbalancers themselves (i.e. what the app server will see at the source IP,
-#       and not the loadbalanced address.
-# TODO: Set to the IP addres(ses) of the loadbalancer(s) that proxy the http requests to the app servers.
-lb_addresses: []
-
-# The (ip) address to use to access the mariadb database
-# TODO: Set to loadbalanced address when using > 1 DB nodes
-database_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster
-
-# The (ip) address to use to access the keyserver
-# TODO: Set to loadbalanced address when using > 1 keyservers
-keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use address of first ks
-
-# The ip address of the loghost server to receive logs
-# TODO: Set to address and port of logserver
-# Set to the host_ipv4 for the first host in the manage group, set to "False" if the manage group is empty
-loghost_relp_address: "{{ (groups['manage'][0] | default(false)) | ternary(hostvars[groups['manage'][0]|default(inventory_hostname)]['host_ipv4'], false) }}"
-loghost_relp_port: 10514
-
-# The (ip) address to use to access the memcache server
-# NOTE: db nodes double as memcache servers
-memcache_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster

@@ -1,6 +1,27 @@
 # Note: the variables in this groups_vars file (app.yml) override those in the stepup-* group_vars
 
-# Remote IdP, this is the IdP that is used as first factor in step-up (i.e. OpenConext, SURFconext)
+# Remote IdP, this is the IdP that is used as first factor in step-up (e.g. OpenConext engineblock)
+#
+# To use the Remote IdP with Stepup the IdP must:
+# - Put an unmutable, persistent identifier of the user in the NameID in the Subject of the Assertion. This is the
+#   identity of the user
+# - Release the eduPersonTargetID (EPTI) attribute with the NameID for the SP that is authenticating to the proxy.
+#   For the Stepup-SelfService and Stepup-RA SP this EPTI NameID must be the same as the NameID in the Subject.
+# - For login to Stepup-SelfService the remote Idp must release three additional attributes:
+#   - schacHomeOrganization -- Identifies the organisation that the user belongs to.
+#   - mail -- The email address of the user. Used to send mails to users
+#   - cn -- The commonName of the user. Must contain the official name of the user. This is the name that will be vetted.
+#
+# The Stepup-Gateway sends the AuthnRequest using the HTTP-Redirect biding. AuthnRequests are signed using rsa-sha256
+# The Remote IdP must send the SAML Response to the Stepup-Gateway using the HTTP-POST binding. The Assertion must be
+# signed using rsa-sha256. Encrypted assertions are not supported.
+#
+# Please refer to the Stepup-Gateway documentation for more details:
+# https://github.com/OpenConext/Stepup-Gateway/blob/develop/docs/SAMLProxy.md
+#
+# The metadata of the gateway can be found at: https://<gateway_vhost_name>/second-factor-only/metadata
+# Note: The SPSSODescriptor misses a KeyDescriptor. This is a bug (https://www.pivotaltracker.com/story/show/156721113)
+#
 # Remote IdP entityID
 # TODO: Set Remote IdP entityID
 saml_remote_idp_entity_id: https://engine.surfconext.nl/authentication/idp/metadata
@@ -13,6 +34,30 @@ saml_remote_idp_sso_url: https://engine.surfconext.nl/authentication/idp/single-
 # Format: Certificate as found in SAML metadata (i.e. PEM X.509 certificate, but without PEM headers and whitespace)
 # TODO: Set Remote IdP SAML Signing X509Certificate
 saml_remote_idp_certificate: MIID3zCCAsegAwIBAgIJAMVC9xn1ZfsuMA0GCSqGSIb3DQEBCwUAMIGFMQswCQYDVQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMGA1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MSYwJAYDVQQDDB1lbmdpbmUuc3VyZmNvbmV4dC5ubCAyMDE0MDUwNTAeFw0xNDA1MDUxNDIyMzVaFw0xOTA1MDUxNDIyMzVaMIGFMQswCQYDVQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDEVMBMGA1UECgwMU1VSRm5ldCBCLlYuMRMwEQYDVQQLDApTVVJGY29uZXh0MSYwJAYDVQQDDB1lbmdpbmUuc3VyZmNvbmV4dC5ubCAyMDE0MDUwNTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKthMDbB0jKHefPzmRu9t2h7iLP4wAXr42bHpjzTEk6gttHFb4l/hFiz1YBI88TjiH6hVjnozo/YHA2c51us+Y7g0XoS7653lbUN/EHzvDMuyis4Xi2Ijf1A/OUQfH1iFUWttIgtWK9+fatXoGUS6tirQvrzVh6ZstEp1xbpo1SF6UoVl+fh7tM81qz+Crr/Kroan0UjpZOFTwxPoK6fdLgMAieKSCRmBGpbJHbQ2xxbdykBBrBbdfzIX4CDepfjE9h/40ldw5jRn3e392jrS6htk23N9BWWrpBT5QCk0kH3h/6F1Dm6TkyG9CDtt73/anuRkvXbeygI4wml9bL3rE8CAwEAAaNQME4wHQYDVR0OBBYEFD+Ac7akFxaMhBQAjVfvgGfY8hNKMB8GA1UdIwQYMBaAFD+Ac7akFxaMhBQAjVfvgGfY8hNKMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAC8L9D67CxIhGo5aGVu63WqRHBNOdo/FAGI7LURDFeRmG5nRw/VXzJLGJksh4FSkx7aPrxNWF1uFiDZ80EuYQuIv7bDLblK31ZEbdg1R9LgiZCdYSr464I7yXQY9o6FiNtSKZkQO8EsscJPPy/Zp4uHAnADWACkOUHiCbcKiUUFu66dX0Wr/v53Gekz487GgVRs8HEeT9MU1reBKRgdENR8PNg4rbQfLc3YQKLWK7yWnn/RenjDpuCiePj8N8/80tGgrNgK/6fzM3zI18sSywnXLswxqDb/J+jgVxnQ6MrsTf1urM8MnfcxG/82oHIwfMh/sXPCZpo+DTLkhQxctJ3M=
+
+
+# URL to where the user is redirected after logout by the Stepup applications (SS and RA)
+# Note: This is not SAML SLO.
+# TODO: Set logout URL
+logout_redirect_url: https://engine.surfconext.nl/logout
+
+
+# Message originator as displayed in SMS
+# "This can be a telephone number (including country code) or an alphanumeric string.
+#  In case of an alphanumeric string, the maximum length is 11 characters."
+# Used by Gateway, SelfService and RA components
+# TODO: Set SMS sender name
+sms_originator: Stepup
+# Validity time of an OTP send using SMS in seconds
+sms_otp_expiry_interval: 900
+# Maximum number of times a user may resend an SMS during authenticaton
+sms_maximum_otp_requests: 3
+
+
+# Hostname of sendmail smarthost (optional)
+# When not set, sendmail on the app servers will be used to send mail directly
+# TODO: Configure a SMTP smart host when required / desired
+#sendmail_smarthost: smtp.example.com
 
 
 # Passwords for accessing the Middleware REST API
@@ -46,20 +91,4 @@ app_session_max_duration: 3600
 # 60 * 15 = 900
 app_session_expiry_time: 900
 
-# URL to where the user is redirected after logout.
-# TODO: Set logout URL
-logout_redirect_url: https://engine.surfconext.nl/logout
 
-# Hostname of sendmail smarthost (optional)
-#sendmail_smarthost: smtp.example.com
-
-
-# Message originator as displayed in SMS
-# "This can be a telephone number (including country code) or an alphanumeric string.
-#  In case of an alphanumeric string, the maximum length is 11 characters."
-# Used by Gateway, SelfService and RA components
-sms_originator: Stepup
-# Validity time of an OTP send using SMS in seconds
-sms_otp_expiry_interval: 900
-# Maximum number of times a user may resend an SMS during authenticaton
-sms_maximum_otp_requests: 3

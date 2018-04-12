@@ -10,7 +10,7 @@ middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
 #
 # The information beyond nameid is *only* used by the middleware bootstrap script on the app server:
 # /root/06-middleware-bootstrap-sraa-users.sh
-# To update this script file after making changes here, redeploy the Stepup-Middleware component
+# To update this boostrap script file after making changes here, redeploy the Stepup-Middleware component
 
 # TODO: Define SRAA's
 middleware_sraa:

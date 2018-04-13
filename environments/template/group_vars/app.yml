@@ -59,6 +59,11 @@ sms_maximum_otp_requests: 3
 # TODO: Configure a SMTP smart host when required / desired
 #sendmail_smarthost: smtp.example.com
 
+# Port on the sendmail_smarthost to deliver mail to (optional)
+# if not set the sendmail default port (25) is used
+#sendmail_smarthost_port: 25
+#sendmail_smarthost_port: 587
+
 
 # Passwords for accessing the Middleware REST API
 selfservice_api_password: "{{ lookup('file', inventory_dir+'/password/middleware_selfservice_api') }}"

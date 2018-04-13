@@ -26,6 +26,13 @@ parameters:
     gssp_tiqr_remote_entity_id: {{ gateway_tiqr_remote_entity_id }}
     gssp_tiqr_remote_sso_url: {{ gateway_tiqr_remote_sso_url }}
     gssp_tiqr_remote_certificate: {{ gateway_tiqr_remote_certificate }}
+
+    gssp_tiqr_logo: {{ gateway_tiqr_logo }}
+    gssp_tiqr_title:
+{% for locale, title in gateway_tiqr_title.iteritems() %}
+        {{ locale }}: "{{ title | replace('%', '%%') }}"
+{% endfor %}
+
 {% endif %}
 
 {% if 'biometric' in stepup_enabled_generic_second_factors %}
@@ -52,6 +59,13 @@ parameters:
     gssp_biometric_remote_entity_id: {{ gateway_biometric_remote_entity_id }}
     gssp_biometric_remote_sso_url: {{ gateway_biometric_remote_sso_url }}
     gssp_biometric_remote_certificate: {{ gateway_biometric_remote_certificate }}
+
+    gssp_biometric_logo: {{ gateway_biometric_logo }}
+    gssp_biometric_title:
+{% for locale, title in gateway_biometric_title.iteritems() %}
+        {{ locale }}: "{{ title | replace('%', '%%') }}"
+{% endfor %}
+
 {% endif %}
 
 {% if 'irma' in stepup_enabled_generic_second_factors %}
@@ -78,4 +92,10 @@ parameters:
     gssp_irma_remote_entity_id: {{ gateway_irma_remote_entity_id }}
     gssp_irma_remote_sso_url: {{ gateway_irma_remote_sso_url }}
     gssp_irma_remote_certificate: {{ gateway_irma_remote_certificate }}
+
+    gssp_irma_logo: {{ gateway_irma_logo }}
+    gssp_irma_title:
+{% for locale, title in gateway_irma_title.iteritems() %}
+        {{ locale }}: "{{ title | replace('%', '%%') }}"
+{% endfor %}
 {% endif %}

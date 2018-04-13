@@ -56,7 +56,7 @@ shift
 if [ -z "${ENVIRONMENT_DIR}"  ]; then
     echo "Usage: $0 <environment directory> [--template <template directory>]"
     echo "
-Creates or updates an Ansible 'enviroment' from a template, generating certificates and passwords as specified in the
+Creates or updates an Ansible 'environment' from a template, generating certificates and passwords as specified in the
 'environment.conf' file in the template. The <environment directory> is created if it does not exists. Existing files in
 the <environment directory> will never be changed by this script.
 
@@ -313,12 +313,15 @@ fi
 
 
 echo
-echo "Created (or updated) passwords, secrets, certificates and/or ssh keys for the new environment as specified in
+echo "
+************************************************************************************************************************
+
+Created (or updated) passwords, secrets, certificates and/or ssh keys for the new environment as specified in
 the environment.conf: ${ENVIRONMENT_CONF}
 It is safe to rerun this script as it will not overwrite existing files."
 if [ ${USE_KEYSZAR} -eq 1 ]; then
 echo "
-* All secrets (except the CA private key) are encrypted with a symmetic key that is stored in a \"vault\". The vault is
+* All secrets (except the CA private key) are encrypted with a symmetric key that is stored in a \"vault\". The vault is
   located in ${KEY_DIR}
 
 * You can use the encrypt.sh and encrypt-file.sh scripts to encrypt and decrypt the secrets.
@@ -339,12 +342,6 @@ echo "
   The private key of the CA is stored *unencrypted* in ca-key.pem the CA directory. The CA directory is not required
   for running the ansible playbooks."
 fi
-echo "
-* Complete the configuration of the environment by
-  - updating the inventory file
-  - updating the the .yml files with variables in the group_vars directory
-  - updating the files in the templates directory
-"
 
 if [ ${#PASSWORDS[*]} -gt 0 ]; then
     echo "The generated passwords are stored in: ${PASSWORD_DIR}"
@@ -361,3 +358,28 @@ fi
 if [ ${#SSH_KEYS[*]} -gt 0 ]; then
    echo "The generated ssh keypairs are stored in: ${SSH_KEY_DIR}"
 fi
+
+
+echo "
+************************************************************************************************************************
+*                                                                                                                      *
+*  Please read this BEFORE you continue                                                                                *
+*                                                                                                                      *
+************************************************************************************************************************
+
+  You must MUST complete the configuration of the environment by:
+  - updating the inventory file (${INVENTORY_FILE})
+  - updating the the .yml files with variables in the group_vars directory (${ENVIRONMENT_DIR}/group_vars)
+  - updating the files in the templates directory (${ENVIRONMENT_DIR}/templates)
+
+  The defaults in the template environment in Stepup-Deploy are for use with the Stepup-VM. To get a working Stepup
+  deployment for another environment you need to update the configuration to match your environment.
+
+  Review the files mentioned above to see what you need to change. Pay special attention to locations marked with
+  'TODO'. These are meant for you, not just for the OpenConext-Stepup developers ;)
+
+
+  After configuring the environment, the next step is to deploy the site.yml playbook
+
+************************************************************************************************************************
+"

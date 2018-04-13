@@ -5,21 +5,27 @@ gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
 
 # Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
-# Reuired for sending SMS messages
+# Required for sending SMS messages
+# You can register at https://www.messagebird.com/ for a free developer / trial account
 # TODO: Set messagebird API access key
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
 # Yubikey client_id (Plain) and secret (Vaulted) for accessing the yubico authentication service
-# Create one at: https://upgrade.yubico.com/getapikey/
+# Get a client ID and secret for free at https://upgrade.yubico.com/getapikey/
+# Requires a yubikey
+# Note: Stepup requires a YubiKey to bootstrap SRAA users
 # TODO: Set yubikey client id
 yubikey_client_id: 00000
 # TODO: Set yubikey secret
+# You can use the encrypt.sh script to encrypt the secret. E.g.
+# "Stepup-Deploy/scripts/encrypt.sh environment/stepup-ansible-keystore"
 yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
 # Whether to enable the second factor only (SFO) authentication endpoint
-# Metadata for this endpoint: /second-factor-only/metadata
+# Metadata for this endpoint: <gateway>/second-factor-only/metadata
+# TODO: Set to true to enable the SFO endpoint on the gateway
 gateway_second_factor_only: false
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)

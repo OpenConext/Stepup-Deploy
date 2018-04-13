@@ -1,33 +1,70 @@
 # Inventory for environment
 
+# The hosts defined below are suitable for use with the VMs created by Stepup-Deploy-VM
+# For all other deployments you will need to make changes to this file
+# Look at the locations marked with "TODO" to find where you likely need to make changes
+
+
+# Notes:
+#
+# Host IP Addresses
+# IP Adresses are specified manually using host_ipv4 and backend_ipv4 instead of relying on the ansible fects, this
+# ensures that these are always available, even when --limit is used or the host is down.
+# - host_ipv4 is the IP of a network interface on the host for accessing the host from outside (e.g. from the internet,
+#   or from a loadbalancer)
+# - backend_ipv4 is the IP of a network interface on the host to use for private communications between hosts. It is used
+#   by hosts with the db role (the gallera cluster). You can use this if you use a VPN between datacenters for connecting
+#   the database nodes in the datacenters. Note that the gallera cluster traffic is not encrypted and not authenticated.
+#   When a separate backend network is not required, you can set this to the same IP address as host_ipv4
+# To access the one of these variables of another host variables of another host use e.g.:
+# * IP address of host with name <hostname>: hostvars[<hostname>]['host_ipv4']
+# * IP address of first host in group <groupname>: hostvars[groups[<groupname>][0]]['host_ipv4']
+
+# Location of group_vars and host_vars
 # Note that group_vars/ and host_vars/ directories can exist in both the playbook directory (here: Stepup-Deploy/)
 # and the inventory directory (here: Stepup-Deploy/environments/template or {{ inventory_dir }} ).
 # Variables defined in the playbook directory take precedence over variables defined in the inventory directory
-
-# IP Adresses are specified manually, this ensures that these are always available, even when --limit is used or
-# the host is down. To access the variables of another host use e.g.:
-# * IP address of host with name <hostname>: hostvars[<hostname>]['host_ipv4']
-# * IP address of first host in group <groupname>: hostvars[groups[<groupname>][0]]['host_ipv4']
 
 
 #####
 # all
 #####
 
-# The host defined below are suitable for use with the VMs creates Stepup-Deploy-VM
 
 ############
 # stepup-app
 ############
 
+# Application server. You need at least one host with the app role for installing the stepup-* components
+# You can have multiple application servers to create a loadbalanced setup, however the loadbalancing itself is not
+# managed though Stepup-Deploy anymore.
+
+# When using a loadbalancer ensure (e.g. using cookies) on the loadbalancer that the HTTP request for an application
+# from the same client are directed to the same backend server. This is neccesary because the application servers
+# and stepup-* components themselfves (except, partly, stepup-tiqr) do not share sessions.
+
 [stepup-app]
+# TODO: Set hostname and host_ipv4 of the app server
+# The Stepup-VM has one app VM with a fixed IP 192.168.66.2 that hosts all stepup applications, the database and the
+# proxy. The backend_ipv4 is only there because in the Stepup-VM this host also has the db role.
 app.stepup.example.com host_ipv4=192.168.66.2 backend_ipv4=127.0.0.1
+
+#app1.stepup.example.com host_ipv4=192.168.66.10
+#app2.stepup.example.com host_ipv4=192.168.66.11
+#app3.stepup.example.com host_ipv4=192.168.66.12
+
 
 ########
 # manage
 ########
 
+# Host that handles log aggregation, and processing (logstash) and that hosts the kibana web interface
+# Using a manage host is optional. The manage role requires at least one host with the es role
+# The manage role cannot be combined with the app role (stepup-app)
+
 [manage]
+# TODO: Set hostname and host_ipv4 of the manage server
+# If you do not want to use a manage server you can comment out the line below
 manage.stepup.example.com host_ipv4=192.168.66.3
 
 
@@ -36,9 +73,17 @@ manage.stepup.example.com host_ipv4=192.168.66.3
 ###########
 
 [ks]
+#ks1.stepup.example.com host_ipv4=192.168.66.20
+#ks2.stepup.example.com host_ipv4=192.168.66.21
+
+# The keserver can optionally be used by stepup-tiqr to manage the tiqr secrets, instead of managing them by stepup-tiqr
+# When using multiple hosts you need to provide a loadbalancing solution, this is not handles by Stepup-Deploy
+# All keyserver state is stored in the database
+# The default tiqr configuration used by the Stepup-VM does not use the keyserver
 
 [ks:children]
-# Put keyserver on same VM as the other stepup apps
+# For the Stepup-VM we reuse the app.stepup.example.com server
+# Although the server is not actually used, we can at least test the role and the deployment of the stepup-keyserver
 stepup-app
 
 
@@ -47,10 +92,17 @@ stepup-app
 ##############
 
 # Elasticsearch cluster
+# The elasticsearch cluster is used for storing the logging. It is required by the managed role
+# You should verify the the elasticsearch configuration generated by the es role is suitable for the number of es hosts
+# and your availability and reliability requirements.
+# TODO: When using manage in production, add dedicated es node(s) and review the es configuration
+
 [es]
+#es1.stepup.example.com host_ipv4=192.168.66.30
+#es2.stepup.example.com host_ipv4=192.168.66.31
 
 [es:children]
-# (mis)use manage server
+# For the Stepup-VM we (mis)use manage server for hosting a single ES node
 manage
 
 
@@ -59,11 +111,14 @@ manage
 #######
 
 # Reverse https proxy for/on app servers
+# This role is intended for small or development / testing setups. When using this role you don't need to use a separate
+# HTTPS reverse proxy / loadbalancers / high availabilty solution like e.g. haproxy
+# The proxy role must be installed on an app server (stepup-app)
 [proxy]
 
 [proxy:children]
-# Use nginx as a simple TLS reverse proxy on the app nodes instead of deploying de lb role on a
-# separate server
+# Use nginx as a simple TLS reverse proxy on the app nodes instead of using a separate loadbalancing reverse proxy
+# solution
 app
 
 
@@ -71,29 +126,40 @@ app
 # dbcluser
 ##########
 
+# MariaDB Gallera cluster
+# For development / test purposes you can have a one node cluster (i.e. a single database).
+# Note that "service mysql start" will fail when no running cluster node can be reached. Use "service mysql bootstrap"
+# to start the first node of the cluster, even when you have a one node custer.
+
+# A production cluster should contain an uneven number of nodes
+
 [dbcluster]
 
+#db1.stepup.example.com host_ipv4=192.168.66.40
+#db2.stepup.example.com host_ipv4=192.168.66.41
+#db3.stepup.example.com host_ipv4=192.168.66.42
+
 [dbcluster:children]
-# Put database on the app server
+# For the Stepup-VM we create a one node database cluster on the app server
 app
 
-
-####
-# lb
-####
-
-[lb]
-# Do not use a dedicated loadbalancer
 
 #####
 # dev
 #####
 
+# The dev role will add development tooling to an app server
+
 [dev]
+#app
 
 
+# The "Stepup-XXX" groups below are used for deployment of the stepup-components
+# The configuration below will deploy the stepup-keyserver to the ks hosts (if defined), and all the oher stepup-*
+# components to the app hosts.
 
-# The "Stepup-XXX" groups below ae used for deployment
+# You could also create a setup where you put the individual stepup components on separate hosts. This setup is
+# lagely untested, but should work.
 
 ################
 # stepup-gateway

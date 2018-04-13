@@ -3,14 +3,48 @@
 # Used for Symfony CSRF protection
 middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
 
+# The middleware_sraa array serves two related purposes:
+# 1. It lists the NameID if the users that have the super registration authority administrator (SRAA) role in stepup.
+#    These are the "root" users, or super administrators of stepup. These users can vet and revoke any user, and assign
+#    the RAA and RA roles to any user.
+# 2. It contains the information necessary to bootstrap an identity. Bootstrapping an identity means:
+#    - creating a new identity, based on the nameid, institution, cn, email, lang
+#    - associating an activated (i.e. no vetting required) yubikey with the identity. For that the yubikey_id is used
+#
+# To grant SRAA rights to an identity, you add the identity to this list. To revoke SRAA rights, you remove the
+# identity from this list. For the purpose of assigning and revoking the SRAA role only the "nameid" is relevant.
+#
+# * Using a YubiKey with Stepup
+# To use a YubiKey with Stepup, it must be programmed in YubiKey OTP mode for use with a validation server in the Yubico
+# Cloud. This is the default configuration for all Yubikeys that are distributed through the regular channels (Note: it
+# is possible to reprogram YubiKeys, or to order batches that are programmed differently).
+# The yubikey_id is the 8 digit decimal number printed on the back of the yubikey. If a yubikey has been reprogrammed,
+# it can have a different (longer) ID that what is printed on the back. In that case you can use the "Yubico Personalization Tool"
+# to lookup the ID of the Yubikey. You can decode the first 12 characters of a YubiKey OTP from ModHex format to Number at
+# E.g. https://demo.yubico.com/modhex.php to get the ID of a YubiKey token. E.g. "ccccccbdthji" in ModHex is "01234567"
+#
+# * Bootstrapping
+# Requirements:
+# - The identity (i.e. a user with that nameid) must not yet exist is Stepup
+# - The institution of the user must have been added to the whitelist (see middleware-whitelist.json.j2), and this
+#   whitelist must have been pushed to the middleware
+#
+# To bootstrap an identity after changing the list below:
+# - Update middleware-whitelist.json.j2 when required
+# - (re)deploy the Stepup-Middleware component
+# - Login to an app server and run:
+#   - /root/04-middleware-whitelist.sh
+#   - /root/06-middleware-bootstrap-sraa-users.sh
+
+
 # List of users (identities) that have Super RA Administrators rights
 # The nameid's in the list below are used in "../templates/middleware/middleware-config.json.j2"
 # To add/remove SRAA's add/remove them to the list below and then push a new middleware configuration.
 # For more information see: "../templates/middleware/middleware-config.json.j2"
 #
-# The information beyond nameid is *only* used by the middleware bootstrap script on the app server:
-# /root/06-middleware-bootstrap-sraa-users.sh
-# To update this script file after making changes here, redeploy the Stepup-Middleware component
+# Example:
+#middleware_sraa:
+#   - { nameid: "01234567899abcdefg", institution: "example.org", cn: "Full Name", email: "email@example.com", lang: "nl_NL", yubikey_id: "00000000" }
 
 # TODO: Define SRAA's
 middleware_sraa:

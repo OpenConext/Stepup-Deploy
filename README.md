@@ -112,9 +112,19 @@ The fourth and last step is to perform post installation configuration. This con
 - Creating database schema's for the applications
 - Writing the configuration to the database
 
+You must do this before you can use the stepup selfservice or RA interfaces.
+
 The databases schemas and users for the Stepup components were created by the db role in [Step 2](#site), but were not further initialised. In [Step 3](#deploy) each component added one or more scripts to the /root/ directory on the machine(s) where it was deployed.  
 
 To perform the post installation configuration you must execute each of these scripts once. Because some scripts are order dependent they are numbered in the order they should be executed. If two scrips have the same number, their order is not important. All the scripts except "06-middleware-bootstrap-sraa-users.sh" are idempotent, meaning they can be called multiple times without ill effect.
+
+#### Bootstrap and creating SRAAs
+
+The bootstrap script is used to create the first user(s). These users cannot use the normal process via the self service and then getting vetted in the RA interface because there is no RA yet that can vet them. The bootstrap proces creates the user, called an identity in Stepup, and registers an activatated (i.e. vetted) Yubikey token for that identity.
+
+Configuration of which identites are SRAAs (i.e. the root users, or super admins in Stepup) and the information required to bootsrap an identity is configured in `group_vars/stepup-middleware.yml`.
+
+Note that the bootsrap script only works for identities that do not yet exist in Stepup. This means that you must not login to the self service interface with a user account that you later want to bootstrap, because an identity will then be created for that user. If you later try to bootstrap that identity you will get an error stating that the identity already exists.
 
 
 [More information](id:moreinfo)
@@ -188,4 +198,5 @@ Note: disabled Travis docker tests (for now)
 Contributing
 ------------
 
-Contributions are welcome. Please open an Issue or a PR in the relevant github repository. Note that much of the discussion takes place in [Pivotal](#pivotal).
+Contributions are welcome! Please open an gitub issue or a PR in the relevant github repository. Note that besides github much of the development discussion takes place in [Pivotal](#pivotal). If you have general questions, or are not sure where your question belongs you can always ask on the openconext-users mailinglist: openconext-users@list.surfnet.nl.
+

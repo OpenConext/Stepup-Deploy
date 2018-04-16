@@ -18,15 +18,46 @@ ra_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_saml_sp.k
 
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
-ra_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.key') }}"
-# Used by the RA to authenticate users to the Tiqr IdP.
-# Authentication is though the Tiqr proxy
+ra_gssp_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_gssp_sp.key') }}"
+# Used by the RA to authenticate GSSP tokens to GSSP Proxy IdP on the gateway
+# Authentication to the real GSSP is though the GSSP proxy on the Stepup-Gateway
 # Format: PEM X.509 certificate
-ra_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_tiqr_sp.crt') }}"
+ra_gssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_gssp_sp.crt') }}"
 
-# Format: PEM RSA PRIVATE KEY (Vaulted)
-ra_irma_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_irma_sp.key') }}"
-# Used by the RA to authenticate users to the IRMA IdP.
-# Authentication is though the IRMA proxy
-# Format: PEM X.509 certificate
-ra_irma_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_irma_sp.crt') }}"
+
+# Translations for the GSSP in the RA interaface
+# For each GSSP, add a translation section
+
+# "tiqr" GSSP
+ra_gssp_tiqr_title:
+    en_GB: 'Tiqr'
+    nl_NL: 'Tiqr'
+ra_gssp_tiqr_page_title:
+    en_GB: 'Verify with Tiqr'
+    nl_NL: 'Tiqr verifiëren'
+ra_gssp_tiqr_explanation:
+    en_GB: 'Click the button below to verify the registrant owns the Tiqr account he or she registered with in the Self-Service application.'
+    nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+ra_gssp_tiqr_initiate:
+    en_GB: 'Verify with Tiqr'
+    nl_NL: 'Verifiëren bij Tiqr'
+ra_gssp_tiqr_gssf_id_mismatch:
+    en_GB: "The Tiqr server responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
+    nl_NL: 'De Tiqr-server heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
+# "example_gssp" GSSP
+#ra_gssp_example_gssp_title:
+#      en_GB: 'Example GSSP'
+#      nl_NL: 'Voorbeeld GSSP'
+# ra_gssp_example_gssp_page_title:
+#      en_GB: 'Verify with Example GSSP'
+#      nl_NL: 'Verifiëren met de voorbeeld GSSP'
+#ra_gssp_example_gssp_explanation:
+#      en_GB: 'Click the button below to verify the registrant can authenticate with the "Example GSSP" token he or she registered with in the Self-Service application.'
+#      nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+#ra_gssp_example_gssp_initiate:
+#      en_GB: 'Verify with Example GSSP'
+#      nl_NL: 'Verifiëren met de voorbeeld GSSP'
+#ra_gssp_example_gssp_gssf_id_mismatch:
+#      en_GB: "The \"example GSSP\" responded with an ID that doesn't match the ID that the registrant registered with using the Self-Service application."
+#      nl_NL: 'De "voorbeel GSSP" heeft een ID teruggegeven dat niet overeenkomt met het ID dat de registrant heeft geregistreerd in de Self-Service-applicatie.'

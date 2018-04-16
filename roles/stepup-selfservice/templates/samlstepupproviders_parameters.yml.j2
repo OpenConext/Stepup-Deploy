@@ -1,162 +1,34 @@
 parameters:
     # Authentication flow:
-    # Real Tiqr IdP <--> GSSP Tiqr SP <--> GSSP Tiqr IdP <--> SelfService
-    # AuthnRequests from the RA and SS are proxied through the Tiqr GSSP proxy on the Gateway
-    # The GSSP Tiqr SP and IdP are hosted on the gateway
+    # Real GSSP IdP <--> Gateway GSSP proxy SP <--> Gateway GSSP proxy IdP <--> SelfService
+    # AuthnRequests from the RA and SS are proxied through the GSSP proxy on the Gateway
 
-    # Tiqr SP used to authenticate to Tiqr IdP though Tiqr IdP proxy in the gateway
-    gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
-    gssp_tiqr_sp_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+    # GSSP Proxy SP used to authenticate to the Real GSSP IdP though GSSP IdP proxy in the gateway
+    gssp_{{ key }}_sp_publickey: '{{ component_dir_name }}/app/config/sp_gssp.crt'
+    gssp_{{ key }}_sp_privatekey: '{{ component_dir_name }}/app/config/sp_gssp.key'
 
-    # Certificate used to sign metadata of the Tiqr SP
-    gssp_tiqr_metadata_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
-    gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+    # Certificate used to sign metadata of the GSSP Proxy SP on the gateway
+    gssp_{{ key }}_metadata_publickey: '{{ component_dir_name }}/app/config/sp_gssp.crt'
+    gssp_{{ key }}_metadata_privatekey: '{{ component_dir_name }}/app/config/sp_gssp.key'
 
-    # EntityID and SSO Location of the Tiqr IdP Proxy on the Gateway
-    gssp_tiqr_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'
-    gssp_tiqr_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/tiqr/single-sign-on'
-
-    # base64 without pem headers
-    gssp_tiqr_remote_certificate: {{ gateway_tiqr_idp_publickey | depem }}
-
-    # GUI
-    gssp_tiqr_logo: /images/second-factor/tiqr.png
-
-    # Translations
-    gssp_tiqr_alt:
-        en_GB: 'Tiqr'
-        nl_NL: 'Tiqr'
-    gssp_tiqr_title:
-        en_GB: 'Tiqr'
-        nl_NL: 'Tiqr'
-    gssp_tiqr_description:
-        en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
-        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
-    gssp_tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en
-    gssp_tiqr_app_ios_url: https://itunes.apple.com/us/app/tiqr/id430838214?mt=8&ls=1
-    gssp_tiqr_button_use:
-        en_GB: 'Select'
-        nl_NL: 'Selecteer'
-    gssp_tiqr_initiate_title:
-        en_GB: 'Register with Tiqr'
-        nl_NL: 'Registreren bij Tiqr'
-    gssp_tiqr_initiate_button:
-        en_GB: 'Register with Tiqr'
-        nl_NL: 'Registreer bij Tiqr'
-    gssp_tiqr_explanation:
-        en_GB: 'Click the button below to register with Tiqr.'
-        nl_NL: 'Klik op de knop hieronder om je bij Tiqr te registreren.'
-    gssp_tiqr_authn_failed:
-        en_GB: 'Registration with Tiqr has failed. Please try again.'
-        nl_NL: 'Registratie bij Tiqr is mislukt. Probeer het nogmaals.'
-    gssp_tiqr_pop_failed:
-        en_GB: 'Registration of your token failed. Please try again.'
-        nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
-
-
-    # Authentication flow:
-    # Real Biometric IdP <--> GSSP Biometric SP <--> GSSP Biometric IdP <--> SelfService
-    # AuthnRequests from the RA and SS are proxied through the Biometric GSSP proxy on the Gateway
-    # The GSSP Biometric SP and IdP are hosted on the gateway
-
-    # Biometric SP used to authenticate to Biometric IdP though Biometric IdP proxy in the gateway
-    gssp_biometric_sp_publickey: {{ component_dir_name }}/app/config/sp_biometric.crt
-    gssp_biometric_sp_privatekey: {{ component_dir_name }}/app/config/sp_biometric.key
-
-    # Certificate used to sign metadata of the Biometric SP
-    gssp_biometric_metadata_publickey: {{ component_dir_name }}/app/config/sp_biometric.crt
-    gssp_biometric_metadata_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
-
-    # EntityID and SSO Location of the Biometric IdP Proxy on the Gateway
-    gssp_biometric_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/biometric/metadata'
-    gssp_biometric_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/biometric/single-sign-on'
+    # EntityID and SSO Location of the GSSP IdP Proxy on the Gateway
+    gssp_{{ key }}_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/{{ key }}/metadata'
+    gssp_{{ key }}_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/{{ key }}/single-sign-on'
 
     # base64 without pem headers
-    gssp_biometric_remote_certificate: {{ gateway_biometric_idp_publickey | default('') | depem }}
+    gssp_{{ key }}_remote_certificate: '{{ hostvars[inventory_hostname]['gateway_' + key + '_idp_publickey'] | depem }}'
 
     # GUI
-    gssp_biometric_logo: '/images/second-factor/biometric.png'
+    gssp_{{ key }}_logo: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_logo'] }}'
 
-    # Translations
-    gssp_biometric_alt:
-        en_GB: 'Biometric device'
-        nl_NL: 'Biometrisch apparaat'
-    gssp_biometric_title:
-        en_GB: 'Biometric device'
-        nl_NL: 'Biometrisch apparaat'
-    gssp_biometric_description:
-        en_GB: 'Log in using a biometric device. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
-        nl_NL: 'Log in met een biometrisch apparaat. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
-    gssp_biometric_button_use:
-        en_GB: 'Select'
-        nl_NL: 'Selecteer'
-    gssp_biometric_initiate_title:
-        en_GB: 'Register a biometric device'
-        nl_NL: 'Registratie biometrisch apparaat'
-    gssp_biometric_initiate_button:
-        en_GB: 'Register biometric device'
-        nl_NL: 'Registreer biometrisch apparaat'
-    gssp_biometric_explanation:
-        en_GB: 'Click the button below to register a biometric device.'
-        nl_NL: 'Klik op de knop hieronder om je biometrisch apparaat te registreren.'
-    gssp_biometric_authn_failed:
-        en_GB: 'Registration of biometric device has failed. Please try again.'
-        nl_NL: 'Registratie biometrisch apparaat is mislukt. Probeer het nogmaals.'
-    gssp_biometric_pop_failed:
-        en_GB: 'Registration of your token failed. Please try again.'
-        nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+    gssp_{{ key }}_app_android_url: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_app_android_url'] }}'
+    gssp_{{ key }}_app_ios_url: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_app_ios_url'] }}'
 
-
-    # Authentication flow:
-    # Real IRMA IdP <--> GSSP IRMA SP <--> GSSP IRMA IdP <--> SelfService
-    # AuthnRequests from the RA and SS are proxied through the IRMA GSSP proxy on the Gateway
-    # The GSSP IRMA SP and IdP are hosted on the gateway
-
-    # IRMA SP used to authenticate to IRMA IdP though IRMA IdP proxy in the gateway
-    gssp_irma_sp_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
-    gssp_irma_sp_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
-
-    # Certificate used to sign metadata of the IRMA SP
-    gssp_irma_metadata_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
-    gssp_irma_metadata_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
-
-    # EntityID and SSO Location of the IRMA IdP Proxy on the Gateway
-    gssp_irma_remote_entity_id: 'https://{{ gateway_vhost_name }}/gssp/irma/metadata'
-    gssp_irma_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/irma/single-sign-on'
-
-    # base64 without pem headers
-    gssp_irma_remote_certificate: {{ gateway_irma_idp_publickey | depem }}
-
-    # GUI
-    gssp_irma_logo: /images/second-factor/irma.png
-
-    # Translations
-    gssp_irma_alt:
-        en_GB: 'IRMA'
-        nl_NL: 'IRMA'
-    gssp_irma_title:
-        en_GB: 'IRMA'
-        nl_NL: 'IRMA'
-    gssp_irma_description:
-        en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
-        nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
-    gssp_irma_app_android_url: https://play.google.com/store/apps/details?id=org.irmacard.cardemu
-    gssp_irma_app_ios_url: https://itunes.apple.com/us/app/irma-authentication/id1294092994
-    gssp_irma_button_use:
-        en_GB: 'Select'
-        nl_NL: 'Selecteer'
-    gssp_irma_initiate_title:
-        en_GB: 'Register with IRMA'
-        nl_NL: 'Registreren bij IRMA'
-    gssp_irma_initiate_button:
-        en_GB: 'Register with IRMA'
-        nl_NL: 'Registreer bij IRMA'
-    gssp_irma_explanation:
-        en_GB: 'Click the button below to register with IRMA.'
-        nl_NL: 'Klik op de knop hieronder om je bij IRMA te registreren.'
-    gssp_irma_authn_failed:
-        en_GB: 'Registration with IRMA has failed. Please try again.'
-        nl_NL: 'Registratie bij IRMA is mislukt. Probeer het nogmaals.'
-    gssp_irma_pop_failed:
-        en_GB: 'Registration of your token failed. Please try again.'
-        nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+{% for param in [ 'title', 'alt', 'title', 'description', 'button_use', 'initiate_title', 'initiate_button', 'explanation', 'authn_failed', 'pop_failed'] %}
+    gssp_{{ key }}_{{ param }}:
+{% for lang in enabled_locales %}
+        {{ lang }}: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_' + param][lang] | replace("'", "''") }}'
+{% endfor %}
+{% endfor %}
+{% endfor %}

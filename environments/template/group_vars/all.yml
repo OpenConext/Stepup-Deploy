@@ -37,7 +37,6 @@ noreply_email_name: Step-up Example
 # - gateway_vhost_name - Stepup- Gateway (This is the Stepup SAML proxy, it will show the webinterface for SMS, Tiqr and
 #                        U2F authentication and, when required, a WAYG)
 # - tiqr_vhost_name - Stepup-Tiqr (The GSSP for Tiqr) (optional)
-# - irma_vhost_name - (The GSSP for IRMA) (optional)
 #
 # REST interfaces (i.e. not visited using a webbrowser)
 # - middleware_vhost_name - Stepup-Middleware
@@ -48,7 +47,6 @@ selfservice_vhost_name: selfservice.stepup.example.com
 ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
-irma_vhost_name: irma.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
@@ -88,10 +86,8 @@ stepup_enabled_factors: sms, yubikey, u2f
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
-  irma:
-    loa: 2
-#  biometric:
-#    loa: 2
+# example_gssp:
+#   loa: 2
 
 
 # Set the addres(ses) of the loadbalancer(s)
@@ -120,7 +116,11 @@ loghost_relp_port: 10514
 memcache_lb_address: "{{ hostvars[groups['dbcluster'][0]]['host_ipv4'] }}" # Use address of first db in the cluster
 
 
-# Public SAML signing key of the gateway IdP
+# Public SAML signing key of the SAML IdP
+# This signing key is used for:
+# - The IdP for normal (stepup-up) authentication with EntityID: "https://gateway_vhost_name/authentication/metadata"
+# - The second factor only IdP with EntityID: "https://gateway_vhost_name/second-factor-only/metadata" (when enabled)
+# This key is also used to sign the above metadata
 # Private key in stepup-gateway.yml
 # Format: PEM X.509 certificate
 gateway_saml_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_idp.crt') }}"
@@ -135,27 +135,21 @@ selfservice_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/self
 # Format: PEM X.509 certificate
 ra_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_saml_sp.crt') }}"
 
-# Public SAML signing key of the Tiqr gateway
-# IdP for the Tiqr authentication gateway that is used by the SS and RA Tiqr SP endpoints
+# Public SAML signing key of the GSSP Proxy IdP on the Stepup-Gateway
+# This is the IdP for GSSP authentication on the gateway that is used by the SS and RA GSSP SP endpoints
 # Private key in stepup-gateway.yml
 # Format: PEM X.509 certificate
-gateway_tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.crt') }}"
+gateway_gssp_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_gssp_idp.crt') }}"
 
-# Public SAML signing key of the Tiqr IDP
+
+# Public SAML signing key of the Tiqr GSSP IDP
 # Private key in stepup-tiqr.yml
 # Format: PEM X.509 certificate
 tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') }}"
 
-# Public SAML signing key of the IRMA gateway
-# IdP for the IRMA authentication gateway that is used by the SS and RA IRMA SP endpoints
-# Private key in stepup-gateway.yml
+# Public SAML signing key of the "example_gssp" GSSP IDP
 # Format: PEM X.509 certificate
-gateway_irma_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_idp.crt') }}"
-
-# Public SAML signing key of the IRMA IDP
-# Private key in stepup-irma.yml
-# Format: PEM X.509 certificate
-irma_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/irma_idp.crt') }}"
+#gssp_example_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gssp_example_idp.crt') }}"
 
 
 # Database tables and users for Stepup applications, keyserver

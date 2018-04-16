@@ -1,8 +1,0 @@
-# Config for irma component
-
-# Format: PEM RSA PRIVATE KEY (Vaulted)
-# Certificate in all.yml group_vars
-irma_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/irma_idp.key') }}"
-
-# Format: PEM RSA PRIVATE KEY (Vaulted)
-irma_req_privatekey: "{{ lookup('file', inventory_dir+'/ssl_cert/irma_key.pem') }}"

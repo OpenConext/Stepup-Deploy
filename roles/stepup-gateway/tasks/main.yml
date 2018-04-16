@@ -62,43 +62,31 @@
   with_items:
   - "01-gateway-db_migrate.sh"
 
-- name: Write SP private key
+- name: Write SAML SP private key
   copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_name }} mode=400
 
-- name: Write SP certificate
+- name: Write SAML SP certificate
   copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_name }} mode=640
 
-- name: Write SP Tiqr private key
-  copy: content="{{ gateway_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_name }} mode=400
+- name: Write GSSP SP private key
+  copy: content="{{ gateway_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_name }} mode=400
 
-- name: Write SP Tiqr certificate
-  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt  group={{ component_name }} mode=640
-
-- name: Write SP IRMA private key
-  copy: content="{{ gateway_irma_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_irma.key owner={{ component_name }} mode=400
-
-- name: Write SP IRMA certificate
-  copy: content="{{ gateway_irma_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_irma.crt  group={{ component_name }} mode=640
+- name: Write GSSP SP certificate
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt  group={{ component_name }} mode=640
 
 
-
-- name: Write IdP private key
+- name: Write SAML IdP private key
   copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp.key owner={{ component_name }} mode=400
 
 - name: Write IdP certificate
   copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp.crt group={{ component_name }} mode=640
 
-- name: Write IdP Tiqr private key
-  copy: content="{{ gateway_tiqr_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_tiqr.key owner={{ component_name }} mode=400
+- name: Write GSSP IdP private key
+  copy: content="{{ gateway_gssp_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_gssp.key owner={{ component_name }} mode=400
 
-- name: Write IdP Tiqr certificate
-  copy: content="{{ gateway_tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_tiqr.crt group={{ component_name }} mode=640
+- name: Write GSSP IdP certificate
+  copy: content="{{ gateway_gssp_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_gssp.crt group={{ component_name }} mode=640
 
-- name: Write IdP IRMA private key
-  copy: content="{{ gateway_irma_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/idp_irma.key owner={{ component_name }} mode=400
-
-- name: Write IdP IRMA certificate
-  copy: content="{{ gateway_irma_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_irma.crt group={{ component_name }} mode=640
 
 - name: Set stepup directory rights
   file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755

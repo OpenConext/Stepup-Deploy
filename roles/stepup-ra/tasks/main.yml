@@ -61,24 +61,21 @@
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
 
-
-- name: Write SP private key
+# SAML SP signing certificate for authentication to the normal authentication (i.e. /authentication/metadata) IdP enspoint
+# on the Stepup-Gateway
+- name: Write SAML SP private key
   copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_name }} mode=400
 
-- name: Write SP certificate
+- name: Write SAML SP certificate
   copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_name }} mode=640
 
-- name: Write Tiqr SP private key
-  copy: content="{{ ra_tiqr_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_tiqr.key owner={{ component_name }} mode=400
+# SAML SP signing certificate for authentication to the GSSP IdP proxy enspoint(s)
+# on the Stepup-Gateway
+- name: Write GSSP SP private key
+  copy: content="{{ ra_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_name }} mode=400
 
-- name: Write Tiqr SP certificate
-  copy: content="{{ ra_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_tiqr.crt group={{ component_name }} mode=640
-
-- name: Write IRMA SP private key
-  copy: content="{{ ra_irma_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_irma.key owner={{ component_name }} mode=400
-
-- name: Write IRMA SP certificate
-  copy: content="{{ ra_irma_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_irma.crt group={{ component_name }} mode=640
+- name: Write GSSP SP certificate
+  copy: content="{{ ra_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_name }} mode=640
 
 
 - name: Set stepup directory rights

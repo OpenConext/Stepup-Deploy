@@ -17,7 +17,7 @@ parameters:
     gssp_{{ key }}_remote_sso_url: 'https://{{ gateway_vhost_name }}/gssp/{{ key }}/single-sign-on'
 
     # base64 without pem headers
-    gssp_{{ key }}_remote_certificate: '{{ hostvars[inventory_hostname]['gateway_' + key + '_idp_publickey'] | depem }}'
+    gssp_{{ key }}_remote_certificate: '{{ gateway_gssp_idp_publickey | depem }}'
 
     # GUI
     gssp_{{ key }}_logo: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_logo'] }}'

@@ -107,10 +107,10 @@
         "blacklisted_encryption_algorithms": []
       },
       {
-       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata",
+       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/{{ key }}/metadata",
         "public_key": "{{ ra_gssp_sp_publickey | depem }}",
         "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/key/verify"
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/{{ key }}/verify"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -120,7 +120,7 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-{% endif %}
+{% endfor %}
 
       {# SP definition Template
       {

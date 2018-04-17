@@ -41,9 +41,7 @@ parameters:
     self_service_url:  https://{{ selfservice_vhost_name }}
 
     enabled_generic_second_factors:
-      biometric:
-        loa: 2
-      tiqr:
-        loa: 2
-      irma:
-        loa: 2
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+      {{ key }}:
+        loa: {{ value.loa }}
+{% endfor %}

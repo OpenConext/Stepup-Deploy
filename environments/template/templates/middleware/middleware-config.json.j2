@@ -90,13 +90,13 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-{% if 'tiqr' in stepup_enabled_generic_second_factors %}
-      {# The Stepup-SelfService Tiqr GSSP SP #}
+    {# GSSP SPs for the RA and SS. #}
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
       {
-        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata",
-        "public_key": "{{ selfservice_tiqr_sp_publickey | depem }}",
+        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata",
+        "public_key": "{{ selfservice_gssp_sp_publickey | depem }}",
         "acs": [
-          "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/consume-assertion"
+          "https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/consume-assertion"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -106,79 +106,14 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-      {# The Stepup-RA Tiqr GSSP SP #}
       {
        "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata",
-        "public_key": "{{ ra_tiqr_sp_publickey | depem }}",
+        "public_key": "{{ ra_gssp_sp_publickey | depem }}",
         "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/verify"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa3 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-{% endif %}
-{% if 'irma' in stepup_enabled_generic_second_factors %}
-      {# The Stepup-SelfService IRMA GSSP SP #}
-      {
-        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/irma/metadata",
-        "public_key": "{{ selfservice_irma_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ selfservice_vhost_name }}/registration/gssf/irma/consume-assertion"
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/key/verify"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-      {# The Stepup-RA IRMA GSSP SP #}
-      {
-       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/metadata",
-        "public_key": "{{ ra_irma_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/verify"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa3 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-{% endif %}
-{% if 'biometric' in stepup_enabled_generic_second_factors %}
-      {# The Stepup-SelfService Biometric GSSP SP #}
-      {
-        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/metadata",
-        "public_key": "{{ selfservice_biometric_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/consume-assertion"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa1 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-      {# The Stepup-RA Biometric GSSP SP #}
-      {
-       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/metadata",
-        "public_key": "{{ ra_biometric_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/verify"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa3 }}"
         },
         "assertion_encryption_enabled": false,
         "second_factor_only": false,

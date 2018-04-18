@@ -1,3 +1,43 @@
+Release 15
+Support for multiple ACS locations, various improvements to error pages, several UI improvements, multiple-token configuration per-institution, various bugfixes and Stepup is now brandless (no more "SURFisms").
+
+* Gateway:
+  - Support multiple ACS locations and use the AssertionConsumerServiceUrl from the AuthnRequest (https://www.pivotaltracker.com/story/show/155288768)
+  - Improve styling of WAYG token selection screen (https://www.pivotaltracker.com/story/show/152918604)
+  - Change layout of login screens (https://www.pivotaltracker.com/story/show/155856648)
+  - Change layout of error screens (https://www.pivotaltracker.com/story/show/156343095)
+  - Document use of state by the different SAML flows that are supported by the Stepup-Gateway (https://www.pivotaltracker.com/story/show/155969747)
+* SelfService:
+  - Show end-user if his activation code has expired (https://www.pivotaltracker.com/story/show/155467915)
+  - Confusing UI when testing one of several tokens with different LoAs (https://www.pivotaltracker.com/story/show/154476963)
+  - Modify token order in self-service (https://www.pivotaltracker.com/story/show/156311244)
+  - Improve button layout with mutiple-token support (https://www.pivotaltracker.com/story/show/156220699)
+* RA:
+  - Bugfix: White page when insufficient rights for RA (https://www.pivotaltracker.com/story/show/155008515)
+  - Bugfix: RA-candicate error when vetting second token for (S)RAA (https://www.pivotaltracker.com/story/show/156122609)
+* Middleware:
+  - Multiple-token support configurable per institution (https://www.pivotaltracker.com/story/show/156565700)
+  - Make SelfServiceUrl available in vetted mail template (https://www.pivotaltracker.com/story/show/155428664)
+  - Bugfix: Unintended 'email verified' entries in audit log when email verification is disabled (https://www.pivotaltracker.com/story/show/156884910)
+  - Bugfix: Allowed second factor unique constraint violation error when pushing config (https://www.pivotaltracker.com/story/show/156466792)
+* All components:
+  - Generic error screen improvements (https://www.pivotaltracker.com/story/show/137516239)
+  - Specific user error messages for common error situations (https://www.pivotaltracker.com/story/show/155515714)
+  - Remove SURFisms from Stepup applications (https://www.pivotaltracker.com/story/show/155700619)
+
+Install:
+* Deploy components:
+  - Stepup-Middleware: not released yet
+  - Stepup-Gateway: not released yet
+  - Stepup-SelfService: not released yet
+  - Stepup-RA: not released yet
+
+* Update middleware database schema to 20180409100948 (from 20180330094402)
+  - On an app server run "/root/01-middleware-db_migrate.sh" to update the middleware schema.
+    Replay of the event log is not required, nor desired.
+    The new middleware, selfservice and RA require the new database schema to work. The new gateway should be able to work
+    with the schema of the previous release.
+
 Release 14
 Export RA token overview, add GSSP tokens though configuraton, registration code expiry reminder emails support for
 multiple tokens per user (experimental)

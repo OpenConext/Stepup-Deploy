@@ -30,6 +30,11 @@
   - samlstepupproviders_parameters.yml
   - global_view_parameters.yml
 
+- name: Put images from <env>/files/stepup-app into web/images
+  copy: src={{ item }} dest={{ component_dir_name }}/web/images mode=444 group={{ component_name }}
+  with_fileglob:
+  - "{{inventory_dir }}/files/stepup-app/images/*"
+
 - name: assets:install
   command: php app/console assets:install --symlink --env=prod --no-debug
   args:

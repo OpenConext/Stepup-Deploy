@@ -62,8 +62,9 @@ ss_gssp_tiqr_pop_failed:
 
 
 # "example_gssp" GSSP
-# Logon on the token selectio page
-#ss_gssp_example_gssp_logo: /images/second-factor/example_gssp.png
+# Logo on the token selection page
+#Add the new logo to files/stepup-app/images to make it available on the server
+#ss_gssp_example_gssp_logo: /images/example-gssp.png
 
 # Links to download the app for Android or IOS. See "ss_gssp_example_gssp_description" for how these are used
 #ss_gssp_example_gssp_app_android_url: https://example.com/android

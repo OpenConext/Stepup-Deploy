@@ -63,6 +63,11 @@ gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # Format: Base64 encoded X.509 certificate without PEM headers
 gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 
+gateway_tiqr_logo: "/images/second-factor/tiqr.png"
+gateway_tiqr_title:
+  en_GB: "Tiqr"
+  nl_NL: "Tiqr"
+
 
 # Configuration for adding an additional GSSP IdP "example_gssp"
 # You can get this information from the
@@ -73,3 +78,11 @@ gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 # SAML signing certificate of the "example_gssp" IdP
 # Format: Base64 encoded X.509 certificate without PEM headers
 #gateway_example_gssp_remote_certificate: ""
+
+#Logo and description for the WAYG (token selection) screen on the gateway
+#Add the new logo to files/stepup-app/images to make it available on the server
+#gateway_example_gssp_logo: "/images/example-gssp.png"
+#gateway_example_gssp_title:
+#  en_GB: "Example GSSP"
+#  nl_NL: "Example GSSP"
+

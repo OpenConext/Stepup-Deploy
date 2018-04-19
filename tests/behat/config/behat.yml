@@ -1,0 +1,22 @@
+default:
+    autoload:
+        - '%paths.base%/../features/bootstrap/'
+
+    suites:
+        default:
+            paths:
+              - '%paths.base%/../features'
+            contexts:
+              - SecondFactorAuthContext:
+                  spTestUrl: 'https://ssp.stepup.example.com/sp.php'
+              - Behat\MinkExtension\Context\MinkContext
+
+    extensions:
+        Behat\MinkExtension:
+            base_url: ~
+            goutte: ~
+            sessions:
+                default:
+                    goutte:
+                        guzzle_parameters:
+                            verify: False

@@ -1,0 +1,11 @@
+{
+    "name": "surfnet/stepup-behat",
+    "description": "Automated functional tests for Stepup",
+    "type": "project",
+    "require": {
+        "behat/behat": "^3.4",
+        "behat/mink-goutte-driver": "^1.2",
+        "behat/mink-extension": "^2.3"
+    },
+    "license": "Apache-2.0"
+}

@@ -42,7 +42,7 @@ Install:
   - Stepup-Middleware: 2.8.0
   - Stepup-Gateway: 2.9.0
   - Stepup-SelfService: 2.9.0
-  - Stepup-RA: not released 2.9.0
+  - Stepup-RA: 2.9.0
 
 * Update middleware database schema to 20180409100948 (from 20180330094402)
   - On an app server run "/root/01-middleware-db_migrate.sh" to update the middleware schema.

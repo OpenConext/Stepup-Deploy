@@ -25,12 +25,24 @@ Support for multiple ACS locations, various improvements to error pages, several
   - Specific user error messages for common error situations (https://www.pivotaltracker.com/story/show/155515714)
   - Remove SURFisms from Stepup applications (https://www.pivotaltracker.com/story/show/155700619)
 
+Important changes - attention required:
+
+* Verify configured ACS locations for ADFS service providers in middleware-config before deployment
+  - The ACS URL sent by ADFS in the AuthnRequest is now validated by matching it against one or more configured
+    allowed ACS locations in the service provider configuration in middleware. The beginning of the ACS URL must
+    start with one of the configured values.
+* New required configuration parameter in Gateway:
+  - new parameters.yml parameter `app_name` (example values: "Stepup Gateway", "SURFsecureID Gateway")
+* Dropped configuration parameter in SelfService:
+  - the parameters.yml parameter `number_of_tokens_per_identity` can be removed from SelfService,
+    in Middleware, the parameter is still required
+
 Install:
 * Deploy components:
-  - Stepup-Middleware: not released yet
-  - Stepup-Gateway: not released yet
-  - Stepup-SelfService: not released yet
-  - Stepup-RA: not released yet
+  - Stepup-Middleware: 2.8.0
+  - Stepup-Gateway: 2.9.0
+  - Stepup-SelfService: 2.9.0
+  - Stepup-RA: not released 2.9.0
 
 * Update middleware database schema to 20180409100948 (from 20180330094402)
   - On an app server run "/root/01-middleware-db_migrate.sh" to update the middleware schema.

@@ -1,4 +1,4 @@
-# Infra stuff for tiqr IDP
+# Install tiqr component
 
 - name: Get active component
   shell: readlink /opt/www/{{ tiqr_vhost_name }}
@@ -22,18 +22,50 @@
 - name: Remove group and world write
   file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
 
-# config stuff
+- name: Put parameters.yml
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
+  with_items:
+  - parameters.yml
 
-- name: Put local config
-  template: src=local_config.php.j2 dest={{ component_dir_name }}/local_config.php group={{ component_name }} mode=640
+# should no longer be needed:
+#- name: assets:install
+#  command: php bin/console assets:install --symlink --env=prod --no-debug
+#  args:
+#      chdir: "{{ component_dir_name }}"
 
-- name: Put local options
-  template: src=local_options.php.j2 dest={{ component_dir_name }}/local_options.php group={{ component_name }} mode=640
+# TODO: Requires composer on app server. Need to fix
+#- name: mopa:bootstrap:symlink:less
+#  command: php bin/console mopa:bootstrap:symlink:less --env=prod --no-debug
+#  args:
+#      chdir: "{{ component_dir_name }}"
+# disabled due to error "There are no commands defined in the \"mopa:bootstrap:symlink\" namespace"
+
+#- name: Dump Assetic Assets
+#  command: php bin/console assetic:dump --env=prod --no-debug
+#  args:
+#      chdir: "{{ component_dir_name }}"
+# "There are no commands defined in the \"assetic\" namespace."
+
+- name: Clear cache
+  command: php bin/console cache:clear --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
+
+- name: Restrict app dir to the application
+  file: path={{item}} group={{ component_name }} mode="o=" recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app"
+
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} group={{ component_name }} mode=770 recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app/cache"
+  - "{{ component_dir_name }}/app/logs"
+
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
 
 # Finish
-
-- name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
 
 - name: Write tiqr APNS certificate
   copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/apns.pem owner={{ component_name }} mode=400
@@ -50,14 +82,6 @@
 # TODO: Explicitly config filenames
 - name: Write tiqr idp private key
   copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/key.pem owner={{ component_name }} mode=400
-
-
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
-
-# TODO: change in Stepup-tiqr
-- name: create symlink to match generic nginx config
-  file: src=/opt/www/{{ tiqr_vhost_name }}/www dest=/opt/www/{{ tiqr_vhost_name }}/web state=link
 
 - name: Put tiqr configuration script in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"

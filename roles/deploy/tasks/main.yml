@@ -32,12 +32,12 @@
   when: not develop | default(false)
 
 - block:
-    - name: Set file ACL on shared source directory
+    - name: DEVELOP - Set file ACL on shared source directory
       acl: name={{ component_dir_name }} entity={{item}} etype=user permissions=rwx default=no recursive=yes state=present
       with_items:
         - "{{ component_name }}"
 
-    - name: Set default file ACL on shared source directory
+    - name: DEVELOP - Set default file ACL on shared source directory
       acl: name={{ component_dir_name }} entity={{item}} etype=user permissions=rwx default=yes recursive=yes state=present
       with_items:
         - "{{ component_name }}"

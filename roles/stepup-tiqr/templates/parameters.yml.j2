@@ -37,17 +37,13 @@ parameters:
             ocra_suite: 'OCRA-1:HOTP-SHA1-6:QH10-S'
             logoUrl: '%base_url%/tiqrRGB.png'
             infoUrl: 'https://wiki.surfnet.nl/display/SsID/SURFsecureID+support'
-        library: []
-        gcm:
-{% if tiqr_gcm_apikey is defined %}
-          apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
-{% endif %}
-          application: 'nl.surfnet.authenticator'
-        apns:
-{% if tiqr_apns_pemfile is defined %}
-          certificate: '{{ component_dir_name }}/{{ tiqr_apns_pemfile }}'
-{% endif %}
-          environment: production
+        library:
+          gcm:
+            apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
+            application: 'nl.surfnet.authenticator'
+          apns:
+            certificate: '{{ component_dir_name }}/app/config/apns.pem'
+            environment: production
         accountblocking:
             maxAttempts: 5
             # temporarilyBlockDuration:

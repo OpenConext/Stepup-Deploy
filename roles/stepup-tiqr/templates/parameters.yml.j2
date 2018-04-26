@@ -1,6 +1,13 @@
 parameters:
     secret:               {{ tiqr_secret | vault(vault_keydir) }}
 
+    # All locales supported by the application
+    locales:
+        - nl_NL
+        - en_GB
+
+    # SAML configuration
+
     saml_idp_publickey: '{{ component_dir_name }}/app/config/cert.pem'
     saml_idp_privatekey: '{{ component_dir_name }}/app/config/key.pem'
     # NOTE: same key used for metadata and response/assertion signing
@@ -15,17 +22,48 @@ parameters:
     base_url: 'https://{{ tiqr_vhost_name }}'
     tiqr_identity: {{ tiqr_vhost_name }}
 
-# TODO
-# apns.environment: 'production'
-{% if tiqr_apns_pemfile is defined %}
-# apns.certificate: '{{ component_dir_name }}/apns.pem'
-{% else %}
-# TODO: apns.certificate
-{% endif %}
+    # View parameters
+    support_url:
+        en_GB: "https://wiki.surfnet.nl/pages/viewpage.action?pageId=50110322"
+        nl_NL: "https://wiki.surfnet.nl/display/SsID/FAQ+SURFsecureID"
 
-# gcm.application: 'nl.surfnet.authenticator'
+    # Options for the tiqr library
+    tiqr_library_options:
+        general:
+            identifier: '%tiqr_identity%'
+            name: 'OpenConext Stepup'
+            auth_protocol: 'tiqrauth'
+            enroll_protocol: 'tiqrenroll'
+            ocra_suite: 'OCRA-1:HOTP-SHA1-6:QH10-S'
+            logoUrl: '%base_url%/tiqrRGB.png'
+            infoUrl: 'https://wiki.surfnet.nl/display/SsID/SURFsecureID+support'
+        library: []
+        gcm:
 {% if tiqr_gcm_apikey is defined %}
-# gcm.apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
-{% else %}
-# TODO: gcm.apikey
+          apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
 {% endif %}
+          application: 'nl.surfnet.authenticator'
+        apns:
+{% if tiqr_apns_pemfile is defined %}
+          certificate: '{{ component_dir_name }}/{{ tiqr_apns_pemfile }}'
+{% endif %}
+          environment: production
+        accountblocking:
+            maxAttempts: 5
+            # temporarilyBlockDuration:
+            # maxTemporarilyBlocks:
+        storage:
+            statestorage:
+              type: 'file'
+              arguments:
+                  path: '/tmp'
+            userstorage:
+                type: 'file'
+                arguments:
+                  path: '/tmp'
+                  encryption: 'dummy'
+            devicestorage:
+            usersecretstorage:
+                type: 'file'
+                arguments:
+                    path: '/tmp'

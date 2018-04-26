@@ -32,6 +32,16 @@
   when: not develop | default(false)
 
 - block:
+    - name: DEVELOP - Set file ACL on shared source directory
+      acl: name={{ component_dir_name }} entity={{item}} etype=user permissions=rwx default=no recursive=yes state=present
+      with_items:
+        - "{{ component_name }}"
+
+    - name: DEVELOP - Set default file ACL on shared source directory
+      acl: name={{ component_dir_name }} entity={{item}} etype=user permissions=rwx default=yes recursive=yes state=present
+      with_items:
+        - "{{ component_name }}"
+
     - name: DEVELOP - Composer install
       shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
 

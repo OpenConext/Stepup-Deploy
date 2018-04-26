@@ -1,14 +1,31 @@
 parameters:
-    # TODO
-    secret: ThisTokenIsNotSoSecretChangeIt
-    saml_idp_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
-    saml_idp_privatekey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
-    saml_metadata_publickey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
-    saml_metadata_privatekey: '%kernel.root_dir%/../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
+    secret:               {{ tiqr_secret | vault(vault_keydir) }}
+
+    saml_idp_publickey: '{{ component_dir_name }}/app/config/cert.pem'
+    saml_idp_privatekey: '{{ component_dir_name }}/app/config/key.pem'
+    # NOTE: same key used for metadata and response/assertion signing
+    saml_metadata_publickey: '{{ component_dir_name }}/app/config/cert.pem'
+    saml_metadata_privatekey: '{{ component_dir_name }}/app/config/key.pem'
+
     saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'
-    saml_remote_sp_sso_url: '?'
-    saml_remote_sp_certificate: '%kernel.root_dir%/../gateway.crt'
+    # saml_remote_sp_sso_url: '?'
+    saml_remote_sp_certificate: '{{ component_dir_name }}/app/config/gateway.crt'
     saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/tiqr/consume-assertion'
+
     base_url: 'https://{{ tiqr_vhost_name }}'
     tiqr_identity: {{ tiqr_vhost_name }}
 
+# TODO
+# apns.environment: 'production'
+{% if tiqr_apns_pemfile is defined %}
+# apns.certificate: '{{ component_dir_name }}/apns.pem'
+{% else %}
+# TODO: apns.certificate
+{% endif %}
+
+# gcm.application: 'nl.surfnet.authenticator'
+{% if tiqr_gcm_apikey is defined %}
+# gcm.apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
+{% else %}
+# TODO: gcm.apikey
+{% endif %}

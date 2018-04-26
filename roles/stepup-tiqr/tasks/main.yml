@@ -59,11 +59,12 @@
 - name: Grant app write access to cache and log dirs
   file: path={{item}} group={{ component_name }} mode=770 recurse=yes
   with_items:
-  - "{{ component_dir_name }}/app/cache"
-  - "{{ component_dir_name }}/app/logs"
+  - "{{ component_dir_name }}/var/cache"
+  - "{{ component_dir_name }}/var/logs"
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
+
 
 # Finish
 
@@ -87,3 +88,7 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-tiqr-db_init.sh"
+
+- name: Show database configuration hint
+  debug:
+    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-tiqr-db_init.sh' on an app server."

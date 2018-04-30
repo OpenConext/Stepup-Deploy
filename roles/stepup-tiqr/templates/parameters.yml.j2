@@ -59,7 +59,15 @@ parameters:
                   path: '/tmp'
                   encryption: 'dummy'
             devicestorage:
+              type: 'tokenexchange'
+              arguments:
+                url: 'https://tx.tiqr.org/tokenexchange/'
+                appid: 'tiqr'
             usersecretstorage:
-                type: 'file'
+                type: 'pdo'
                 arguments:
-                    path: '/tmp'
+
+
+                #type: 'file'
+                #arguments:
+                #    path: '/tmp'

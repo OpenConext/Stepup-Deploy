@@ -74,7 +74,7 @@
 
 # TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
 - name: Write tiqr sp certificate
-  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_name }} mode=640
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_name }} mode=640
 
 # TODO: Explicitly config filenames
 - name: Write tiqr idp certificate

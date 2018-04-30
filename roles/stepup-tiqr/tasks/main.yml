@@ -1,4 +1,4 @@
-# Infra stuff for tiqr IDP
+# Install tiqr component
 
 - name: Get active component
   shell: readlink /opt/www/{{ tiqr_vhost_name }}
@@ -22,44 +22,73 @@
 - name: Remove group and world write
   file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
 
-# config stuff
+- name: Put parameters.yml
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
+  with_items:
+  - parameters.yml
 
-- name: Put local config
-  template: src=local_config.php.j2 dest={{ component_dir_name }}/local_config.php group={{ component_name }} mode=640
+# should no longer be needed:
+#- name: assets:install
+#  command: php bin/console assets:install --symlink --env=prod --no-debug
+#  args:
+#      chdir: "{{ component_dir_name }}"
 
-- name: Put local options
-  template: src=local_options.php.j2 dest={{ component_dir_name }}/local_options.php group={{ component_name }} mode=640
+# TODO: Requires composer on app server. Need to fix
+#- name: mopa:bootstrap:symlink:less
+#  command: php bin/console mopa:bootstrap:symlink:less --env=prod --no-debug
+#  args:
+#      chdir: "{{ component_dir_name }}"
+# disabled due to error "There are no commands defined in the \"mopa:bootstrap:symlink\" namespace"
 
-# Finish
+#- name: Dump Assetic Assets
+#  command: php bin/console assetic:dump --env=prod --no-debug
+#  args:
+#      chdir: "{{ component_dir_name }}"
+# "There are no commands defined in the \"assetic\" namespace."
 
-- name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+- name: Clear cache
+  command: php bin/console cache:clear --env=prod --no-debug
+  args:
+      chdir: "{{ component_dir_name }}"
 
-- name: Write tiqr APNS certificate
-  copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/apns.pem owner={{ component_name }} mode=400
-  when: tiqr_apns_pemfile is defined
+- name: Restrict app dir to the application
+  file: path={{item}} group={{ component_name }} mode="o=" recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app"
 
-# TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
-- name: Write tiqr sp certificate
-  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/gateway.crt group={{ component_name }} mode=640
-
-# TODO: Explicitly config filenames
-- name: Write tiqr idp certificate
-  copy: content="{{ tiqr_idp_publickey }}" dest={{ component_dir_name }}/cert.pem group={{ component_name }} mode=640
-
-# TODO: Explicitly config filenames
-- name: Write tiqr idp private key
-  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/key.pem owner={{ component_name }} mode=400
-
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} group={{ component_name }} mode=770 recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/var/cache"
+  - "{{ component_dir_name }}/var/logs"
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
 
-# TODO: change in Stepup-tiqr
-- name: create symlink to match generic nginx config
-  file: src=/opt/www/{{ tiqr_vhost_name }}/www dest=/opt/www/{{ tiqr_vhost_name }}/web state=link
+
+# Finish
+
+- name: Write tiqr APNS certificate
+  copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/apns.pem owner={{ component_name }} mode=400
+  when: tiqr_apns_pemfile is defined
+
+# TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
+- name: Write tiqr sp certificate
+  copy: content="{{ gateway_tiqr_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_name }} mode=640
+
+# TODO: Explicitly config filenames
+- name: Write tiqr idp certificate
+  copy: content="{{ tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/cert.pem group={{ component_name }} mode=640
+
+# TODO: Explicitly config filenames
+- name: Write tiqr idp private key
+  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_name }} mode=400
 
 - name: Put tiqr configuration script in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-tiqr-db_init.sh"
+
+- name: Show database configuration hint
+  debug:
+    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-tiqr-db_init.sh' on an app server."

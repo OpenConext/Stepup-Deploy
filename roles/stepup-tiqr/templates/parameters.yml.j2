@@ -50,23 +50,24 @@ parameters:
             # maxTemporarilyBlocks:
         storage:
             statestorage:
-              type: 'file'
+              type: 'memcache'
               arguments:
-                  path: '/tmp'
+                prefix: 'tiqr_'
+                servers:
+                  - host: '{{ memcache_lb_address }}'
             userstorage:
-                type: 'file'
-                arguments:
-                  path: '/tmp'
-                  encryption: 'dummy'
+              type: 'pdo'
+              arguments:
+                table: 'user'
+                dsn: 'mysql:host={{ database_lb_address }};dbname={{ database_tiqr_name }}'
+                username: '{{ database_tiqr_user }}'
+                password: '{{ database_tiqr_password | vault(vault_keydir) }}'
             devicestorage:
               type: 'tokenexchange'
               arguments:
                 url: 'https://tx.tiqr.org/tokenexchange/'
                 appid: 'tiqr'
             usersecretstorage:
-                type: 'pdo'
-                arguments: []
-
-                #type: 'file'
-                #arguments:
-                #    path: '/tmp'
+              type: 'pdo'
+              # Use PDO config from userstorage
+              arguments: []

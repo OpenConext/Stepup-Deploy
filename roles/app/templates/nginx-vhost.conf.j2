@@ -22,28 +22,6 @@ server {
     real_ip_header    X-Forwarded-For;
     real_ip_recursive off;
 
-{% if component_name == "tiqr" %}
-    location /tiqr/ {
-        # try to serve file directly, otherwise forward to tiqr/index.php
-        try_files $uri /tiqr/index.php$is_args$args;
-    }
-    location /saml/ {
-        # try to serve file directly, otherwise forward to saml/index.php
-        try_files $uri /saml/index.php$is_args$args;
-    }
-    # Forward: /tiqr/tiqr.php, /tiqr/index.php and /saml/index.php
-    location ~ ^/(tiqr|saml)/(tiqr|index)\.php(/|$) {
-        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
-        fastcgi_split_path_info ^(.+\.php)(/.*)$;
-
-        # Include fastcgi_params from /etc/nginx/fastcgi_params, then
-        # override some of them
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param HTTPS on;
-    }
-
-{% else %}
     location / {
         # try to serve file directly, fallback to app.php
         try_files $uri /app.php$is_args$args;
@@ -59,5 +37,4 @@ server {
         fastcgi_param HTTPS on;
         fastcgi_param SYMFONY_ENV prod;
     }
-{% endif %}
 }

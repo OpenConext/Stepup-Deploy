@@ -53,9 +53,14 @@
     - name: DEVELOP - Composer install
       shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
 
-    - name: DEVELOP - Clear cache
+    # Rebuild cache
+    - name: DEVELOP - Clear cache (/app/console)
       shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
       when: component_name != "tiqr"
+
+    - name: DEVELOP - Clear cache (/bin/console)
+      shell: php {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup
+      when: component_name == "tiqr"
 
     - name: DEVELOP - Set debug, mode, owner and group for develop
       set_fact:

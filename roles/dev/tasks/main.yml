@@ -37,6 +37,12 @@
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
 
+## Yarn ##
+
+# Required for dev install of Symfony 3 components
+
+- name: Install yarn
+  shell: npm install -g yarn
 
 ## XDebug ##
 

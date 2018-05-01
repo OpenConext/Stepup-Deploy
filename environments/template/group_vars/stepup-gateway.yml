@@ -16,11 +16,13 @@ messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_pla
 # Requires a yubikey
 # Note: Stepup requires a YubiKey to bootstrap SRAA users
 # TODO: Set yubikey client id
-yubikey_client_id: 00000
+yubikey_client_id: "{{ lookup('file', inventory_dir+'/yubico_client_id') }}"
+#yubikey_client_id: 00000
+
 # TODO: Set yubikey secret
 # You can use the encrypt.sh script to encrypt the secret. E.g.
 # "Stepup-Deploy/scripts/encrypt.sh environment/stepup-ansible-keystore"
-yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/yubico_secret_key') }}"
 
 
 # Whether to enable the second factor only (SFO) authentication endpoint
@@ -28,8 +30,8 @@ yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeho
 # This enpont is not required for the Stepup service itself to function.
 # Metadata for this endpoint: https://gateway_vhost_name/second-factor-only/metadata
 # Allowed values: "true" or "false"
-# TODO: Set to true to enable the SFO endpoint on the gateway
-gateway_second_factor_only: false
+# TODO: Disable the SFO endpoint when it will not be used
+gateway_second_factor_only: true
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"

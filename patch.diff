@@ -1,0 +1,28 @@
+From fedf17fafca8c9b12cca855cf5fc47630b331276 Mon Sep 17 00:00:00 2001
+From: Joost van Dijk <vandijk.joost@gmail.com>
+Date: Fri, 2 Feb 2018 11:58:29 +0100
+Subject: [PATCH] add release 13.1 notes
+
+---
+ CHANGELOG | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 87f7451..a6b5861 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -1,3 +1,11 @@
++Release 13.1 (hotfix)
++Hotfix for matching case-insensitive identifiers
++
++Install:
++* Deploy component
++  - Gateway 2.7.3
++
++
+ Release 13
+ Bugfix release solving two issues:
+ - fix an issue with pushing institution config changes, which was broken in release 12
+-- 
+2.15.1
+

@@ -1,29 +1,7 @@
 # Infra suff for RA
 
-- name: Get active component
-  shell: readlink /opt/www/{{ ra_vhost_name }}
-  ignore_errors: true
-  register: active_component
-
-- debug:
-    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
-
-- name: Check whether component is installed
-  fail: msg="Component already active"
-  when: ( 0 ) and ( component_dir_name != active_component.stdout)
-
-- name: Create stepup directory
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
-
-- name: Untar component
-  unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
-  when: component_unarchive | bool | default(true)
-
-- name: Remove group and world write
-  file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
-
 - name: Put parameters.yml, samlstepupproviders(_parameters).yml and global_view_parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode=640 group={{ component_name }}
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
   - parameters.yml
   - samlstepupproviders.yml
@@ -36,55 +14,58 @@
   - "{{inventory_dir }}/files/stepup-app/images/*"
 
 - name: assets:install
-  command: php app/console assets:install --symlink --env=prod --no-debug
+  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: mopa:bootstrap:symlink:less
-  command: php app/console mopa:bootstrap:symlink:less --env=prod --no-debug
+  command: php app/console mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: Dump Assetic Assets
-  command: php app/console assetic:dump --env=prod --no-debug
+  command: php app/console assetic:dump --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
-- name: Clear cache
-  command: php app/console cache:clear --env=prod --no-debug
+- name: Clear and warmup cache
+  command: php app/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
+  when: "not {{ develop | default(false) }}"
 
 - name: Restrict app dir to the application
-  file: path={{item}} group={{ component_name }} mode="o=" recurse=yes
+  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
   - "{{ component_dir_name }}/app"
+  when: not (develop | default(false))
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} owner=ra recurse=yes
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
   - "{{ component_dir_name }}/app/cache"
   - "{{ component_dir_name }}/app/logs"
+  when: not (develop | default(false))
 
 # SAML SP signing certificate for authentication to the normal authentication (i.e. /authentication/metadata) IdP enspoint
 # on the Stepup-Gateway
 - name: Write SAML SP private key
-  copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_name }} mode=400
+  copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write SAML SP certificate
-  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_name }} mode=640
+  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 # SAML SP signing certificate for authentication to the GSSP IdP proxy enspoint(s)
 # on the Stepup-Gateway
 - name: Write GSSP SP private key
-  copy: content="{{ ra_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_name }} mode=400
+  copy: content="{{ ra_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write GSSP SP certificate
-  copy: content="{{ ra_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_name }} mode=640
+  copy: content="{{ ra_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
 - name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ ra_vhost_name }} state=link

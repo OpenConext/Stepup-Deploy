@@ -1,0 +1,112 @@
+<?php
+
+// MANAGED BY ANSIBLE
+
+// This file defines remote IdPs. These are the IdPs that the SPs hosted by this SSP instance can use for
+// authentication
+
+
+////////////////////////////////////////////////////////////////////////////
+// Idp remote metadata of the IdP hosted at this instance ({{ ssp_vhost_name }}), for use by the hosted SPs
+
+$metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php'] = array (
+    'entityid' => 'https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php',
+    'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    'certificate' => 'idp.crt',
+    'SingleSignOnService' =>
+        array (
+            0 =>
+                array (
+                    'Binding' => $GLOBALS['gSP_SSOBinding'],
+                    'Location' => 'https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/SSOService.php',
+                ),
+        ),
+    'ArtifactResolutionService' =>
+        array (
+            0 =>
+                array (
+                    'index' => 0,
+                    'Location' => 'https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/ArtifactResolutionService.php',
+                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:SOAP',
+                ),
+        ),
+    'name' => array(
+        'en' => '{{ ssp_vhost_name }} - SSP Test IdP',
+        'nl' => '{{ ssp_vhost_name }} - SSP Test IdP',
+    ),
+
+);
+
+
+////////////////////////////////////////////////////////////////////////////
+// The metadata of the OpenConext Stepup IdP, for use by the hosted SPs
+
+$metadata['https://{{ gateway_vhost_name }}/authentication/metadata'] = array (
+    'entityid' => 'https://{{ gateway_vhost_name }}/authentication/metadata',
+    //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    'contacts' =>
+        array (
+        ),
+    'metadata-set' => 'saml20-idp-remote',
+    'SingleSignOnService' =>
+        array (
+            0 =>
+                array (
+                    'Binding' => $GLOBALS['gSP_SSOBinding'],
+                    'Location' => 'https://{{ gateway_vhost_name }}/authentication/single-sign-on',
+                ),
+        ),
+    'SingleLogoutService' =>
+        array (
+        ),
+    'ArtifactResolutionService' =>
+        array (
+        ),
+    'keys' =>
+        array (
+            0 =>
+                array (
+                    'encryption' => false,
+                    'signing' => true,
+                    'type' => 'X509Certificate',
+                    'X509Certificate' => '{{ gateway_saml_idp_publickey | depem }}',
+                ),
+        ),
+);
+
+
+////////////////////////////////////////////////////////////////////////////
+// The metadata of the OpenConext Stepup IdP - SFO, for use by the hosted SPs
+
+$metadata['https://{{ gateway_vhost_name }}/second-factor-only/metadata'] = array (
+    'entityid' => 'https://{{ gateway_vhost_name }}/second-factor-only/metadata',
+    //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    'contacts' =>
+        array (
+        ),
+    'metadata-set' => 'saml20-idp-remote',
+    'SingleSignOnService' =>
+        array (
+            0 =>
+                array (
+                    'Binding' => $GLOBALS['gSP_SSOBinding'],
+                    'Location' => 'https://{{ gateway_vhost_name }}/second-factor-only/single-sign-on',
+                ),
+        ),
+    'SingleLogoutService' =>
+        array (
+        ),
+    'ArtifactResolutionService' =>
+        array (
+        ),
+    'keys' =>
+        array (
+            0 =>
+                array (
+                    'encryption' => false,
+                    'signing' => true,
+                    'type' => 'X509Certificate',
+                    'X509Certificate' => '{{ gateway_saml_idp_publickey | depem }}',
+                ),
+        ),
+);

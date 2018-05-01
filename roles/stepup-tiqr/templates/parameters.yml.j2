@@ -38,9 +38,11 @@ parameters:
             logoUrl: '%base_url%/tiqrRGB.png'
             infoUrl: 'https://wiki.surfnet.nl/display/SsID/SURFsecureID+support'
         library:
+{% if tiqr_gcm_apikey is defined %}
           gcm:
             apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
             application: 'nl.surfnet.authenticator'
+{% endif %}
           apns:
             certificate: '{{ component_dir_name }}/app/config/apns.pem'
             environment: production

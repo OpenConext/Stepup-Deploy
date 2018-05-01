@@ -82,7 +82,7 @@
   copy: content="{{ gateway_gssp_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/idp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write GSSP IdP certificate
-  copy: content="{{ gateway_gssp_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_gssp.crt group={{ component_name }} mode=640
+  copy: content="{{ gateway_gssp_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
 # U2F support for facets:

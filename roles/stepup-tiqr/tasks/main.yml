@@ -14,7 +14,7 @@
 
 
 - name: Restrict app dir to the application
-  file: path={{item}} group={{ component_name }} mode="o=" recurse=yes
+  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
   - "{{ component_dir_name }}/app"
 
@@ -39,7 +39,7 @@
 
 # TODO: Explicitly config filenames
 - name: Write tiqr idp private key
-  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_name }} mode=400
+  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
 
 
 - name: Put tiqr configuration script in /root/

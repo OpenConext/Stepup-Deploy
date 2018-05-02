@@ -58,7 +58,7 @@
   copy: content="{{ selfservice_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write GSSP SP certificate
-  copy: content="{{ selfservice_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_name }} mode={{ component_mode_640 }}
+  copy: content="{{ selfservice_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
 - name: Set stepup directory rights

@@ -135,12 +135,14 @@
       {# START: development SP definitions. #}
       {# A SP for testing normal authentication where the SP is free to choose the LoA it wants because
          the minimal LoA at the gateway is 1
+         This SP has the non default SSP ACS location as the default (first) option.
          "default-sp"
       #}
       {
         "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
         "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/default-sp",
           "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
         ],
         "loa": {
@@ -154,8 +156,12 @@
 
       {# A SP for testing second factor only (SFO) authentication
          Allows authentication for NameID patterns:
+         - "urn:collab:person:stepup.example.com:admin"
          - "urn:collab:person:institution-a.example.com:*",
          - "urn:collab:person:Institution-D.EXAMPLE.COM:*"
+         The default ACS is set to "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
+         to allow testing with "ADFS" emulation. Multiple ACS locations are not fully supported in combination with
+         SFO. See: https://www.pivotaltracker.com/story/show/157085628
          Note:
          - A normal SP and a SFO SP cannot have the same EnityID
          - Even though the SP must use the stepup_uri_level1 (i.e. level, not loa) identifier as AuthnContextClassRef
@@ -166,7 +172,7 @@
         "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
         "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
-          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/second-sp"
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -174,6 +180,7 @@
         "assertion_encryption_enabled": false,
         "second_factor_only": true,
         "second_factor_only_nameid_patterns": [
+          "urn:collab:person:stepup.example.com:admin",
           "urn:collab:person:institution-a.example.com:*",
           "urn:collab:person:Institution-D.EXAMPLE.COM:*"
         ],

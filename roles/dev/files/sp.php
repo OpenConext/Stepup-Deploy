@@ -193,6 +193,20 @@ if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'login' ) {
         );
     }
 
+    // AssertionConsumerServiceURL
+    if ( isset($_REQUEST['acsurl']) && strlen($_REQUEST['acsurl']) > 0 ) {
+        $context['DebugSP:AssertionConsumerServiceURL'] = $_REQUEST['acsurl'];
+    }
+
+    // Emulate ADFS
+    if ( (isset($_REQUEST['emulateadfs'])) && ($_REQUEST['emulateadfs'] == 'true') )
+    {
+        $context['DebugSP:extraPOSTvars'] = array(
+            'AuthMethod' => 'ADFS.SCSA',
+            'Context' => '<EncryptedData Type="http://www.w3.org/2001/04/xmlenc#Content" xmlns="http://www.w3.org/2001/04/xmlenc#"><EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc" /><KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><EncryptedKey xmlns="http://www.w3.org/2001/04/xmlenc#"><EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5" /><KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><KeyName>1C63828278F1B0AC2FE61429E099FFA7AC94917C</KeyName></KeyInfo><CipherData><CipherValue>Qe1t1xgG78zLHhUxBXm0ous4yl0zfQumsKI79lrHMOIjdTdeF/i1Yx+pQ+mgnubT9mh+DfBYMs7wU1g+eXiAs2gnwKWmnMzeuxgG+m5Nky5Wd63NcEgLZ2zNTYuW70X514HMtLAw+l1H8cptQMXfXt9ageHOdY+65eq4IsNwnB0mPhRkua58R9xO3I4MfBzy90GqwgjmDeZAo5vsKgk0iZRgZ1CS4hPyIWX+ryU2tnYp5UEuDE9gGlR9cQr2uHW10LOG22ZfEy8rJie2T2A2bCQVyF47nmBnvoKYV6YyEDpozSYJpUqHmIgvaWgFu5dvDvZ0fvrVQaQ1ZUKHTT76Cg==</CipherValue></CipherData></EncryptedKey></KeyInfo><CipherData><CipherValue>6SO/qvyH0bmayeNGyzqAy/Oim2UAOvhxm18rTs+72Qm2fSK6Pfo1ZEDNKmLRk6IemCvkUYWMa4VmxIdATswREx/aSrp4YS3QejDBoZlCwz4LqFWJMiqTPxJfWhahP0hBNEORN8cU5vBQXXIahWqlkaHzs6IPjH4WoMe5vsSKVTetaOMbMC3ZML67BWpAnEXKWoR/gar1jH5v961ljdKJozzgwsJIAY4TNSoB+AEzRd4C3wLSTCott1DyRtMmEmS5DpaDOaxmZ/X+z16t1hb9VKgEqt1xZJ0uw451d5oeuisN9zSqbWQzyiJdkk6k11YU9q2rvg342qLJk6xeTtRc6+DLQ24vZIHC8RU2jcHveLDJvOq89BBJ0LHtnV/7PJpb4PGf1OUqWZidnRAS0/dqprEVzPEnvdzIJ8vPRGzE0dkQhgzDi+cbMsuZrDqYWaMuodvDbGrETxZ9hu0MI3l9pgjuIh8xF7TT/6qTJnGExRaGFebcjMXC99thZ3A7XeJESDNXNxgDgFQf6OwHLjLuhw==</CipherValue></CipherData><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>va+cZ6Y7NIyBU9vCVb+qRGSx0Yk=</DigestValue></Reference></SignedInfo><SignatureValue>DNF3KVEb8ju/T+ise1j0QBS2OYsepwzgWaUtOASvUPI6NPlvyQIHxX1Py6oHcUkbWP1jaVTzwEGadaq428nPMWSeU/MDWqyz2jyrwuIUWglc64AMlcXd0BOdT1I6khKMsUGY8CSa1tRD2arcIH1TUrrk7jY3qfAGtgNbFlElPwc/2l4dkN7QXdHRcmntFp4D/9yEG9FkWzTyXLvCvGqcQeu8L1fKTwq8Upqk9iT2PKnmT/gH+IUt3votmCMV9bxYols0aQWfv2RX2HX3Gow9xKZuOn+ckjZRqBJ1Kp9wGMAB65XQPli5UQzezEHX28oUPH/PEgnu6RKDgsN55h22ag==</SignatureValue><KeyInfo><KeyName>DB540D051F8F73EA2F3B5190BFC0F349E595EB34</KeyName></KeyInfo></Signature></EncryptedData> SAMLRequest: PHNhbWwycDpBdXRoblJlcXVlc3QgeG1sbnM6c2FtbDJwPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6cHJvdG9jb2wiIHhtbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIiBJRD0iXzkwZWFkMWNlLTM3NmMtNGE1ZC05ODAzLWQ5Y2M4MDA2M2Q0ZiIgVmVyc2lvbj0iMi4wIiBJc3N1ZUluc3RhbnQ9IjIwMTgtMDQtMjNUMTM6NDk6NTBaIiBEZXN0aW5hdGlvbj0iaHR0cHM6Ly9zYS1ndy50ZXN0Mi5zdXJmY29uZXh0Lm5sL3NlY29uZC1mYWN0b3Itb25seS9zaW5nbGUtc2lnbi1vbiIgQXNzZXJ0aW9uQ29uc3VtZXJTZXJ2aWNlVVJMPSJodHRwczovL2FkZnMtMjAxMi50ZXN0Mi5zdXJmY29uZXh0Lm5sOjQ0My9hZGZzL2xzLz9TQU1MUmVxdWVzdD1wVkpOanhNeERQMHJvOXpubzVscFlhTzJVdGtLVVdtQmFsczRjRUZ1eGtNalpaSWhkbUQ1OTZRcGlJVkRMNXdTUGZzOVB6OTVTVERhU1cwaW45MGpmbzFJWER5TjFwSEtoWldJd1NrUFpFZzVHSkVVYTNYWXZIMVFzbXJVRkR4NzdhMTRScm5OQUNJTWJMd1R4VzY3RXAlMkZiMmVtdTBYTG90SnpMUmklMkJHV1R1SHJwJTJGTCUyQlFKMXYyaFBKOTNjZFMwTUlJcVBHQ2d4VnlJSkpUcFJ4SjBqQnNjSmFtWXZ5NllyWlh1Y3RhcGJxUGJGSjFGczB6YkdBV2ZXbVhraVZkZlFEMVNtZmxseEtzdUtZaGkwZCUyRmpFbGJPNVdsdXFSYkg1YmZYZU80b2poZ09HYjBiamg4ZUhQMktUUWNaUUFaaXM0ekNMa0Jrbml6bkE4MVNQdm84V3E4djNBdFYwZldVSm1qTGE0d0RSY2ttVEtQYSUyRkluMWxYRyUyRmNsOXRwbnE1TnBONGNqJTJGdHklMkYlMkY1d0ZPdmxSVnZsZE1MNlAyMk95TkFEd3o4dWwlMkZYekdjdnJCYjFMN25iYnZiZEclMkZ5aGUlMkJ6QUMzelolMkZRVXhmRHJsVmNRQkhCaDJuNEszMTMlMkI4REF1TktjSWdvNnZWMTVOOTN1djRKJmFtcDtSZWxheVN0YXRlPWh0dHBzJTNBJTJGJTJGcGlldGVyLmFhaS5zdXJmbmV0Lm5sJTJGc2ltcGxlc2FtbHBocCUyRnNwLnBocCUzRnNwJTNEZGVmYXVsdC1zcCZhbXA7U2lnQWxnPWh0dHAlM0ElMkYlMkZ3d3cudzMub3JnJTJGMjAwMSUyRjA0JTJGeG1sZHNpZy1tb3JlJTIzcnNhLXNoYTI1NiZhbXA7U2lnbmF0dXJlPUt6TzhYV0liVTZGdUVWZVZ4RFlNZzJ1T2xoZTlBQVAwd09uWlZVM3RVMU1ibWNKUDlXa3Q1Z0R3a2RKcXhDbUlJWGVDdnBhNDVLWUdlTzNFNWppampSOHlMUFpTalJUalJRem81V2h5bzJTaXRjTkxOZzZ4WFdZY0Z6bmdIcEdKeGRyJTJGVmxjSTR0RXFUNFZSN0VwbXp3amJtd1RaRGMyOW9hdEtZRGNUUjBjTjh2M0VtMVRIR0ZOc1B0bERvRVd5c0laWjFONkRpRVAxYmE4aTE5OVhoRiUyQldXZzVzNHdqMXltMnBDendQelJkYyUyRmpreDRQcG1MTyUyQjNVY3R3amoySG5RNmNiJTJCeHBsJTJCJTJCVUFwalZ1a3ZlNWdiempMbzI4JTJCUGklMkZXQmJ0Ym0lMkZrMzE5UlZ2dWFEdVVvJTJGM3VTUU1BJTJCbHR6b0ZIOGEwRTJ0Q0pNVGg1TWRnUm10ZyUzRCUzRCI+DQogIDxzYW1sMjpJc3N1ZXI+aHR0cDovL2FkZnMtMjAxMi50ZXN0Mi5zdXJmY29uZXh0Lm5sPC9zYW1sMjpJc3N1ZXI+PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PFNpZ25lZEluZm8+PENhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiIC8+PFNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiIC8+PFJlZmVyZW5jZSBVUkk9IiNfOTBlYWQxY2UtMzc2Yy00YTVkLTk4MDMtZDljYzgwMDYzZDRmIj48VHJhbnNmb3Jtcz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI2VudmVsb3BlZC1zaWduYXR1cmUiIC8+PFRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyIgLz48L1RyYW5zZm9ybXM+PERpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIgLz48RGlnZXN0VmFsdWU+Q2ZKV1hpTXJLU0g0b3pPVWZTL0VNOXBXbFRSc3p2QkpMN2Y3MUZrZ3ZCbz08L0RpZ2VzdFZhbHVlPjwvUmVmZXJlbmNlPjwvU2lnbmVkSW5mbz48U2lnbmF0dXJlVmFsdWU+YzFqakFhdnVjMi9TSHZQYzdJdktJVkRSZUZuZVAzbTlITkZzTzErZEx2bWhxUXl5NkhoN3ZRMlFJalVGb2FybkYxZnJpOUY1RlNxL2JsR1I4RENvNEpndUlxKzNnRXBjN1JYR2EyTWc4dE5CV2tWdUg2UnZBTGM1Qk5DSDNtODVTTHgwcklGbERWc0tzZi9IQ0lTc2taV3Z6VVJGVVRFZnZjRVljWjZZZjNXYURmK1YvbE5jYXpCeVQ0L3RmNVVFN0VIM1JYckc2dUFqbHhjekN4a09UUE1SMnIvNmxwaEF1UmIxcjY1bThYQXFZNVFnbG5SVXBOM3U3ZEt4bGN5VUVaY2xKTW5JN21ya2NyMUdwODV6allkK0N4TmFwanNEQXplVjdSSVNLdHNaY0NFYWhncStIdTZVOEtBUmZHZmdFQ1dZNGY0c2lWRGp2d0NVaTlUME13PT08L1NpZ25hdHVyZVZhbHVlPjxLZXlJbmZvPjxYNTA5RGF0YT48WDUwOUNlcnRpZmljYXRlPk1JSURFekNDQWZ1Z0F3SUJBZ0lRU044elc2Q1lsSUpPQUZ6ZFN0VFQrakFOQmdrcWhraUc5dzBCQVFzRkFEQXNNU293S0FZRFZRUUREQ0Z6YVdkdWFXNW5MbVF5TURFeUxuUmxjM1F5TG5OMWNtWmpiMjVsZUhRdWJtd3dIaGNOTVRjd09USTBNVFl6TkRFM1doY05Nakl3T1RJMU1UWXpOREUzV2pBc01Tb3dLQVlEVlFRRERDRnphV2R1YVc1bkxtUXlNREV5TG5SbGMzUXlMbk4xY21aamIyNWxlSFF1Ym13d2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNkL1RXMUpvY05PV2w1aUZsN1JrWTQwa1A1U2NpQllCNnRJRXl3ZmxGNHRrRUR3S1Jxc1EyRXNaOTN1aWdnQi9wWFVhNlRHdlM3dnpRalJxZGhGZ0Nwb2htaGVwUzlQd3UvL0krcDY4VlpDdHNsdDFVSkd0NjJBRk9ad2FUU1FQbjRlR2RoRHI0c1g5TXIrdVVPU1plZWlEdHVFaGlNSWprZDJJYWJPeVNkOUxTK05Nc29pY1NoWEd5MERZR05yN2gyaHl1L2xUK3VMSnZsUFJ0V29aNDdpS1kwVUdpcVNJN013WlNQQjBoT2p5ZW9wbCsvWExENGhEKzNWVUFDMkttSDZaTzBBYWErc1JRZStNVFlVNHZvN29YTitkaEZoOG9VcFFrNjN4MjBtYTE1N3RSU1lqQlVwTURkclMvdk4vNWQ3c21URnQ1dFV4dlVHTGNGR0E4SkFnTUJBQUdqTVRBdk1BNEdBMVVkRHdFQi93UUVBd0lIZ0RBZEJnTlZIUTRFRmdRVUZ2ZzR3d3ByTDBlWi9ZL09zSDkyVDMrK3RsVXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBRXEvQ2p5N2J0THFmWnp4dlZwUEJYZnVmYk5RSHJBeFY1QnA2a0QyY0NYUzlWQ0swdUdKdkZsemRVMDNDTE9uME4xYTJBUU5JSmZPZVg2dXlTQ1F1WXE0aDRWeUxVSVUyWE1QS1V3OGF2cWhuM0pxbGx4WUJuOE9XdENiRS9BWTdLU2lMWHk5V1BYcHRhdFpyeTV4T0x1SzYxZCtsSzJrdTlVc2xVcTY5b3BIZHhNZ3VqV0EvOUV1SkRINEVEblJ0c0lDT1oyZmxibEllQng4VU5zemExWjJ3NlIxUmtWQVN3YVZDL3JXOVpJaXhkTjdyQzUxQU1qU2YzUnBUc0cvT1Y2blNFcHJNa2hVWWRoSFdSb09XZk8rUGJmZGE1Sm85SHMyeHZENE43L2hPSjQzdC8wV0o1bng3NkNxMTNHcGlFYmlIbXZIQU1jS3R4aHVBS2M4NEk0PTwvWDUwOUNlcnRpZmljYXRlPjwvWDUwOURhdGE+PC9LZXlJbmZvPjwvU2lnbmF0dXJlPg0KICA8c2FtbDI6U3ViamVjdD4NCiAgICA8c2FtbDI6TmFtZUlEIEZvcm1hdD0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6MS4xOm5hbWVpZC1mb3JtYXQ6dW5zcGVjaWZpZWQiPnVybjpjb2xsYWI6cGVyc29uOmluc3RpdHV0aW9uLWEubmw6cGlldGVyLWExPC9zYW1sMjpOYW1lSUQ+DQogIDwvc2FtbDI6U3ViamVjdD4NCiAgPHNhbWwycDpSZXF1ZXN0ZWRBdXRobkNvbnRleHQgQ29tcGFyaXNvbj0iZXhhY3QiPg0KICAgIDxzYW1sMjpBdXRobkNvbnRleHRDbGFzc1JlZj5odHRwOi8vdGVzdDIuc3VyZmNvbmV4dC5ubC9hc3N1cmFuY2Uvc2ZvLWxldmVsMjwvc2FtbDI6QXV0aG5Db250ZXh0Q2xhc3NSZWY+DQogIDwvc2FtbDJwOlJlcXVlc3RlZEF1dGhuQ29udGV4dD4NCjwvc2FtbDJwOkF1dGhuUmVxdWVzdD4='
+        );
+    }
+
 
     // login
     $as->login( $context );
@@ -234,6 +248,7 @@ $scopingIDP=htmlentities(isset($_REQUEST['scopingIDP']) ? $_REQUEST['scopingIDP'
 $scopingIDP2=htmlentities(isset($_REQUEST['scopingIDP2']) ? $_REQUEST['scopingIDP2'] : "");
 $sp=htmlentities(isset($_REQUEST['sp']) ? $_REQUEST['sp'] : "default-sp");
 $subject=htmlentities(isset($_REQUEST['subject']) ? $_REQUEST['subject'] : "");
+$acsurl=htmlentities(isset($_REQUEST['acsurl']) ? $_REQUEST['acsurl'] : "");
 
 echo <<<head
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -469,6 +484,12 @@ $commonIDPs_datalist=
                     </datalist>
 html;
 
+$sspACSURL = SimpleSAML\Module::getModuleURL('saml/sp/saml2-acs.php/');
+$sspDebugSPACSURL = SimpleSAML\Module::getModuleURL('DebugSP/sp/saml2-acs.php/');
+
+$emulateADFSchecked = isset($_REQUEST['emulateadfs']) && $_REQUEST['emulateadfs'] == 'true' ? ' checked' : '';
+$forceAuthnChecked = isset($_REQUEST['forceauthn']) && $_REQUEST['forceauthn'] == 'true' ? ' checked' : '';
+
 echo <<<html
                <p>
                     <label title="Specify up to two SP EntityIDs to put in RequesterID Scoping elements in the AuthnRequest. If left blank no elements are added.">Scoping (RequesterID) 1:</label><input type="text" name="requesterid" list="commonSPs" value="{$requesterid}" size="80" /><br />
@@ -498,6 +519,23 @@ echo <<<html
                <p>
                     <label title="If selected a ForceAuthn is set to true in the AuthnRequest.">Force authentication:</label><input type="checkbox" name="forceauthn" value="true" /><br />
                </p>
+               <p>
+                   <label title="Optionally override the AssertionConsumerServiceURL to specify in the AuthnRequest. Leave blank to use the default ACS location ({$sspACSURL}...) that is generated by SimpleSAMLphp.">AssertionConsumerServiceURL:</label><input type="text" name="acsurl" list="acsurls" value="{$acsurl}" size="80" />
+                   <datalist id="acsurls">                        
+                        <option value="{$sspACSURL}default-sp" />
+                        <option value="{$sspDebugSPACSURL}default-sp" />
+                        <option value="{$sspACSURL}second-sp" />
+                        <option value="{$sspDebugSPACSURL}second-sp?SAMLRequest=request&Context=context" />                        
+                        <option value="{$sspACSURL}third-sp" />
+                        <option value="{$sspDebugSPACSURL}third-sp" />
+                        <option value="{$sspACSURL}fourth-sp" />
+                        <option value="{$sspDebugSPACSURL}fourth-sp" />
+                   </datalist>
+               </p>
+               <p>
+                   <label title="If selected two extra POST variables 'AuthMethod' and 'Context' are added to the AuthnRequest. Only has an effect when the HTTP-POST binding is used.">Emulate ADFS:</label><input type="checkbox" name="emulateadfs" value="true"{$emulateADFSchecked} /><br />
+               </p>
+                
                <p>
                     <button class="login" type="submit" name="action" value="login">Login</button>&nbsp;&nbsp;<button type="submit" name="action" value="reset">Reset</button><br />
                </p>

@@ -69,7 +69,7 @@ $config = array(
     // An authentication source which can authenticate against both SAML 2.0
     // and Shibboleth 1.3 IdPs.
     'default-sp' => array(
-        'saml:SP',
+        'DebugSP:SP',
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
@@ -89,7 +89,7 @@ $config = array(
         // See end of file for request.sign and signature alg config!
     ),
     'second-sp' => array(
-        'saml:SP',
+        'DebugSP:SP',
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
@@ -111,7 +111,7 @@ $config = array(
         //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     ),
     'third-sp' => array(
-        'saml:SP',
+        'DebugSP:SP',
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
@@ -133,7 +133,7 @@ $config = array(
         //'signature.algorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
     ),
     'fourth-sp' => array(
-        'saml:SP',
+        'DebugSP:SP',
 
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.

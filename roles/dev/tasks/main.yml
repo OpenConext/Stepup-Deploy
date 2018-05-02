@@ -132,6 +132,9 @@
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
+- name: Put DebugSP SSP module
+  copy: src=DebugSP dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/
+
 - name: Put SSP config
   template: src={{ item }}.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/config/{{ item }} mode=440 owner=root group=ssp
   with_items:
@@ -172,6 +175,7 @@
   with_items:
   - exampleauth
   - saml2debug
+  - DebugSP
 
 - name: Put Test SP
   copy: src={{ item }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/{{ item }}

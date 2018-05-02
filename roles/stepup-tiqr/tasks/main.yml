@@ -5,12 +5,11 @@
   with_items:
   - parameters.yml
 
-# TODO: add actions for deploying from source in development VM
-
 - name: Clear cache
   command: php bin/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
+  when: not (develop | default(false))
 
 
 - name: Restrict app dir to the application

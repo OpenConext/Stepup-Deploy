@@ -32,7 +32,7 @@
   command: php app/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
-  when: "not {{ develop | default(false) }}"
+  when: not (develop | default(false))
 
 - name: Restrict app dir to the application
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes

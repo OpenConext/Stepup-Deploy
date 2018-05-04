@@ -33,11 +33,18 @@
   service: name={{item}} enabled=no state=stopped
   with_items:
   - firewalld # Because we want to use iptables-services below
-  - NetworkManager
   - atd.service
   - smartd.service
   ignore_errors: yes
 
+- name: "Disable NetworkManager"
+  service:
+    name: NetworkManager
+    enabled: no
+    state: stopped
+  when: networkmanager is undefined
+  ignore_errors: yes
+  
 - name: Install ntp, iptables, ip6tables, rsyslog
   yum: name={{item}} state=present
   with_items:

@@ -28,6 +28,9 @@ parameters:
     tiqr_library_options:
         general:
             identifier: '%tiqr_identity%'
+            # The name of the service that uses tiqr for second factor authentication.
+            # Used by both the TiqrService and the legacy Tiqr_Service during enrollment and when sending an
+            # authentication notification.
             name: '{{ tiqr_info_name }}'
             auth_protocol: 'tiqrauth'
             enroll_protocol: 'tiqrenroll'

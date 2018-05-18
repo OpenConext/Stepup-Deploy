@@ -12,10 +12,8 @@
 <xsl:apply-templates select="//md:EntityDescriptor[md:SPSSODescriptor]"/>
 </xsl:template>
 
-<xsl:template match="md:EntityDescriptor">
-      {
-        "entity_id": "<xsl:value-of select="//@entityID"/>",
-<xsl:apply-templates select="md:SPSSODescriptor"/>
+<xsl:template match="md:EntityDescriptor">      {
+        "entity_id": "<xsl:value-of select="//@entityID"/>",<xsl:apply-templates select="md:SPSSODescriptor"/>
       }
 </xsl:template>
 
@@ -26,8 +24,7 @@
 </xsl:template>
 
 <xsl:template match="ds:X509Certificate">
-        "public_key": "<xsl:value-of select="translate(normalize-space(.),'s','s')"/>",
-</xsl:template>
+        "public_key": "<xsl:value-of select="translate(normalize-space(.),' ','')"/>",</xsl:template>
 
 <xsl:template match="md:AssertionConsumerService[@Binding='urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']">
         "acs": [
@@ -39,8 +36,7 @@
         "assertion_encryption_enabled": false,
         "second_factor_only": false,
         "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-</xsl:template>
+        "blacklisted_encryption_algorithms": []</xsl:template>
 
 <xsl:template match="md:Extensions"/>
 <xsl:template match="md:NameIDFormat"/>

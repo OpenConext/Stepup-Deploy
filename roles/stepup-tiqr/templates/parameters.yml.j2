@@ -34,11 +34,11 @@ parameters:
             # The name of the service that uses tiqr for second factor authentication.
             # Used by both the TiqrService and the legacy Tiqr_Service during enrollment and when sending an
             # authentication notification.
-            name: 'OpenConext Stepup'
+            name: '{{ tiqr_info_name }}'
             auth_protocol: 'tiqrauth'
             enroll_protocol: 'tiqrenroll'
             ocra_suite: 'OCRA-1:HOTP-SHA1-6:QH10-S'
-            logoUrl: '%base_url%/tiqrRGB.png'
+            logoUrl: '%base_url%/images/header-logo.png'
             infoUrl: 'https://wiki.surfnet.nl/display/SsID/SURFsecureID+support'
         library:
           gcm:

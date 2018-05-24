@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mysql -v -u {{ database_tiqr_deploy_user }} -p{{ database_tiqr_deploy_password | vault(vault_keydir) }} -h {{ database_lb_address }} {{ database_tiqr_name }} < /opt/www/{{ tiqr_vhost_name }}/db/mysql-create-tables.sql
+mysql -v -u {{ database_tiqr_deploy_user }} -p{{ database_tiqr_deploy_password | vault(vault_keydir) }} -h {{ database_lb_address }} {{ database_tiqr_name }} < /opt/www/{{ tiqr_vhost_name }}/app/Resources/db/mysql-create-tables.sql
 res=$?
 if [ "$res" -gt 0 ]; then
     echo "mysql failed"

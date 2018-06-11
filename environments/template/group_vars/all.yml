@@ -26,6 +26,8 @@ server_admin_email: admin@stepup.example.com
 noreply_email: noreply@stepup.example.com
 noreply_email_name: Step-up Example
 
+# Keep using NetworkManager (default will be disabled)
+# networkmanager: yes
 # FQDN for vhosts
 # These are the hostnames for the stepup web applications.
 #

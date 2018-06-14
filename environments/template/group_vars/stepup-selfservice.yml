@@ -4,8 +4,8 @@
 # Format: yaml dictornary of locale: url
 # TODO: Update links
 ss_support_url:
-    en_GB: "https://support.surfconext.nl/faq-strong-authentication"
-    nl_NL: "https://support.surfconext.nl/faq-sterke-authenticatie"
+    en_GB: "https://wiki.surfnet.nl/x/cwFwB"
+    nl_NL: "https://wiki.surfnet.nl/x/cQFwB"
 
 
 # Used for Symfony CSRF protection

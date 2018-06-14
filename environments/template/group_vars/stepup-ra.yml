@@ -4,8 +4,8 @@
 # Format: yaml dictornary of locale: url
 # TODO: Update links
 ra_manual_url:
-    en_GB: "https://wiki.surfnet.nl/display/surfconextdev/Manual+RA+Management+portal"
-    nl_NL: "https://wiki.surfnet.nl/display/surfconextdev/Handleiding+RA+Management+portal"
+    en_GB: "https://wiki.surfnet.nl/display/SsID/Manual+RA+Management+portal"
+    nl_NL: "https://wiki.surfnet.nl/display/SsID/Handleiding+RA+Management+portal"
 
 
 # Used for Symfony CSRF protection

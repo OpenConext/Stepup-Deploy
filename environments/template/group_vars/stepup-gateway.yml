@@ -73,6 +73,7 @@ gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # Format: Base64 encoded X.509 certificate without PEM headers
 gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 
+# Tiqr logo and title for display in the gateway token selection screen (WAYG)
 gateway_tiqr_logo: "/images/second-factor/tiqr.png"
 gateway_tiqr_title:
   en_GB: "Tiqr"

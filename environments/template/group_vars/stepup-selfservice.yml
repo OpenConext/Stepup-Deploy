@@ -1,15 +1,15 @@
 # Config for selfservice component
 
+# Used for Symfony CSRF protection
+selfservice_secret: "{{ lookup('file', inventory_dir+'/secret/selfservice') }}"
+
+
 # URLs to the support documentation in the footer of the SS interface
 # Format: yaml dictionary of locale: url
 # TODO: Update links
 ss_support_url:
     en_GB: "https://stepup.example.com/en_GB/ss_support_url"
     nl_NL: "https://stepup.example.com/nl_NL/ss_support_url"
-
-
-# Used for Symfony CSRF protection
-selfservice_secret: "{{ lookup('file', inventory_dir+'/secret/selfservice') }}"
 
 
 # Public key is in all.yml

@@ -113,6 +113,7 @@ multiple tokens per user (experimental)
   - Show totals on token page (https://www.pivotaltracker.com/story/show/152075386)
   - Export to CSV (https://www.pivotaltracker.com/story/show/153357335)
 * Allow generic SAML stepup providers (GSSP) to be added though configuration
+* Add /health and /info endpoints to the applications, except tiqr (https://www.pivotaltracker.com/story/show/133514143)
 * Bug fixes:
   - The gateway now allows any attribute to be passed though the gateway
     (https://www.pivotaltracker.com/story/show/156264642)

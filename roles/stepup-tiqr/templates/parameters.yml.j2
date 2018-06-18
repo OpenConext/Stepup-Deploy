@@ -1,13 +1,10 @@
 parameters:
-    secret:               {{ tiqr_secret | vault(vault_keydir) }}
+    secret: {{ tiqr_secret | vault(vault_keydir) }}
 
     # All locales supported by the application
-    locales:
-        - nl_NL
-        - en_GB
+    locales: [{{ enabled_locales | join(",") }}]
 
     # SAML configuration
-
     saml_idp_publickey: '{{ component_dir_name }}/app/config/cert.pem'
     saml_idp_privatekey: '{{ component_dir_name }}/app/config/key.pem'
     # NOTE: same key used for metadata and response/assertion signing
@@ -15,7 +12,6 @@ parameters:
     saml_metadata_privatekey: '{{ component_dir_name }}/app/config/key.pem'
 
     saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'
-    # saml_remote_sp_sso_url: '?'
     saml_remote_sp_certificate: '{{ component_dir_name }}/app/config/gateway.crt'
     saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/tiqr/consume-assertion'
 
@@ -24,8 +20,9 @@ parameters:
 
     # View parameters
     support_url:
-        en_GB: "https://wiki.surfnet.nl/pages/viewpage.action?pageId=50110322"
-        nl_NL: "https://wiki.surfnet.nl/display/SsID/FAQ+SURFsecureID"
+{% for locale, url in tiqr_support_url.iteritems() %}
+        {{ locale }}: "{{ url | replace('%', '%%') }}"
+{% endfor %}
 
     mobile_app_user_agent_pattern: "/^tiqr/"
 
@@ -41,11 +38,13 @@ parameters:
             enroll_protocol: 'tiqrenroll'
             ocra_suite: 'OCRA-1:HOTP-SHA1-6:QH10-S'
             logoUrl: '%base_url%/images/header-logo.png'
-            infoUrl: 'https://wiki.surfnet.nl/display/SsID/SURFsecureID+support'
+            infoUrl: '{{ tiqr_info_url }}'
         library:
+{% if tiqr_gcm_apikey is defined %}
           gcm:
             apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
             application: 'nl.surfnet.authenticator'
+{% endif %}
           apns:
             certificate: '{{ component_dir_name }}/app/config/apns.pem'
             environment: production

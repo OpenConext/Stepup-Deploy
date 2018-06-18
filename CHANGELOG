@@ -1,8 +1,140 @@
+Release 15
+Support for multiple ACS locations, various improvements to error pages, several UI improvements, multiple-token configuration per-institution, various bugfixes and Stepup is now brandless (no more "SURFisms").
+
+Deploy
+* Environment images can now be set per environment.
+  - Put environment specific images in the <environment>/files/stepup-app/images/ directory. These images are uploaded
+    to the web/images direcory of each component.
+  - Stepup components use the image named "header-logo.png" from the web/images direcory as their logo
+* New GSSP methods can be added though configuration. This intoduces several changes to the configuration of existing
+  environments. Existing environments must be updated:
+  - The GSSP proxy of the Stepup-Gateway now uses the same IdP and SP certificates for all GSSP methods. The variables
+    gateway_gssp_sp_privatekey, gateway_gssp_sp_publickey, gateway_gssp_idp_privatekey, gateway_gssp_idp_privatekey,
+    ra_gssp_sp_privatekey, ra_gssp_sp_publickey, selfservice_gssp_sp_privatekey and selfservice_gssp_sp_publickey
+    replace the per method (e.g. gateway_tiqr_sp_privatekey) variables.
+  - A configuration for the tiqr GSSP as well as a second (commented out) "example_gssp" GSSP method configuration is
+    provided in the environments/template. Please refer to these to see how to update the GSSP configuration.
+* Added optional sendmail_smarthost_port to specify the port on the sendmail_smarthost to use
+* Added gateway_support_url and tiqr_support_url
+* Completely overhauled the Stepup-Tiqr component. Introduces: tiqr_info_url and tiqr_info_name
+* In the institution configuration the maximum number of tokens that can be registerd is set on a per institution bases
+  using "number_of_tokens_per_identity"
+* Development
+  - Allow deployment of components from source
+  - Add "dev" role with SimpleSAMLphp based test IdP, SP, mailcatcher, xdebug
+  - Update the template environment to be suitable for deployment to a VM created with https://github.com/OpenConext/Stepup-VM/
+
+* Gateway:
+  - Support multiple ACS locations and use the AssertionConsumerServiceUrl from the AuthnRequest (https://www.pivotaltracker.com/story/show/155288768)
+  - Improve styling of WAYG token selection screen (https://www.pivotaltracker.com/story/show/152918604)
+  - Change layout of login screens (https://www.pivotaltracker.com/story/show/155856648)
+  - Change layout of error screens (https://www.pivotaltracker.com/story/show/156343095)
+  - Document use of state by the different SAML flows that are supported by the Stepup-Gateway (https://www.pivotaltracker.com/story/show/155969747)
+  - In the SAML Response from the gateway, use same NotOnOrAfter in SubjectConfirmationData as in Conditions (https://www.pivotaltracker.com/story/show/157880479)
+* SelfService:
+  - Show end-user if his activation code has expired (https://www.pivotaltracker.com/story/show/155467915)
+  - Confusing UI when testing one of several tokens with different LoAs (https://www.pivotaltracker.com/story/show/154476963)
+  - Modify token order in self-service (https://www.pivotaltracker.com/story/show/156311244)
+  - Improve button layout with mutiple-token support (https://www.pivotaltracker.com/story/show/156220699)
+* RA:
+  - Bugfix: White page when insufficient rights for RA (https://www.pivotaltracker.com/story/show/155008515)
+  - Bugfix: RA-candicate error when vetting second token for (S)RAA (https://www.pivotaltracker.com/story/show/156122609)
+* Middleware:
+  - Multiple-token support configurable per institution (https://www.pivotaltracker.com/story/show/156565700)
+  - Make "SelfServiceUrl" available in vetted mail template (https://www.pivotaltracker.com/story/show/155428664)
+  - Bugfix: Unintended 'email verified' entries in audit log when email verification is disabled (https://www.pivotaltracker.com/story/show/156884910)
+  - Bugfix: Allowed second factor unique constraint violation error when pushing config (https://www.pivotaltracker.com/story/show/156466792)
+* Tiqr:
+  - Complete overhaul of tiqr. Tiqr is now based on the (new) GSSP library
+  - Change tiqr authenticaton screens (https://www.pivotaltracker.com/story/show/156334113)
+  - Add cancel button that uses the GSSP cancel mechanism (https://www.pivotaltracker.com/story/show/144103525)
+* All components:
+  - Generic error screen improvements (https://www.pivotaltracker.com/story/show/137516239)
+  - Specific user error messages for common error situations (https://www.pivotaltracker.com/story/show/155515714)
+  - Remove SURFisms from Stepup applications (https://www.pivotaltracker.com/story/show/155700619)
+
+Important changes - attention required:
+
+* Verify configured ACS locations for ADFS service providers in middleware-config before deployment
+  - The ACS URL sent by ADFS in the AuthnRequest is now validated by matching it against one or more configured
+    allowed ACS locations in the service provider configuration in middleware. The beginning of the ACS URL must
+    start with one of the configured values.
+* New required configuration parameter in Gateway:
+  - new parameters.yml parameter `app_name` (example values: "Stepup Gateway", "SURFsecureID Gateway")
+* Dropped configuration parameter in SelfService:
+  - the parameters.yml parameter `number_of_tokens_per_identity` can be removed from SelfService,
+    in Middleware, the parameter is still required
+
+Install:
+* Deploy components:
+  - Stepup-Middleware: 2.8.0
+  - Stepup-Gateway: 2.9.0
+  - Stepup-SelfService: 2.9.0
+  - Stepup-RA: 2.9.0
+
+* Update middleware database schema to 20180409100948 (from 20180330094402)
+  - On an app server run "/root/01-middleware-db_migrate.sh" to update the middleware schema.
+    Replay of the event log is not required, nor desired.
+    The new middleware, selfservice and RA require the new database schema to work. The new gateway should be able to work
+    with the schema of the previous release.
+
+
+Release 14
+Export RA token overview, add GSSP tokens though configuraton, registration code expiry reminder emails support for
+multiple tokens per user (experimental)
+
+* Allow multiple tokens per user (experimental). Tokens must be of a different type. I.e when set to 2, a user could
+  register a Tiqr token and a yubiKey token, but not two YubiKey tokens or two Tiqr tokens.
+  This is a global setting that is configured though 'number_of_tokens_per_identity' in group_vars/all.yml. Setting this
+  to "1" retains pre Release 14 behaviour. This variable must be added to existing environments.
+* Email verification can be disabled on a per institution basis in the middleware-institution config.
+  (https://www.pivotaltracker.com/story/show/153358379)
+  - A new mandatory configuration option "verify_email" was added to the institution configuration. Set to "true" to
+    keep the pre Release 14 behaviour. This option must be added to the institution config of existing environments.
+  - During registration a user can print and/or download a pdf of the registration code confirmation email.
 * Make the default locale and the available locales for the stepup applications configurable using group_vars.
   See the playbook variables "default_locale" and "enabled_locales" in group_vars/all.yml. These two variables
   must be added to existing environments.
-* Add "lb_addresses" in group_vars/all.yml. When using a load balancer, set this variable to an array of IP addresses
-  of the loadbalancers. Used in nginx config and default ip(6)tables config.
+* Removed the lb role. Added "lb_addresses" in group_vars/all.yml. When using a load balancer, set this variable to an
+  array of IP addresses of the loadbalancers. Used in nginx config and default ip(6)tables config.
+* The middleware-config in template environment now reads the email templates from separate files to make
+  editing of email templates easier.
+* Improved handling of expiry of the registration code:
+  - When a registration code is expired, the RA shown an error immediately after entering the expired
+    registration code.
+  - Added "second_factor_verification_reminder_with_ra_locations" and "second_factor_verification_reminder_with_ras"
+    email templates. Existing environments must be updated to add these templates
+    These two new templates are used by the new "middleware:cron:email-reminder" console command.
+    (https://www.pivotaltracker.com/story/show/90086932)
+  - The date at which the registration code expires is available as "expirationDate" is the
+    registration_code_with_* email templates and in the newly added second_factor_verification_* email
+    templates (https://www.pivotaltracker.com/story/show/90086996)
+* RA token page improvements:
+  - Show totals on token page (https://www.pivotaltracker.com/story/show/152075386)
+  - Export to CSV (https://www.pivotaltracker.com/story/show/153357335)
+* Allow generic SAML stepup providers (GSSP) to be added though configuration
+* Bug fixes:
+  - The gateway now allows any attribute to be passed though the gateway
+    (https://www.pivotaltracker.com/story/show/156264642)
+  - Fix: "Unknown Generic SAML Stepup Provider requested on gateway after tiqr registration from selfservice"
+    (https://www.pivotaltracker.com/story/show/155774630)
+  - Fix alignment of SMS send and cancel buttons
+    (https://www.pivotaltracker.com/story/show/151327094)
+  - Fix: "verify identity" button not working in small browser window
+    (https://www.pivotaltracker.com/story/show/144698163)
+
+Install:
+* Deploy components:
+  - Stepup-Middleware 2.7.1
+  - Stepup-Gateway 2.8.3
+  - Stepup-SelfService 2.8.0
+  - Stepup-RA 2.8.1
+
+* Update middleware database schema to 20180330094402 (from 20170216085513)
+  - On an app server run "/root/01-middleware-db_migrate.sh" update the middleware and gateway database schemas.
+    Replay of the event log is not required, nor desired.
+    The new middleware, selfservice and RA require the new database schema to work. The new gateway should be able to work
+    with the schema of the previous release.
 
 
 Release 13.2 (hotfix)

@@ -1,7 +1,21 @@
 # Config for tiqr component
 
+# Support URLs displayed in the Tiqr user interface
+# Format: yaml dictionary of locale: url
+# TODO: Set support URL
+tiqr_support_url:
+  en_GB: "https://stepup.example.com/en_GB/tiqr_support_url"
+  nl_NL: "https://stepup.example.com/nl_NL/tiqr_support_url"
+
+# This is shown where and when?
+# TODO: Set info URL
+tiqr_info_url: "https://stepup.example.com/tiqr_info_url"
+
+# This is shown in some versions of the Tiqr app when the information of a tiqr account is shown
+# TODO: Set info Name
+tiqr_info_name: "SURFSecureID TEST2"
+
 # Used for Symfony CSRF protection
-# TODO: check impl
 tiqr_secret: "{{ lookup('file', inventory_dir+'/secret/tiqr') }}"
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)

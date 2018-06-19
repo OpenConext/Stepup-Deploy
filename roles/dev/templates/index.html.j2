@@ -1,0 +1,28 @@
+<html><body><h1>{{ apache_vhost_name }}</h1>
+
+<h2>SimpleSAMLphp</h2>
+
+<h3>Service Provider</h3>
+<ul>
+    <li><a href="https://{{ ssp_vhost_name }}/simplesamlphp/sp.php">Demo SP</a></li>
+</ul>
+
+<h3>SimpleSAMLphp</h3>
+<ul>
+    <li><a href="https://{{ssp_vhost_name}}/simplesamlphp/">SimpleSAMLphp</a></li>
+    <li><a href="https://{{ssp_vhost_name}}/simplesamlphp/module.php/saml2debug/debug.php">SimpleSAMLphp saml2debug</a></li>
+</ul>
+
+<h3>Metadata</h3>
+<ul>
+    <li>SAML 2.0 IdP Metadata: <a href="https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php"><code>https://{{apache_vhost_name}}/simplesamlphp/saml2/idp/metadata.php</code></a></li>
+    <li>SAML 2.0 SP Metadata: <a href="https://{{ ssp_vhost_name }}/simplesamlphp/module.php/saml/sp/metadata.php/default-sp"><code>https://{{apache_vhost_name}}/simplesamlphp/module.php/saml/sp/metadata.php/default-sp</code></a></li>
+</ul>
+
+{% if apache_vhost_ca_cert is defined %}
+<h2>CA certificate</h2>
+<ul>
+    <li><a href="http://{{ ssp_vhost_name }}/ca.crt">{{ apache_vhost_name }} CA</a></li>
+</ul>
+{% endif %}
+</body></html>

@@ -63,7 +63,7 @@ if [ $? -ne "0" ]; then
 fi
 
 # Generate RSA private key with RSA_MODULUS_SIZE_BITS bit modulus
-${OPENSSL} genrsa -out ${tmpdir}/private_key.pem ${RSA_MODULUS_SIZE_BITS} -nodes
+${OPENSSL} genrsa -out ${tmpdir}/private_key.pem ${RSA_MODULUS_SIZE_BITS}
 if [ $? -ne "0" ]; then
     error_exit "Error generating key"
 fi

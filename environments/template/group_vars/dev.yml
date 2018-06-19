@@ -1,0 +1,21 @@
+# Use mailcatcher as smarthost
+# Note: For production this would be set in app.yml group_var
+
+# Hostname of sendmail SMTP smarthost (optional)
+# Square brackets disable DNS lookup
+sendmail_smarthost: [localhost]
+
+# Port of sendmail SMTP smarthost (optional)
+# Only define when using a non standard port (i.e. other than port 25)
+sendmail_smarthost_port: 1025
+
+
+# SAML signing certificates for SimpleSAMLphp
+ssp_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_idp.key') }}"
+ssp_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_idp.crt') }}"
+
+ssp_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.key') }}"
+ssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') }}"
+
+ssp_sp2_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.key') }}"
+ssp_sp2_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.crt') }}"

@@ -24,35 +24,19 @@
   ],
 
 {# Email templates #}
+ {# Output the email template configuration. The format we are generating is JSON, so the syntax is strict.
+     The email templates use Jinja2 syntax as well, but that is parsed by the middlware at runtime, not by Ansible.
+     Because JSON requires strings to be in one line, we read them from separate files using Ansible file lookup so we
+     can use newlines for readability.
+  #}
   "email_templates": {
-    "confirm_email": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Klik op onderstaande link om je e-mailadres te bevestigen:</p><p><a href='{{ verificationUrl }}'>{{ verificationUrl }}</a></p><p>Is klikken op de link niet mogelijk? Kopieer dan de link en plak deze in de adresbalk van je browser.</p><p>SURFnet</p>{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token. Please visit this link to verify your email address:</p><p><a href='{{ verificationUrl }}'>{{ verificationUrl }}</a></p><p>If you can not click on the URL, please copy the link and paste it in the address bar of your browser.</p><p>SURFnet</p>{% endraw %}"
-    },
-    "registration_code_with_ras": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is bijna klaar voor gebruik. Je kunt tot en met {{ expirationDate }} bij een van de onderstaande locaties terecht om je token te laten activeren.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if ras is empty %}<p>Er zijn geen RAs bekend.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token, you are almost done. Please activate your token no later than {{ expirationDate }} at one of the locations mentioned below.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if ras is empty %}<p>No RAs are known.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
-    },
-    "registration_code_with_ra_locations": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is bijna klaar voor gebruik. Ga binnen 14 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if raLocations is empty %}<p>Er zijn geen Locaties bekend.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token, you are almost done. Please visit one of the locations below to get your token activated. Your activation code expires after 14 days.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if raLocations is empty %}<p>No locations known.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
-    },
-    "vetted": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Bedankt voor het registreren van je token. Je token is nu klaar voor gebruik. Je kunt dit token gebruiken wanneer op SURFconext aangesloten services een tweede inlogstap vereisen. In deze e-mail vind je meer informatie over het gebruik van je token.</p><p><strong>Ga zorgvuldig om met je token</strong><ul><li>Je token is persoonlijk, deel deze niet met anderen</li><li>Laat je token nooit onbeheerd achter</li><li>Vergrendel je telefoon met bijvoorbeeld een code of vingerafdruk</li></ul></p><p><strong>Token verloren?</strong><br />Wat moet je doen als je jouw token verloren bent? Ga naar <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a> en verwijder je tokenregistratie. Zo kan niemand misbruik maken van jouw token.</p><p><strong>Nieuw token aanvragen</strong><br />Wil je jouw token vervangen? Log in op <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a>, verwijder je geactiveerde token en doorloop het registratieproces opnieuw.</p>{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Thank you for registering your token. Your token is ready to use. You can use this token for services connected to SURFconext that require two-step authentication. This e-mail contains more info on how to use your token.</p><p><strong>Handle your token with care</strong><ul><li>Your token is private, do not share your token with others</li><li>Never leave your token unattended</li><li>Lock your phone, e.g. with a code or fingerprint</li></ul></p><p><strong>Token lost?</strong><br />Did you lose your token? Please visit <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a> and remove your token registration. This way no one can take advantage of your token.</p><p><strong>Replace token</strong><br />Do you want to replace your token? Please visit <a href='https://selfservice.pilot.stepup.surfconext.nl'>https://selfservice.pilot.stepup.surfconext.nl</a>, remove your activated token and start the token registration process again.</p>{% endraw %}"
-    },
-    "second_factor_revoked": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>{% if isRevokedByRa %}De registratie van je {{ tokenType }} token met ID {{ tokenIdentifier }} is verwijderd door een beheerder.{% else %}Je hebt de registratie voor je {{ tokenType }} token met ID {{ tokenIdentifier }} verwijderd. Neem direct contact op met de helpdesk van je instelling als je dit zelf niet gedaan hebt, omdat dit kan betekenen dat je account gecompromitteerd is.{% endif %}</p><p>Je kunt dit token niet meer gebruiken om in te loggen bij op SURFconext aangesloten services die een tweede inlogstap vereisen.</p><p> Wil je een nieuw token aanvragen? Ga dan naar <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> en doorloop het registratieproces opnieuw.</p>{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>{% if isRevokedByRa %}The registration of your {{ tokenType }} with ID {{ tokenIdentifier }} was deleted by an administrator.{% else %}You have deleted the registration of your {{ tokenType }} token with ID {{ tokenIdentifier }}. If you did not delete your token you must immediately contact the support desk of your institution, as this may indicate that your account has been compromised.{% endif %}</p><p>You can no longer use this token to access SURFconext services that require two-step authentication.</p><p>Do you want to replace your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> and register a new token.</p>{% endraw %}"
-    },
-    "second_factor_verification_reminder_with_ras": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Vorige week heb je een token geregistreerd. Hierbij herinneren we je eraan om tijdig je token te activeren. Ga binnen 7 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if ras is empty %}<p>Er zijn geen RAs bekend.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Last week you have registered a token. Please visit one of the locations below to get your token activated. Your activation code expires after 7 days.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if ras is empty %}<p>No RAs are known.</p>{% else %}<ul>{% for ra in ras %}<li><address><strong>{{ ra.commonName }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
-    },
-    "second_factor_verification_reminder_with_ra_locations": {
-      "nl_NL": "{% raw %}<p>Beste {{ commonName }},</p><p>Vorige week heb je een token geregistreerd. Hierbij herinneren we je eraan om tijdig je token te activeren. Ga binnen 7 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode verloopt na 14 dagen.</p><p>Neem daarbij het volgende mee:</p><ul><li>Je token</li><li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li><li>De activatiecode uit deze e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p><p>Locatie(s) om je token te activeren:</p>{% if raLocations is empty %}<p>Er zijn geen Locaties bekend.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}",
-      "en_GB": "{% raw %}<p>Dear {{ commonName }},</p><p>Last week you have registered a token. Please visit one of the locations below to get your token activated. Your activation code expires after 7 days.</p><p>Please bring the following:</p><ul><li>Your token</li><li>A valid proof of identity (passport, drivers license or national ID-card).</li><li>The activation code from this e-mail</li></ul><p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p><p>Location(s) to activate your token:</p>{% if raLocations is empty %}<p>No locations known.</p>{% else %}<ul>{% for ra in raLocations %}<li><address><strong>{{ ra.name }}</strong><br />{{ ra.location }}<br />{{ ra.contactInformation }}</address></li>{% endfor %}</ul>{% endif %}{% endraw %}"
-    }
+    {% for email_template in ('confirm_email', 'registration_code_with_ras', 'second_factor_verification_reminder_with_ras', 'registration_code_with_ra_locations', 'second_factor_verification_reminder_with_ra_locations', 'vetted', 'second_factor_revoked') %}
+    "{{ email_template }}": {
+      {% for locale in ('en_GB', 'nl_NL') %}
+        "{{ locale }}": "{{ lookup('file', email_template + '_' + locale + '.j2') | replace('\"', '\\\"') | replace('\n',' ') | regex_replace(' +', ' ') }}"{% if not loop.last %}, {% endif %}
+      {% endfor %}
+    }{% if not loop.last %}, {% endif %}
+    {% endfor %}
   },
 
   "gateway": {
@@ -60,7 +44,8 @@
   {# Service providers metadata and configuration #}
     "service_providers": [
     {# START SP DEFINITIONS #}
-      {# The Stepup-RA SP #}
+      {# The Stepup-RA SP
+         Required to allow the RA to authenticate to the SA-GW #}
       {
         "entity_id": "https://{{ ra_vhost_name }}/authentication/metadata",
         "public_key": "{{ ra_saml_sp_publickey | depem }}",
@@ -75,7 +60,8 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-      {# The Stepup-SelfService SP #}
+      {# The Stepup-SelfService SP
+         Required to allow the SS to authenticate to the SA-GW #}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/authentication/metadata",
         "public_key": "{{ selfservice_saml_sp_publickey | depem }}",
@@ -90,7 +76,10 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-    {# GSSP SPs for the RA and SS. #}
+
+    {# START: GSSP SPs for SS and RA
+       These entries are required for authentication and ragistration of GSSP tokens fromt the SP and
+       RA interfaces. #}
 {% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata",
@@ -121,6 +110,9 @@
         "blacklisted_encryption_algorithms": []
       },
 {% endfor %}
+      {# END: GSSP SPs for SS and RA #}
+
+      {# Add additional SPs below #}
 
       {# SP definition Template
       {
@@ -139,14 +131,19 @@
       },
       #}
 
-      {# Add additional SPs below #}
-
-      {# A test SP #}
+      {% if 'dev' in group_names %}
+      {# START: development SP definitions. #}
+      {# A SP for testing normal authentication where the SP is free to choose the LoA it wants because
+         the minimal LoA at the gateway is 1
+         This SP has the non default SSP ACS location as the default (first) option.
+         "default-sp"
+      #}
       {
-        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
-        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
-          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/default-sp",
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -157,21 +154,87 @@
         "blacklisted_encryption_algorithms": []
       },
 
-      {# Another test SP #}
+      {# A SP for testing second factor only (SFO) authentication
+         Allows authentication for NameID patterns:
+         - "urn:collab:person:stepup.example.com:admin"
+         - "urn:collab:person:institution-a.example.com:*",
+         - "urn:collab:person:Institution-D.EXAMPLE.COM:*"
+         The default ACS is set to "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
+         to allow testing with "ADFS" emulation. Multiple ACS locations are not fully supported in combination with
+         SFO. See: https://www.pivotaltracker.com/story/show/157085628
+         Note:
+         - A normal SP and a SFO SP cannot have the same EnityID
+         - Even though the SP must use the stepup_uri_level1 (i.e. level, not loa) identifier as AuthnContextClassRef
+           the configuration here always uses loa.
+        "second-sp"
+      #}
       {
-        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
-        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
-          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
         },
         "assertion_encryption_enabled": false,
         "second_factor_only": true,
-        "second_factor_only_nameid_patterns": [ "urn:collab:pieter.aai.surfnet.nl:*" ],
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:stepup.example.com:admin",
+          "urn:collab:person:institution-a.example.com:*",
+          "urn:collab:person:Institution-D.EXAMPLE.COM:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {# A SP for testing normal authentication where the gateway enforces a minimal LoA of 2
+         The SP can raisse the LoA to 3 using a RequestedAuthnConext, but it cannot lower it.
+         "third-sp"
+      #}
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/third-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/third-sp"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa2 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+       },
+       {# A SP for testing normal authentication where the gateway enforces a minimal LoA that depends on the
+          institution that the user belongs to.
+          A SP can raise the LoA to 3 using a RequestedAuthnConext, but it cannot lower it.
+          Note:
+          - To be ablte make the minimum required LoA determintation, the gateway need to either:
+            - Know the user -- this required a *vetted* user because prior to vetting users are not know to the
+              gateway. (When a user registers, the institution of the user is stored as well)
+            - Receive the schacHomeOrganistaion attribute from the remote IdP
+            Users for which the institutiion cannot be determined will be denied access.
+          - "institution-d.example.com" is an institution for for which the test IdP is configured with mixed case
+            SHO. It is listed lowecase here. Users from this institution will get a minimum LoA of 2, not 1.
+          "fourth-sp"
+        #}
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/fourth-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/fourth-sp"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}",
+          "institution-a.example.com":  "{{ stepup_uri_loa2 }}",
+          "institution-d.example.com":  "{{ stepup_uri_loa2 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       }
+      {# END: development SP definitions. #}
+      {% endif %}
 
     {# END SP DEFINITIONS #}
     ],

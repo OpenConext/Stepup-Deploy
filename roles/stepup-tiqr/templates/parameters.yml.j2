@@ -1,0 +1,77 @@
+parameters:
+    secret: {{ tiqr_secret | vault(vault_keydir) }}
+
+    # All locales supported by the application
+    locales: [{{ enabled_locales | join(",") }}]
+
+    # SAML configuration
+    saml_idp_publickey: '{{ component_dir_name }}/app/config/cert.pem'
+    saml_idp_privatekey: '{{ component_dir_name }}/app/config/key.pem'
+    # NOTE: same key used for metadata and response/assertion signing
+    saml_metadata_publickey: '{{ component_dir_name }}/app/config/cert.pem'
+    saml_metadata_privatekey: '{{ component_dir_name }}/app/config/key.pem'
+
+    saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/tiqr/metadata'
+    saml_remote_sp_certificate: '{{ component_dir_name }}/app/config/gateway.crt'
+    saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/tiqr/consume-assertion'
+
+    base_url: 'https://{{ tiqr_vhost_name }}'
+    tiqr_identity: {{ tiqr_vhost_name }}
+
+    # View parameters
+    support_url:
+{% for locale, url in tiqr_support_url.iteritems() %}
+        {{ locale }}: "{{ url | replace('%', '%%') }}"
+{% endfor %}
+
+    mobile_app_user_agent_pattern: "/^tiqr/"
+
+    # Options for the tiqr library
+    tiqr_library_options:
+        general:
+            identifier: '%tiqr_identity%'
+            # The name of the service that uses tiqr for second factor authentication.
+            # Used by both the TiqrService and the legacy Tiqr_Service during enrollment and when sending an
+            # authentication notification.
+            name: '{{ tiqr_info_name }}'
+            auth_protocol: 'tiqrauth'
+            enroll_protocol: 'tiqrenroll'
+            ocra_suite: 'OCRA-1:HOTP-SHA1-6:QH10-S'
+            logoUrl: '%base_url%/images/header-logo.png'
+            infoUrl: '{{ tiqr_info_url }}'
+        library:
+{% if tiqr_gcm_apikey is defined %}
+          gcm:
+            apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
+            application: 'nl.surfnet.authenticator'
+{% endif %}
+          apns:
+            certificate: '{{ component_dir_name }}/app/config/apns.pem'
+            environment: production
+        accountblocking:
+            maxAttempts: 5
+            # temporarilyBlockDuration:
+            # maxTemporarilyBlocks:
+        storage:
+            statestorage:
+              type: 'memcache'
+              arguments:
+                prefix: 'tiqr_'
+                servers:
+                  - host: '{{ memcache_lb_address }}'
+            userstorage:
+              type: 'pdo'
+              arguments:
+                table: 'user'
+                dsn: 'mysql:host={{ database_lb_address }};dbname={{ database_tiqr_name }}'
+                username: '{{ database_tiqr_user }}'
+                password: '{{ database_tiqr_password | vault(vault_keydir) }}'
+            devicestorage:
+              type: 'tokenexchange'
+              arguments:
+                url: 'https://tx.tiqr.org/tokenexchange/'
+                appid: 'tiqr'
+            usersecretstorage:
+              type: 'pdo'
+              # Use PDO config from userstorage
+              arguments: []

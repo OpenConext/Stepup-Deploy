@@ -1,0 +1,155 @@
+---
+
+# This role is included by all the deploy roles (stepup=gateway, stepup-middleware, stepup-selfservice, stepup-ra,
+# stepup-tiqr and stepup-keyserver). These roles list this role as a dependency in their meta.
+
+# Tasks that are common, and that can be executed before the tasks in the deploy role for the component can be put in
+# this role
+
+
+# The nginx config points to /opt/www/<component_vhost_name>
+# This is a symlink to the directory where the component is actually installed.
+# For production:
+# - Each component version (based on the name of the tarball being deployed) has its own directory in /opt/stepup
+# - All configuration of this component (i.e. thw .yml configuration files, certificates, keys and any other
+#   configuration that is set during the deploy of the component is written to this same directory
+# - The last step in the playbook is to update the symlink topoint to the new component
+# This means that:
+# - You can see which component versions are active by doing ls -al /opt/www
+# - You can install a new version of a component with virtually no downtime
+# - Rolling back to an older version of a component can be done be changing the symlink back to point to the previous
+#   version
+
+# All the ground and "root" work to host the components (nginx, php-fpm etc) was performed by the app role.
+
+
+- name: Get active component
+  shell: readlink /opt/www/{{ component_vhost_name }}
+  ignore_errors: true
+  register: active_component
+
+- debug:
+    msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+
+# There are two modes in which a component can be installed. Which mode is active is determined by the "develop" variable.
+# The default is "false", meaning production.
+# 1. Production mode
+#    - Components are installed from pre-build tarballs that include all dependencies. The tarballs are published on github
+#      and are build using the "Stepup-Build" VM.
+#    - Deployment basically consists of uploading the tarball from the Ansible Deploy server, generating the configuration
+#      rebuilding the cache and updating the symlink to the component directory
+#    - user, group and mode of files is controlled and set to values suitable for production
+
+# 2. Development (DEVELOP) mode:
+#    - Components are installed from source (i.e. git clone)
+#    - Intended to be used with the Stepup-VM in dev mode (i.e. ENV=dev).
+#    - NOT FOR PRODUCTION USE
+
+# The development VM mounts a remote directory from the host in the development-VM at "/src". This will typically be a
+# NFS mount. It requires some work to make the production deploy tasks, that need set owner, group and mode for production
+# work with the mounted /src directory through the different hypervisors (VirtualBox, VMWare) to different host operating
+# systems (Linux, OSX).
+# The way this was solved is to use "set_fact" to define component_group, component_owner and component_mode_* variables
+# and set them differently depending on whether we are doing a develop or production deploy. This way the same tasks can
+# be used for production and development deploys. Getting this to work for more different setups is a WiP.
+# If you encounter problems: note that there are a few alternatives and additional tasks that are commented out in the
+# playbook below.
+#
+# All develop deploy tasks start with "DEVELOP -".
+# Some production tasks that only update rights are skipped when in running in develop mode.
+
+- block:
+# Production
+  - name: Create stepup directory
+    file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+
+  - name: Untar component
+    unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
+    when: component_unarchive | bool | default(true)
+
+  - name: Remove group and world write
+    file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
+
+  - name: Set debug, mode, owner and group for production
+    set_fact:
+        debug_flag: "--no-debug"
+        component_group: "{{ component_name }}"
+        component_owner: "{{ component_name }}"
+        component_mode_400: "400" # r-- --- ---
+        component_mode_444: "444"
+        component_mode_640: "640" # rw- r-- ---
+        component_mode_644: "644" # rw- r-- r--
+        component_mode_755: "755" # rwx r-x r-x
+        component_mode_770: "770" # rwx rwx ---
+  when: not develop | default(false)
+
+
+- block:
+# DEVELOP
+#
+# The ACL module requires a target filesystem that supports ACSs. Only linux is supported. This means that it will not work
+# on mounts from non linux (e.g. OSX) hosts.
+# If you are deploying to a development VM running on linux, running these two acl tasks are likely to solve any ACL issues
+# that you have while deploying components to the dev VM.
+
+#    - name: DEVELOP - Set file ACL on shared source directory
+#      acl: name={{ component_dir_name }} entity={{item}} etype=user permissions=rwx default=no recursive=yes state=present
+#      with_items:
+#        - "{{ component_name }}"
+#
+#    - name: DEVELOP - Set default file ACL on shared source directory
+#      acl: name={{ component_dir_name }} entity={{item}} etype=user permissions=rwx default=yes recursive=yes state=present
+#      with_items:
+#        - "{{ component_name }}"
+
+    # Install dependencies
+    #
+    # Note: This composer install command is similar to the command used by the build script in Stepup-Build. The
+    # differences are that the DEVELOP version omits:
+    # - "--prefer-dist"
+    # - "--no-dev"
+    # - "--ignore-platform-reqs"
+    # - "--optimize-autoloader"
+
+    # If composer install fails:
+    # - Remove the non .dist versions of the configuration in /app/config
+    - name: DEVELOP - Composer install
+      shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
+
+    # Rebuild cache
+    - name: DEVELOP - Clear cache (/app/console)
+      shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
+      when: component_name != "tiqr"
+
+    - name: DEVELOP - Clear cache (/bin/console)
+      shell: php {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup
+      when: component_name == "tiqr"
+
+    - name: DEVELOP - Set debug, mode, owner and group for develop
+      set_fact:
+          debug_flag: ""
+
+          component_group:
+          #component_group: "{{ omit }}"
+
+          component_owner:
+          #component_owner: "{{ omit }}"
+
+          component_mode_400: "444"
+          component_mode_444: "444"
+          component_mode_640: "666"
+          component_mode_644: "666"
+          component_mode_755: "777"
+          component_mode_770: "777"
+          #component_mode_400: "{{ omit }}"
+          #component_mode_640: "{{ omit }}"
+          #component_mode_644: "{{ omit }}"
+          #component_mode_755: "{{ omit }}"
+          #component_mode_770: "{{ omit }}"
+
+    - name: DEVELOP - put app_dev.php
+      copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
+      when: component_name != "tiqr" and component_name != "keyserver"
+
+  when: develop | default(false)

@@ -36,6 +36,7 @@ Deploy
   - Confusing UI when testing one of several tokens with different LoAs (https://www.pivotaltracker.com/story/show/154476963)
   - Modify token order in self-service (https://www.pivotaltracker.com/story/show/156311244)
   - Improve button layout with mutiple-token support (https://www.pivotaltracker.com/story/show/156220699)
+  - Better handling of token registration errors (https://www.pivotaltracker.com/story/show/157843953)
 * RA:
   - Bugfix: White page when insufficient rights for RA (https://www.pivotaltracker.com/story/show/155008515)
   - Bugfix: RA-candicate error when vetting second token for (S)RAA (https://www.pivotaltracker.com/story/show/156122609)
@@ -68,8 +69,8 @@ Important changes - attention required:
 Install:
 * Deploy components:
   - Stepup-Middleware: 2.8.0
-  - Stepup-Gateway: 2.9.0
-  - Stepup-SelfService: 2.9.0
+  - Stepup-Gateway: 2.9.1
+  - Stepup-SelfService: 2.9.1
   - Stepup-RA: 2.9.0
 
 * Update middleware database schema to 20180409100948 (from 20180330094402)

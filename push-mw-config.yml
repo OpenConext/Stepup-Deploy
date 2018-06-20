@@ -15,6 +15,7 @@
     with_items:
     - middleware-config.json
     - middleware-whitelist.json
+    - middleware-institution.json
 
   # The /opt/scripts/middleware-* scripts were written by middleware deploy
   - name: Push middleware configuration

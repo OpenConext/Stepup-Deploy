@@ -69,16 +69,22 @@ Important changes - attention required:
 
 Install:
 * Deploy components:
-  - Stepup-Middleware: 2.8.0
+  - Stepup-Middleware: 2.8.1
   - Stepup-Gateway: 2.9.1
   - Stepup-SelfService: 2.9.1
   - Stepup-RA: 2.9.0
+  - Stepup-tiqr: 2.0.1
 
 * Update middleware database schema to 20180409100948 (from 20180330094402)
   - On an app server run "/root/01-middleware-db_migrate.sh" to update the middleware schema.
     Replay of the event log is not required, nor desired.
-    The new middleware, selfservice and RA require the new database schema to work. The new gateway should be able to work
+    The new middleware, selfservice and RA require the new database schema to work. The new gateway works
     with the schema of the previous release.
+
+* Redeploy the app role
+  - Run "ansible-playbook site-yml -t app -i <environment>/inventory" to deploy only the app role
+    This is required for the new Tiqr to work.
+    The new Tiqr requires a different nginx configuration than the old one.
 
 
 Release 14

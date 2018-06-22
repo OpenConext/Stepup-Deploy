@@ -69,7 +69,7 @@ Important changes - attention required:
 
 Install:
 * Deploy components:
-  - Stepup-Middleware: 2.8.1
+  - Stepup-Middleware: 2.8.2
   - Stepup-Gateway: 2.9.1
   - Stepup-SelfService: 2.9.1
   - Stepup-RA: 2.9.0

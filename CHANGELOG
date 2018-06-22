@@ -46,6 +46,7 @@ Deploy
   - Make "SelfServiceUrl" available in vetted mail template (https://www.pivotaltracker.com/story/show/155428664)
   - Bugfix: Unintended 'email verified' entries in audit log when email verification is disabled (https://www.pivotaltracker.com/story/show/156884910)
   - Bugfix: Allowed second factor unique constraint violation error when pushing config (https://www.pivotaltracker.com/story/show/156466792)
+  - Better handling of edge-case while vetting (https://www.pivotaltracker.com/story/show/157687939)
 * Tiqr:
   - Complete overhaul of tiqr. Tiqr is now based on the (new) GSSP library and uses Symfony
   - Change tiqr authenticaton screens (https://www.pivotaltracker.com/story/show/156334113)

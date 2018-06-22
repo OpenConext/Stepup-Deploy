@@ -24,7 +24,7 @@ parameters:
         {{ locale }}: "{{ url | replace('%', '%%') }}"
 {% endfor %}
 
-    mobile_app_user_agent_pattern: "/^tiqr/"
+    mobile_app_user_agent_pattern: "/^.*$/"
 
     # Options for the tiqr library
     tiqr_library_options:

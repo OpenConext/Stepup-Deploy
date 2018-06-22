@@ -61,6 +61,12 @@
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
 {% endif %}
 
+# Development role
+{% if 'dev' in group_names %}
+# Mailcatcher web interface
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 1080 -j ACCEPT
+{% endif %}
+
 
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 -A FORWARD -j REJECT --reject-with icmp-host-prohibited

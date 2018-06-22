@@ -1,0 +1,45 @@
+<?php
+
+$_SERVER['HTTPS'] = 'on';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// List of the avaiable remote SAML 2.0 identity providers in the SP interface
+// The SP interface allows selection of the IdP and the (Requested) AuthnContextClassRef
+// The IdP must be configured in saml20-idp-remote.php
+
+$gIDPmap = array(
+    /*
+    'EntityID of the IdP as it appers in saml20-idp-remote.php' => array(
+        'name' => 'Displayname of the IdP in the SP interface',
+        'loa' => array(
+          1 => 'AuthnContextClassRef for loa 1',
+          2 => 'AuthnContextClassRef for loa 2',
+          3 => 'AuthnContextClassRef for loa 3',
+        ),
+    )
+    */
+    'https://{{ gateway_vhost_name }}/authentication/metadata' => array(
+        'name' => 'OpenConext Stepup Gateway - {{ gateway_vhost_name }}',
+        'loa' => array(
+            1 => '{{ stepup_uri_loa1 }}',
+            2 => '{{ stepup_uri_loa2 }}',
+            3 => '{{ stepup_uri_loa3 }}',
+        ),
+    ),
+    'https://{{ gateway_vhost_name }}/second-factor-only/metadata' => array(
+        'name' => 'OpenConext Stepup Gateway - {{ gateway_vhost_name }} - SFO',
+        'loa' => array(
+            1 => 'http://no.level.1.for.sfo.example.com/assurance/sfo-level1', // Note does not exist
+            2 => '{{ stepup_uri_sfo_loa2 }}',
+            3 => '{{ stepup_uri_sfo_loa3 }}',
+        ),
+    ),
+    'https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php' => array(
+        'name' => 'Local SSP IdP - {{ ssp_vhost_name }}',
+        'loa' => array(
+            1 => '',
+            2 => '',
+            3 => '',
+        ),
+    ),
+);

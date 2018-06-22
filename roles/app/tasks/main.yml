@@ -49,16 +49,17 @@
 
 # Look for sendmail smarthost
 - name: Configure sendmail with smarthost
-  template: src='sendmail.cf.j2' dest='/etc/mail/sendmail.cf' 
+  template: src='sendmail.cf.j2' dest='/etc/mail/sendmail.cf'
   when: sendmail_smarthost is defined
   register: sendmail_smarthost_result
-  notify: 
+  notify:
     - reload sendmail
 
+# TODO: Why is this here ???
 # Build sendmail config file from template
-- name: Configure sendmail
-  command: make -C /etc/mail
-  when: (sendmail_smarthost is defined) and (sendmail_smarthost_result|changed)
+#- name: Configure sendmail
+#  command: make -C /etc/mail
+#  when: (sendmail_smarthost is defined) and (sendmail_smarthost_result|changed)
 
 # php-gd requires libgd (>2.1.1) from remi repo
 - name: Install php-gd
@@ -125,6 +126,12 @@
 - include: vhost.yml
   vars: { component_name: keyserver,   vhost_name: "{{ keyserver_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-keyserver']"
+
+# Add vhost for running simplesaml php for developement
+- include: vhost.yml
+  vars: { component_name: ssp,   vhost_name: "{{ ssp_vhost_name }}" }
+  when: "inventory_hostname in groups['dev']"
+
 
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first
 - name: Test nginx config

@@ -4,6 +4,14 @@
 gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
 
+# URLs to the support documentation in the footer of the gateway interface
+# Format: yaml dictionary of locale: url
+# TODO: Set support urls
+gateway_support_url:
+  en_GB: "https://stepup.example.com/en_GB/gateway_support_url"
+  nl_NL: "https://stepup.example.com/nl_NL/gateway_support_url"
+
+
 # Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
 # Required for sending SMS messages
 # You can register at https://www.messagebird.com/ for a free developer / trial account
@@ -16,11 +24,13 @@ messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_pla
 # Requires a yubikey
 # Note: Stepup requires a YubiKey to bootstrap SRAA users
 # TODO: Set yubikey client id
-yubikey_client_id: 00000
+yubikey_client_id: "{{ lookup('file', inventory_dir+'/yubico_client_id') }}"
+#yubikey_client_id: 00000
+
 # TODO: Set yubikey secret
 # You can use the encrypt.sh script to encrypt the secret. E.g.
 # "Stepup-Deploy/scripts/encrypt.sh environment/stepup-ansible-keystore"
-yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/yubico_secret_key') }}"
 
 
 # Whether to enable the second factor only (SFO) authentication endpoint
@@ -28,8 +38,8 @@ yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeho
 # This enpont is not required for the Stepup service itself to function.
 # Metadata for this endpoint: https://gateway_vhost_name/second-factor-only/metadata
 # Allowed values: "true" or "false"
-# TODO: Set to true to enable the SFO endpoint on the gateway
-gateway_second_factor_only: false
+# TODO: Disable the SFO endpoint when it will not be used
+gateway_second_factor_only: true
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"
@@ -63,6 +73,7 @@ gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # Format: Base64 encoded X.509 certificate without PEM headers
 gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 
+# Tiqr logo and title for display in the gateway token selection screen (WAYG)
 gateway_tiqr_logo: "/images/second-factor/tiqr.png"
 gateway_tiqr_title:
   en_GB: "Tiqr"

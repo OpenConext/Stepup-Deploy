@@ -1,5 +1,6 @@
 parameters:
-    # A list of service provider entity IDs that are allowed to send AuthnRequests to the GSSPs
+    # A list of service provider EntityIDs that are allowed to send AuthnRequests to the GSSPs through
+    # the gateway
     gssp_allowed_sps:
 {% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
     - 'https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata'

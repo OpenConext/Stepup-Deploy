@@ -48,9 +48,12 @@ ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
+ssp_vhost_name: ssp.stepup.example.com # Used by the "dev" role only
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
 # user's locale preference with other (stepup) components
+# To allow this cookie to be shared between the component, all the component xxx_vhost_name's must be
+# share the same domain
 # TODO: Set cookie domain to match the vhostnames of the stepup applications
 locale_cookie_domain: stepup.example.com
 
@@ -86,9 +89,10 @@ stepup_enabled_factors: sms, yubikey, u2f
 # - stepup-gateway.yml
 # - stepup-ra.yml
 # - stepup-selfservice.yml
-# You can use the "example_gssp" GSSP, or the tiqr GSSP as starting points.
-# You will need to provide translations for each to the locales listed under enabled_locales above
-# Tip: serach for "example_gssp" to see where you need to make changes.
+# You can use the configuration for the "example_gssp" or the "tiqr" GSSPs as starting points for
+# adding a new GSSP. You will need to provide translations for each to the locales listed under
+# enabled_locales above
+# Tip: search for "example_gssp" to see where you need to make changes.
 # TODO: Select GSSPs to enable, and specify the LoA level to assign to the GSSP
 # Available LoA levels: 2 and 3
 stepup_enabled_generic_second_factors:

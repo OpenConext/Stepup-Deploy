@@ -9,6 +9,9 @@ default:
             contexts:
               - SecondFactorAuthContext:
                   spTestUrl: 'https://ssp.stepup.example.com/sp.php'
+              - SelfServiceContext:
+                  selfServiceUrl: 'https://selfservice.stepup.example.com'
+                  mailCatcherUrl: 'http://selfservice.stepup.example.com:1080/messages'
               - Behat\MinkExtension\Context\MinkContext
 
     extensions:

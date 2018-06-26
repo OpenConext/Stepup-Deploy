@@ -25,18 +25,84 @@ filter {
 
       mutate {
         replace => {
-          "message" => "%{[json][short_message]}"
           "severity" => "informational"
-          "generated_at" => "%{[json][_ctxt_datetime]}"
-          "stepup_request_id" => "%{[json][_request_id]}"
-          "stepup_sari" => "%{[json][_ctxt_sari]}"
-          "idp" => "%{[json][_ctxt_authenticating_idp]}"
-          "sp" => "%{[json][_ctxt_requesting_sp]}"
-          "nameid" => "%{[json][_ctxt_identity_id]}"
-          "result" => "%{[json][_ctxt_authentication_result]}"
-          "second_factor_id" => "%{[json][_ctxt_second_factor_id]}"
-          "second_factor_type" => "%{[json][_ctxt_second_factor_type]}"
-          "institution" => "%{[json][_ctxt_institution]}"
+        }
+      }
+      if [json][short_message] {
+        mutate {
+          replace => {
+            "message" => "%{[json][short_message]}"
+          }
+        }
+      }
+      if [json][_ctxt_datetime] {
+        mutate {
+          replace => {
+            "generated_at" => "%{[json][_ctxt_datetime]}"
+          }
+        }
+      }
+      if [json][_request_id] {
+        mutate {
+          replace => {
+            "stepup_request_id" => "%{[json][_request_id]}"
+          }
+        }
+      }
+      if [json][_ctxt_sari] {
+        mutate {
+          replace => {
+            "stepup_sari" => "%{[json][_ctxt_sari]}"
+          }
+        }
+      }
+      if [json][_ctxt_authenticating_idp] {
+        mutate {
+          replace => {
+            "idp" => "%{[json][_ctxt_authenticating_idp]}"
+          }
+        }
+      }
+      if [json][_ctxt_requesting_sp] {
+        mutate {
+          replace => {
+            "sp" => "%{[json][_ctxt_requesting_sp]}"
+          }
+        }
+      }
+      if [json][_ctxt_identity_id] {
+        mutate {
+          replace => {
+            "nameid" => "%{[json][_ctxt_identity_id]}"
+          }
+        }
+      }
+      if [json][_ctxt_authentication_result] {
+        mutate {
+          replace => {
+            "result" => "%{[json][_ctxt_authentication_result]}"
+          }
+        }
+      }
+      if [json][_ctxt_second_factor_id] {
+        mutate {
+          replace => {
+            "second_factor_id" => "%{[json][_ctxt_second_factor_id]}"
+          }
+        }
+      }
+      if [json][_ctxt_second_factor_type] {
+        mutate {
+          replace => {
+            "second_factor_type" => "%{[json][_ctxt_second_factor_type]}"
+          }
+        }
+      }
+      if [json][_ctxt_institution] {
+        mutate {
+          replace => {
+            "institution" => "%{[json][_ctxt_institution]}"
+          }
         }
       }
 

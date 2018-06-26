@@ -38,13 +38,39 @@ filter {
       # stepup_art:  The four digit error for display in the user interface when an exception occurs
       #              See: https://github.com/SURFnet/Stepup-bundle/blob/develop/src/Exception/Art.php
 
-      mutate {
-        replace => {
-          "message" => "%{[json][message]}"
-          "severity" => "%{[json][level]}"
-          "stepup_request_id" => "%{[json][extra][request_id]}"
-          "stepup_sari" => "%{[json][context][sari]}"
-          "stepup_art" => "%{[json][extra][art]}"
+      if [json][message] {
+        mutate {
+          replace => {
+            "message" => "%{[json][message]}"
+          }
+        }
+      }
+      if [json][level] {
+        mutate {
+          replace => {
+            "severity" => "%{[json][level]}"
+          }
+        }
+      }
+      if [json][extra][request_id] {
+        mutate {
+          replace => {
+            "stepup_request_id" => "%{[json][extra][request_id]}"
+          }
+        }
+      }
+      if [json][context][sari] {
+        mutate {
+          replace => {
+            "stepup_sari" => "%{[json][context][sari]}"
+          }
+        }
+      }
+      if [json][extra][art] {
+        mutate {
+          replace => {
+            "stepup_art" => "%{[json][extra][art]}"
+          }
         }
       }
 

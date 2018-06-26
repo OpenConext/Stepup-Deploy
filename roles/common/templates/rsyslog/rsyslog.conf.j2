@@ -18,6 +18,7 @@ $ModLoad imjournal # provides access to the systemd journal
 $ModLoad immark  # provides --MARK-- message capability
 $MarkMessagePeriod 600 # 10 minutes
 
+# For following nginx logs
 $ModLoad imfile # allow reading logs from file
 
 # Provides UDP syslog reception
@@ -44,7 +45,7 @@ $InputRELPServerRun 10514
 #### GLOBAL DIRECTIVES ####
 
 # Where to place auxiliary files
-{# Directory where buffered queues are stored #}
+# Directory where buffered queues are stored
 $WorkDirectory /var/lib/rsyslog
 
 # Use default timestamp format

@@ -3,12 +3,14 @@
 # Add logstash repo and repo key (same as ES key)
 - name: Copy elasticsearch repository key
   copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
+  tags: logstash
 
 - name: Add elasticsearch repository key
   rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
 
 - name: Enable logstash repo
   copy: src=logstash.repo dest=/etc/yum.repos.d/logstash.repo
+  tags: logstash
 
 # Install logstash and Java 8
 - name: Install logstash, java openjdk
@@ -17,10 +19,12 @@
   - java-1.8.0-openjdk
   - logstash
   - elastic-curator
+  tags: logstash
 
 - name: Put logstash sysconfig
   copy: src=logstash.sysconfig dest=/etc/sysconfig/logstash
   notify: Restart logstash
+  tags: logstash
 
 # Install logstash-input-relp plugin
 # Grep exit code: 0 when found, 1 when not found, 2 on error
@@ -29,12 +33,14 @@
   register: relp_input_installed
   changed_when: False
   failed_when: relp_input_installed.rc > 1
+  tags: logstash
 
 # Note: Can be slow...
 - name: Install logstash-input-relp plugin
   shell: sudo -u logstash ./bin/plugin install logstash-input-relp chdir=/opt/logstash/
   when: relp_input_installed.rc == 1
   notify: Restart logstash
+  tags: logstash
 
 - name: Put logstash config
   template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
@@ -50,10 +56,12 @@
   - 90-output_logstash.conf
   - 99-output_log.conf
   notify: Restart logstash
+  tags: logstash
 
 # Enable logstash on boot
 - name: Enable logstash service
   service: name=logstash enabled=yes state=started
+  tags: logstash
 
 
 - name: Install kibana

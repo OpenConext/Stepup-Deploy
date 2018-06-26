@@ -82,6 +82,7 @@
 # Create directory for rsyslog message buffer
 - name: Create rsyslog dir
   file: name=/var/lib/rsyslog state=directory
+  tags: rsyslog
 
 
 # Setup rsyslog
@@ -90,6 +91,7 @@
 - name: Put rsyslog config
   template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
   notify: restart rsyslog
+  tags: rsyslog
 
 
 # Include environment specific tasks

@@ -14,9 +14,10 @@ $MaxMessageSize 32k
 $ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
 $ModLoad imjournal # provides access to the systemd journal
 #$ModLoad imklog # reads kernel messages (the same are read from journald)
-#$ModLoad immark  # provides --MARK-- message capability
 
-{# For following nginx logs #}
+$ModLoad immark  # provides --MARK-- message capability
+$MarkMessagePeriod 600 # 10 minutes
+
 $ModLoad imfile # allow reading logs from file
 
 # Provides UDP syslog reception

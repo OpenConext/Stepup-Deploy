@@ -48,6 +48,8 @@
   - 10-rsyslog_relp_input.conf
   - 20-mysqld.conf
   - 20-nginx.conf
+  - 20-rsyslogd-pstats.conf
+  - 20-sendmail.conf
   - 20-stepup-authentication.conf
   - 20-symfony.conf
   - 80-severity.conf

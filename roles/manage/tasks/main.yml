@@ -36,7 +36,7 @@
   tags: logstash
 
 # Note: Can be slow...
-- name: Install logstash-input-relp plugin
+- name: Install logstash-input-relp plugin (this can take a few minutes!)
   shell: sudo -u logstash ./bin/plugin install logstash-input-relp chdir=/opt/logstash/
   when: relp_input_installed.rc == 1
   notify: Restart logstash

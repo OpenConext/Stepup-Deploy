@@ -75,9 +75,9 @@ Important changes - attention required:
 Install:
 * Deploy components:
   - Stepup-Middleware: 2.8.2
-  - Stepup-Gateway: 2.9.1
-  - Stepup-SelfService: 2.9.1
-  - Stepup-RA: 2.9.0
+  - Stepup-Gateway: 2.9.2
+  - Stepup-SelfService: 2.9.2
+  - Stepup-RA: 2.9.2
   - Stepup-tiqr: 2.0.1
 
 * Update middleware database schema to 20180409100948 (from 20180330094402)

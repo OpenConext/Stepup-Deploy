@@ -32,6 +32,7 @@ Deploy
   - Change layout of error screens (https://www.pivotaltracker.com/story/show/156343095)
   - Document use of state by the different SAML flows that are supported by the Stepup-Gateway (https://www.pivotaltracker.com/story/show/155969747)
   - In the SAML Response from the gateway, use same NotOnOrAfter in SubjectConfirmationData as in Conditions (https://www.pivotaltracker.com/story/show/157880479)
+  - Fix ducht Yubikey authentication instructions (https://www.pivotaltracker.com/story/show/158792924)
 * SelfService:
   - Show end-user if his activation code has expired (https://www.pivotaltracker.com/story/show/155467915)
   - Confusing UI when testing one of several tokens with different LoAs (https://www.pivotaltracker.com/story/show/154476963)
@@ -41,6 +42,7 @@ Deploy
 * RA:
   - Bugfix: White page when insufficient rights for RA (https://www.pivotaltracker.com/story/show/155008515)
   - Bugfix: RA-candicate error when vetting second token for (S)RAA (https://www.pivotaltracker.com/story/show/156122609)
+  - Bugfix: Untranslated error in Yubikey verification screen (https://www.pivotaltracker.com/story/show/158660535)
 * Middleware:
   - Multiple-token support configurable per institution (https://www.pivotaltracker.com/story/show/156565700)
   - Make "SelfServiceUrl" available in vetted mail template (https://www.pivotaltracker.com/story/show/155428664)
@@ -55,6 +57,8 @@ Deploy
   - Generic error screen improvements (https://www.pivotaltracker.com/story/show/137516239)
   - Specific user error messages for common error situations (https://www.pivotaltracker.com/story/show/155515714)
   - Remove SURFisms from Stepup applications (https://www.pivotaltracker.com/story/show/155700619)
+* SS, RA and GW:
+  - Fix /csp/report (https://www.pivotaltracker.com/story/show/158719739)
 
 Important changes - attention required:
 

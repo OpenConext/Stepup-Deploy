@@ -82,6 +82,16 @@ filter {
         }
       }
 
+      # Add fingerprint to CSP reports
+      if [json][context][csp-report] {
+        fingerprint {
+          source => "[json][context][csp-report]"
+          target => "[json][context][csp-report][fingerprint]"
+          method => "SHA1"
+          key => "Stepup"
+        }
+      }
+
       mutate {
         remove_field => "json"
       }

@@ -73,6 +73,14 @@ filter {
           }
         }
       }
+      if [json][channel] {
+        mutate {
+          replace => {
+            # dest => value
+            "stepup_channel" => "%{[json][channel]}"
+          }
+        }
+      }
 
       mutate {
         remove_field => "json"

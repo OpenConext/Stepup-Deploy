@@ -92,6 +92,23 @@ filter {
         }
       }
 
+
+      if [json][context] {
+        mutate {
+          rename => {
+            "[json][context]" => "stepup_context_json"
+          }
+        }
+      }
+
+      if [json][extra] {
+        mutate {
+          rename => {
+            "[json][extra]" => "stepup_extra_json"
+          }
+        }
+      }
+
       mutate {
         remove_field => "json"
       }

@@ -1,0 +1,26 @@
+filter {
+
+  # Parse rsyslogd-pstats messages
+
+  # format to parse:
+  # action 0: origin=core.action processed=0 failed=0 suspended=0 suspended.duration=0 resumed=0
+
+  if [prog] == "rsyslogd-pstats" {
+      grok {
+          match => {
+              "message" => "%{DATA:rsyslog_pstats.action}: %{GREEDYDATA:stats}"
+          }
+      }
+      if "_grokparsefailure" not in [tags] {
+          # Split stats in keys and values, and prefix keys with "rsyslog_"
+          kv {
+              source => "stats"
+              target => "rsyslog_pstats"
+          }
+      }
+      mutate {
+          remove_field => "stats"
+      }
+  }
+
+}

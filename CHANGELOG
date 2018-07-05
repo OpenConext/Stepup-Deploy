@@ -60,6 +60,11 @@ Deploy
 * SS, RA and GW:
   - Fix /csp/report (https://www.pivotaltracker.com/story/show/158719739)
 
+* Infrastructure
+  - rsyslog configuration updates: enable the rsyslog stats and mark modules and lower the RELP reconnect time
+  - manage: update logstash configuration. Retain context and extra json logged by stepup apps, parse rsyslog stats
+            and sendmail messages
+
 Important changes - attention required:
 
 * Verify configured ACS locations for ADFS service providers in middleware-config before deployment
@@ -87,9 +92,17 @@ Install:
     with the schema of the previous release.
 
 * Redeploy the app role
-  - Run "ansible-playbook site-yml -t app -i <environment>/inventory" to deploy only the app role
+  - Run "ansible-playbook site.yml -t app -i <environment>/inventory" to deploy only the app role
     This is required for the new Tiqr to work.
     The new Tiqr requires a different nginx configuration than the old one.
+
+* Redeploy the common role with the rsyslog tag
+  - Run "ansible-playbook site.yml -t rsyslog -i <environment>/inventory" to update only the rsyslog configuration
+    This enables rsyslog stats and mark modules and lowers the RELP reconnect time
+
+* Redeploy the manage role with the logstash tag
+  - Run "ansible-playbook site.yml -t logstash -i <environment>/inventory" to update only the logstash configuration
+    This enables additional parsing of log messages
 
 
 Release 14

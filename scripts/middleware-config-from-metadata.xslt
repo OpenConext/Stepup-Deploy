@@ -29,10 +29,12 @@
         "blacklisted_encryption_algorithms": []
 </xsl:template>  
 
-<xsl:template match="md:KeyDescriptor"/>
-
+<xsl:template match="md:KeyDescriptor[not(@use)]">
+  <xsl:apply-templates select="/*/ds:X509Certificate"/>
+</xsl:template>
+  
 <xsl:template match="md:KeyDescriptor[@use='signing']">
-<xsl:apply-templates/>
+  <xsl:apply-templates select="/*/ds:X509Certificate"/>  
 </xsl:template>
 
 <xsl:template match="ds:X509Certificate">

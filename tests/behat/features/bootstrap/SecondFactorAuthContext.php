@@ -214,15 +214,16 @@ class SecondFactorAuthContext implements Context
 
         $this->passTroughIdentityProviderAssertionConsumerService();
     }
+
     /**
-     * @When Admin authenticates with the identity provider
+     * @When I authenticate as "([^"]*)" with the identity provider
      */
-    public function authenticateWithIdentityProviderAsAdmin()
+    public function authenticateWithIdentityProviderFor($userName)
     {
         $this->minkContext->assertPageAddress('https://ssp.stepup.example.com/module.php/core/loginuserpass.php');
 
-        $this->minkContext->fillField('username', 'admin');
-        $this->minkContext->fillField('password', 'admin');
+        $this->minkContext->fillField('username', $userName);
+        $this->minkContext->fillField('password', $userName);
 
         $this->minkContext->pressButton('Login');
 
@@ -232,7 +233,7 @@ class SecondFactorAuthContext implements Context
     private function passTroughIdentityProviderAssertionConsumerService()
     {
         $this->minkContext->assertPageAddress('https://ssp.stepup.example.com/module.php/core/loginuserpass.php');
-
+        $this->minkContext->assertPageNotContainsText('Incorrect username or password');
         $this->minkContext->pressButton('Submit');
     }
 

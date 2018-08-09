@@ -7,6 +7,7 @@ default:
             paths:
               - '%paths.base%/../features'
             contexts:
+              - FeatureContext: ~
               - SecondFactorAuthContext:
                   spTestUrl: 'https://ssp.stepup.example.com/sp.php'
               - SelfServiceContext:

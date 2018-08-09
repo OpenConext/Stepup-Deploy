@@ -2,9 +2,7 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
-use Behat\MinkExtension\Context\RawMinkContext;
 
 class RaContext implements Context
 {
@@ -27,11 +25,6 @@ class RaContext implements Context
      * @var string
      */
     private $raUrl;
-
-    /**
-     * @var RawMinkContext
-     */
-    private $session;
 
     /**
      * Initializes context.
@@ -64,7 +57,7 @@ class RaContext implements Context
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl);
 
-        $this->adminLogsInToRa();
+        $this->iAmLoggedInIntoTheRaPortalAs('admin', 'yubikey');
         $this->findsTokenForActivation();
         $this->userProvesPosessionOfDummyToken();
         $this->adminVerifiesUserIdentity();
@@ -74,12 +67,33 @@ class RaContext implements Context
         $this->minkContext->getMink()->setDefaultSessionName('default');
     }
 
-    private function adminLogsInToRa()
+    /**
+     * @Given /^I am logged in into the ra portal as "([^"]*)" with a "([^"]*)" token$/
+     */
+    public function iAmLoggedInIntoTheRaPortalAs($userName, $tokenType)
     {
-        // The admin user logs in and gives a Yubikey second factor
-        $this->authContext->authenticateWithIdentityProviderAsAdmin();
-        $this->authContext->verifyYuikeySecondFactor();
+        // The ra session is used to vet the token
+        $this->minkContext->getMink()->setDefaultSessionName('ra');
 
+        // We visit the RA location url
+        $this->minkContext->visit($this->raUrl);
+
+        // The admin user logs in and gives a Yubikey second factor
+        $this->authContext->authenticateWithIdentityProviderFor($userName);
+
+        switch ($tokenType) {
+            case "yubikey":
+                $this->authContext->verifyYuikeySecondFactor();
+                break;
+            default:
+                throw new Exception(
+                    sprintf(
+                        'Second factor type of "%s" is not yet supported in the tests.',
+                        $tokenType
+                    )
+                );
+                break;
+        }
         // We are now on the RA homepage
         $this->minkContext->assertPageAddress('https://ra.stepup.example.com');
         $this->minkContext->assertPageContainsText('RA Management Portal');
@@ -142,5 +156,101 @@ class RaContext implements Context
         );
         $this->minkContext->assertPageContainsText('Token activated');
         $this->minkContext->assertPageContainsText('The user has proven posession of his token');
+    }
+
+    /**
+     * @When /^I switch to institution "([^"]*)"$/
+     */
+    public function iSwitchToInstitutionWithName($institutionName)
+    {
+        $this->minkContext->clickLink('stepup.example.com');
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/sraa/select-institution');
+        $this->minkContext->selectOption('sraa_institution_select_institution', $institutionName);
+        $this->minkContext->pressButton('sraa_institution_select_select_and_apply');
+        $this->minkContext->assertPageContainsText('Your institution has been changed to "institution-a.example.com" ');
+    }
+
+    /**
+     * @Given /^I visit the RA Management RA promotion page$/
+     */
+    public function iVisitTheRAManagementRAPromotionPage()
+    {
+        $this->minkContext->assertElementOnPage('[href="/management/ra"]');
+        $this->minkContext->clickLink('RA Management');
+        $this->minkContext->assertElementOnPage('[href="/management/search-ra-candidate"]');
+        $this->minkContext->clickLink('Add RA(A)');
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
+    }
+
+    /**
+     * @Then /^I change the role of "([^"]*)" to become RA$/
+     */
+    public function iChangeTheRoleOfToBecomeRA($userName)
+    {
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
+        $this->minkContext->fillField('ra_search_ra_candidates_name', $userName);
+        $this->minkContext->pressButton('ra_search_ra_candidates_search');
+
+        $page = $this->minkContext->getSession()->getPage();
+        // There should be a td with the username in it, select that TR to press that button on.
+        $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
+
+        if (is_null($searchResult) || !$searchResult->has('css', 'a.btn-info[role="button"]')) {
+            throw new Exception(
+                sprintf('The user with username "%s" could not be found in the search results', $userName)
+            );
+        }
+
+        $searchResult->pressButton('Change role');
+
+        $this->minkContext->assertPageContainsText('Contact Information');
+        $this->minkContext->assertPageContainsText($userName);
+
+        // Fill the form with arbitrary text
+        $this->minkContext->fillField('ra_management_create_ra_location', 'Basement of institution-a');
+        $this->minkContext->fillField('ra_management_create_ra_contactInformation', 'Desk B12, Institution A');
+        $this->minkContext->selectOption('ra_management_create_ra_role', 'RA');
+
+        // Promote the user by clicking the button
+        $this->minkContext->pressButton('ra_management_create_ra_create_ra');
+
+        // If your Session supports Javascript, then enable these two lines. The configured sessions use Goutte, which
+        // is based on Guzzle and is not able to evaluate Javascript.
+
+        // $this->minkContext->assertPageContainsText('Are you sure you want to give the user below the selected role?');
+        // $this->minkContext->pressButton('Confirm');
+
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
+        $this->minkContext->assertPageContainsText('The role of this user has been changed.');
+    }
+
+    /**
+     * @Given /^I visit the RA Management page$/
+     */
+    public function iVisitTheRAManagementPage()
+    {
+        $this->minkContext->assertElementOnPage('[href="/management/ra"]');
+        $this->minkContext->clickLink('RA Management');
+        $this->minkContext->assertPageContainsText('Remove role');
+    }
+
+    /**
+     * @Then /^I relieve "([^"]*)" of his RA role$/
+     */
+    public function iRelieveOfHisRole($userName)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        // There should be a td with the username in it, select that TR to press that button on.
+        $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
+
+        if (is_null($searchResult) || !$searchResult->has('css', 'a.btn-info[role="button"]')) {
+            throw new Exception(
+                sprintf('The user with username "%s" could not be found in the search results', $userName)
+            );
+        }
+        $searchResult->pressButton('Remove role');
+        $this->minkContext->assertPageContainsText('Are you sure you want to remove the user below as RA(A)?');
+        $this->minkContext->pressButton('Confirm');
+        $this->minkContext->assertPageContainsText('The Identity is no longer RA(A)');
     }
 }

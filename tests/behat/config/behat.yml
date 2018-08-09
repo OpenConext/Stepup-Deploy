@@ -12,6 +12,8 @@ default:
               - SelfServiceContext:
                   selfServiceUrl: 'https://selfservice.stepup.example.com'
                   mailCatcherUrl: 'http://selfservice.stepup.example.com:1080/messages'
+              - RaContext:
+                  raUrl: 'https://ra.stepup.example.com'
               - Behat\MinkExtension\Context\MinkContext
 
     extensions:
@@ -20,6 +22,10 @@ default:
             goutte: ~
             sessions:
                 default:
+                    goutte:
+                        guzzle_parameters:
+                            verify: False
+                ra:
                     goutte:
                         guzzle_parameters:
                             verify: False

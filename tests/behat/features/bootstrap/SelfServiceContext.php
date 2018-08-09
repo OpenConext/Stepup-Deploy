@@ -2,7 +2,6 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
 
 class SelfServiceContext implements Context
@@ -28,9 +27,14 @@ class SelfServiceContext implements Context
     private $mailCatcherUrl;
 
     /**
-     * @var string
+     * @var string The activation code used to vet the second factor in RA (used in RaContext)
      */
     private $activationCode;
+
+    /**
+     * @var string The UUID that identifies the verified second factor (used in RaContext)
+     */
+    private $verifiedSecondFactorId;
 
     /**
      * Initializes context.
@@ -112,7 +116,6 @@ class SelfServiceContext implements Context
         );
 
         $this->minkContext->printCurrentUrl();
-        $this->minkContext->printLastResponse();
         $this->minkContext->assertPageContainsText('Thank you for registering your token.');
 
         $page  = $this->minkContext->getSession()->getPage();
@@ -121,7 +124,14 @@ class SelfServiceContext implements Context
             throw new Exception('Could not find a activation code table on the page');
         }
 
+        $url  = $this->minkContext->getSession()->getCurrentUrl();
+        $matches = [];
+        preg_match('#[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}#', $url, $matches);
+        if (empty($matches)) {
+            throw new Exception('Could not find a valid second factor verification id in the url');
+        }
         $this->activationCode = $activationCodeCell->getText();
+        $this->verifiedSecondFactorId = reset($matches);
 
         if (!preg_match('#[A-Z0-9]{8}#', $this->activationCode)) {
             throw new Exception('Could not find a valid activation code');
@@ -199,5 +209,21 @@ class SelfServiceContext implements Context
         }
 
         return $message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivationCode()
+    {
+        return $this->activationCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVerifiedSecondFactorId()
+    {
+        return $this->verifiedSecondFactorId;
     }
 }

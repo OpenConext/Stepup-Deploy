@@ -62,6 +62,13 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param HTTPS on;
         fastcgi_param SYMFONY_ENV prod;
+
+        # If the testcookie is set, enable the test env, do not mistake SYMFONY_ENV with the APP_DEV variable being set.
+        set $symfony_environment dev;
+        if ($http_cookie ~* "testcookie" ) {
+            set $symfony_environment test;
+        }
+        fastcgi_param APP_DEV $symfony_environment;
     }
     {% else %}
     {# Producation config for stepup components #}

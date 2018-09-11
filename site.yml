@@ -73,6 +73,8 @@
   - proxy
 
 
+# Add development tooling to app server
+# not for production use
 - name: Dev tools
   hosts: dev
   become: True

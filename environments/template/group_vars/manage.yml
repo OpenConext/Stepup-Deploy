@@ -1,4 +1,6 @@
 # vhost FQDN
+# Name of the manage website that hosts the Kibana webinterface
+# TODO: Set manage vhost name
 manage_vhost_name: manage.stepup.example.com
 
 # Format: PEM Certificate (chain)

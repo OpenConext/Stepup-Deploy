@@ -4,23 +4,42 @@
 gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
 
+# URLs to the support documentation in the footer of the gateway interface
+# Format: yaml dictionary of locale: url
+# TODO: Set support urls
+gateway_support_url:
+  en_GB: "https://stepup.example.com/en_GB/gateway_support_url"
+  nl_NL: "https://stepup.example.com/nl_NL/gateway_support_url"
+
+
 # Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
-# Reuired for sending SMS messages
+# Required for sending SMS messages
+# You can register at https://www.messagebird.com/ for a free developer / trial account
 # TODO: Set messagebird API access key
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
 
 
 # Yubikey client_id (Plain) and secret (Vaulted) for accessing the yubico authentication service
-# Create one at: https://upgrade.yubico.com/getapikey/
+# Get a client ID and secret for free at https://upgrade.yubico.com/getapikey/
+# Requires a yubikey
+# Note: Stepup requires a YubiKey to bootstrap SRAA users
 # TODO: Set yubikey client id
-yubikey_client_id: 00000
+yubikey_client_id: "{{ lookup('file', inventory_dir+'/yubico_client_id') }}"
+#yubikey_client_id: 00000
+
 # TODO: Set yubikey secret
-yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+# You can use the encrypt.sh script to encrypt the secret. E.g.
+# "Stepup-Deploy/scripts/encrypt.sh environment/stepup-ansible-keystore"
+yubikey_client_secret: "{{ lookup('file', inventory_dir+'/password/yubico_secret_key') }}"
 
 
 # Whether to enable the second factor only (SFO) authentication endpoint
-# Metadata for this endpoint: /second-factor-only/metadata
-gateway_second_factor_only: false
+# This enpoint allows external SPs to authenticate *only* the second factor of a previously vetted user
+# This enpont is not required for the Stepup service itself to function.
+# Metadata for this endpoint: https://gateway_vhost_name/second-factor-only/metadata
+# Allowed values: "true" or "false"
+# TODO: Disable the SFO endpoint when it will not be used
+gateway_second_factor_only: true
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 gateway_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_saml_sp.key') }}"
@@ -34,18 +53,18 @@ gateway_saml_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gatewa
 
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
-gateway_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_sp.key') }}"
-# Used by the gateway to authenticate users to the real Tiqr IdP
+gateway_gssp_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_gssp_sp.key') }}"
+# Used by the gateway to authenticate users to real GSSP IdPs
 # Format: PEM X.509 certificate
-gateway_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_sp.crt') }}"
+gateway_gssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_gssp_sp.crt') }}"
 
 
 # Public key is in all, so RA and SS have access to it.
 # Format: PEM RSA PRIVATE KEY (Vaulted)
-gateway_tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_tiqr_idp.key') }}"
+gateway_gssp_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_gssp_idp.key') }}"
 
 
-# Configuration of the remote Tiqr IdP
+# Configuration of the remote Tiqr GSSP IdP
 # Entity ID of the Tiqr Idp
 gateway_tiqr_remote_entity_id: 'https://{{ tiqr_vhost_name }}/saml/metadata'
 # SingleSingOn Location of the remote Tiqr IdP
@@ -54,38 +73,27 @@ gateway_tiqr_remote_sso_url: 'https://{{ tiqr_vhost_name }}/saml/sso'
 # Format: Base64 encoded X.509 certificate without PEM headers
 gateway_tiqr_remote_certificate: "{{ tiqr_idp_publickey | depem }}"
 
-
-# Format: PEM RSA PRIVATE KEY (Vaulted)
-gateway_irma_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_sp.key') }}"
-# Used by the gateway to authenticate users to the real IRMA IdP
-# Format: PEM X.509 certificate
-gateway_irma_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_sp.crt') }}"
-
-
-# Public key is in all, so RA and SS have access to it.
-# Format: PEM RSA PRIVATE KEY (Vaulted)
-gateway_irma_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_irma_idp.key') }}"
+# Tiqr logo and title for display in the gateway token selection screen (WAYG)
+gateway_tiqr_logo: "/images/second-factor/tiqr.png"
+gateway_tiqr_title:
+  en_GB: "Tiqr"
+  nl_NL: "Tiqr"
 
 
-# Configuration of the remote IRMA IdP
-# Entity ID of the IRMA Idp
-gateway_irma_remote_entity_id: 'https://{{ irma_vhost_name }}/saml/metadata'
-# SingleSingOn Location of the remote IRMA IdP
-gateway_irma_remote_sso_url: 'https://{{ irma_vhost_name }}/saml/sso'
-# SAML signing certificate of the IRMA IdP
+# Configuration for adding an additional GSSP IdP "example_gssp"
+# You can get this information from the
+# Entity ID of the remote "example_gssp" Idp
+#gateway_example_gssp_remote_entity_id: 'https://example_gssp.example.com/saml/metadata'
+# SingleSingOn Location of the remote "example_gssp" IdP
+#gateway_example_gssp_remote_sso_url: 'https://example_gssp.example.com/saml/sso'
+# SAML signing certificate of the "example_gssp" IdP
 # Format: Base64 encoded X.509 certificate without PEM headers
-gateway_irma_remote_certificate: "{{ irma_idp_publickey | depem }}"
+#gateway_example_gssp_remote_certificate: ""
 
+#Logo and description for the WAYG (token selection) screen on the gateway
+#Add the new logo to files/stepup-app/images to make it available on the server
+#gateway_example_gssp_logo: "/images/example-gssp.png"
+#gateway_example_gssp_title:
+#  en_GB: "Example GSSP"
+#  nl_NL: "Example GSSP"
 
-# Configuration of the remote Biometric IdP
-# Entity ID of the Biometric Idp
-# TODO: Set remote Biometric IdP EntityID
-gateway_biometric_remote_entity_id: 'https://biometric.example.com/saml/metadata'
-# SingleSingOn Location of the remote Biometric IdP
-# TODO: Set remote Biometric IdP SSL Location
-gateway_biometric_remote_sso_url: 'https://biometric.example.com/saml/sso'
-# SAML signing certificate of the Biometric IdP
-# Format: Base64 encoded X.509 certificate without PEM headers
-# TODO: Set remote Biometric IdP SAML Signing certificate
-#gateway_biometric_remote_certificate: "{{ biometric_idp_publickey | depem }}"
-gateway_biometric_remote_certificate: ""

@@ -4,7 +4,7 @@
 # http://symfony.com/doc/2.7/service_container/parameters.html#parameters-in-configuration-files
 
 parameters:
-    manual_url:  # Link to the RA manual
+    support_url:  # Link to the RA manual
 {% for locale, url in ra_manual_url.iteritems() %}
         {{ locale }}: "{{ url | replace('%', '%%') }}"
 {% endfor %}

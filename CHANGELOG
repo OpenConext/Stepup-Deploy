@@ -12,18 +12,32 @@ Support for multiple ACS locations, various improvements to error pages, several
   - Confusing UI when testing one of several tokens with different LoAs (https://www.pivotaltracker.com/story/show/154476963)
   - Modify token order in self-service (https://www.pivotaltracker.com/story/show/156311244)
   - Improve button layout with mutiple-token support (https://www.pivotaltracker.com/story/show/156220699)
+  - Better handling of token registration errors (https://www.pivotaltracker.com/story/show/157843953)
 * RA:
   - Bugfix: White page when insufficient rights for RA (https://www.pivotaltracker.com/story/show/155008515)
   - Bugfix: RA-candicate error when vetting second token for (S)RAA (https://www.pivotaltracker.com/story/show/156122609)
+  - Bugfix: Untranslated error in Yubikey verification screen (https://www.pivotaltracker.com/story/show/158660535)
 * Middleware:
   - Multiple-token support configurable per institution (https://www.pivotaltracker.com/story/show/156565700)
-  - Make SelfServiceUrl available in vetted mail template (https://www.pivotaltracker.com/story/show/155428664)
+  - Make "SelfServiceUrl" available in vetted mail template (https://www.pivotaltracker.com/story/show/155428664)
   - Bugfix: Unintended 'email verified' entries in audit log when email verification is disabled (https://www.pivotaltracker.com/story/show/156884910)
   - Bugfix: Allowed second factor unique constraint violation error when pushing config (https://www.pivotaltracker.com/story/show/156466792)
+  - Better handling of edge-case while vetting (https://www.pivotaltracker.com/story/show/157687939)
+* Tiqr:
+  - Complete overhaul of tiqr. Tiqr is now based on the (new) GSSP library and uses Symfony
+  - Change tiqr authenticaton screens (https://www.pivotaltracker.com/story/show/156334113)
+  - Add cancel button that uses the GSSP cancel mechanism (https://www.pivotaltracker.com/story/show/144103525)
 * All components:
   - Generic error screen improvements (https://www.pivotaltracker.com/story/show/137516239)
   - Specific user error messages for common error situations (https://www.pivotaltracker.com/story/show/155515714)
   - Remove SURFisms from Stepup applications (https://www.pivotaltracker.com/story/show/155700619)
+* SS, RA and GW:
+  - Fix /csp/report (https://www.pivotaltracker.com/story/show/158719739)
+
+* Infrastructure
+  - rsyslog configuration updates: enable the rsyslog stats and mark modules and lower the RELP reconnect time
+  - manage: update logstash configuration. Retain context and extra json logged by stepup apps, parse rsyslog stats
+            and sendmail messages
 
 Important changes - attention required:
 
@@ -39,16 +53,31 @@ Important changes - attention required:
 
 Install:
 * Deploy components:
-  - Stepup-Middleware: 2.8.0
-  - Stepup-Gateway: 2.9.0
-  - Stepup-SelfService: 2.9.0
-  - Stepup-RA: 2.9.0
+  - Stepup-Middleware: 2.8.2
+  - Stepup-Gateway: 2.9.2
+  - Stepup-SelfService: 2.9.2
+  - Stepup-RA: 2.9.2
+  - Stepup-tiqr: 2.0.1
 
 * Update middleware database schema to 20180409100948 (from 20180330094402)
   - On an app server run "/root/01-middleware-db_migrate.sh" to update the middleware schema.
     Replay of the event log is not required, nor desired.
-    The new middleware, selfservice and RA require the new database schema to work. The new gateway should be able to work
+    The new middleware, selfservice and RA require the new database schema to work. The new gateway works
     with the schema of the previous release.
+
+* Redeploy the app role
+  - Run "ansible-playbook site.yml -t app -i <environment>/inventory" to deploy only the app role
+    This is required for the new Tiqr to work.
+    The new Tiqr requires a different nginx configuration than the old one.
+
+* Redeploy the common role with the rsyslog tag
+  - Run "ansible-playbook site.yml -t rsyslog -i <environment>/inventory" to update only the rsyslog configuration
+    This enables rsyslog stats and mark modules and lowers the RELP reconnect time
+
+* Redeploy the manage role with the logstash tag
+  - Run "ansible-playbook site.yml -t logstash -i <environment>/inventory" to update only the logstash configuration
+    This enables additional parsing of log messages
+
 
 Release 14
 Export RA token overview, add GSSP tokens though configuraton, registration code expiry reminder emails support for
@@ -84,6 +113,7 @@ multiple tokens per user (experimental)
   - Show totals on token page (https://www.pivotaltracker.com/story/show/152075386)
   - Export to CSV (https://www.pivotaltracker.com/story/show/153357335)
 * Allow generic SAML stepup providers (GSSP) to be added though configuration
+* Add /health and /info endpoints to the applications, except tiqr (https://www.pivotaltracker.com/story/show/133514143)
 * Bug fixes:
   - The gateway now allows any attribute to be passed though the gateway
     (https://www.pivotaltracker.com/story/show/156264642)

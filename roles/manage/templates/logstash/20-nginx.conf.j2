@@ -74,6 +74,13 @@ filter {
       }
     }
 
+    if [http_user_agent] {
+      useragent {
+        source => "http_user_agent"
+        target => "user_agent"
+      }
+    }
+
   }
 
   # Non standard nginx_timestamp format causes parser trouble in ES

@@ -58,12 +58,10 @@ parameters:
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
     enabled_generic_second_factors:
-      biometric:
-        loa: 2
-      tiqr:
-        loa: 2
-      irma:
-        loa: 2
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+      {{ key }}:
+        loa: {{ value.loa }}
+{% endfor %}
 
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 

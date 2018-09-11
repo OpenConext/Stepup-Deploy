@@ -4,12 +4,15 @@ filter {
   # @timestamp is the time the message was received by logstash, it is an internal field that cannot be removed
   # and is difficult to work with (see: https://logstash.jira.com/browse/LOGSTASH-1340)
 
-  # Add a "timestamp" and set it, in order of preference, to generated_at, syslog_timestamp
-  # This creates a "timestamp" field that best matches the order on which messages were generated. Otherwise
-  # the messages read from file (e.g. mysqld, nginx) will get the timestamp at which rsyslog read them from file.
+
+  # Add a "timestamp" field and set it, in order of preference, to generated_at, syslog_timestamp
+  # This creates a "timestamp" field that best matches the order on which messages were generated on the host that
+  # logged the message. Otherwise the messages that are read (polled) from file (e.g. mysqld, nginx) will get the
+  # timestamp at which rsyslog read them from file.
+  # This "timestamp" field (and not @timestamp) is the field that is most suited for use as "Time field" in Kibana
 
   if [generated_at] {
-    # When generated_at was created with the date filter it is "special". It can not be used in the date filer again
+    # When generated_at was created with the date filter it is "special". It can not be used in the date filter again
     # but needs to be converted to string first. The resulting string has format "YYYY-MM-dd HH:mm:ss ZZZ".
     mutate {
       convert => ["generated_at", "string"]

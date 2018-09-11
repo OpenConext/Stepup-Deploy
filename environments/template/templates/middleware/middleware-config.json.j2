@@ -39,13 +39,13 @@
     {% endfor %}
   },
 
-
   "gateway": {
 
   {# Service providers metadata and configuration #}
     "service_providers": [
     {# START SP DEFINITIONS #}
-      {# The Stepup-RA SP #}
+      {# The Stepup-RA SP
+         Required to allow the RA to authenticate to the SA-GW #}
       {
         "entity_id": "https://{{ ra_vhost_name }}/authentication/metadata",
         "public_key": "{{ ra_saml_sp_publickey | depem }}",
@@ -60,7 +60,8 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-      {# The Stepup-SelfService SP #}
+      {# The Stepup-SelfService SP
+         Required to allow the SS to authenticate to the SA-GW #}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/authentication/metadata",
         "public_key": "{{ selfservice_saml_sp_publickey | depem }}",
@@ -75,13 +76,16 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-{% if 'tiqr' in stepup_enabled_generic_second_factors %}
-      {# The Stepup-SelfService Tiqr GSSP SP #}
+
+    {# START: GSSP SPs for SS and RA
+       These entries are required for authentication and ragistration of GSSP tokens fromt the SP and
+       RA interfaces. #}
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
       {
-        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata",
-        "public_key": "{{ selfservice_tiqr_sp_publickey | depem }}",
+        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata",
+        "public_key": "{{ selfservice_gssp_sp_publickey | depem }}",
         "acs": [
-          "https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/consume-assertion"
+          "https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/consume-assertion"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -91,29 +95,11 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-      {# The Stepup-RA Tiqr GSSP SP #}
       {
-       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata",
-        "public_key": "{{ ra_tiqr_sp_publickey | depem }}",
+       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/{{ key }}/metadata",
+        "public_key": "{{ ra_gssp_sp_publickey | depem }}",
         "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/verify"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa3 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-{% endif %}
-{% if 'irma' in stepup_enabled_generic_second_factors %}
-      {# The Stepup-SelfService IRMA GSSP SP #}
-      {
-        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/irma/metadata",
-        "public_key": "{{ selfservice_irma_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ selfservice_vhost_name }}/registration/gssf/irma/consume-assertion"
+          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/{{ key }}/verify"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -123,54 +109,10 @@
         "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       },
-      {# The Stepup-RA IRMA GSSP SP #}
-      {
-       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/metadata",
-        "public_key": "{{ ra_irma_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/verify"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa3 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-{% endif %}
-{% if 'biometric' in stepup_enabled_generic_second_factors %}
-      {# The Stepup-SelfService Biometric GSSP SP #}
-      {
-        "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/metadata",
-        "public_key": "{{ selfservice_biometric_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ selfservice_vhost_name }}/registration/gssf/biometric/consume-assertion"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa1 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-      {# The Stepup-RA Biometric GSSP SP #}
-      {
-       "entity_id": "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/metadata",
-        "public_key": "{{ ra_biometric_sp_publickey | depem }}",
-        "acs": [
-          "https://{{ ra_vhost_name }}/vetting-procedure/gssf/biometric/verify"
-        ],
-        "loa": {
-          "__default__": "{{ stepup_uri_loa3 }}"
-        },
-        "assertion_encryption_enabled": false,
-        "second_factor_only": false,
-        "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []
-      },
-{% endif %}
+{% endfor %}
+      {# END: GSSP SPs for SS and RA #}
+
+      {# Add additional SPs below #}
 
       {# SP definition Template
       {
@@ -189,14 +131,19 @@
       },
       #}
 
-      {# Add additional SPs below #}
-
-      {# A test SP #}
+      {% if 'dev' in group_names %}
+      {# START: development SP definitions. #}
+      {# A SP for testing normal authentication where the SP is free to choose the LoA it wants because
+         the minimal LoA at the gateway is 1
+         This SP has the non default SSP ACS location as the default (first) option.
+         "default-sp"
+      #}
       {
-        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
-        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
-          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/default-sp",
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
@@ -207,21 +154,87 @@
         "blacklisted_encryption_algorithms": []
       },
 
-      {# Another test SP #}
+      {# A SP for testing second factor only (SFO) authentication
+         Allows authentication for NameID patterns:
+         - "urn:collab:person:stepup.example.com:admin"
+         - "urn:collab:person:institution-a.example.com:*",
+         - "urn:collab:person:Institution-D.EXAMPLE.COM:*"
+         The default ACS is set to "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
+         to allow testing with "ADFS" emulation. Multiple ACS locations are not fully supported in combination with
+         SFO. See: https://www.pivotaltracker.com/story/show/157085628
+         Note:
+         - A normal SP and a SFO SP cannot have the same EnityID
+         - Even though the SP must use the stepup_uri_level1 (i.e. level, not loa) identifier as AuthnContextClassRef
+           the configuration here always uses loa.
+        "second-sp"
+      #}
       {
-        "entity_id": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
-        "public_key": "MIIDlDCCAnwCCQCEcEA84Q/IrDANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwHhcNMTQwMjE4MjEyODM0WhcNMjQwMjE2MjEyODM0WjCBizELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEzARBgNVBAoMClNVUkZuZXQgYnYxITAfBgNVBAMMGHBpZXRlci5hYWkuc3VyZm5ldC5ubCBTUDEgMB4GCSqGSIb3DQEJARYRcGlldGVyQHN1cmZuZXQubmwwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMtxMLiNG70MDGjdOuU2taiB4Wb+3qr1HLBxlgitahe2e5Hq/xduk7S85e4kBxRphPF2wXGqjXp86e+lF9IUN5EwTxT1M6CoXEnFEjJltc+IhdfGw7rV85tg+pLQ+U/VZT8JowDKIRZ+4FaNb84K3bsLAK2xvkUtsT7J7VEYGyaz/hHhQKlLDpdgLCDDWF0dwD0MQz4hD4wG928DcV2MAHeCMOHnTcFA0K/Rn1mo97IpmObtgxk57cupElwsf8jh5ORUdXkc61Oq4tpfl2Uiyg9SyMuA1JroqC1bigepuCrWY5hv0xhP6knDVQaXVF79RuFGRJUcfv8g0ee2V5AZlDAgMBAAEwDQYJKoZIhvcNAQEFBQADggEBAB1QkdCjfmAlfLJm9q/2A+DtcABstqmnppIoPJv5hXlsKuBXZ/xtZwv1YyX4TND2JfZ222AGYX50p51F5kiW0jRdjIbCevp3zxrwGuGkpMQjnNTFJont5umNHYD/+GGG0FZwgeCGUG9XqvyArhm8kVE2N9GfpxE5pXhTbaphSuql86d7HddudrV4vMAwPftLpwxjFrUNIfnXV7Qf2dH0XxIVxUwY8IVjd+CoLLDAiz6FgoDJTx5ri7qIR/zgXBc2xC+3F7tXdJyqTzXt28P/uKH/KXGBl2qoM8TOKElumMEyB9b03B2x/6pJJAy8ZdEShk0f7QEj8SPUCkcoz3IZkkw=",
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
         "acs": [
-          "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa1 }}"
         },
         "assertion_encryption_enabled": false,
         "second_factor_only": true,
-        "second_factor_only_nameid_patterns": [ "urn:collab:pieter.aai.surfnet.nl:*" ],
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:stepup.example.com:admin",
+          "urn:collab:person:institution-a.example.com:*",
+          "urn:collab:person:Institution-D.EXAMPLE.COM:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {# A SP for testing normal authentication where the gateway enforces a minimal LoA of 2
+         The SP can raisse the LoA to 3 using a RequestedAuthnConext, but it cannot lower it.
+         "third-sp"
+      #}
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/third-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/third-sp"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa2 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+       },
+       {# A SP for testing normal authentication where the gateway enforces a minimal LoA that depends on the
+          institution that the user belongs to.
+          A SP can raise the LoA to 3 using a RequestedAuthnConext, but it cannot lower it.
+          Note:
+          - To be ablte make the minimum required LoA determintation, the gateway need to either:
+            - Know the user -- this required a *vetted* user because prior to vetting users are not know to the
+              gateway. (When a user registers, the institution of the user is stored as well)
+            - Receive the schacHomeOrganistaion attribute from the remote IdP
+            Users for which the institutiion cannot be determined will be denied access.
+          - "institution-d.example.com" is an institution for for which the test IdP is configured with mixed case
+            SHO. It is listed lowecase here. Users from this institution will get a minimum LoA of 2, not 1.
+          "fourth-sp"
+        #}
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/fourth-sp",
+        "public_key": "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt') | depem }}",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/fourth-sp"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}",
+          "institution-a.example.com":  "{{ stepup_uri_loa2 }}",
+          "institution-d.example.com":  "{{ stepup_uri_loa2 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
         "blacklisted_encryption_algorithms": []
       }
+      {# END: development SP definitions. #}
+      {% endif %}
 
     {# END SP DEFINITIONS #}
     ],

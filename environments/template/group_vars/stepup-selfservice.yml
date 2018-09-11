@@ -4,28 +4,97 @@
 selfservice_secret: "{{ lookup('file', inventory_dir+'/secret/selfservice') }}"
 
 
+# URLs to the support documentation in the footer of the SS interface
+# Format: yaml dictionary of locale: url
+# TODO: Update links
+ss_support_url:
+    en_GB: "https://stepup.example.com/en_GB/ss_support_url"
+    nl_NL: "https://stepup.example.com/nl_NL/ss_support_url"
+
+
 # Public key is in all.yml
 # Format: PEM RSA PRIVATE KEY
 selfservice_saml_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_saml_sp.key') }}"
 
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
-selfservice_tiqr_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_tiqr_sp.key') }}"
-# Used by the SelfService to authenticate users to the Tiqr IdP.
-# Authentication is though the Tiqr proxy
+selfservice_gssp_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_gssp_sp.key') }}"
+# Used by selfservice to authenticate GSSP tokens to GSSP Proxy IdP on the gateway
+# Authentication to the real GSSP is though the GSSP proxy on the Stepup-Gateway
 # Format: PEM X.509 certificate
-selfservice_tiqr_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_tiqr_sp.crt') }}"
-
-# Format: PEM RSA PRIVATE KEY (Vaulted)
-selfservice_irma_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_irma_sp.key') }}"
-# Used by the SelfService to authenticate users to the IRMA IdP.
-# Authentication is though the IRMA proxy
-# Format: PEM X.509 certificate
-selfservice_irma_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_irma_sp.crt') }}"
+selfservice_gssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/selfservice_gssp_sp.crt') }}"
 
 
-# URLs to the support documentation in the footer of the SS interface
-# Format: yaml dictornary of locale: url
-ss_support_url:
-    en_GB: "https://support.surfconext.nl/faq-strong-authentication"
-    nl_NL: "https://support.surfconext.nl/faq-sterke-authenticatie"
+# GSSP Configuration
+
+# Tiqr GSSP
+ss_gssp_tiqr_logo: /images/second-factor/tiqr.png
+ss_gssp_tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en
+ss_gssp_tiqr_app_ios_url: https://itunes.apple.com/us/app/tiqr/id430838214?mt=8&ls=1
+
+ss_gssp_tiqr_alt:
+    en_GB: 'Tiqr'
+    nl_NL: 'Tiqr'
+ss_gssp_tiqr_title:
+    en_GB: 'Tiqr'
+    nl_NL: 'Tiqr'
+ss_gssp_tiqr_description:
+    en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+    nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+ss_gssp_tiqr_button_use:
+    en_GB: 'Select'
+    nl_NL: 'Selecteer'
+ss_gssp_tiqr_initiate_title:
+    en_GB: 'Register with Tiqr'
+    nl_NL: 'Registreren bij Tiqr'
+ss_gssp_tiqr_initiate_button:
+    en_GB: 'Register with Tiqr'
+    nl_NL: 'Registreer bij Tiqr'
+ss_gssp_tiqr_explanation:
+    en_GB: 'Click the button below to register with Tiqr.'
+    nl_NL: 'Klik op de knop hieronder om je bij Tiqr te registreren.'
+ss_gssp_tiqr_authn_failed:
+    en_GB: 'Registration with Tiqr has failed. Please try again.'
+    nl_NL: 'Registratie bij Tiqr is mislukt. Probeer het nogmaals.'
+ss_gssp_tiqr_pop_failed:
+    en_GB: 'Registration of your token failed. Please try again.'
+    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+
+# "example_gssp" GSSP
+# Logo on the token selection page
+#Add the new logo to files/stepup-app/images to make it available on the server
+#ss_gssp_example_gssp_logo: /images/example-gssp.png
+
+# Links to download the app for Android or IOS. See "ss_gssp_example_gssp_description" for how these are used
+#ss_gssp_example_gssp_app_android_url: https://example.com/android
+#ss_gssp_example_gssp_app_ios_url: https://example.com/ios
+
+# Translations
+#ss_gssp_example_gssp_alt:
+#    en_GB: 'example_gssp'
+#    nl_NL: 'example_gssp'
+#ss_gssp_example_gssp_title:
+#    en_GB: 'Example GSSP'
+#    nl_NL: 'Voorbeeld GSSP'
+#ss_gssp_example_gssp_description:
+#    en_GB: 'Log in with the "Example GSSP" app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+#    nl_NL: 'Log in met de "Voorbeeld GSSP" app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+#ss_gssp_example_gssp_button_use:
+#    en_GB: 'Select'
+#    nl_NL: 'Selecteer'
+#ss_gssp_example_gssp_initiate_title:
+#    en_GB: 'Register with Example GSSP'
+#    nl_NL: 'Registreren bij de voorbeeld GSSP'
+#ss_gssp_example_gssp_initiate_button:
+#    en_GB: 'Register with Example GSSP'
+#    nl_NL: 'Registreer bij de voorbeeld GSSP'
+#ss_gssp_example_gssp_explanation:
+#    en_GB: 'Click the button below to register with the Example GSSP.'
+#    nl_NL: 'Klik op de knop hieronder om je bij ce voorbeeld GSSP te registreren.'
+#ss_gssp_example_gssp_authn_failed:
+#    en_GB: 'Registration with the Example GSSP has failed. Please try again.'
+#    nl_NL: 'Registratie bij voorbeeld GSSP is mislukt. Probeer het nogmaals.'
+#ss_gssp_example_gssp_pop_failed:
+#    en_GB: 'Registration of your token failed. Please try again.'
+#    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'

@@ -22,6 +22,8 @@ parameters:
     locales:              [{{ enabled_locales | join(",") }}]
     locale_cookie_domain: {{ locale_cookie_domain }}
 
+    app_name: "Stepup Gateway"
+
     secret:            {{ gateway_secret | vault(vault_keydir) }}
 
     debug_toolbar:          true

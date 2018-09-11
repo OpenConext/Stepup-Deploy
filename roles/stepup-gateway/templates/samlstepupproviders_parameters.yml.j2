@@ -1,81 +1,42 @@
 parameters:
-    # A list of service provider entity IDs that are allowed to send AuthnRequests to the GSSPs
-    gssp_allowed_sps: [ 'https://{{ selfservice_vhost_name }}/registration/gssf/tiqr/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/tiqr/metadata', 'https://{{ selfservice_vhost_name }}/registration/gssf/irma/metadata', 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/irma/metadata' ]
+    # A list of service provider EntityIDs that are allowed to send AuthnRequests to the GSSPs through
+    # the gateway
+    gssp_allowed_sps:
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+    - 'https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata'
+    - 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/{{ key }}/metadata'
+{% endfor %}
 
-{% if 'tiqr' in stepup_enabled_generic_second_factors %}
+{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
     # Authentication flow:
-    # Real Tiqr IdP <--> GSSP Tiqr SP <--> GSSP Tiqr IdP <--> RA | SS
-    # AuthnRequests from the RA and SS are proxied through the Tiqr GSSP proxy on the Gateway
-    # The GSSP Tiqr SP and IdP are hosted on the gateway
+    # Real GSSP IdP <--> GSSP Proxy SP <--> GSSP Proxy IdP <--> RA | SS
+    # AuthnRequests from the RA and SS are proxied through the GSSP proxy on the Gateway
     #
-    # Metadata URL: https://<gateway>/gssp/tiqr/metadata
+    # Metadata URL: https://<gateway>/gssp/{{ key }}/metadata
 
-    # Tiqr SP Proxy for authenticating with the real (i.e. external) tiqr IdP
-    gssp_tiqr_sp_publickey: {{ component_dir_name }}/app/config/sp_tiqr.crt
-    gssp_tiqr_sp_privatekey: {{ component_dir_name }}/app/config/sp_tiqr.key
+    # GSSP SP Proxy for authenticating with the real (i.e. external) GSSP IdP
+    gssp_{{ key }}_sp_publickey: {{ component_dir_name }}/app/config/sp_gssp.crt
+    gssp_{{ key }}_sp_privatekey: {{ component_dir_name }}/app/config/sp_gssp.key
 
-    # Certificate and private key of Tiqr SAML IdP Proxy for use by RA and SS
-    gssp_tiqr_idp_publickey: {{ component_dir_name }}/app/config/idp_tiqr.crt
-    gssp_tiqr_idp_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
+    # Certificate and private key of GSSP IdP Proxy for use by RA and SS
+    gssp_{{ key }}_idp_publickey: {{ component_dir_name }}/app/config/idp_gssp.crt
+    gssp_{{ key }}_idp_privatekey: {{ component_dir_name }}/app/config/idp_gssp.key
 
     # Metadata signing cert and key for tiqr SP/IdP proxy
-    gssp_tiqr_metadata_publickey: {{ component_dir_name }}/app/config/idp_tiqr.crt
-    gssp_tiqr_metadata_privatekey: {{ component_dir_name }}/app/config/idp_tiqr.key
+    gssp_{{ key }}_metadata_publickey: {{ component_dir_name }}/app/config/idp_gssp.crt
+    gssp_{{ key }}_metadata_privatekey: {{ component_dir_name }}/app/config/idp_gssp.key
 
-    # Real (i.e. external) Tiqr IdP
-    gssp_tiqr_remote_entity_id: {{ gateway_tiqr_remote_entity_id }}
-    gssp_tiqr_remote_sso_url: {{ gateway_tiqr_remote_sso_url }}
-    gssp_tiqr_remote_certificate: {{ gateway_tiqr_remote_certificate }}
-{% endif %}
+    # Real (i.e. external) GSSP IdP
+    gssp_{{ key }}_remote_entity_id: '{{ hostvars[inventory_hostname]['gateway_' + key + '_remote_entity_id'] }}'
+    gssp_{{ key }}_remote_sso_url: '{{ hostvars[inventory_hostname]['gateway_' + key + '_remote_sso_url'] }}'
+    gssp_{{ key }}_remote_certificate: '{{ hostvars[inventory_hostname]['gateway_' + key + '_remote_certificate'] }}'
 
-{% if 'biometric' in stepup_enabled_generic_second_factors %}
-    # Authentication flow:
-    # Real Biometric IdP <--> GSSP Biometric SP <--> GSSP Biometric IdP <--> RA | SS
-    # AuthnRequests from the RA and SS are proxied through the Biometric GSSP proxy on the Gateway
-    # The GSSP Biometric SP and IdP are hosted on the gateway
-    #
-    # Metadata URL: https://<gateway>/gssp/biometric/metadata
-
-    # Biometric SP Proxy for authenticating with the real (i.e. external) biometric IdP
-    gssp_biometric_sp_publickey: {{ component_dir_name }}/app/config/sp_biometric.crt
-    gssp_biometric_sp_privatekey: {{ component_dir_name }}/app/config/sp_biometric.key
-
-    # Certificate and private key of the Biometric SAML IdP Proxy for use by RA and SS
-    gssp_biometric_idp_publickey: {{ component_dir_name }}/app/config/idp_biometric.crt
-    gssp_biometric_idp_privatekey: {{ component_dir_name }}/app/config/idp_biometric.key
-
-    # Metadata signing cert and key for Biometric SP/IdP proxy
-    gssp_biometric_metadata_publickey: {{ component_dir_name }}/app/config/idp_biometric.crt
-    gssp_biometric_metadata_privatekey: {{ component_dir_name }}/app/config/idp_biometric.key
-
-    # Real (i.e. external) Biometric IdP
-    gssp_biometric_remote_entity_id: {{ gateway_biometric_remote_entity_id }}
-    gssp_biometric_remote_sso_url: {{ gateway_biometric_remote_sso_url }}
-    gssp_biometric_remote_certificate: {{ gateway_biometric_remote_certificate }}
-{% endif %}
-
-{% if 'irma' in stepup_enabled_generic_second_factors %}
-    # Authentication flow:
-    # Real IRMA IdP <--> GSSP IRMA SP <--> GSSP IRMA IdP <--> RA | SS
-    # AuthnRequests from the RA and SS are proxied through the IRMA GSSP proxy on the Gateway
-    # The GSSP IRMA SP and IdP are hosted on the gateway
-    #
-    # Metadata URL: https://<gateway>/gssp/irma/metadata
-
-    # IRMA SP Proxy for authenticating with the real (i.e. external) irma IdP
-    gssp_irma_sp_publickey: {{ component_dir_name }}/app/config/sp_irma.crt
-    gssp_irma_sp_privatekey: {{ component_dir_name }}/app/config/sp_irma.key
-
-    # Certificate and private key of IRMA SAML IdP Proxy for use by RA and SS
-    gssp_irma_idp_publickey: {{ component_dir_name }}/app/config/idp_irma.crt
-    gssp_irma_idp_privatekey: {{ component_dir_name }}/app/config/idp_irma.key
-
-    # Metadata signing cert and key for irma SP/IdP proxy
-    gssp_irma_metadata_publickey: {{ component_dir_name }}/app/config/idp_irma.crt
-    gssp_irma_metadata_privatekey: {{ component_dir_name }}/app/config/idp_irma.key
-
-    # Real (i.e. external) IRMA IdP
-    gssp_irma_remote_entity_id: {{ gateway_irma_remote_entity_id }}
-    gssp_irma_remote_sso_url: {{ gateway_irma_remote_sso_url }}
-    gssp_irma_remote_certificate: {{ gateway_irma_remote_certificate }}
-{% endif %}
+    gssp_{{ key }}_logo: '{{ hostvars[inventory_hostname]['gateway_' + key + '_logo'] }}'
+    gssp_{{ key }}_title:
+{% for param in ['title'] %}
+    gssp_{{ key }}_{{ param }}:
+{% for lang in enabled_locales %}
+        {{ lang }}: '{{ hostvars[inventory_hostname]['gateway_' + key + '_' + param][lang] | replace("'", "''") }}'
+{% endfor %}
+{% endfor %}
+{% endfor %}

@@ -15,9 +15,6 @@ proxy_keyserver_key: "{{ lookup('file', inventory_dir+'/ssl_cert/keyserver.key')
 # Format: PEM RSA PRIVATE KEY
 proxy_tiqr_key: "{{ lookup('file', inventory_dir+'/ssl_cert/tiqr.key') }}"
 
-# Format: PEM RSA PRIVATE KEY
-proxy_irma_key: "{{ lookup('file', inventory_dir+'/ssl_cert/irma.key') }}"
-
 
 # Format: PEM Certificate (chain)
 # Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
@@ -43,8 +40,3 @@ proxy_keyserver_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/keyserv
 # Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
 # Do not include root CA certificate
 proxy_tiqr_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/tiqr.crt') }}"
-
-# Format: PEM Certificate (chain)
-# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
-# Do not include root CA certificate
-proxy_irma_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/irma.crt') }}"

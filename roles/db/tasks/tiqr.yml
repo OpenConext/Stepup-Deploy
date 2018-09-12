@@ -1,13 +1,16 @@
 - name: Create tiqr database
   mysql_db: name={{ database_tiqr_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
+- name: Create tiqr test database
+  mysql_db: name=tiqr_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+
 
 - name: Create tiqr deploy DB user with ALL access to tiqr database
   mysql_user:
     name: "{{ database_tiqr_deploy_user }}"
     host: "%"
     password: "{{ database_tiqr_deploy_password | vault(vault_keydir) }}"
-    priv: "{{ database_tiqr_name }}.*:ALL\ PRIVILEGES,GRANT"
+    priv: "{{ database_tiqr_name }}.*:ALL\ PRIVILEGES,GRANT/tiqr_test.*:ALL\ PRIVILEGES,GRANT"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
@@ -18,7 +21,7 @@
     name: "{{ database_tiqr_user }}"
     host: "%"
     password: "{{ database_tiqr_password | vault(vault_keydir) }}"
-    priv: "{{ database_tiqr_name }}.*:SELECT,INSERT,DELETE,UPDATE"
+    priv: "{{ database_tiqr_name }}.*:SELECT,INSERT,DELETE,UPDATE/tiqr_test.*:SELECT,INSERT,DELETE,UPDATE"
     login_host: "127.0.0.1"
     login_user: root
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

@@ -6,21 +6,37 @@ use Behat\MinkExtension\Context\MinkContext;
 
 class FeatureContext implements Context
 {
+
+    /**
+     * @var \Behat\MinkExtension\Context\MinkContext
+     */
+    private $minkContext;
+
     /**
      * @BeforeSuite
      */
-    public static function setupDatabase()
+    public static function setupDatabase($scope)
     {
-        //echo shell_exec('vagrant ssh -c "/src/Stepup-Gateway/app/console cache:clear --env=test"');
-
-        // Drop existing schemas
-        echo shell_exec('vagrant ssh -c "/src/Stepup-Middleware/app/console app/console doctrine:schema:drop --env=test --force -q"');
-        echo shell_exec('vagrant ssh -c "/src/Stepup-Gateway/app/console app/console doctrine:schema:drop --env=test --force -q"');
-
-        // Bootstrap the test databases
-        echo shell_exec('vagrant ssh -c "/src/Stepup-Middleware/app/console middleware:migrations:migrate --env=test"');
-        echo shell_exec('vagrant ssh -c "echo Y | /src/Stepup-Gateway/app/console php app/console u2f:migrations:migrate --env=test"');
+        // Copy Fixture to guest
+        shell_exec("cat ./fixtures/events.sql | vagrant ssh -c 'cat -> /tmp/events.sql'");
+        // Import the events.sql into middleware
+        shell_exec("vagrant ssh -c 'mysql -uroot -psecret middleware_test < /tmp/events.sql'");
+        // Perform an event replay
+        shell_exec("vagrant ssh -c '/src/Stepup-Middleware/app/console middleware:event:replay --env=test_event_replay --no-interaction'");
     }
+    /**
+     * @BeforeScenario
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        $this->minkContext = $environment->getContext(MinkContext::class);
+
+        // Set the testcookie, effectively putting the Stepup suite in test mode
+        $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
+    }
+
 
     /**
      * @BeforeFeature

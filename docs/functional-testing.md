@@ -20,6 +20,7 @@ be built for different purposes (production, development and testing).
 **Requirements**
 * Development environment is provisioned with test databases
 * Stepup runs in test mode
+* The dummy gssp device is configured in the platform. See [this howto](add-gssf-to-stepup.md). How to configure it. 
 * Tests are run from the host machine
 
 Running the tests is as easy as running the `behat` command in the `/tests/behat` folder
@@ -27,8 +28,9 @@ Running the tests is as easy as running the `behat` command in the `/tests/behat
 ## Developing tests
 
 
-
 ## Future wishes, todo
+* Have the dummy GSSP device in the dev machine by default
+* ~~Provide a message bird sms service test double to be able to test sms registrations~~
 * Be able to run these test on Travis
 * Be able to bootstrap the application (and event stream) using behat [backgrounds](http://docs.behat.org/en/v2.5/guides/1.gherkin.html#backgrounds)
 * Perform tests directly on the Middleware API's. Behat might not be the best candidate for this

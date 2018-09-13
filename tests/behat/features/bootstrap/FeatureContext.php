@@ -25,7 +25,6 @@ class FeatureContext implements Context
         shell_exec("vagrant ssh -c 'rm /tmp/events.sql'");
         // Perform an event replay
         shell_exec("vagrant ssh -c '/src/Stepup-Middleware/app/console middleware:event:replay --env=test_event_replay --no-interaction'");
-        die;
     }
     /**
      * @BeforeScenario

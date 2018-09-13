@@ -2,7 +2,6 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\MinkExtension\Context\MinkContext;
 
@@ -12,7 +11,7 @@ class SecondFactorAuthContext implements Context
     const SFO_IDP = 'https://gateway.stepup.example.com/second-factor-only/metadata';
     const SSO_SP = 'default-sp';
     const SFO_SP = 'second-sp';
-    const TEST_NAMEID = 'urn:collab:person:institution-a.example.com:joe-a1';
+    const TEST_NAMEID = 'urn:collab:person:institution-a.example.com:jane-a1';
 
     /**
      * @var \Behat\MinkExtension\Context\MinkContext
@@ -108,9 +107,9 @@ class SecondFactorAuthContext implements Context
      */
     public function verifySecondFactor()
     {
-        $this->selectDummySecondFactorOnTokenSelectionScreen();
-        $this->authenticateUserInDummyGsspApplication();
-        $this->passTroughGatewayProxyAssertionConsumerService();
+        //$this->selectYubikeySecondFactorOnTokenSelectionScreen();
+        $this->authenticateUserYubikeyInGateway();
+        //$this->passTroughGatewayProxyAssertionConsumerService();
     }
     /**
      * @When I verify the Yubikey second factor
@@ -127,9 +126,9 @@ class SecondFactorAuthContext implements Context
      */
     public function cancelSecondFactorAuthentication()
     {
-        $this->selectDummySecondFactorOnTokenSelectionScreen();
+//        $this->selectDummySecondFactorOnTokenSelectionScreen();
         $this->cancelAuthenticationInDummyGsspApplication();
-        $this->passTroughGatewayProxyAssertionConsumerService();
+//        $this->passTroughGatewayProxyAssertionConsumerService();
     }
 
     /**
@@ -172,7 +171,9 @@ class SecondFactorAuthContext implements Context
         if (!$form) {
             throw new ElementNotFoundException('Yubikey OTP Submit form could not be found on the page');
         }
-        $form->submit();
+        $this->minkContext->pressButton('gateway_verify_yubikey_otp_submit');
+        // Pass through the 'return to sp' redirection page.
+        $this->minkContext->pressButton('Submit');
     }
 
     public function cancelAuthenticationInDummyGsspApplication()

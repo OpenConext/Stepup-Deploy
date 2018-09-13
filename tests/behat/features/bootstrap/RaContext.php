@@ -59,7 +59,7 @@ class RaContext implements Context
 
         $this->iAmLoggedInIntoTheRaPortalAs('admin', 'yubikey');
         $this->findsTokenForActivation();
-        $this->userProvesPosessionOfDummyToken();
+        $this->userProvesPosessionOfSmsToken();
         $this->adminVerifiesUserIdentity();
         $this->vettingProcessIsCompleted();
 
@@ -127,6 +127,24 @@ class RaContext implements Context
         $this->minkContext->pressButton('Submit');
         // Pass through the 'return to sp' redirection page.
         $this->minkContext->pressButton('Submit');
+    }
+
+    private function userProvesPosessionOfSmsToken()
+    {
+        $vettingProcedureUrl = 'https://ra.stepup.example.com/vetting-procedure/%s/send-sms-challenge';
+
+        $this->minkContext->assertPageAddress(
+            sprintf(
+                $vettingProcedureUrl,
+                $this->selfServiceContext->getVerifiedSecondFactorId()
+            )
+        );
+
+        // Press the initiate vetting procedure button in the search results
+        $this->minkContext->pressButton('Send code');
+        // Fill the Code field with an arbitrary verification code
+        $this->minkContext->fillField('ra_verify_phone_number_challenge', '999');
+        $this->minkContext->pressButton('Verify code');
     }
 
     private function adminVerifiesUserIdentity()

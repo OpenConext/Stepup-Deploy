@@ -66,13 +66,13 @@ class SelfServiceContext implements Context
         $this->authContext->authenticateWithIdentityProvider();
         $this->authContext->passTroughGatewaySsoAssertionConsumerService();
 
-        $this->minkContext->assertPageAddress('https://selfservice.stepup.example.com/overview');
+        $this->minkContext->assertPageAddress('https://selfservice.stepup.example.com/registration/select-token');
         $this->minkContext->assertPageContainsText('Registration Portal');
-        $this->minkContext->assertPageContainsText('Token Overview');
+        $this->minkContext->assertPageContainsText('Select token');
     }
 
     /**
-     * @When I register a new token
+     * @When I register a new Dummy token
      */
     public function registerNewToken()
     {
@@ -102,6 +102,37 @@ class SelfServiceContext implements Context
         // Pass trough gateway
         $this->authContext->passTroughGatewayProxyAssertionConsumerService();
 
+        $this->minkContext->assertPageContainsText('Verify your e-mail');
+        $this->minkContext->assertPageContainsText('Check your inbox');
+    }
+
+    /**
+     * @When I register a new SMS token
+     */
+    public function registerNewSmsToken()
+    {
+        $this->minkContext->assertPageAddress('/registration/select-token');
+
+        // Select the SMS second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/sms/send-challenge"]')->click();
+
+        $this->minkContext->assertPageAddress('/registration/sms/send-challenge');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Send SMS code');
+        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+        $this->minkContext->pressButton('Send code');
+
+        // Now we should be on the prove possession page where we enter our OTP
+        $this->minkContext->assertPageAddress('/registration/sms/prove-possession');
+        $this->minkContext->assertPageContainsText('Enter SMS code');
+        $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
+
+        $this->minkContext->pressButton('Verify');
+
+        ## And we should now be on the mail verification page
         $this->minkContext->assertPageContainsText('Verify your e-mail');
         $this->minkContext->assertPageContainsText('Check your inbox');
     }

@@ -5,6 +5,6 @@ Feature: A user manages his tokens in the selfservice portal
 
   Scenario: A user registers a token in selfservice
     Given I am logged in into the selfservice portal
-     When I register a new token
+     When I register a new SMS token
       And I verify my e-mail address
       And I vet my second factor at the information desk

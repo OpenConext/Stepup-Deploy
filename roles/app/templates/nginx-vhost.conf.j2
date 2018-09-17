@@ -53,7 +53,12 @@ server {
         try_files $uri /app_dev.php$is_args$args;
     }
 
-    location ~ ^/app_dev\.php(/|$) {
+    location ~ ^/app_(dev|test)\.php(/|$) {
+        # If testcookie is set use app_test.php
+        if ($cookie_testcookie) {
+          rewrite ^/app_dev\.php/?(.*)$ /app_test.php/$1;
+        }
+
         fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         # Include fastcgi_params from /etc/nginx/fastcgi_params, then
@@ -62,13 +67,6 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param HTTPS on;
         fastcgi_param SYMFONY_ENV prod;
-
-        # If the testcookie is set, enable the test env, do not mistake SYMFONY_ENV with the APP_DEV variable being set.
-        set $symfony_environment dev;
-        if ($http_cookie ~* "testcookie" ) {
-            set $symfony_environment test;
-        }
-        fastcgi_param APP_DEV $symfony_environment;
     }
     {# Finally, disallow opening php files outside of app_dev.php #}
     location ~* \.php$ {

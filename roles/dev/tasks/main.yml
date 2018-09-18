@@ -203,3 +203,6 @@
 
 - name: Enable SSP webapp
   file: src=/usr/local/share/simplesamlphp/ dest=/opt/www/{{ ssp_vhost_name }} state=link
+
+
+- include: db.yml

@@ -3,16 +3,9 @@
 - name: Create Middleware database
   mysql_db: name={{ database_middleware_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
 
-- name: Create Middleware test database
-  mysql_db: name=middleware_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
 # Both midleware and gateway databases are managed using middleware app/console (for now)
 - name: Create Gateway database
   mysql_db: name={{ database_gateway_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-- name: Create Gateway test database
-  mysql_db: name=gateway_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
 
 
 - name: Create middleware deploy user with ALL access to middleware and gateway database
@@ -20,7 +13,7 @@
     name: "{{ database_middleware_deploy_user }}"
     host: "%"
     password: "{{ database_middleware_deploy_password | vault(vault_keydir) }}"
-    priv: "{{ database_gateway_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_u2f_name }}.*:ALL\ PRIVILEGES,GRANT/gateway_test.*:ALL\ PRIVILEGES,GRANT/middleware_test.*:ALL\ PRIVILEGES,GRANT/u2f_test.*:ALL\ PRIVILEGES,GRANT"
+    priv: "{{ database_gateway_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_u2f_name }}.*:ALL\ PRIVILEGES,GRANT"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
@@ -33,7 +26,7 @@
     name: "{{ database_middleware_user }}"
     host: "%"
     password: "{{ database_middleware_password | vault(vault_keydir) }}"
-    priv: "{{ database_middleware_name }}.*:SELECT,INSERT,DELETE,UPDATE/{{ database_gateway_name }}.*:SELECT,INSERT,DELETE,UPDATE/middleware_test.*:SELECT,INSERT,DELETE,UPDATE/gateway_test.*:SELECT,INSERT,DELETE,UPDATE"
+    priv: "{{ database_middleware_name }}.*:SELECT,INSERT,DELETE,UPDATE/{{ database_gateway_name }}.*:SELECT,INSERT,DELETE,UPDATE"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
@@ -43,7 +36,7 @@
     name: "{{ database_middleware_readonly_user }}"
     host: "%"
     password: "{{ database_middleware_readonly_password | vault(vault_keydir) }}"
-    priv: "{{ database_middleware_name }}.*:SELECT/middleware_test.*:SELECT"
+    priv: "{{ database_middleware_name }}.*:SELECT"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

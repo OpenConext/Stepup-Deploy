@@ -15,6 +15,8 @@ default:
                   mailCatcherUrl: 'http://selfservice.stepup.example.com:1080/messages'
               - RaContext:
                   raUrl: 'https://ra.stepup.example.com'
+              - ApiFeatureContext:
+                  apiUrl: 'https://middleware.stepup.example.com'
               - Behat\MinkExtension\Context\MinkContext
 
     extensions:

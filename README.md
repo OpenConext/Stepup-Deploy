@@ -38,6 +38,7 @@ Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) scrip
 The template contains an [`environment.conf`](environments/template/environment.conf) file that specifies the secrets to create. Update this file to match your configuration, likely places to update are marked with "TODO". You can copy the `environments/template` directory to a new location to make your changes. The environment can be used as-is to deploy to VMs created with the scripts in [Stepup-VM](https://github.com/SURFnet/Stepup-VM).
 
 Requirements for running the script:
+- *python* 2.7 (scripts are not compatible with python 3)
 - *openssl*
 - *python-keyczar*. You can use `pip install python-keyczar` to install this tool. This makes `keyczart` command available.
 
@@ -56,7 +57,7 @@ More information on the "environment" concept can be found in [ansible-tools](ht
 
 ### <a name="site"></a>[Step 2: Create / update infrastructure] (id:site)###
 
-The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x (and < 2.4) and uses the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
+The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x (and < 2.4) with python < 3.0 and the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
 
 Note: In Ansible version 2.4 the handling of the `inventory_dir` variable was changed in a way that breaks how Stepup-Deploy uses the `inventory_dir`. Either use Ansible 2.3 or set the `inventory_dir` manually be specifying it as an "extra var" on the command line using the ansible-playbook `-e` option. E.g:
 `ansible-playbook site.yml -i /home/user/workspace/environment/inventory -e "inventory_dir=/home/user/workspace/environment/"` With this change deploying using ansible 2.4 and 2.5 should work.

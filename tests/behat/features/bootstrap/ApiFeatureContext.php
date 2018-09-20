@@ -40,6 +40,10 @@ require_once __DIR__.'/../../vendor/phpunit/phpunit/src/Framework/Assert/Functio
  */
 class ApiFeatureContext implements Context
 {
+    private static $managementUsername = 'management';
+
+    private static $managementPassword = 'secret';
+
     /**
      * Payload of the request
      *
@@ -175,6 +179,18 @@ class ApiFeatureContext implements Context
             $this->lastResponse = $e->getResponse();
             throw new \Exception('Bad response.');
         }
+    }
+
+    /**
+     * @Given /^I authenticate to the Middleware API$/
+     */
+    public function iAuthenticateWithPreProgrammedAndSetMandatoryHeaders()
+    {
+        $this->authUser = self::$managementUsername;
+        $this->authPassword = self::$managementPassword;
+
+        $this->requestHeaders['Content-Type'] = 'application/json';
+        $this->requestHeaders['Accept'] = 'application/json';
     }
 
     /**

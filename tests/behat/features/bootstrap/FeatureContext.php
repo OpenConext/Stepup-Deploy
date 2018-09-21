@@ -6,7 +6,9 @@ use Behat\MinkExtension\Context\MinkContext;
 
 class FeatureContext implements Context
 {
-
+        const SESSION_RA = 'ra';
+        const SESSION_MW = 'mw';
+        const SESSION_DEFAULT = 'default';
     /**
      * @var \Behat\MinkExtension\Context\MinkContext
      */
@@ -38,5 +40,9 @@ class FeatureContext implements Context
         $this->minkContext = $environment->getContext(MinkContext::class);
         // Set the testcookie, effectively putting the Stepup suite in test mode
         $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
+
+        $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
+        $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
+        $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
     }
 }

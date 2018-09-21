@@ -52,7 +52,7 @@ class RaContext implements Context
     public function iVetMySecondFactorAtTheInformationDesk()
     {
         // The ra session is used to vet the token
-        $this->minkContext->getMink()->setDefaultSessionName('ra');
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
 
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl);
@@ -64,7 +64,7 @@ class RaContext implements Context
         $this->vettingProcessIsCompleted();
 
         // Switch back to the default session
-        $this->minkContext->getMink()->setDefaultSessionName('default');
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_DEFAULT);
     }
 
     /**
@@ -73,7 +73,7 @@ class RaContext implements Context
     public function iAmLoggedInIntoTheRaPortalAs($userName, $tokenType)
     {
         // The ra session is used to vet the token
-        $this->minkContext->getMink()->setDefaultSessionName('ra');
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
 
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl);

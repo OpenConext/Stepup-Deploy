@@ -18,14 +18,14 @@ class FeatureContext implements Context
     public static function setupDatabase($scope)
     {
         // Generate test databases
-        shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:drop --env=test --force");
+        shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:drop --env=smoketest --force");
         shell_exec("/src/Stepup-Gateway/app/console doctrine:schema:drop --env=test --force");
-        shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:create --env=test");
+        shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:create --env=smoketest");
         shell_exec("/src/Stepup-Gateway/app/console doctrine:schema:create --env=test");
         // Import the events.sql into middleware
         shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/events.sql");
         // Perform an event replay
-        shell_exec("/src/Stepup-Middleware/app/console middleware:event:replay --env=test_event_replay --no-interaction");
+        shell_exec("/src/Stepup-Middleware/app/console middleware:event:replay --env=smoketest_event_replay --no-interaction");
     }
 
     /**

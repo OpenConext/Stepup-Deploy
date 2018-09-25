@@ -28,6 +28,8 @@ class FeatureContext implements Context
         shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/events.sql");
         // Perform an event replay
         shell_exec("/src/Stepup-Middleware/app/console middleware:event:replay --env=smoketest_event_replay --no-interaction");
+        // Update the `saml_entities` projection in `gateway_test`
+        shell_exec("/vagrant/deploy/tests/behat/fixtures/bin/override_sp_public_keys");
     }
 
     /**

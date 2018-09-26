@@ -27,7 +27,7 @@ class FeatureContext implements Context
         // Import the events.sql into middleware
         shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/events.sql");
         // Perform an event replay
-        shell_exec("/src/Stepup-Middleware/app/console middleware:event:replay --env=smoketest_event_replay --no-interaction");
+        shell_exec("/src/Stepup-Middleware/app/console middleware:event:replay --env=smoketest_event_replay --no-interaction -q");
         // Update the `saml_entities` projection in `gateway_test`
         shell_exec("/vagrant/deploy/tests/behat/fixtures/bin/override_sp_public_keys");
     }
@@ -42,9 +42,6 @@ class FeatureContext implements Context
         $this->minkContext = $environment->getContext(MinkContext::class);
         // Set the testcookie, effectively putting the Stepup suite in test mode
         $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
-
-        $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
-        $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
         $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
     }
 }

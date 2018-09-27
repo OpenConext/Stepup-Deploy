@@ -103,32 +103,62 @@ class SecondFactorAuthContext implements Context
     }
 
     /**
-     * @When I verify the second factor
+     * @When I verify the :arg1 second factor
      */
-    public function verifySecondFactor()
+    public function verifySpecifiedSecondFactor($tokenType)
     {
-        //$this->selectYubikeySecondFactorOnTokenSelectionScreen();
-        $this->authenticateUserYubikeyInGateway();
-        //$this->passTroughGatewayProxyAssertionConsumerService();
+        switch ($tokenType){
+            case "sms":
+                // Pass through acs
+                $this->minkContext->pressButton('Submit');
+                $this->authenticateUserSmsInGateway();
+                break;
+            case "yubikey":
+                $this->authenticateUserYubikeyInGateway();
+                break;
+            case "dummy":
+                $this->authenticateUserInDummyGsspApplication();
+                break;
+            default:
+                throw new Exception(
+                    sprintf(
+                        'Second factor type of "%s" is not yet supported in the tests.',
+                        $tokenType
+                    )
+                );
+                break;
+        }
     }
+
     /**
      * @When I verify the Yubikey second factor
      */
     public function verifyYuikeySecondFactor()
     {
         $this->authenticateUserYubikeyInGateway();
-        // Pass through the 'return to sp' redirection page.
-        $this->minkContext->pressButton('Submit');
     }
 
     /**
-     * @When I cancel the second factor authentication
+     * @When I cancel the :arg1 second factor authentication
      */
-    public function cancelSecondFactorAuthentication()
+    public function cancelSecondFactorAuthentication($tokenType)
     {
-//        $this->selectDummySecondFactorOnTokenSelectionScreen();
-        $this->cancelAuthenticationInDummyGsspApplication();
-//        $this->passTroughGatewayProxyAssertionConsumerService();
+        switch ($tokenType){
+            case "yubikey":
+                $this->cancelYubikeyAuthentication();
+                break;
+            case "dummy":
+                $this->cancelAuthenticationInDummyGsspApplication();
+                break;
+            default:
+                throw new Exception(
+                    sprintf(
+                        'Second factor type of "%s" is not yet supported in the tests.',
+                        $tokenType
+                    )
+                );
+                break;
+        }
     }
 
     /**
@@ -176,12 +206,38 @@ class SecondFactorAuthContext implements Context
         $this->minkContext->pressButton('Submit');
     }
 
+    public function authenticateUserSmsInGateway()
+    {
+        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sms');
+
+        // Give an OTP
+        $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');
+        // Simulate the enter press the yubikey otp generator
+        $form = $this->minkContext->getSession()->getPage()->find('css', '[name="gateway_verify_yubikey_otp"]');
+        if (!$form) {
+            throw new ElementNotFoundException('Yubikey OTP Submit form could not be found on the page');
+        }
+        $this->minkContext->pressButton('gateway_verify_yubikey_otp_submit');
+        // Pass through the 'return to sp' redirection page.
+        $this->minkContext->pressButton('Submit');
+    }
+
     public function cancelAuthenticationInDummyGsspApplication()
     {
         $this->minkContext->assertPageAddress('http://localhost:1234/authentication');
 
         // Cancel the dummy authentication action.
         $this->minkContext->pressButton('Return authentication failed');
+
+        // Pass through the 'return to sp' redirection page.
+        $this->minkContext->pressButton('Submit');
+    }
+
+    public function cancelYubikeyAuthentication()
+    {
+        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/yubikey');
+        // Cancel the yubikey authentication action.
+        $this->minkContext->pressButton('Cancel');
 
         // Pass through the 'return to sp' redirection page.
         $this->minkContext->pressButton('Submit');
@@ -217,7 +273,7 @@ class SecondFactorAuthContext implements Context
     }
 
     /**
-     * @When I authenticate as "([^"]*)" with the identity provider
+     * @When I authenticate as :arg1 with the identity provider
      */
     public function authenticateWithIdentityProviderFor($userName)
     {

@@ -1,3 +1,6 @@
+# This task will set up test databases in the development environment.
+# The permissions for the test tables are lowered to easily set up  schemes
+
 # Add test databases for middleware to allow functional testing in development environment
 - name: Create middleware test database
   mysql_db: name={{ database_middleware_name }}_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}

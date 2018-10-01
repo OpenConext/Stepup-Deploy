@@ -7,9 +7,9 @@ Feature: A management user reads and writes institution configuration in the mid
     Given I authenticate to the Middleware API
     When I request "GET /management/institution-configuration"
     Then the api response status code should be 200
-    And institute "institution-a.example.com" has a property "use_ra" which equals null
-    And institute "institution-a.example.com" has a property "use_raa" which equals null
-    And institute "institution-a.example.com" has a property "select_raa" which equals null
+    And institute "institution-a.example.com" has a property "use_ra" which equals 'null'
+    And institute "institution-a.example.com" has a property "use_raa" which equals 'null'
+    And institute "institution-a.example.com" has a property "select_raa" which equals 'null'
 
   Scenario: Management user posts a new institution configuration for institution-a.example.com
     Given I have the payload
@@ -36,9 +36,9 @@ Feature: A management user reads and writes institution configuration in the mid
     Given I authenticate to the Middleware API
     When I request "GET /management/institution-configuration"
     Then the api response status code should be 200
-    And institute "institution-a.example.com" has a property "use_ra" which equals "institution-a.example.com, institution-b.example.com"
-    And institute "institution-a.example.com" has a property "use_raa" which equals "institution-a.example.com"
-    And institute "institution-a.example.com" has a property "select_raa" which equals ""
+    And institute "institution-a.example.com" has a property "use_ra" which equals '["institution-a.example.com","institution-b.example.com"]'
+    And institute "institution-a.example.com" has a property "use_raa" which equals 'null'
+    And institute "institution-a.example.com" has a property "select_raa" which equals '[]'
 
   Scenario: Management user posts an updated institution configuration for institution-a.example.com
     Given I have the payload
@@ -64,6 +64,6 @@ Feature: A management user reads and writes institution configuration in the mid
     Given I authenticate to the Middleware API
     When I request "GET /management/institution-configuration"
     Then the api response status code should be 200
-    And institute "institution-a.example.com" has a property "use_ra" which equals ""
-    And institute "institution-a.example.com" has a property "use_raa" which equals null
-    And institute "institution-a.example.com" has a property "select_raa" which equals "institution-a.example.com, institution-b.example.com"
+    And institute "institution-a.example.com" has a property "use_ra" which equals '[]'
+    And institute "institution-a.example.com" has a property "use_raa" which equals 'null'
+    And institute "institution-a.example.com" has a property "select_raa" which equals '["institution-a.example.com","institution-b.example.com"]'

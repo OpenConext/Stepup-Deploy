@@ -254,21 +254,14 @@ class ApiFeatureContext implements Context
      * Finally if you want to test if a certain property is null, use the instituteHasAPropertyWhichEqualsNull step
      * definition.
      *
-     * @Given /^institute "([^"]*)" has a property "([^"]*)" which equals "([^"]*)"$/
+     * @Given /^institute "([^"]*)" has a property "([^"]*)" which equals '([^']*)'$/
      */
     public function instituteHasAPropertyWhichEquals($institute, $property, $expectedValue)
     {
         $payload = $this->getScopePayload();
         $instituteConfig = $payload[$institute];
 
-        $actualValue = $instituteConfig[$property];
-
-        // Turn the expected value into an array
-        $expectedValue = explode(',', $expectedValue);
-        // Trimming the array entries
-        $expectedValue = array_map('trim', $expectedValue);
-        // Filter empty values
-        $expectedValue = array_filter($expectedValue);
+        $actualValue = json_encode($instituteConfig[$property]);
 
         assertEquals(
             $expectedValue,
@@ -279,21 +272,6 @@ class ApiFeatureContext implements Context
                 var_export($expectedValue, true),
                 json_encode($payload, JSON_PRETTY_PRINT)
             )
-        );
-    }
-
-    /**
-     * @Given /^institute "([^"]*)" has a property "([^"]*)" which equals null$/
-     */
-    public function instituteHasAPropertyWhichEqualsNull($institute, $property)
-    {
-        $payload = $this->getScopePayload();
-        $instituteConfig = $payload[$institute];
-        $actualValue = $instituteConfig[$property];
-
-        assertNull(
-            $actualValue,
-            "Asserting the [$property] property in current scope equals null: ".json_encode($payload)
         );
     }
 

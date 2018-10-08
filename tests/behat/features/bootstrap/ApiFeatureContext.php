@@ -200,6 +200,9 @@ class ApiFeatureContext implements Context
     {
         $this->authUser = $email;
         $this->authPassword = $password;
+
+        $this->requestHeaders['Content-Type'] = 'application/json';
+        $this->requestHeaders['Accept'] = 'application/json';
     }
 
     /**

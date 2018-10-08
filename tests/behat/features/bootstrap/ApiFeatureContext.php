@@ -444,7 +444,7 @@ class ApiFeatureContext implements Context
         $payload = $this->getScopePayload();
 
         assertCount(
-            $count,
+            (int) $count,
             $this->arrayGet($payload, $property),
             "Asserting the [$property] property contains [$count] items: ".json_encode($payload)
         );

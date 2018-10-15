@@ -12,7 +12,7 @@ Update Symfony to 3.4 LTS, bugfixes
 Install:
 * Deploy components:
   - Stepup-Middleware: 2.9.1
-  - Stepup-Gateway 2.10.0
+  - Stepup-Gateway 2.10.1
   - Stepup-SelfService 2.10.1
   - Stepup-RA 2.10.1
   - Stepup-tiqr 2.1.1

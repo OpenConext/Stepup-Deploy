@@ -4,3 +4,7 @@
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin\s" line="PermitRootLogin no"
   notify: restart sshd
   tags: skip_docker_test
+
+- name: Set MOTD
+  template: src={{ inventory_dir + '/templates/common/motd.j2' }} dest=/etc/motd
+  tags: motd

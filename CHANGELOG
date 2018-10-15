@@ -7,7 +7,7 @@ Update Symfony to 3.4 LTS, bugfixes
 
 * Stepup-tiqr:
   - Fix: tiqr server keeps sending push notifications when challenges expire (https://www.pivotaltracker.com/story/show/159101661)
-  - Fix: tiqr server blocks when token exchange is unreachable (TODO)
+  - Fix: tiqr server blocks during authentication when translation service is unavailable (https://www.pivotaltracker.com/story/show/160510558)
 
 Install:
 * Deploy components:
@@ -15,8 +15,7 @@ Install:
   - Stepup-Gateway 2.10.0
   - Stepup-SelfService 2.10.1
   - Stepup-RA 2.10.1
-  - Stepup-tiqr ?
-
+  - Stepup-tiqr 2.1.1
 
 Release 15
 Support for multiple ACS locations, various improvements to error pages, several UI improvements, multiple-token configuration per-institution, various bugfixes and Stepup is now brandless (no more "SURFisms").

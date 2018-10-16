@@ -3,6 +3,13 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
+use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Ramsey\Uuid\Uuid;
+use Surfnet\StepupBehat\Factory\CommandPayloadFactory;
+use Surfnet\StepupBehat\Repository\SecondFactorRepository;
+use Surfnet\StepupBehat\ValueObject\ActivationContext;
+use Surfnet\StepupBehat\ValueObject\Identity;
+use Surfnet\StepupBehat\ValueObject\SecondFactorToken;
 
 class FeatureContext implements Context
 {
@@ -15,9 +22,29 @@ class FeatureContext implements Context
     private $minkContext;
 
     /**
+     * @var ApiFeatureContext
+     */
+    private $apiContext;
+
+    /**
+     * @var SelfServiceContext
+     */
+    private $serlfServiceContext;
+
+    /**
+     * @var CommandPayloadFactory
+     */
+    private $payloadFactory;
+
+    /**
+     * @var SecondFactorRepository
+     */
+    private $repository;
+
+    /**
      * @BeforeSuite
      */
-    public static function setupDatabase($scope)
+    public static function setupDatabase(BeforeSuiteScope $scope)
     {
         // Generate test databases
         echo "Preparing test schemas\n";
@@ -45,8 +72,165 @@ class FeatureContext implements Context
         $environment = $scope->getEnvironment();
 
         $this->minkContext = $environment->getContext(MinkContext::class);
+        $this->apiContext = $environment->getContext(ApiFeatureContext::class);
+        $this->serlfServiceContext = $environment->getContext(SelfServiceContext::class);
+
         // Set the testcookie, effectively putting the Stepup suite in test mode
         $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
         $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
+
+        $this->payloadFactory = new CommandPayloadFactory();
+        $this->repository = new SecondFactorRepository();
+    }
+
+    /**
+     * @var Identity[]
+     */
+    private $identityStore = [];
+
+    /**
+     * @Given /^a user "([^"]*)" identified by "([^"]*)" from institution "([^"]*)"$/
+     */
+    public function aUserIdentifiedByWithAVettedTokenAndTheRole($commonName, $nameId, $institution)
+    {
+        $userId = (string)Uuid::uuid4();
+
+        $identity = Identity::from($userId, $nameId, $commonName, $institution, []);
+        $this->identityStore[$nameId] = $identity;
+
+        $this->setPayload($this->payloadFactory->build('Identity:CreateIdentity', $identity));
+        $this->connectToApi('ss', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
+
+    }
+
+    private function connectToApi($username, $password)
+    {
+        $this->apiContext->iAuthenticateWithEmailAndPassword($username, $password);
+    }
+
+    private function setPayload($payload)
+    {
+        $this->apiContext->setPayload($payload);
+    }
+
+    /**
+     * @Given /^the user "([^"]*)" has a vetted "([^"]*)"$/
+     */
+    public function theUserHasAVetted($nameId, $tokenType)
+    {
+        // First test if this identity was already provisioned
+        if (!isset($this->identityStore[$nameId])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'This identity "%s" is not yet known use the "aUserIdentifiedByWithAVettedTokenAndTheRole" step to create a new identity.',
+                    $nameId
+                )
+            );
+        }
+
+        $tokenId = (string)Uuid::uuid4();
+        $token = SecondFactorToken::from($tokenId, $tokenType, '03945859');
+        $identityData = $this->identityStore[$nameId];
+        $identityData->tokens = [$token];
+
+        // 1: Prove possession of the token
+        $this->proveYubikeyPossession($identityData);
+
+        // 2: Mail verification
+        $this->mailVerification($tokenId, $identityData);
+
+        // 3 Vet the yubikey
+        $this->vetYubikeyToken($identityData);
+    }
+
+    /**
+     * @Given /^the user "([^"]*)" has a verified "([^"]*)" with registration code "([^"]*)"$/
+     */
+    public function theUserHasAVerified($nameId, $tokenType, $registrationCode)
+    {
+        // First test if this identity was already provisioned
+        if (!isset($this->identityStore[$nameId])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'This identity "%s" is not yet known use the "aUserIdentifiedByWithAVettedTokenAndTheRole" step to create a new identity.',
+                    $nameId
+                )
+            );
+        }
+
+        $tokenId = (string)Uuid::uuid4();
+        $token = SecondFactorToken::from($tokenId, $tokenType, '03945859');
+        $identityData = $this->identityStore[$nameId];
+        $identityData->tokens = [$token];
+
+        // 1: Prove possession of the token
+        $this->proveYubikeyPossession($identityData);
+
+        // 2: Mail verification
+        $this->mailVerification($tokenId, $identityData);
+
+        // 3. Update the registration code (in the projection..)
+        $this->repository->updateRegistrationCode($identityData->identityId, $registrationCode);
+    }
+
+    /**
+     * @Given /^the user "([^"]*)" has the role "([^"]*)"$/
+     */
+    public function theUserHasTheRole($nameId, $role)
+    {
+        // First test if this identity was already provisioned
+        if (!isset($this->identityStore[$nameId])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'This identity "%s" is not yet known use the "aUserIdentifiedByWithAVettedTokenAndTheRole" step to create a new identity.',
+                    $nameId
+                )
+            );
+        }
+
+        $actorId = 'dc4cc738-5f1c-4d8c-84a2-d6faf8aded89';
+        $identityData = $this->identityStore[$nameId];
+        $payload = $this->payloadFactory->buildRolePayload($actorId, $identityData->identityId, $identityData->institution, $role);
+        $this->setPayload($payload);
+        $this->connectToApi('ra', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
+    }
+
+    private function proveYubikeyPossession($identityData)
+    {
+        // 1.1 prove possession of a yubikey token
+        $payload = $this->payloadFactory->build('Identity:ProveYubikeyPossession', $identityData);
+        $this->setPayload($payload);
+        $this->connectToApi('ss', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
+    }
+
+    private function mailVerification($tokenId, $identityData)
+    {
+        // 2.1: Mail verification -> get verification nonce
+        $nonce = $this->repository->findNonceById($tokenId);
+        $identityData->tokens[0]->nonce = $nonce;
+
+        // 2.2 Verify email was received
+        $payload = $this->payloadFactory->build("Identity:VerifyEmail", $identityData);
+        $this->setPayload($payload);
+        $this->connectToApi('ss', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
+    }
+
+    private function vetYubikeyToken($identityData)
+    {
+        // 3.1. Retrieve the registration code
+        $activationContext = new ActivationContext();
+        $activationContext->registrationCode = $this->repository->getRegistrationCodeByIdentity($identityData->identityId);
+        $activationContext->actorId = 'dc4cc738-5f1c-4d8c-84a2-d6faf8aded89';
+
+        // 3.2  Vet the second factor device
+        $identityData->activationContext = $activationContext;
+        $payload = $this->payloadFactory->build('Identity:VetSecondFactor', $identityData);
+        $this->setPayload($payload);
+        $this->connectToApi('ra', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
     }
 }

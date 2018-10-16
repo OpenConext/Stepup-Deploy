@@ -146,6 +146,14 @@ class ApiFeatureContext implements Context
     }
 
     /**
+     * @param string $requestPayload
+     */
+    public function setPayload($requestPayload)
+    {
+        $this->requestPayload = $requestPayload;
+    }
+
+    /**
      * @When /^I request "(GET|PUT|POST|DELETE|PATCH) ([^"]*)"$/
      */
     public function iRequest($httpMethod, $resource)

@@ -108,6 +108,18 @@ class RaContext implements Context
         $this->minkContext->pressButton('Search');
     }
 
+    /**
+     * @When /^I search for "([^"]*)" on the token activation page$/
+     */
+    public function iSearchForOnTheTokenActivationPage($registrationCode)
+    {
+        // We visit the RA location url which is the search page
+        $this->minkContext->visit($this->raUrl);
+        $this->minkContext->fillField('ra_start_vetting_procedure_registrationCode', $registrationCode);
+        $this->minkContext->pressButton('Search');
+
+    }
+
     private function userProvesPosessionOfDummyToken()
     {
         $vettingProcedureUrl = 'https://ra.stepup.example.com/vetting-procedure/%s/gssf/dummy/initiate-verification';

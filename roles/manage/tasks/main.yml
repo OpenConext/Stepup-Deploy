@@ -14,11 +14,12 @@
 
 # Install logstash and Java 8
 - name: Install logstash, java openjdk
-  yum: name={{ item }} state=present
-  with_items:
-  - java-1.8.0-openjdk
-  - logstash
-  - elastic-curator
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - logstash
+      - elastic-curator
+    state: present
   tags: logstash
 
 - name: Put logstash sysconfig

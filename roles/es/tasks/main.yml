@@ -13,11 +13,11 @@
 
 # Install ES and Java 8
 - name: Install elasticsearch, java openjdk
-  yum: name={{ item }} state=present
-  with_items:
-  - java-1.8.0-openjdk
-  - elasticsearch
-
+  yum:
+    name:
+      - java-1.8.0-openjdk
+      - elasticsearch
+    state: present
 
 # Increase open file limits for ES
 - name: Put etc/security/elasticseach_limits.conf

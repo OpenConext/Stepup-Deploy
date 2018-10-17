@@ -10,16 +10,16 @@
 
 
 - name: Install MariaDB, Galera, rsync, MySQL-python
-  yum: name={{item}} state=installed
-  with_items:
-  - MariaDB-Galera-server
-  - MariaDB-client
-  - galera
-  - rsync         # For galera sync
-  - MySQL-python  # Required for using the Ansible mysql_* modules
-  - memcached
-  - php-pecl-memcached
-
+  yum:
+    name:
+      - MariaDB-Galera-server
+      - MariaDB-client
+      - galera
+      - rsync         # For galera sync
+      - MySQL-python  # Required for using the Ansible mysql_* modules
+      - memcached
+      - php-pecl-memcached
+    state: installed
 
 - name: Start and enable memcached
   service: name=memcached state=started enabled=true

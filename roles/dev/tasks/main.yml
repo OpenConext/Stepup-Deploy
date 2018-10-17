@@ -4,28 +4,29 @@
 # Not safe for production use
 
 - name: Install development specific RPM's
-  yum: name={{ item }}
-  with_items:
-    # For SSP install
-    - git
+  yum:
+    name:
+      # For SSP install
+      - git
 
-    # For Mailcatcher
-    - ruby
-    - ruby-devel
-    - gcc
-    - gcc-c++
-    - sqlite
-    - sqlite-devel
-    - make
+      # For Mailcatcher
+      - ruby
+      - ruby-devel
+      - gcc
+      - gcc-c++
+      - sqlite
+      - sqlite-devel
+      - make
 
-    # For jsonlint -- use "jsonlint <filename>" to do a syntax check on a JSON file
-    - python-demjson
+      # For jsonlint -- use "jsonlint <filename>" to do a syntax check on a JSON file
+      - python-demjson
 
-    # xdebug, the PHP debug extension
-    - php-pecl-xdebug
+      # xdebug, the PHP debug extension
+      - php-pecl-xdebug
 
-    # telnet client
-    - telnet
+      # telnet client
+      - telnet
+    state: present
 
 
 ## Composer ##

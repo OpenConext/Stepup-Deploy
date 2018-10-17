@@ -39,13 +39,14 @@
   ignore_errors: yes
 
 - name: Install ntp, iptables, ip6tables, rsyslog
-  yum: name={{item}} state=present
-  with_items:
-  - open-vm-tools
-  - ntp
-  - iptables-services
-  - rsyslog # Is the default syslog for RH / CentOS
-  - rsyslog-relp # For using RELP with rsyslog
+  yum:
+    name:
+      - open-vm-tools
+      - ntp
+      - iptables-services
+      - rsyslog # Is the default syslog for RH / CentOS
+      - rsyslog-relp # For using RELP with rsyslog
+    state: present
 
 - debug:
     msg: groups_names = {{ group_names | join(', ') }}

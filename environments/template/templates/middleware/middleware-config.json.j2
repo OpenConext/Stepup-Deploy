@@ -236,6 +236,23 @@
       {# END: development SP definitions. #}
       {% endif %}
 
+      {# Add your own SPs here #}
+      {
+        "entity_id": "https://dummy-sp",
+        "public_key": "MIICojCCAYoCCQD8o3774sHUMDANBgkqhkiG9w0BAQsFADATMREwDwYDVQQDDAhkdW1teS1zcDAeFw0xODEwMTcxMjA2NDhaFw0yMzEwMTYxMjA2NDhaMBMxETAPBgNVBAMMCGR1bW15LXNwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3yzbWio94u8uqmc0yeyh1fOwl0L3PYfjhq3W1R++Cs6Cm3JzW5j7uuGZi71l0TNH1f2kPa9pcgQc0kBRmzn1Em5n1swMM589PEL2x49z4l6NeuRB3RPx69GOFBD0N5jcnoIQsGI0hQxX5gw8XOtRQrREAUQNTFmmWnzMoXkZMbJrpIuZSnHX3DWBdadooEDIkak29y+E+dKM9Za7rj/GT+uXJZJCY29CrIAUeltSdv00R8bB3BS3VQAexGxcAT+sfZyo7I9O6d/YVdDDePdTqGJ0GDOCoTBfhA+QDkHCh9yaF9NwAgIZVpVdLSx2KzVFAg9Ll2OHBTTWYd/bLfJZ3wIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCvejcTBa15nmU6OQHUF7cozXbeUEUFE+ysCulAJA9L9JmukEd9FYLBmZDpYJ3YilQVAcsnuPHfFA47q/B0CxS28jWu87WcqdSUh87nqKjYISZJ1x+qa6JpLX2E6+bXWJuawOcL+t/9iOwr/jt1IQM+pVdxSkqbPalMu0j4C4eI7zwd+/cLrqkM+hXnPvRzD9A5hiPxM9KO+b9GitSAThe82PsnBMGg8xpWnUs+vDr3Vn047u1GbEWGDo/eMT/BO6/1sG44niL9/yzivIuwCBURAEyDjxtkErZ5q0zN35C6K9NALryD856rbhzuzOyftRERpsZ/pX9u6UbWNi9CfDEz",
+        "acs": [
+          "http://dummy-sp/acs"
+        ],
+        "loa": {
+          "__default__": "{{ stepup_uri_loa1 }}"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      }
+      {# Note: no comma after last defenition #}
+
     {# END SP DEFINITIONS #}
     ],
 

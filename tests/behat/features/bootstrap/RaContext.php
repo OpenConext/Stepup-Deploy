@@ -213,6 +213,41 @@ class RaContext implements Context
     }
 
     /**
+     * @Given /^I visit the Tokens page$/
+     */
+    public function iVisitTheTokensPage()
+    {
+        $this->minkContext->clickLink('Tokens');
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/second-factors');
+    }
+
+    /**
+     * @When I filter the :arg1 filter on :arg2
+     */
+    public function iFilterTheForm($filter, $filterValue)
+    {
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/second-factors');
+        $this->minkContext->selectOption($filter, $filterValue);
+        $this->minkContext->pressButton('Search');
+    }
+
+    /**
+     * @Then I should see :arg1 in the search results
+     */
+    public function searchResultsShouldInclude($expectation)
+    {
+        $this->minkContext->assertElementContainsText('.search-second-factors table', $expectation);
+    }
+
+    /**
+     * @Then I should not see :arg1 in the search results
+     */
+    public function searchResultsShouldNotInclude($expectation)
+    {
+        $this->minkContext->assertElementNotContainsText('.search-second-factors table', $expectation);
+    }
+
+    /**
      * @Then /^I change the role of "([^"]*)" to become RA$/
      */
     public function iChangeTheRoleOfToBecomeRA($userName)

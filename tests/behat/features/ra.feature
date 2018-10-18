@@ -30,6 +30,19 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
      When I search for "9876WXYZ" on the token activation page
      Then I should see "Unknown activation code"
 
+  Scenario: RA user can view token overview and sees tokens from other institutions
+    Given I am logged in into the ra portal as "jane-a-ra" with a "yubikey" token
+     When I visit the Tokens page
+     Then I should see "institution-a.example.com" in the search results
+      And I should see "institution-d.example.com" in the search results
+
+  Scenario: RA user can filter the token overview
+    Given I am logged in into the ra portal as "jane-a-ra" with a "yubikey" token
+     When I visit the Tokens page
+      And I filter the "Institution" filter on "institution-d.example.com"
+      And I should see "institution-d.example.com" in the search results
+     Then I should not see "institution-a.example.com" in the search results
+
   Scenario: RA user can vet a token from another institution it is RA for
     Given I am logged in into the ra portal as "jane-a-ra" with a "yubikey" token
      When I search for "1234ABCD" on the token activation page

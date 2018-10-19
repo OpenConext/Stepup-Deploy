@@ -198,9 +198,6 @@ slowlog = /var/log/php-fpm/www-slow.log
 ;env[TMPDIR] = /tmp
 ;env[TEMP] = /tmp
 
-; See the nginx-vhost.conf.j2 for the origin of this variable
-env[APP_DEV] = $APP_DEV
-
 ; Additional php.ini defines, specific to this pool of workers. These settings
 ; overwrite the values previously defined in the php.ini. The directives are the
 ; same as the PHP SAPI:

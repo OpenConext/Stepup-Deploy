@@ -152,4 +152,8 @@
       copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
       when: component_name != "tiqr" and component_name != "keyserver"
 
+    - name: DEVELOP - put app_test.php
+      copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
+      when: component_name != "tiqr" and component_name != "keyserver"
+
   when: develop | default(false)

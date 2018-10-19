@@ -52,16 +52,21 @@ TEMPLATE_DIR="${BASEDIR}/../environments/template"
 
 # Process options
 ENVIRONMENT_DIR=$1
+ALWAYS_CONTINUE=0
 shift
 if [ -z "${ENVIRONMENT_DIR}"  ]; then
-    echo "Usage: $0 <environment directory> [--template <template directory>]"
+    echo "Usage: $0 <environment directory> [--template <template directory>] [--continue]"
     echo "
 Creates or updates an Ansible 'environment' from a template, generating certificates and passwords as specified in the
-'environment.conf' file in the template. The <environment directory> is created if it does not exists. Existing files in
-the <environment directory> will never be changed by this script.
+'environment.conf' file in the environment. The <environment directory> is created if it does not exists.
+You can run this script again e.g. after modifying the environment.conf. Existing files in the <environment directory>
+will never be changed by this script.
 
-The <template directory> defaults to: '../environments/template' relative to the script. Use the '--template' option
-to specify an alternate location.
+Options:
+--template: The <template directory> defaults to: '../environments/template' relative to the script. Use the
+            '--template' option to specify an alternate location.
+--continue: The scripts offers the chance to edit the 'environment.conf' file in the new environment before continuing
+            Use the '--continue' option to skip the question, and always continue
 "
     exit 1;
 fi
@@ -80,6 +85,9 @@ case $option in
     fi
     shift
     ;;
+    -c|--continue)
+    ALWAYS_CONTINUE=1
+    ;;
     *)
     error_exit "Unknown option: '${option}'"
     ;;
@@ -89,31 +97,45 @@ done
 
 TEMPLATE_DIR=`realpath ${TEMPLATE_DIR}`
 if [ $? -ne "0" ]; then
-    error_exit "Could not find template dir"
+    error_exit "Could not find template dir: ${TEMPLATE_DIR}"
 fi
 echo "Using template from: ${TEMPLATE_DIR}"
 
 
+if [ ! -e ${ENVIRONMENT_DIR} ]; then
+    echo "Creating new environment directory: ${ENVIRONMENT_DIR}"
+    mkdir -p ${ENVIRONMENT_DIR}
+fi
+
 # Read environment.conf from template directory
-ENVIRONMENT_CONF="${TEMPLATE_DIR}/environment.conf"
+ENVIRONMENT_CONF="${ENVIRONMENT_DIR}/environment.conf"
 if [ ! -f "${ENVIRONMENT_CONF}" ]; then
-    error_exit "Could not find 'environment.conf' in ${TEMPLATE_DIR}"
+    # environment.conf does not yet exist, offer to edit it before continuing
+    cp ${TEMPLATE_DIR}/environment.conf ${ENVIRONMENT_CONF}
+    if [ $? -ne "0" ]; then
+        error_exit "Could not copy 'environment.conf' from ${TEMPLATE_DIR}/environment.conf to ${ENVIRONMENT_CONF}"
+    fi
+    if [ $ALWAYS_CONTINUE -ne "1" ]; then
+        echo "A new environment.conf was created in ${ENVIRONMENT_CONF}."
+        echo "Unless you are using the Stepup-VM, you probably need to modify this file before you continue creating the"
+        echo "new environment. After modifying environment.conf, rerun this script."
+        read -p "Do you want to (E)xit (recommended) or (C)ontinue? " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Cc]$ ]]; then
+            exit 0
+        fi
+     fi
 fi
 echo "Reading configuration from: ${ENVIRONMENT_CONF}"
 . "${ENVIRONMENT_CONF}"
 echo "Done reading configuration"
 
 
-if [ ! -e ${ENVIRONMENT_DIR} ]; then
-    echo "Creating new environment directory"
-    mkdir -p ${ENVIRONMENT_DIR}
-fi
-
 ENVIRONMENT_DIR=`realpath ${ENVIRONMENT_DIR}`
 if [ $? -ne "0" ]; then
     error_exit "Could not change to environment dir"
 fi
-echo "Creating new environment in directory: ${ENVIRONMENT_DIR}"
+echo "Creating/updating the environment in directory: ${ENVIRONMENT_DIR}"
 
 # Copy inventory file into the new environment
 INVENTORY_FILE=${ENVIRONMENT_DIR}/inventory

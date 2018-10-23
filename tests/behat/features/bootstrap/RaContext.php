@@ -240,6 +240,36 @@ class RaContext implements Context
     }
 
     /**
+     * @When I open the audit log for a user of :arg1
+     */
+    public function openFirstAuditLogForInstitution($institution)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $institution));
+        if (is_null($searchResult) || !$searchResult->has('css', 'a.audit-log')) {
+            throw new Exception(
+                sprintf('No tokens found for institution "%s"', $institution)
+            );
+        }
+        $searchResult->pressButton('Audit log');
+    }
+
+    /**
+     * @Then I should see :arg1 in the audit log identity overview
+     */
+    public function iShouldSeeInAuditLogIdentityOverview($institution)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $searchResult = $page->find('xpath', sprintf("//div.control-text[contains(.,'%s')]/..", $institution));
+
+        if (is_null($searchResult)) {
+            throw new Exception(
+                sprintf('The institution "%s" was not found in the audit log identity overview.', $institution)
+            );
+        }
+    }
+
+    /**
      * @Then I should not see :arg1 in the search results
      */
     public function searchResultsShouldNotInclude($expectation)

@@ -30,6 +30,12 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
      When I search for "9876WXYZ" on the token activation page
      Then I should see "Unknown activation code"
 
+  Scenario: RA user can view the audit log of another institution identity
+    Given I am logged in into the ra portal as "jane-a-ra" with a "yubikey" token
+    When I visit the Tokens page
+    And I open the audit log for a user of "institution-d.example.com"
+    Then I should see "institution-d.example.com" in the audit log identity overview
+
   Scenario: RA user can view token overview and sees tokens from other institutions
     Given I am logged in into the ra portal as "jane-a-ra" with a "yubikey" token
      When I visit the Tokens page

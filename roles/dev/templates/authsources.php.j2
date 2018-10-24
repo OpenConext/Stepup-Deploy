@@ -224,6 +224,7 @@ $slugs=array(
 // For all accounts the username is equal to the password. E.g. "joe-a1" / "joe-a1"
 foreach ($accounts as $user => $email) {
     //                   username   , email,  schachomeorganization
+    account_gen($config, "${user}-",  $email, 'stepup.example.com', $slugs);
     account_gen($config, "${user}-a", $email, 'institution-a.example.com', $slugs);
     account_gen($config, "${user}-b", $email, 'institution-b.example.com', $slugs);
     account_gen($config, "${user}-c", $email, 'institution-c.example.com', $slugs);

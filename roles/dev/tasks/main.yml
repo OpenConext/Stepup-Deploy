@@ -61,7 +61,7 @@
 # Accessible at http://<server>:1080/
 
 - name: Install mailcatcher
-  command: gem install mailcatcher creates=/usr/local/bin/mailcatcher
+  command: gem install mailcatcher --no-rdoc --no-ri creates=/usr/local/bin/mailcatcher
 
 # Create user and group for running the mailcatcher daemon
 - name: Add group mailcatcher

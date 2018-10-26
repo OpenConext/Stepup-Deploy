@@ -1,0 +1,48 @@
+#!/usr/bin/env php
+
+<?php
+/**
+ * Update public key values for smoke tests
+ *
+ * This script is designed to read the sp_key_overrides.json file in the fixtures folder
+ * and update the saml_entity projection in the gateway. This is bad practice and a
+ * solution would be desirable.
+ */
+
+// Settings
+$dbUser = 'root';
+$dbPassword = 'password';
+$dbName = 'gateway_test';
+$dsn = 'mysql:host=127.0.0.1;dbname=%s';
+
+// Queries
+$selectFormat = 'SELECT `configuration` FROM `saml_entity` WHERE `entity_id` = :entity_id';
+$updateFormat = 'UPDATE `saml_entity` SET `configuration` = :configuration WHERE `entity_id` = :entity_id';
+
+// Open a PDO connection
+$connection = new PDO(sprintf($dsn, $dbName), $dbUser, $dbPassword);
+
+// Read the overrides
+$overrides = json_decode(file_get_contents('/vagrant/deploy/tests/behat/fixtures/sp_key_overrides.json'));
+
+// Create the update SQL
+foreach ($overrides as $overrideConfig) {
+    if ($overrideConfig->public_key) {
+        // 1. Retrieve current config
+        $statement = $connection->prepare($selectFormat);
+        $statement->execute(['entity_id' => $overrideConfig->entity_id]);
+        $configuration = $statement->fetch();
+        // 2. Convert the configuration JSON to array
+        $configuration = json_decode($configuration['configuration'], true);
+        // 3. Now update the public key
+        $configuration['public_key'] = $overrideConfig->public_key;
+        // 4. Back to JSON
+        $configuration = json_encode($configuration);
+        // 5. Update projection
+        $statement = $connection->prepare($updateFormat);
+
+        if ($statement->execute(['entity_id' => $overrideConfig->entity_id, 'configuration' => $configuration])) {
+            echo sprintf('Sucessfully updated public key of "%s"' . PHP_EOL, $overrideConfig->entity_id);
+        }
+    }
+}

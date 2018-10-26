@@ -1,0 +1,34 @@
+default:
+    autoload:
+        - '%paths.base%/../features/bootstrap/'
+
+    suites:
+        default:
+            paths:
+              - '%paths.base%/../features'
+            contexts:
+              - FeatureContext: ~
+              - SecondFactorAuthContext:
+                  spTestUrl: 'https://ssp.stepup.example.com/sp.php'
+              - SelfServiceContext:
+                  selfServiceUrl: 'https://selfservice.stepup.example.com'
+                  mailCatcherUrl: 'http://selfservice.stepup.example.com:1080/messages'
+              - RaContext:
+                  raUrl: 'https://ra.stepup.example.com'
+              - ApiFeatureContext:
+                  apiUrl: 'https://middleware.stepup.example.com'
+              - Behat\MinkExtension\Context\MinkContext
+
+    extensions:
+        Behat\MinkExtension:
+            base_url: ~
+            goutte: ~
+            sessions:
+                default:
+                    goutte:
+                        guzzle_parameters:
+                            verify: False
+                ra:
+                    goutte:
+                        guzzle_parameters:
+                            verify: False

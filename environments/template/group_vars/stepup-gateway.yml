@@ -3,6 +3,9 @@
 # Used for Symfony CSRF protection (Vaulted)
 gateway_secret: "{{ lookup('file', inventory_dir+'/secret/gateway') }}"
 
+# Name of the Stepup Gateway displayed in the HTML title and on the Error pages of the Stepup-gateway
+# TODO: Update name
+gateway_app_name: "Stepup Gateway"
 
 # URLs to the support documentation in the footer of the gateway interface
 # Format: yaml dictionary of locale: url

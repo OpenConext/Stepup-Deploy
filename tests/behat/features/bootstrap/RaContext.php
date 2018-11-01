@@ -251,7 +251,7 @@ class RaContext implements Context
                 sprintf('No tokens found for institution "%s"', $institution)
             );
         }
-        $searchResult->pressButton('Audit log');
+        $searchResult->clickLink('Audit log');
     }
 
     /**
@@ -260,7 +260,7 @@ class RaContext implements Context
     public function iShouldSeeInAuditLogIdentityOverview($institution)
     {
         $page = $this->minkContext->getSession()->getPage();
-        $searchResult = $page->find('xpath', sprintf("//div.control-text[contains(.,'%s')]/..", $institution));
+        $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]", $institution));
 
         if (is_null($searchResult)) {
             throw new Exception(
@@ -278,9 +278,9 @@ class RaContext implements Context
     }
 
     /**
-     * @Then /^I change the role of "([^"]*)" to become RA$/
+     * @Then /^I change the role of "([^"]*)" to become RA for institution "([^"]*)"$/
      */
-    public function iChangeTheRoleOfToBecomeRA($userName)
+    public function iChangeTheRoleOfToBecomeRA($userName, $institution)
     {
         $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
         $this->minkContext->fillField('ra_search_ra_candidates_name', $userName);
@@ -305,6 +305,7 @@ class RaContext implements Context
         $this->minkContext->fillField('ra_management_create_ra_location', 'Basement of institution-a');
         $this->minkContext->fillField('ra_management_create_ra_contactInformation', 'Desk B12, Institution A');
         $this->minkContext->selectOption('ra_management_create_ra_role', 'RA');
+        $this->minkContext->selectOption('ra_management_create_ra_raInstitution', $institution);
 
         // Promote the user by clicking the button
         $this->minkContext->pressButton('ra_management_create_ra_create_ra');
@@ -335,10 +336,11 @@ class RaContext implements Context
     public function iRelieveOfHisRole($userName)
     {
         $page = $this->minkContext->getSession()->getPage();
+
         // There should be a td with the username in it, select that TR to press that button on.
         $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
 
-        if (is_null($searchResult) || !$searchResult->has('css', 'a.btn-info[role="button"]')) {
+        if (is_null($searchResult) || !$searchResult->has('css', 'a.btn-warning[role="button"]')) {
             throw new Exception(
                 sprintf('The user with username "%s" could not be found in the search results', $userName)
             );

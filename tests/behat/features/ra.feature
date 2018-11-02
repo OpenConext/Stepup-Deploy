@@ -5,9 +5,9 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
 
   Scenario: RA user can't vet a token from another institution it is not RA for
     Given a user "Jane Toppan" identified by "urn:collab:person:institution-a.example.com:jane-a-ra" from institution "institution-a.example.com"
-      And institution "institution-a.example.com" is "use_ra" for institution "institution-a.example.com"
-      And institution "institution-a.example.com" is "use_ra" for institution "institution-d.example.com"
-      And institution "institution-a.example.com" is "select_raa" for institution "institution-a.example.com"
+      And institution "institution-a.example.com" is "use_ra" from institution "institution-a.example.com"
+      And institution "institution-a.example.com" is "use_ra" from institution "institution-d.example.com"
+      And institution "institution-a.example.com" is "select_raa" from institution "institution-a.example.com"
       And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey"
       And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "ra" for institution "institution-a.example.com"
       And a user "Joe Satriani" identified by "urn:collab:person:institution-d.example.com:joe-d1" from institution "institution-d.example.com"
@@ -44,12 +44,12 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
 
   Scenario: SRAA user promotes "jane-a1" to be an RA
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-     When I switch to institution "institution-a.example.com"
+     When I switch to institution "institution-a.example.com" with SRAA switcher
       And I visit the RA Management RA promotion page
-     Then I change the role of "jane-a1 institution-a.example.com" to become RA for institution "institution-a.example.com"
+     Then I change the role of "jane-a1 institution-a.example.com" to become "RA" for institution "institution-a.example.com"
 
   Scenario: SRAA user demotes "jane-a1" to no longer be an RA
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-     When I switch to institution "institution-a.example.com"
+     When I switch to institution "institution-a.example.com" with SRAA switcher
       And I visit the RA Management page
      Then I relieve "jane-a1 institution-a.example.com" of his RA role

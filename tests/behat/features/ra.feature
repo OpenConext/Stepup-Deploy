@@ -5,9 +5,9 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
 
   Scenario: RA user can't vet a token from another institution it is not RA for
     Given a user "Jane Toppan" identified by "urn:collab:person:institution-a.example.com:jane-a-ra" from institution "institution-a.example.com"
-      And institution "institution-a.example.com" is "use_ra" from institution "institution-a.example.com"
-      And institution "institution-a.example.com" is "use_ra" from institution "institution-d.example.com"
-      And institution "institution-a.example.com" is "select_raa" from institution "institution-a.example.com"
+      And institution "institution-a.example.com" can "use_ra" from institution "institution-a.example.com"
+      And institution "institution-a.example.com" can "use_ra" from institution "institution-d.example.com"
+      And institution "institution-a.example.com" can "select_raa" from institution "institution-a.example.com"
       And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey"
       And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "ra" for institution "institution-a.example.com"
       And a user "Joe Satriani" identified by "urn:collab:person:institution-d.example.com:joe-d1" from institution "institution-d.example.com"

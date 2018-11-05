@@ -112,7 +112,7 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given /^institution "([^"]*)" is "([^"]*)" from institution "([^"]*)"$/
+     * @Given /^institution "([^"]*)" can "([^"]*)" from institution "([^"]*)"$/
      */
     public function theInstitutionIsAuthorizedForAnotherInstitution($institution, $role, $raInstitution)
     {

@@ -93,10 +93,17 @@ server {
         fastcgi_param HTTPS on;
         fastcgi_param SYMFONY_ENV prod;
     }
+
     {# Finally, disallow opening php files outside of app.php #}
-    location ~* \.php$ {
+    {# For authentication with old tiqr accounts /tiqr.php and /tiqr/tiqr.php must be routed to app.php so exempt those. #}
+        {% if 'stepup-tiqr' in group_names %}
+    location ~* ^(?!/(tiqr/)?tiqr\.php$).*\.php$ {
+        {% else %}
+    location ~* .php$ {
+        {% endif %}
         return 404;
     }
+
     {% endif %}
 {% endif %}
 }

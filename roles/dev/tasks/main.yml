@@ -31,7 +31,7 @@
 
 ## Composer ##
 
-# Install systemwide composer
+# Install systemwide composer in /usr/local/bin
 - name: Download /usr/local/bin/composer from https://getcomposer.org/composer.phar
   get_url: url=https://getcomposer.org/composer.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
 
@@ -129,7 +129,7 @@
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
 - name: Add saml2debug module
-  shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && composer require simplesamlphp/simplesamlphp-module-saml2debug
+  shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 

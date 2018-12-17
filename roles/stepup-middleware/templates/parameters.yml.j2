@@ -50,7 +50,7 @@ parameters:
     self_service_url:  https://{{ selfservice_vhost_name }}
 
     enabled_generic_second_factors:
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
       {{ key }}:
         loa: {{ value.loa }}
 {% endfor %}

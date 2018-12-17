@@ -80,7 +80,7 @@
     {# START: GSSP SPs for SS and RA
        These entries are required for authentication and ragistration of GSSP tokens fromt the SP and
        RA interfaces. #}
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
       {
         "entity_id": "https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata",
         "public_key": "{{ selfservice_gssp_sp_publickey | depem }}",

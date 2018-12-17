@@ -2,12 +2,12 @@ parameters:
     # A list of service provider EntityIDs that are allowed to send AuthnRequests to the GSSPs through
     # the gateway
     gssp_allowed_sps:
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
     - 'https://{{ selfservice_vhost_name }}/registration/gssf/{{ key }}/metadata'
     - 'https://{{ ra_vhost_name }}/vetting-procedure/gssf/{{ key }}/metadata'
 {% endfor %}
 
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
     # Authentication flow:
     # Real GSSP IdP <--> GSSP Proxy SP <--> GSSP Proxy IdP <--> RA | SS
     # AuthnRequests from the RA and SS are proxied through the GSSP proxy on the Gateway

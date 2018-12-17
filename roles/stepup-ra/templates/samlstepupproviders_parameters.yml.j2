@@ -3,7 +3,7 @@ parameters:
     # Real GSSP IdP <--> Gateway GSSP proxy SP <--> Gateway GSSP proxy IdP <--> RA
     # AuthnRequests from the RA and SS are proxied through the GSSP proxy on the Gateway
 
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
     # GSSP Proxy SP used to authenticate to the Real GSSP IdP though GSSP IdP proxy in the gateway
     gssp_{{ key }}_sp_publickey: '{{ component_dir_name }}/app/config/sp_gssp.crt'
     gssp_{{ key }}_sp_privatekey: '{{ component_dir_name }}/app/config/sp_gssp.key'

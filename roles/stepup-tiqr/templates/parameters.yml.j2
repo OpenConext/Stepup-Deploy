@@ -20,7 +20,7 @@ parameters:
 
     # View parameters
     support_url:
-{% for locale, url in tiqr_support_url.iteritems() %}
+{% for locale, url in tiqr_support_url.items() %}
         {{ locale }}: "{{ url | replace('%', '%%') }}"
 {% endfor %}
 

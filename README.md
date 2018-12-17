@@ -37,10 +37,17 @@ Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) scrip
 
 The template contains an [`environment.conf`](environments/template/environment.conf) file that specifies the secrets to create. The first time you run the create_new_environment.sh script it is copied to the new environment and you get the change to edit/update this file. Take this chance to update this file to match your configuration, likely places to update are marked with "TODO:". You can also copy the `environments/template` directory to a new location to make your changes there (use the --template option). The environment can be used as-is to deploy to VMs created with the scripts in [Stepup-VM](https://github.com/SURFnet/Stepup-VM).
 
-Requirements for running the script:
-- *python* 2.7 (the scripts and playbooks are not compatible with python 3), ensure `python` points to a python 2.7.
+Requirements for running the script with python 2.7:
+- *python* 2.7
 - *openssl*
 - *python-keyczar*. You can use `pip install python-keyczar` to install this tool. This makes `keyczart` command available.
+
+Requirements for running the script with python3:
+- *python* 3
+- *openssl*
+- *python3-keyczar*. You can use `pip install python3-keyczar` to install this tool. This makes `keyczart` command available.
+
+On the mac `pip install python3-keyczar` works. However it might not work on centos. See https://github.com/google/keyczar/issues/125.
 
 Use `create_new_environment.sh <new_environment_directory> --template <template_environment_directory>` to create a new environment. The script will generate passwords, secrets, SAML signing certificates and SSL/TLS server certificates for use with HTTPS for the environment. All passwords, (private) keys and secrets are encrypted with a keyczar key that is specific for the environment. To issue the server certificates a self-signed CA is created using openssl.
 

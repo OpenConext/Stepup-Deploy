@@ -22,7 +22,7 @@ from optparse import OptionParser
 try:
   from keyczar import keyczar
 except ImportError:
-  raise ImportError('The required "keyczar" module was not found. You can install it using e.g. pip: "pip install python-keyczar"')
+  raise ImportError('The required "keyczar" module was not found. You can install it using e.g. pip: "pip install python-keyczar" or "pip install python3-keyczar"')
 
 parser = OptionParser(usage="usage: %prog [options] <keyczar keystore directory>")
 parser.add_option("-d", "--decrypt", action="store_true", help="decrypt the input", dest="decrypt")

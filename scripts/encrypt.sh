@@ -20,6 +20,7 @@ if sys.version_info[0] > 2:
 
 import os.path
 import getpass
+from six.moves import input
 from optparse import OptionParser
 try:
     from keyczar import keyczar
@@ -42,7 +43,7 @@ keydir = os.path.expanduser(args[0])
 crypter = keyczar.Crypter.Read(keydir)
 
 if options.decrypt:
-  encrypted_input = raw_input("Type the encrypted string: ")
+  encrypted_input = input("Type the encrypted string: ")
   print('The decrypted secret: %s' % crypter.Decrypt(encrypted_input))
 else:
   password = getpass.getpass('Type the secret you want to encrypt: ')

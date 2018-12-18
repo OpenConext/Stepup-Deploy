@@ -15,9 +15,6 @@
 # limitations under the License.
 
 import sys
-if sys.version_info[0] > 2:
-    raise Exception("This script requires python 2.")
-
 import os.path
 import getpass
 from optparse import OptionParser

@@ -3,7 +3,7 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
-use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Ramsey\Uuid\Uuid;
 use Surfnet\StepupBehat\Factory\CommandPayloadFactory;
 use Surfnet\StepupBehat\Repository\SecondFactorRepository;
@@ -48,9 +48,9 @@ class FeatureContext implements Context
     private $institutionConfiguration;
 
     /**
-     * @BeforeSuite
+     * @BeforeFeature
      */
-    public static function setupDatabase(BeforeSuiteScope $scope)
+    public static function setupDatabase(BeforeFeatureScope $scope)
     {
         // Generate test databases
         echo "Preparing test schemas\n";

@@ -3,13 +3,14 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
-use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
+use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Ramsey\Uuid\Uuid;
 use Surfnet\StepupBehat\Factory\CommandPayloadFactory;
 use Surfnet\StepupBehat\Repository\SecondFactorRepository;
 use Surfnet\StepupBehat\ValueObject\ActivationContext;
 use Surfnet\StepupBehat\ValueObject\Identity;
 use Surfnet\StepupBehat\ValueObject\SecondFactorToken;
+use Surfnet\StepupBehat\ValueObject\InstitutionConfiguration;
 
 class FeatureContext implements Context
 {
@@ -42,9 +43,14 @@ class FeatureContext implements Context
     private $repository;
 
     /**
-     * @BeforeSuite
+     * @var InstitutionConfiguration
      */
-    public static function setupDatabase(BeforeSuiteScope $scope)
+    private $institutionConfiguration;
+
+    /**
+     * @BeforeFeature
+     */
+    public static function setupDatabase(BeforeFeatureScope $scope)
     {
         // Generate test databases
         echo "Preparing test schemas\n";
@@ -81,6 +87,7 @@ class FeatureContext implements Context
 
         $this->payloadFactory = new CommandPayloadFactory();
         $this->repository = new SecondFactorRepository();
+        $this->institutionConfiguration = new InstitutionConfiguration();
     }
 
     /**
@@ -102,6 +109,19 @@ class FeatureContext implements Context
         $this->connectToApi('ss', 'secret');
         $this->apiContext->iRequest('POST', '/command');
 
+    }
+
+    /**
+     * @Given /^institution "([^"]*)" can "([^"]*)" from institution "([^"]*)"$/
+     */
+    public function theInstitutionIsAuthorizedForAnotherInstitution($institution, $role, $raInstitution)
+    {
+        $this->institutionConfiguration->addRole($institution, $role, $raInstitution);
+        $payload = $this->institutionConfiguration->getPayload();
+
+        $this->setPayload($payload);
+        $this->connectToApi('management', 'secret');
+        $this->apiContext->iRequest('POST', '/management/institution-configuration');
     }
 
     private function connectToApi($username, $password)
@@ -175,9 +195,9 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given /^the user "([^"]*)" has the role "([^"]*)"$/
+     * @Given /^the user "([^"]*)" has the role "([^"]*)" for institution "([^"]*)"$/
      */
-    public function theUserHasTheRole($nameId, $role)
+    public function theUserHasTheRole($nameId, $role, $institution)
     {
         // First test if this identity was already provisioned
         if (!isset($this->identityStore[$nameId])) {
@@ -191,7 +211,7 @@ class FeatureContext implements Context
 
         $actorId = 'dc4cc738-5f1c-4d8c-84a2-d6faf8aded89';
         $identityData = $this->identityStore[$nameId];
-        $payload = $this->payloadFactory->buildRolePayload($actorId, $identityData->identityId, $identityData->institution, $role);
+        $payload = $this->payloadFactory->buildRolePayload($actorId, $identityData->identityId, $identityData->institution, $role, $institution);
         $this->setPayload($payload);
         $this->connectToApi('ra', 'secret');
         $this->apiContext->iRequest('POST', '/command');

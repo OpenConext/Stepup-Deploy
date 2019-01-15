@@ -53,7 +53,10 @@ parameters:
 
     asset_version: {{ stable_nonce }}
 
-    logout_redirect_url: {{ logout_redirect_url }}
+    logout_redirect_url:
+{% for key, value in logout_redirect_url.iteritems() %}
+      {{ key }}: {{ value }}
+{% endfor %}
 
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 

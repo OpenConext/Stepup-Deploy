@@ -185,7 +185,7 @@ class ApiFeatureContext implements Context
             }
 
             $this->lastResponse = $e->getResponse();
-            throw new \Exception('Bad response.');
+            throw new \Exception('Bad response: '. $this->lastResponse->getBody()->getContents());
         }
     }
 

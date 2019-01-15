@@ -143,7 +143,7 @@ class CommandPayloadFactory
         }
     }
 
-    public function buildRolePayload($actorId, $identity, $institution, $role)
+    public function buildRolePayload($actorId, $identity, $institution, $role, $raInstitution)
     {
         $payload = '{
                     "meta": {
@@ -158,7 +158,8 @@ class CommandPayloadFactory
                             "institution": "%s",
                             "role": "%s",
                             "location": "Location A",
-                            "contact_information": "Contact INFO"
+                            "contact_information": "Contact INFO",
+                            "ra_institution": "%s"
                         }
                     }
                 }';
@@ -170,7 +171,8 @@ class CommandPayloadFactory
             (string)Uuid::uuid4(),
             $identity,
             $institution,
-            $role
+            $role,
+            $raInstitution
         );
     }
 }

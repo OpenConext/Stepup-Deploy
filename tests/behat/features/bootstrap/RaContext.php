@@ -94,6 +94,7 @@ class RaContext implements Context
                 );
                 break;
         }
+
         // We are now on the RA homepage
         $this->minkContext->assertPageAddress('https://ra.stepup.example.com');
         $this->minkContext->assertPageContainsText('RA Management Portal');
@@ -189,15 +190,27 @@ class RaContext implements Context
     }
 
     /**
-     * @When /^I switch to institution "([^"]*)"$/
+     * @When /^I switch to institution "([^"]*)" with SRAA switcher$/
      */
-    public function iSwitchToInstitutionWithName($institutionName)
+    public function iSwitchWithSraaSwitcherToInstitutionWithName($institutionName)
     {
-        $this->minkContext->clickLink('stepup.example.com');
+        $this->minkContext->clickLink('change');
         $this->minkContext->assertPageAddress('https://ra.stepup.example.com/sraa/select-institution');
         $this->minkContext->selectOption('sraa_institution_select_institution', $institutionName);
         $this->minkContext->pressButton('sraa_institution_select_select_and_apply');
-        $this->minkContext->assertPageContainsText('Your institution has been changed to "institution-a.example.com" ');
+        $this->minkContext->assertPageContainsText('Your institution has been changed to "'.$institutionName.'" ');
+    }
+
+    /**
+     * @When /^I switch to institution "([^"]*)" with RAA switcher$/
+     */
+    public function iSwitchWithRaaSwitcherToInstitutionWithName($institutionName)
+    {
+        $this->minkContext->clickLink('change');
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/raa/select-institution');
+        $this->minkContext->selectOption('raa_institution_select_institution', $institutionName);
+        $this->minkContext->pressButton('raa_institution_select_select_and_apply');
+        $this->minkContext->assertPageContainsText('Your institution has been changed to "'.$institutionName.'" ');
     }
 
     /**
@@ -240,6 +253,36 @@ class RaContext implements Context
     }
 
     /**
+     * @When I open the audit log for a user of :arg1
+     */
+    public function openFirstAuditLogForInstitution($institution)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $institution));
+        if (is_null($searchResult) || !$searchResult->has('css', 'a.audit-log')) {
+            throw new Exception(
+                sprintf('No tokens found for institution "%s"', $institution)
+            );
+        }
+        $searchResult->clickLink('Audit log');
+    }
+
+    /**
+     * @Then I should see :arg1 in the audit log identity overview
+     */
+    public function iShouldSeeInAuditLogIdentityOverview($institution)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]", $institution));
+
+        if (is_null($searchResult)) {
+            throw new Exception(
+                sprintf('The institution "%s" was not found in the audit log identity overview.', $institution)
+            );
+        }
+    }
+
+    /**
      * @Then I should not see :arg1 in the search results
      */
     public function searchResultsShouldNotInclude($expectation)
@@ -248,15 +291,22 @@ class RaContext implements Context
     }
 
     /**
-     * @Then /^I change the role of "([^"]*)" to become RA$/
+     * @Then /^I change the role of "([^"]*)" to become "([^"]*)" for institution "([^"]*)"$/
      */
-    public function iChangeTheRoleOfToBecomeRA($userName)
+    public function iChangeTheRoleOfToBecome($userName, $role, $institution)
     {
+        if (!in_array($role, ['RA', 'RAA']) ) {
+            throw new Exception(
+                sprintf('The role %s is invalid', $role)
+            );
+        }
+
         $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
         $this->minkContext->fillField('ra_search_ra_candidates_name', $userName);
         $this->minkContext->pressButton('ra_search_ra_candidates_search');
 
         $page = $this->minkContext->getSession()->getPage();
+
         // There should be a td with the username in it, select that TR to press that button on.
         $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
 
@@ -274,7 +324,8 @@ class RaContext implements Context
         // Fill the form with arbitrary text
         $this->minkContext->fillField('ra_management_create_ra_location', 'Basement of institution-a');
         $this->minkContext->fillField('ra_management_create_ra_contactInformation', 'Desk B12, Institution A');
-        $this->minkContext->selectOption('ra_management_create_ra_role', 'RA');
+        $this->minkContext->selectOption('ra_management_create_ra_role', $role);
+        $this->minkContext->selectOption('ra_management_create_ra_raInstitution', $institution);
 
         // Promote the user by clicking the button
         $this->minkContext->pressButton('ra_management_create_ra_create_ra');
@@ -305,10 +356,11 @@ class RaContext implements Context
     public function iRelieveOfHisRole($userName)
     {
         $page = $this->minkContext->getSession()->getPage();
+
         // There should be a td with the username in it, select that TR to press that button on.
         $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
 
-        if (is_null($searchResult) || !$searchResult->has('css', 'a.btn-info[role="button"]')) {
+        if (is_null($searchResult) || !$searchResult->has('css', 'a.btn-warning[role="button"]')) {
             throw new Exception(
                 sprintf('The user with username "%s" could not be found in the search results', $userName)
             );

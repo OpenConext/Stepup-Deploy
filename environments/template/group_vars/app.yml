@@ -49,7 +49,9 @@ saml_remote_idp_certificate: "{{ lookup('file', inventory_dir+'/saml_cert/simple
 # URL to where the user is redirected after logout by the Stepup applications (SS and RA)
 # Note: This is not SAML SLO.
 # TODO: Set logout URL
-logout_redirect_url: https://engine.surfconext.nl/logout
+logout_redirect_url:
+  nl_NL: https://www.surf.nl/over-surf/werkmaatschappijen/surfnet
+  en_GB: https://www.surf.nl/en/about-surf/subsidiaries/surfnet
 
 
 # Message originator as displayed in SMS

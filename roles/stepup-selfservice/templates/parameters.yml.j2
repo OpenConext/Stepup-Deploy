@@ -64,6 +64,7 @@ parameters:
     stepup_loa_loa2: {{ stepup_uri_loa2 }}
     stepup_loa_loa3: {{ stepup_uri_loa3 }}
 
+    logout_redirect_url:
 {% for key, value in logout_redirect_url.items() %}
       {{ key }}: {{ value }}
 {% endfor %}

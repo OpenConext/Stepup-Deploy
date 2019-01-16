@@ -54,7 +54,7 @@ parameters:
     asset_version: {{ stable_nonce }}
 
     logout_redirect_url:
-{% for key, value in logout_redirect_url.iteritems() %}
+{% for key, value in logout_redirect_url.items() %}
       {{ key }}: {{ value }}
 {% endfor %}
 

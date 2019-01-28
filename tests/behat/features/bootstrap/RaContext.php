@@ -347,7 +347,7 @@ class RaContext implements Context
     {
         $this->minkContext->assertElementOnPage('[href="/management/ra"]');
         $this->minkContext->clickLink('RA Management');
-        $this->minkContext->assertPageContainsText('Remove role');
+        $this->minkContext->assertPageContainsText('Add RA(A)');
     }
 
     /**

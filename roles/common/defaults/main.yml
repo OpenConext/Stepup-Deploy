@@ -1,0 +1,3 @@
+rsyslog_certificate: "{{ lookup('file', inventory_dir+'/syslog_cert/rsyslogclient.crt') }}"
+rsyslog_ca_certificate: "{{ lookup('file', inventory_dir+'/syslog_cert/rsyslogclientca.crt') }}"
+rsyslog_key: "{{ lookup('file', inventory_dir+'/syslog_cert/rsyslogclient.key') }}"

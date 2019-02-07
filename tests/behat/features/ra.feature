@@ -53,4 +53,4 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
      When I switch to institution "institution-a.example.com" with SRAA switcher
       And I visit the RA Management page
-     Then I relieve "jane-a1 institution-a.example.com" of his RA role
+     Then I relieve "jane-a1" from "institution-a.example.com" of his "RA" role

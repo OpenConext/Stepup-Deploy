@@ -15,6 +15,15 @@ SelfService. These being the Middleware, Gatweay, an IdP, and possibly a number 
 The choice to create tests in Stepup-Deploy seemed a logical choice. As this is the place where the Stepup platform can 
 be built for different purposes (production, development and testing).
 
+### Fine grained authorization use cases
+The use cases written for the FGA (fine grained authorization) features are clustered in features that test a certain
+use case described in the RFC document on the wiki. 
+
+These tests comprise of a scenario that sets up the institution configuration and the required users to perform ample
+tests. After setting up these requirements, additional scenarios test of the specific details the use case was intended
+for. The 'set up' scenario was first captured in a backgrounds or scenario outlines, but these concepts did not fit well. 
+The background will run before every scenario, making the scenarios painfully slow.  
+
 ### Running the tests
 
 **Requirements**

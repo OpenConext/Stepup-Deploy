@@ -389,7 +389,7 @@ class RaContext implements Context
     {
         $page = $this->minkContext->getSession()->getPage();
 
-        // build hashmap to check idientities
+        // build hashmap to check identities
         $data = [];
         $hash = $table->getHash();
         foreach ($hash as $row) {
@@ -413,7 +413,7 @@ class RaContext implements Context
 
         // check if all are found
         if (!empty($data)) {
-            throw new Exception(sprintf('User(s) not found on page: "%s"', json_encode($data)));
+            throw new Exception(sprintf('User(s) not found on page: "%s"', json_encode(array_keys($data))));
         }
     }
 
@@ -425,7 +425,7 @@ class RaContext implements Context
     {
         $page = $this->minkContext->getSession()->getPage();
 
-        // build hashmap to check idientities
+        // build hashmap to check identities
         $data = [];
         $hash = $table->getHash();
         foreach ($hash as $row) {
@@ -449,7 +449,7 @@ class RaContext implements Context
 
         // check if all are found
         if (!empty($data)) {
-            throw new Exception(sprintf('User(s) not found on page: "%s"', json_encode($data)));
+            throw new Exception(sprintf('User(s) not found on page: "%s"', json_encode(array_keys($data))));
         }
     }
 

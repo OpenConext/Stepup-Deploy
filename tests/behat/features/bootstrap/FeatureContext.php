@@ -100,7 +100,18 @@ class FeatureContext implements Context
      */
     public function aUserIdentifiedByWithAVettedTokenAndTheRole($commonName, $nameId, $institution)
     {
-        $userId = (string)Uuid::uuid4();
+        $uuid = (string)Uuid::uuid4();
+
+        return $this->aUserIdentifiedByWithAVettedTokenAndTheRoleWithUuid($commonName, $nameId, $institution, $uuid);
+    }
+
+
+    /**
+     * @Given /^a user "([^"]*)" identified by "([^"]*)" from institution "([^"]*)" with UUID "([^"]*)"$/
+     */
+    public function aUserIdentifiedByWithAVettedTokenAndTheRoleWithUuid($commonName, $nameId, $institution, $uuid)
+    {
+        $userId = (string)$uuid;
 
         $identity = Identity::from($userId, $nameId, $commonName, $institution, []);
         $this->identityStore[$nameId] = $identity;
@@ -108,7 +119,6 @@ class FeatureContext implements Context
         $this->setPayload($this->payloadFactory->build('Identity:CreateIdentity', $identity));
         $this->connectToApi('ss', 'secret');
         $this->apiContext->iRequest('POST', '/command');
-
     }
 
     /**

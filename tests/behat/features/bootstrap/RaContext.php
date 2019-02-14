@@ -102,6 +102,18 @@ class RaContext implements Context
         $this->minkContext->assertPageContainsText('Token activation');
     }
 
+    /**
+     * @Given /^I visit the "([^"]*)" page in the RA environment$/
+     */
+    public function iVisitAPageinTheRaEnvironment($uri)
+    {
+        // The ra session is used to vet the token
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
+
+        // We visit the RA location url
+        $this->minkContext->visit($this->raUrl.'/'.$uri);
+    }
+
     public function findsTokenForActivation()
     {
         // The activation token was previously set on the SP context, and can be retrieved here.

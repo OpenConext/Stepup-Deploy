@@ -45,6 +45,10 @@ parameters:
             apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
             application: 'nl.surfnet.authenticator'
 {% endif %}
+{% if tiqr_firebase_apikey is defined %}
+          firebase:
+            apikey: '{{ tiqr_firebase_apikey | vault(vault_keydir) }}'
+{% endif %}
           apns:
             certificate: '{{ component_dir_name }}/app/config/apns.pem'
             environment: production

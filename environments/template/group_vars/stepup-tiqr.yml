@@ -32,6 +32,13 @@ oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyse
 # TODO: Set GCM API key to enable push notifications on Android
 # tiqr_gcm_apikey: "{{ lookup('file', inventory_dir+'/secret/gcm_apikey') }}"
 
+# Optional API key for Firebase Cloud Messaging (FCM)
+# Required for sending push notifications to Android devices
+# When not configured Android users will not receive push notifications. They can still use Tiqr to autehnticate by
+# scanning the QR code.
+# TODO: Set firebase API key to enable push notifications on Android
+# tiqr_firebase_apikey: "{{ lookup('file', inventory_dir+'/secret/firebase_apikey'"
+
 # Optional X.509 Client certificate and private key for using the Apple Push Notification service (APNs)
 # Format: PEM X.509 certificate followed by PEM RSA PRIVATE KEY
 # Required for sending push notifications to iOS devices

@@ -18,6 +18,8 @@ parameters:
     base_url: 'https://{{ tiqr_vhost_name }}'
     tiqr_identity: {{ tiqr_vhost_name }}
 
+    use_firebase_fallback_for_gcm: true
+
     # View parameters
     support_url:
 {% for locale, url in tiqr_support_url.items() %}

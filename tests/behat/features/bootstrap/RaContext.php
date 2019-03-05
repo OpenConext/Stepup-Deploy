@@ -466,6 +466,38 @@ class RaContext implements Context
     }
 
     /**
+     * @Given /^The institution configuration should be:$/
+     */
+    public function theInstitutionConfigurationShouldBe(TableNode $table)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+
+        $data = [];
+        $hash = $table->getColumnsHash();
+        foreach ($hash as $row) {
+            $key = $row['Label'] . '|' . $row['Value'];
+            $data[$key] = true;
+        }
+
+        // get identities form page
+        $searchResult = $page->findAll('xpath', "//tr");
+        foreach ($searchResult as $result) {
+            $label = $result->find('css', 'th')->getText();
+            $value = $result->find('css', 'td')->getText();
+            $key = sprintf("%s|%s", $label, $value);
+
+            if (!array_key_exists($key, $data)) {
+                throw new Exception(sprintf('Unexpected configuration found: "%s"', $key));
+            }
+            unset($data[$key]);
+        }
+
+        // Check if all are found
+        if (!empty($data)) {
+            throw new Exception(sprintf('Configuration options that are not found on page: "%s"', json_encode(array_keys($data))));
+        }
+    }
+    /**
      * @Given /^I should see the following profile:$/
      * @param TableNode $table
      */

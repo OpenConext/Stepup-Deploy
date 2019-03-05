@@ -329,7 +329,7 @@ class RaContext implements Context
             );
         }
 
-        $searchResult->pressButton('Change role');
+        $searchResult->pressButton('Add role');
 
         $this->minkContext->assertPageContainsText('Contact Information');
         $this->minkContext->assertPageContainsText($userName);
@@ -337,11 +337,11 @@ class RaContext implements Context
         // Fill the form with arbitrary text
         $this->minkContext->fillField('ra_management_create_ra_location', 'Basement of institution-a');
         $this->minkContext->fillField('ra_management_create_ra_contactInformation', 'Desk B12, Institution A');
-        $this->minkContext->selectOption('ra_management_create_ra_role', $role);
-        $this->minkContext->selectOption('ra_management_create_ra_raInstitution', $institution);
+        $this->minkContext->selectOption('ra_management_create_ra_roleAtInstitution_role', $role);
+        $this->minkContext->selectOption('ra_management_create_ra_roleAtInstitution_institution', $institution);
 
         // Promote the user by clicking the button
-        $this->minkContext->pressButton('ra_management_create_ra_create_ra');
+        $this->minkContext->pressButton('ra_management_create_ra_button-group_create_ra');
 
         // If your Session supports Javascript, then enable these two lines. The configured sessions use Goutte, which
         // is based on Guzzle and is not able to evaluate Javascript.

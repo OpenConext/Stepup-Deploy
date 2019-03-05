@@ -465,4 +465,38 @@ class RaContext implements Context
         }
     }
 
+    /**
+     * @Given /^I should see the following profile:$/
+     * @param TableNode $table
+     */
+    public function iShouldSeeTheFollowingProfile(TableNode $table)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+
+        // build hashmap to check identities
+        $data = [];
+        $hash = $table->getHash();
+        foreach ($hash as $row) {
+            $key = sprintf("%s|%s", $row['Label'], $row['Value']);
+            $data[$key] = true;
+        }
+
+        // Load the table data from the page
+        $searchResult = $page->findAll('xpath', "//tr");
+        foreach ($searchResult as $result) {
+            $label = $result->find('css', 'th')->getText();
+            $value = $result->find('css', 'td')->getText();
+            $key = sprintf("%s|%s", $label, $value);
+
+            if (!array_key_exists($key, $data)) {
+                throw new Exception(sprintf('Unexpected profile data found on page: "%s"', $key));
+            }
+
+            unset($data[$key]);
+        }
+        // check if all are found
+        if (!empty($data)) {
+            throw new Exception(sprintf('Missing profile data: "%s"', json_encode(array_keys($data))));
+        }
+    }
 }

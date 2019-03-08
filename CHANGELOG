@@ -1,5 +1,5 @@
 Release 16
-Update Symfony to 3.4 LTS, bugfixes
+Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
 
 * All stepup applications (except the keyserver) were updated to Symfony 3.4 LTS
 
@@ -11,12 +11,23 @@ Update Symfony to 3.4 LTS, bugfixes
   - Fix: Non-descriptive error-message when non-RA authenticates to Stepup-RA (https://www.pivotaltracker.com/story/show/158894749)
   - Fix: Untranslated error "ra.verify_yubikey_command.otp.otp_invalid" during vetting (https://www.pivotaltracker.com/story/show/160228972)
   - Open manual in new tab (https://www.pivotaltracker.com/story/show/161718649)
+  - Fix: Sorting on document number the in token overview results in an error (https://www.pivotaltracker.com/story/show/161721636)
+
 
 * Stepup-tiqr:
   - Fix: tiqr server keeps sending push notifications when challenges expire (https://www.pivotaltracker.com/story/show/159101661)
   - Fix: tiqr server blocks during authentication when translation service is unavailable (https://www.pivotaltracker.com/story/show/160510558)
   - The user can click on the QR code as an alternative to scanning it. This allows tiqr to be used for authentication using a QR code
     to a application on the mobile device itself (https://www.pivotaltracker.com/story/show/161311010)
+  - Fix: .php and .htaccess files in the tiqr web directory can be downloaded. (https://www.pivotaltracker.com/story/show/158356638)
+  - Allow tiqr server to use both GCM and Firebase for sending push notifications to Android devices (https://www.pivotaltracker.com/story/show/163974611)
+    Depending on the Time of registration,  Android version and the version of the Tiqr App either the GCM or the Firebase API
+    must be used. This version allows Firebase to be used when GCM fails. To use the Firebase fallback you must add the tiqr_firebase_apikey
+    to the stepup-tiqr.yml group_vars.
+
+* Stepup-Gateway:
+  - Make the name of the Stepup Gateway displayed in the HTML title and on the Error pages of the Stepup-gateway configurable
+    using the gateway_app_name group_var stepup-gateway.yml
 
 
 * Deploy
@@ -43,15 +54,16 @@ Update Symfony to 3.4 LTS, bugfixes
 
 
 * Deploy components:
-  - Stepup-Middleware 2.9.1
-  - Stepup-Gateway 2.10.1
-  - Stepup-SelfService 2.10.5
+  - Stepup-Middleware 2.9.3
+  - Stepup-Gateway 2.10.3
+  - Stepup-SelfService 2.10.6
   - Stepup-RA 2.10.6
-  - Stepup-tiqr 2.1.1
+  - Stepup-tiqr 2.1.7
+
 
 * Redeploy the app role
   - Run "ansible-playbook site.yml -t app -i <environment>/inventory" to deploy only the app role
-    This updates the nginx configuration for tiqr to disallow download of .php files.
+    This updates the nginx configuration for tiqr to disallow the download of .php files.
 * Redeploy the es role
   - Run "ansible-playbook site.yml -t es -i <environment>/inventory" to deploy only the es role
     This updates the elasticsearch Java heap size to half the system's memory during deploy.

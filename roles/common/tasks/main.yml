@@ -46,8 +46,9 @@
       - iptables-services
       - rsyslog # Is the default syslog for RH / CentOS
       - rsyslog-relp # For using RELP with rsyslog
-      - rsyslog-tls # For TLS support in rsyslog
+      - rsyslog-gnutls # For TLS support in rsyslog
     state: present
+  tags: rsyslog
 
 - debug:
     msg: groups_names = {{ group_names | join(', ') }}
@@ -88,15 +89,18 @@
 
 - name: Put rsyslog client cert
   copy: content="{{ rsyslog_certificate }}" dest=/etc/pki/rsyslog/rsyslogclient.crt mode=0744
+  when: rsyslog_remote_server is defined
   tags: rsyslog
 
 - name: Put rsyslog client key
   copy: content="{{ rsyslog_key | vault(vault_keydir) }}" dest=/etc/pki/rsyslog/rsyslogclient.key owner=root mode=400
   tags: rsyslog
+  when: rsyslog_remote_server is defined
   no_log: true
 
 - name: Put rsyslog client CA certificate
   copy: content="{{ rsyslog_ca_certificate }}" dest=/etc/pki/rsyslog/rsyslogclientca.crt mode=0744
+  when: rsyslog_remote_server is defined
   tags: rsyslog
 
 # Setup rsyslog

@@ -58,7 +58,7 @@ Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
   - Stepup-Gateway 2.10.3
   - Stepup-SelfService 2.10.6
   - Stepup-RA 2.10.6
-  - Stepup-tiqr 2.1.7
+  - Stepup-tiqr 2.1.12
 
 
 * Redeploy the app role

@@ -152,3 +152,27 @@ uucp,news.crit                                          /var/log/spooler
 # Save boot messages also to boot.log
 $ActionName local-log-boot
 local7.*                                                /var/log/boot.log
+
+
+{% if rsyslog_remote_server is defined %}
+# Forward all logs to the central logging server
+$ActionQueueType LinkedList
+$ActionQueueMaxDiskSpace 1g
+$ActionQueueFileName syslog_fwd
+$ActionResumeRetryCount -1
+$ActionQueueSaveOnShutdown on
+module(load="omrelp")
+action(type="omrelp" 
+target="{{ rsyslog_remote_server }}" 
+port="{{ rsyslog_remote_port }}" 
+tls="on" 
+tls.caCert="/etc/pki/rsyslog/rsyslogclientca.crt" 
+tls.MyCert="/etc/pki/rsyslog/rsyslogclient.crt"
+tls.MyPrivKey="/etc/pki/rsyslog/rsyslogclient.key"
+tls.authmode="name" 
+tls.permittedpeer=["{{ rsyslog_remote_server }}"])
+
+$PreserveFQDN on
+{% endif %}
+
+

@@ -8,7 +8,9 @@ server {
 {% endif %}
 
     error_log /var/log/nginx/{{ component_name }}_error.log;
+    error_log syslog:server=unix:/dev/log,tag=nginx_error_{{ component_name }},nohostname;
     access_log /var/log/nginx/{{ component_name }}_access.log combinedProxy;
+    access_log syslog:server=unix:/dev/log,tag=nginx_access_{{ component_name }},nohostname combinedProxy;
 
     location /heartbeat {
         return 200 'Heartbeat for {{ vhost_name }}';

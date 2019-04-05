@@ -87,6 +87,7 @@
   file: name=/var/lib/rsyslog state=directory
   tags: rsyslog
 
+# Defining rsyslog_remote_server means you can use a remote syslog server using RELP + TLS. Make sure you create the corresponding keys and certificates  
 - name: Put rsyslog client cert
   copy: content="{{ rsyslog_certificate }}" dest=/etc/pki/rsyslog/rsyslogclient.crt mode=0744
   when: rsyslog_remote_server is defined
@@ -96,7 +97,6 @@
   copy: content="{{ rsyslog_key | vault(vault_keydir) }}" dest=/etc/pki/rsyslog/rsyslogclient.key owner=root mode=400
   tags: rsyslog
   when: rsyslog_remote_server is defined
-  no_log: true
 
 - name: Put rsyslog client CA certificate
   copy: content="{{ rsyslog_ca_certificate }}" dest=/etc/pki/rsyslog/rsyslogclientca.crt mode=0744

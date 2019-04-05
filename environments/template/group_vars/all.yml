@@ -200,3 +200,13 @@ database_keyserver_deploy_password: "{{ lookup('file', inventory_dir+'/password/
 database_u2f_name: u2f
 database_u2f_user: u2f
 database_u2f_password: "{{ lookup('file', inventory_dir+'/password/database_u2f') }}"
+
+# Rsyslog variables
+# If you want to use a remote rsyslog server using RELP + TLS you can uncomment the following two variables
+#rsyslog_remote_server: syslog.stepup.example.com
+#rsyslog_remote_port: 5140
+
+# RELP TLS needs keys and certificates
+rsyslog_certificate: "{{ lookup('file', inventory_dir+'/syslog_cert/rsyslogclient.crt') }}" 
+rsyslog_ca_certificate: "{{ lookup('file', inventory_dir+'/syslog_cert/rsyslogclientca.crt') }}" 
+rsyslog_key: "{{ lookup('file', inventory_dir+'/syslog_cert/rsyslogclient.key') }}" 

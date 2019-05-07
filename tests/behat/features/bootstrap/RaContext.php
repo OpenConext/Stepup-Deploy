@@ -215,15 +215,12 @@ class RaContext implements Context
     }
 
     /**
-     * @When /^I switch to institution "([^"]*)" with RAA switcher$/
+     * @When /^I switch to institution "([^"]*)" with institution switcher$/
      */
     public function iSwitchWithRaaSwitcherToInstitutionWithName($institutionName)
     {
-        $this->minkContext->clickLink('change');
-        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/raa/select-institution');
-        $this->minkContext->selectOption('raa_institution_select_institution', $institutionName);
-        $this->minkContext->pressButton('raa_institution_select_select_and_apply');
-        $this->minkContext->assertPageContainsText('Your institution has been changed to "'.$institutionName.'" ');
+        $this->minkContext->selectOption('select_institution_institution', $institutionName);
+        $this->minkContext->pressButton('select_institution_select_and_apply');
     }
 
     /**

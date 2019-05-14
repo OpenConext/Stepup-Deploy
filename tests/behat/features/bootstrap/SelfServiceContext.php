@@ -61,6 +61,8 @@ class SelfServiceContext implements Context
      */
     public function loginIntoSelfService()
     {
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_SS);
+
         $this->minkContext->visit($this->selfServiceUrl);
 
         $this->authContext->authenticateWithIdentityProvider();
@@ -74,6 +76,8 @@ class SelfServiceContext implements Context
      */
     public function iAmLoggedInIntoTheSelfServicePortalAs($userName)
     {
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_SS);
+
         // We visit the Self Service location url
         $this->minkContext->visit($this->selfServiceUrl);
         $this->authContext->authenticateWithIdentityProviderFor($userName);
@@ -186,9 +190,9 @@ class SelfServiceContext implements Context
     public function iVisitAPageInTheSelfServiceEnvironment($uri)
     {
         // The ra session is used to vet the token
-        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_SS);
 
-        // We visit the RA location url
+        // We visit the SS location url
         $this->minkContext->visit($this->selfServiceUrl.'/'.$uri);
     }
 

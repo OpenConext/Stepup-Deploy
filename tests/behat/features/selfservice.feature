@@ -4,7 +4,7 @@ Feature: A user manages his tokens in the selfservice portal
   I must be able to manage my second factor tokens
 
   Scenario: A user registers a token in selfservice
-    Given I am logged in into the selfservice portal
+    Given I am logged in into the selfservice portal as "joe-a1"
      When I register a new SMS token
       And I verify my e-mail address
       And I vet my second factor at the information desk

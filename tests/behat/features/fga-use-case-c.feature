@@ -51,10 +51,10 @@ Feature: Use case C: Closely cooperating institutions
 
   Scenario: The institution A RAA can promote identities from institution D
     Given I am logged in into the ra portal as "joe-a-raa" with a "yubikey" token
-     When I visit the RA Management RA promotion page
+     When I visit the RA promotion page
      Then I change the role of "Joe Satriani" to become "RA" for institution "institution-d.example.com"
 
   Scenario: The institution D RAA can promote identities from institution A
     Given I am logged in into the ra portal as "joe-d-raa" with a "yubikey" token
-     When I visit the RA Management RA promotion page
+     When I visit the RA promotion page
      Then I change the role of "Jane Jackson" to become "RA" for institution "institution-a.example.com"

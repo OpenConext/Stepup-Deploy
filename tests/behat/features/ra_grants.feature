@@ -41,7 +41,6 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: SRAA can view the tokens page
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    And I switch to institution "stepup.example.com" with SRAA switcher
     When I visit the "second-factors" page in the RA environment
     Then the response status code should be 200
 
@@ -68,7 +67,6 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: SRAA can view the ra-management page
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    And I switch to institution "stepup.example.com" with SRAA switcher
     When I visit the "management/ra" page in the RA environment
     Then the response status code should be 200
 
@@ -95,7 +93,6 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: SRAA can view the ra-management create page
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    And I switch to institution "stepup.example.com" with SRAA switcher
     When I visit the "management/create-ra/00000000-0000-0000-0000-000000000004" page in the RA environment
     Then the response status code should be 200
 
@@ -122,7 +119,6 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: SRAA can view the ra-management amend page
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    And I switch to institution "stepup.example.com" with SRAA switcher
     When I visit the "management/amend-ra-information/00000000-0000-0000-0000-000000000001/stepup.example.com" page in the RA environment
     Then the response status code should be 200
 
@@ -149,7 +145,6 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: SRAA can view the ra-management retract page
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    And I switch to institution "stepup.example.com" with SRAA switcher
     When I visit the "management/retract-registration-authority/00000000-0000-0000-0000-000000000001/stepup.example.com" page in the RA environment
     Then the response status code should be 200
 
@@ -176,6 +171,5 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: SRAA can view the ra-candidate page
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    And I switch to institution "stepup.example.com" with SRAA switcher
     When I visit the "management/search-ra-candidate" page in the RA environment
     Then the response status code should be 200

@@ -6,7 +6,6 @@
 - name: Enable REMI repo
   copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
 
-
 - name: Create deploy user
   user: name={{app_deploy_user}} state=present
 
@@ -18,6 +17,14 @@
     key: "{{ app_deploy_user_ssh_key }}"
   when:  app_deploy_user_ssh_key is defined
 
+# Enable php72 as the default php version.
+- name: Install Yum utils
+  yum:
+    name:
+      - yum-utils
+
+- name: enable remi-php72
+  shell: yum-config-manager --enable remi-php72
 
 # node.less is used by app/console assetic:dump
 # sendmail is used for sending mail from localhost (enabled in default config)
@@ -38,15 +45,12 @@
       - php-bcmath
       - php-gmp
       - php-pecl-memcache
+      - php-pecl-apcu-bc
       - nodejs
       - nodejs-less.noarch
       - sendmail
       - sendmail-cf
     state: present
-
-# TODO: Why isn't php-gmp beining installed by the previous yum task?
-- name: Fix for php-gmp not being installed
-  yum: name=php-gmp state=present
 
 # Look for sendmail smarthost
 - name: Configure sendmail with smarthost
@@ -56,20 +60,15 @@
   notify:
     - reload sendmail
 
-# TODO: Why is this here ???
-# Build sendmail config file from template
-#- name: Configure sendmail
-#  command: make -C /etc/mail
-#  when: (sendmail_smarthost is defined) and (sendmail_smarthost_result|changed)
-
-# php-gd requires libgd (>2.1.1) from remi repo
-- name: Install php-gd
-  yum: name=php-gd state=present enablerepo=remi
-
 - name: Put php.ini
   template: src='php.ini.j2' dest='/etc/php.ini'
   notify:
     - restart php-fpm
+
+- name: Enable php-fpm
+  service:
+    name: php-fpm
+    enabled: yes
 
 # Remove default distro conf files
 - name: Remove known default distro files in /etc/nginxconf.d/ and /etc/php-fpm.d/

@@ -12,13 +12,12 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
 
   Scenario: SRAA user promotes "jane-a1" to be an RAA
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-a.example.com" with SRAA switcher
-    And I visit the RA Management RA promotion page
+    And I visit the RA promotion page
     Then I change the role of "jane-a1 institution-a.example.com" to become "RAA" for institution "institution-a.example.com"
 
   Scenario: User "jane-a1" promotes "joe-d1" to be an RA
     Given I am logged in into the ra portal as "jane-a1" with a "yubikey" token
-    And I visit the RA Management RA promotion page
+    And I visit the RA promotion page
     Then I change the role of "Joe Satriani" to become "RA" for institution "institution-a.example.com"
 
   Scenario: User "jane-a1" demotes "joe-d1" to no longer be an RA
@@ -28,6 +27,5 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
 
   Scenario: SRAA user demotes "jane-a1" to no longer be an RAA
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-a.example.com" with SRAA switcher
     And I visit the RA Management page
     Then I relieve "jane-a1 institution-a.example.com" from "institution-a.example.com" of his "RAA" role

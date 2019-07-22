@@ -61,14 +61,29 @@ class SelfServiceContext implements Context
      */
     public function loginIntoSelfService()
     {
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_SS);
+
         $this->minkContext->visit($this->selfServiceUrl);
 
         $this->authContext->authenticateWithIdentityProvider();
         $this->authContext->passTroughGatewaySsoAssertionConsumerService();
 
-        $this->minkContext->assertPageAddress('https://selfservice.stepup.example.com/registration/select-token');
         $this->minkContext->assertPageContainsText('Registration Portal');
-        $this->minkContext->assertPageContainsText('Select token');
+    }
+
+    /**
+     * @Given /^I am logged in into the selfservice portal as "([^"]*)"$/
+     */
+    public function iAmLoggedInIntoTheSelfServicePortalAs($userName)
+    {
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_SS);
+
+        // We visit the Self Service location url
+        $this->minkContext->visit($this->selfServiceUrl);
+        $this->authContext->authenticateWithIdentityProviderFor($userName);
+        $this->authContext->passTroughGatewaySsoAssertionConsumerService();
+
+        $this->minkContext->assertPageContainsText('Registration Portal');
     }
 
     /**
@@ -167,6 +182,18 @@ class SelfServiceContext implements Context
         if (!preg_match('#[A-Z0-9]{8}#', $this->activationCode)) {
             throw new Exception('Could not find a valid activation code');
         }
+    }
+
+    /**
+     * @Given /^I visit the "([^"]*)" page in the selfservice portal$/
+     */
+    public function iVisitAPageInTheSelfServiceEnvironment($uri)
+    {
+        // The ra session is used to vet the token
+        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_SS);
+
+        // We visit the SS location url
+        $this->minkContext->visit($this->selfServiceUrl.'/'.$uri);
     }
 
     private function getEmailVerificationUrl()

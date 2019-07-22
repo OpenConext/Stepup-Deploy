@@ -16,25 +16,40 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "raa" for institution "institution-b.example.com"
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "raa" for institution "institution-d.example.com"
 
-  Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions
+  Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions (without filtering)
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-a.example.com" with SRAA switcher
-    And I visit the RA Management RA promotion page
+    When I visit the RA promotion page
+      And I filter the RA promotion page on actor institution ""
+    Then I should see the following candidates:
+      | name                              | institution               |
+      | jane-a1 institution-a.example.com | institution-a.example.com |
+      | Admin                             | stepup.example.com        |
+
+  Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions (with filtering on institution-a)
+    Given I am logged in into the ra portal as "admin" with a "yubikey" token
+    When I visit the RA promotion page
+      And I filter the RA promotion page on actor institution "institution-a.example.com"
     Then I should see the following candidates:
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
 
+  Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions (with filtering on institution-b)
+    Given I am logged in into the ra portal as "admin" with a "yubikey" token
+    When I visit the RA promotion page
+      And I filter the RA promotion page on actor institution "institution-b.example.com"
+    Then I should see the following candidates:
+      | name                              | institution               |
+      | jane-a1 institution-a.example.com | institution-a.example.com |
 
   Scenario: SRAA user demotes "Jane" to no longer be an RAA for "institution-a"
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-a.example.com" with SRAA switcher
-    And I visit the RA Management page
+    When I visit the RA Management page
     Then I relieve "Jane Toppan" from "institution-a.example.com" of his "RAA" role
 
   Scenario: SRAA user checks if "Jane Toppan" is a candidate for "institution-a"
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-a.example.com" with SRAA switcher
-    And I visit the RA Management RA promotion page
+    When I visit the RA promotion page
+      And I filter the RA promotion page on actor institution "institution-a.example.com"
     Then I should see the following candidates:
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
@@ -42,23 +57,24 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
 
   Scenario: SRAA user checks if "Jane Toppan" is not a candidate for "institution-b"
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-b.example.com" with SRAA switcher
-    And I visit the RA Management RA promotion page
+    When I visit the RA promotion page
+      And I filter the RA promotion page on actor institution "institution-b.example.com"
     Then I should see the following candidates:
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
 
   Scenario: SRAA user checks if "Jane Toppan" is not listed for "institution-a"
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-a.example.com" with SRAA switcher
-    And I visit the RA Management page
-    Then I should see the following raas:
-      | name        | institution               | role |
-
-  Scenario: SRAA user checks if "Jane Toppan" is listed for "institution-b"
-    Given I am logged in into the ra portal as "admin" with a "yubikey" token
-    When I switch to institution "institution-b.example.com" with SRAA switcher
-    And I visit the RA Management page
+    When I visit the RA Management page
     Then I should see the following raas:
       | name        | institution               | role |
       | Jane Toppan | institution-b.example.com | RAA  |
+      | Jane Toppan | institution-d.example.com | RAA  |
+
+  Scenario: SRAA user checks if "Jane Toppan" is listed for "institution-b"
+    Given I am logged in into the ra portal as "admin" with a "yubikey" token
+    When I visit the RA Management page
+    Then I should see the following raas:
+      | name        | institution               | role |
+      | Jane Toppan | institution-b.example.com | RAA  |
+      | Jane Toppan | institution-d.example.com | RAA  |

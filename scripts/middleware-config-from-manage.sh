@@ -89,7 +89,7 @@ if [ $? -ne 0 ]; then
    exit 1
 fi
 #echo ${response}
-echo ${response} | ${JQ} -f ${basedir}/middleware-config-from-manage.jq
+echo ${response} | ${JQ} -f ${basedir}/middleware-config-from-manage.jq | tr -d '\\r\\n'
 if [ $? -ne 0 ]; then
    echo "ERROR: Parsing manage response failed"
    exit 1

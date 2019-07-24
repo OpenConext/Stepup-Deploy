@@ -1,37 +1,82 @@
 Release 17
 
-Install:
-* Deploy components
-  - Stepup-Middleware TODO
-  - Stepup-Gateway  TODO
-  - Stepup-SelfService TODO
-  - Stepup-RA TODO
-
-  Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
+* Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
   on an app server
 
+
 Release 16
-Update Symfony to 3.4 LTS, bugfixes
+Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
+
+* All stepup applications (except the keyserver) were updated to Symfony 3.4 LTS
+
+* Stepup-SelfService
+  - Open help page in new tab (https://www.pivotaltracker.com/story/show/161718649)
+  - Fix: Do not load assets over http during PDF generation (https://www.pivotaltracker.com/story/show/161719264)
 
 * Stepup-RA:
   - Fix: Non-descriptive error-message when non-RA authenticates to Stepup-RA (https://www.pivotaltracker.com/story/show/158894749)
   - Fix: Untranslated error "ra.verify_yubikey_command.otp.otp_invalid" during vetting (https://www.pivotaltracker.com/story/show/160228972)
+  - Open manual in new tab (https://www.pivotaltracker.com/story/show/161718649)
+  - Fix: Sorting on document number the in token overview results in an error (https://www.pivotaltracker.com/story/show/161721636)
+
 
 * Stepup-tiqr:
   - Fix: tiqr server keeps sending push notifications when challenges expire (https://www.pivotaltracker.com/story/show/159101661)
   - Fix: tiqr server blocks during authentication when translation service is unavailable (https://www.pivotaltracker.com/story/show/160510558)
+  - The user can click on the QR code as an alternative to scanning it. This allows tiqr to be used for authentication using a QR code
+    to a application on the mobile device itself (https://www.pivotaltracker.com/story/show/161311010)
+  - Fix: .php and .htaccess files in the tiqr web directory can be downloaded. (https://www.pivotaltracker.com/story/show/158356638)
+  - Allow tiqr server to use both GCM and Firebase for sending push notifications to Android devices (https://www.pivotaltracker.com/story/show/163974611)
+    Depending on the Time of registration,  Android version and the version of the Tiqr App either the GCM or the Firebase API
+    must be used. This version allows Firebase to be used when GCM fails. To use the Firebase fallback you must add the tiqr_firebase_apikey
+    to the stepup-tiqr.yml group_vars.
 
-Deploy
-  - Add new variable 'gateway_app_name' to stepup-gateway.yml group_vars. See template environment for a description of
-    this variable.
+* Stepup-Gateway:
+  - Make the name of the Stepup Gateway displayed in the HTML title and on the Error pages of the Stepup-gateway configurable
+    using the gateway_app_name group_var stepup-gateway.yml
 
-Install:
+
+* Deploy
+  - Add new variable 'gateway_app_name' to stepup-gateway.yml group_vars for the display name of the gateway. See the template environment for a description of
+    this variable. You must add gateway_app_name in your environment(s).
+  - The 'logout_redirect_url' in the app.yml group_vars is now set per locale. See the template environment for a description of
+    this variable. You must update logout_redirect_url in your environment(s).
+  - Improved Python and Ansible compatibility of Stepup-Deploy. The Ansible playbooks and scripts in Stepup-Deploy are now compatible with
+    both Python 2.7 and Python 3 and Ansible versions from 2.2 to 2.7
+  - Because of changes to the way includes work in Ansible, handlers (i.e. notify) are not called for tasks in tasks/common.yml in
+    the environment. Verify and update the tasks/common.yml in your environment(s). The handlers/common.yml is no longer included
+    and can be removed from your environment(s). See the template environment for alternative to using handlers.
+  - Change the Java heapsize for elasticsearch from 2GB to half the system's memory during deploy
+  - The environment.conf is now stored in the environment directory instead of using the environment.conf from the Stepup-Deploy
+    directory. This allows the modifying the environment.conf to work well with version control and multiple environments.
+    See scripts/create_new_environment.sh for details.
+  - Add script to get SP configuration from OpenConext-manage and convert it to the JSON format used in
+    templates/middleware/middleware-config.json.j2. See scripts/middleware-config-from-manage.sh for details
+  - Stepup-Deploy can now be used to deploy a development VM (see OpenConext/Stepup-VM) and run behat integration tests in this
+    VM.
+
+* Infrastructure:
+  - Restrict download of .php files for tiqr app. Redeploy the app role to update the nginx config for tiqr
+
+
 * Deploy components:
-  - Stepup-Middleware 2.9.1
-  - Stepup-Gateway 2.10.1
-  - Stepup-SelfService 2.10.1
-  - Stepup-RA 2.10.3
-  - Stepup-tiqr 2.1.1
+  - Stepup-Middleware 2.9.3
+  - Stepup-Gateway 2.10.3
+  - Stepup-SelfService 2.10.6
+  - Stepup-RA 2.10.6
+  - Stepup-tiqr 2.1.12
+
+
+* Redeploy the app role
+  - Run "ansible-playbook site.yml -t app -i <environment>/inventory" to deploy only the app role
+    This updates the nginx configuration for tiqr to disallow the download of .php files.
+* Redeploy the es role
+  - Run "ansible-playbook site.yml -t es -i <environment>/inventory" to deploy only the es role
+    This updates the elasticsearch Java heap size to half the system's memory during deploy.
+* Redeploy the manage role
+  - Run "ansible-playbook site.yml -t manage -i <environment>/inventory" to deploy only the manage role
+    This updates the logstash processing rules for the way the tiqr logs
+
 
 Release 15
 Support for multiple ACS locations, various improvements to error pages, several UI improvements, multiple-token configuration per-institution, various bugfixes and Stepup is now brandless (no more "SURFisms").

@@ -1,7 +1,40 @@
 Release 17
+More fine grained authorization (FGA) of RAs, Fix wrong Issuer in Gateway SAMLResponse
+
+* Stepup-Middleware
+  - Add "select_raa", "use_ra" and "use_raa" required configuration options to the institution configuration. These
+    options list the institutions (by SHO) from which users may become RA(A) ("select_raa") or from which all RAs (use_ra) or
+    RAAs (use_raa) have that role for this institution.
+    See https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#institution-configuration-structure
+
+* Stepup-RA
+  - Add "Institution Configuration" page where (S)RAAs can the the configuration of the selected institution (https://www.pivotaltracker.com/story/show/160283525)
+  - Add institution selector on the "RA Locations" page
+  - Removed the institution switcher for SRAAs. SRAAs now use the same new way of switching institutions as RA(A)s
+  - Make the institution explicit in roles by displaying them as "role @ institution", because a user can now have different
+    roles in different institutions.
+  - "RA Management" screen allow searching by role, institution, email and name and add paging
+  - Remove the "Change role" option from the "RA Management" screen. To change the role of a user, remove the role and then add
+    the new role
+  - Add a "My Profile" screen that shows all the user's current roles. Both the roles explicitly assigned though the "RA Management"
+    screen as user's the roles because of "use_ra" and "ra_raa" are shown.
+  - Fix: Missing paging controls in token overview page (https://www.pivotaltracker.com/story/show/165629990)
+  - Show the SHO of the RA that vetted the user in the audit log (https://www.pivotaltracker.com/story/show/160283522)
+
+* Stepup-Selfservice
+* Stepup-Gateway
+  - Add WantAuthnRequestsSigned="true" to thew IDPSSODescriptor in the IdP metadata (https://www.pivotaltracker.com/story/show/166266929)
+  - Fix: Wrong Issuer and incomplete Status code from gateway in response to GSSP AuthnFailed (https://www.pivotaltracker.com/story/show/164657123)
+
+* Deploy components:
+  - Stepup-Middleware
+  - Stepup-Gateway
+  - Stepup-SelfService
+  - Stepup-RA
+  - Stepup-tiqr
 
 * Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
-  on an app server
+    on an app server
 
 
 Release 16

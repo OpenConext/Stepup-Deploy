@@ -1,10 +1,13 @@
 Release 17
 More fine grained authorization (FGA) of RAs, Fix wrong Issuer in Gateway SAMLResponse
 
+This release introduces the possibility for users to have the RA or RAA role in other institutions than their own institution.
+The institutions for which a user can be an RA(A) are controlled though the institution configuration.
+
 * Stepup-Middleware
-  - Add "select_raa", "use_ra" and "use_raa" required configuration options to the institution configuration. These
-    options list the institutions (by SHO) from which users may become RA(A) ("select_raa") or from which all RAs (use_ra) or
-    RAAs (use_raa) have that role for this institution.
+  - Add "select_raa", "use_ra" and "use_raa" optional configuration options to the institution configuration. These
+    options list the institutions (by SHO) from which users can get the RA(A) ("select_raa") role for the institution, or
+    from which all RAs (use_ra) or RAAs (use_raa) have will have role for this institution.
     See https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#institution-configuration-structure
 
 * Stepup-RA

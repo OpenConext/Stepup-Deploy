@@ -88,8 +88,8 @@ if [ $? -ne 0 ]; then
    echo "ERROR: POST to '${manage_url}' failed"
    exit 1
 fi
-#echo ${response}
-echo ${response} | ${JQ} -f ${basedir}/middleware-config-from-manage.jq | tr -d '\\r\\n'
+echo ${response}
+echo ${response} | ${JQ} -f ${basedir}/middleware-config-from-manage.jq | sed 's/\\r\\n//g' 
 if [ $? -ne 0 ]; then
    echo "ERROR: Parsing manage response failed"
    exit 1

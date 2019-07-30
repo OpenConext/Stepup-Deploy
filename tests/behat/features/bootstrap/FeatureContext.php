@@ -151,6 +151,14 @@ class FeatureContext implements Context
      */
     public function theUserHasAVetted($nameId, $tokenType)
     {
+        $this->theUserHasAVettedWithIdentifier($nameId, $tokenType, '03945859');
+    }
+
+    /**
+     * @Given /^the user "([^"]*)" has a vetted "([^"]*)" with identifier "([^"]*)"$/
+     */
+    public function theUserHasAVettedWithIdentifier($nameId, $tokenType, $identifier)
+    {
         // First test if this identity was already provisioned
         if (!isset($this->identityStore[$nameId])) {
             throw new InvalidArgumentException(
@@ -162,7 +170,7 @@ class FeatureContext implements Context
         }
 
         $tokenId = (string)Uuid::uuid4();
-        $token = SecondFactorToken::from($tokenId, $tokenType, '03945859');
+        $token = SecondFactorToken::from($tokenId, $tokenType, $identifier);
         $identityData = $this->identityStore[$nameId];
         $identityData->tokens = [$token];
 

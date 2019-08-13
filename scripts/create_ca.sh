@@ -81,7 +81,8 @@ OPENSSL_CONF=${BASEDIR}/opensslca.conf
 cd ${CA_DIR}
 mkdir -p certs
 
-echo "01" > serial
+# Generate random 128 bit serial number to prevent reusing a issuer + serial combination when recreating a CA. Browser won't accept that anymore nowadays
+${OPENSSL} rand -hex 16 > serial
 touch index.txt
 
 ${OPENSSL} req -x509 -newkey rsa:${CA_RSA_MODULUS_SIZE_BITS} -out ${CA_DIR}/ca-cert.pem -outform PEM -nodes -config ${OPENSSL_CONF} -keyout ${CA_DIR}/ca-key.pem -sha256 -extensions v3_ca -set_serial 0 -days ${CA_VALIDITY_DAYS} -subj "${CA_DN}"

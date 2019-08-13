@@ -3,6 +3,13 @@ Release 17
 * Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
   on an app server
 
+* Added a second, independent and optional, remote loghost for sending logs using RELP over TLS.
+  Enabled by defining rsyslog_remote_server, rsyslog_remote_port, rsyslog_certificate, rsyslog_ca_certificate and rsyslog_key
+  See all.yml in the template environment for details.
+
+* Stepup-tiqr:
+  - Removed tiqr_gcm_apikey. The google cloud messaging API has been deprecated by Google.
+
 
 Release 16
 Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes

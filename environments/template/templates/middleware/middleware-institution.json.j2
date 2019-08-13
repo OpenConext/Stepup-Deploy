@@ -35,5 +35,26 @@
     "verify_email": true,
     "allowed_second_factors": ["yubikey", "tiqr"],
     "number_of_tokens_per_identity": 1
+  },
+  "institution-f.example.com": {
+    "use_ra_locations": true,
+    "show_raa_contact_information": false,
+    "verify_email": false,
+    "allowed_second_factors": [ ],
+    "number_of_tokens_per_identity": 2,
+    "use_ra": ["institution-a.example.com"],
+    "use_raa": ["institution-a.example.com"],
+    "select_raa": ["institution-b.example.com"]
+  },
+  "institution-g.example.com": {
+    "use_ra_locations": false,
+    "show_raa_contact_information": true,
+    "verify_email": false,
+    "allowed_second_factors": [ ],
+    "number_of_tokens_per_identity": 1,
+    "use_ra": [ ],
+    "use_raa": [ ],
+    "select_raa": ["institution-g.example.com"]
   }
+
 }

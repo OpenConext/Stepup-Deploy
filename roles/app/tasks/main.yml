@@ -62,9 +62,6 @@
       - sendmail-cf
     state: present
 
-# TODO: Why isn't php-gmp beining installed by the previous yum task?
-- name: Fix for php-gmp not being installed
-  yum: name=php-gmp state=present
 
 # Look for sendmail smarthost
 - name: Configure sendmail with smarthost

@@ -13,7 +13,7 @@ tiqr_info_url: "https://stepup.example.com/tiqr_info_url"
 
 # This is shown in some versions of the Tiqr app when the information of a tiqr account is shown
 # TODO: Set info Name
-tiqr_info_name: "SURFSecureID TEST2"
+tiqr_info_name: "OpenConext-Stepup"
 
 # Used for Symfony CSRF protection
 tiqr_secret: "{{ lookup('file', inventory_dir+'/secret/tiqr') }}"

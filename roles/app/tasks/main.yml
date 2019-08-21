@@ -133,6 +133,9 @@
   file: path=/opt/scripts/ state=directory owner=root group={{ app_deploy_user }} mode=770
 
 # Create vhosts for stepup components
+- include: php72-vhost.yml
+  vars: { component_name: webauthn,  vhost_name: "{{ webauthn_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-webauthn']"
 - include: vhost.yml
   vars: { component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-middleware']"

@@ -39,7 +39,7 @@
 
 
 # Put fpm config
-- name: php-fpm config
+- name: Put php-fpm config
   template: src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.conf'
   notify:
     - restart php-fpm

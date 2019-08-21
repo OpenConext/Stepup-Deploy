@@ -71,12 +71,6 @@
   notify:
     - reload sendmail
 
-# TODO: Why is this here ???
-# Build sendmail config file from template
-#- name: Configure sendmail
-#  command: make -C /etc/mail
-#  when: (sendmail_smarthost is defined) and (sendmail_smarthost_result|changed)
-
 # php-gd requires libgd (>2.1.1) from remi repo
 - name: Install php-gd
   yum: name=php-gd state=present enablerepo=remi

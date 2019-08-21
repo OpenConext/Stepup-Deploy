@@ -3,6 +3,7 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Element\NodeElement;
 use Behat\MinkExtension\Context\MinkContext;
 
 class RaContext implements Context
@@ -289,6 +290,56 @@ class RaContext implements Context
             );
         }
     }
+
+    /**
+     * @Given I remove token from user arg1
+     */
+    public function removeTokenFromUser($name)
+    {
+        $this->removeTokenWithIdentifierFromUser('03945859', $name);
+    }
+
+    /**
+     * @Then I remove token with identifier :arg2 from user :arg1
+     */
+    public function removeTokenWithIdentifierFromUser($identifier, $name)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+
+        // Get row
+        /** @var NodeElement[] $searchResults */
+        $searchResults = $page->findAll('xpath', sprintf("//td[contains(.,'%s')]/..", $name));
+        if (empty($searchResults)) {
+            throw new Exception(
+                sprintf('No tokens found for user "%s"', $name)
+            );
+        }
+        $token = null;
+        foreach ($searchResults as $searchResult) {
+            $button = $searchResult->find('css', sprintf('[data-sfidentifier=%s].btn.revoke', json_encode($identifier)));
+            if ($button) {
+                $token = $button;
+            }
+        }
+        if (is_null($token)) {
+            throw new Exception(
+                sprintf('Token with identifier not found for user "%s"', $name)
+            );
+        }
+
+        // Get button data
+        $sfIdentifier = $token->getAttribute('data-sfid');
+        $identityIdentifier = $token->getAttribute('data-sfidentityid');
+
+        // Fill data in hidden revocation form
+        $page->find('css', 'input[name="ra_revoke_second_factor[identityId]"]')->setValue($identityIdentifier);
+        $page->find('css', 'input[name="ra_revoke_second_factor[secondFactorId]"]')->setValue($sfIdentifier);
+        $form = $page->find('css', "form[name=ra_revoke_second_factor]");
+        $form->submit();
+
+        $this->minkContext->assertElementContainsText('#flash .alert', 'The token has been successfully removed');
+    }
+
 
     /**
      * @Then I should not see :arg1 in the search results

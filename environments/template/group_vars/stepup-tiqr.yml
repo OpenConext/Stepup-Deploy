@@ -13,7 +13,7 @@ tiqr_info_url: "https://stepup.example.com/tiqr_info_url"
 
 # This is shown in some versions of the Tiqr app when the information of a tiqr account is shown
 # TODO: Set info Name
-tiqr_info_name: "SURFSecureID TEST2"
+tiqr_info_name: "OpenConext-Stepup"
 
 # Used for Symfony CSRF protection
 tiqr_secret: "{{ lookup('file', inventory_dir+'/secret/tiqr') }}"
@@ -24,13 +24,6 @@ tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.key')
 
 # OAuth consumer key for authentication to the keyserver
 oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyserver') }}"
-
-# Optional API key for Google Cloud Messaging (GCM), now Firebase Cloud Messaging (FCM)
-# Required for sending push notifications to Android devices
-# When not configured Android users will not receive push notifications. They can still use Tiqr to autehnticate by
-# scanning the QR code.
-# TODO: Set GCM API key to enable push notifications on Android
-# tiqr_gcm_apikey: "{{ lookup('file', inventory_dir+'/secret/gcm_apikey') }}"
 
 # Optional API key for Firebase Cloud Messaging (FCM)
 # Required for sending push notifications to Android devices

@@ -13,7 +13,7 @@
     name: "{{ database_middleware_deploy_user }}"
     host: "%"
     password: "{{ database_middleware_deploy_password | vault(vault_keydir) }}"
-    priv: "{{ database_gateway_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_u2f_name }}.*:ALL\ PRIVILEGES,GRANT"
+    priv: "{{ database_gateway_name }}.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}.*:ALL\ PRIVILEGES"
     login_host: "127.0.0.1"
     login_user: "root"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

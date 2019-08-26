@@ -7,7 +7,6 @@
 #    $ cd /opt/www/middleware.<env>
 #    $ php app/console middleware:migrations:migrate --env=prod
 #    $ cd /opt/www/gateway.<env>
-#    $ php app/console u2f:migrations:migrate --env=prod
 # 3) Push the middleware configuration using the push-mw-config.yml playbook
 # 4) Bootstrap the first RA on one of the app servers:
 #    $ cd /opt/www/middleware.<env>

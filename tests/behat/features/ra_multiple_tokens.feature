@@ -9,7 +9,6 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
     And institution "institution-d.example.com" can "select_raa" from institution "institution-a.example.com"
     And a user "Jane Toppan" identified by "urn:collab:person:institution-a.example.com:jane-a-ra" from institution "institution-a.example.com"
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey" with identifier "00000004"
-    And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "u2f" with identifier "00000005"
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "raa" for institution "institution-a.example.com"
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "raa" for institution "institution-b.example.com"
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "raa" for institution "institution-d.example.com"

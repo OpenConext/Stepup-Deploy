@@ -34,8 +34,8 @@ noreply_email_name: Step-up Example
 # - ra_vhost_name - Stepup-RA (i.e., the web interface for registration authorities for vetting users and managing tokens)
 #
 # Your users will see (i.e. may be redirected to):
-# - gateway_vhost_name - Stepup- Gateway (This is the Stepup SAML proxy, it will show the webinterface for SMS, Tiqr and
-#                        U2F authentication and, when required, a WAYG)
+# - gateway_vhost_name - Stepup- Gateway (This is the Stepup SAML proxy, it will show the webinterface for SMS, Tiqr
+#   and, when required, a WAYG)
 # - tiqr_vhost_name - Stepup-Tiqr (The GSSP for Tiqr) (optional)
 #
 # REST interfaces (i.e. not visited using a webbrowser)
@@ -82,9 +82,9 @@ stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 
 # The build in second factor types of the Stepup-Gateway to enable in the SS and the RA
 # Format: comma separated list of factors to enable
-# Supported factors: sms, yubikey, u2f
+# Supported factors: sms, yubikey
 # TODO: Select second factors to enable
-stepup_enabled_factors: sms, yubikey, u2f
+stepup_enabled_factors: sms, yubikey
 
 # The generic second factor types to enable in the SS and the RA
 # You can define new GSSPs here. Note that you will have to add configuration and translation for the new GSSP in
@@ -237,8 +237,3 @@ database_keyserver_user: keyserver
 database_keyserver_password: "{{ lookup('file', inventory_dir+'/password/database_keyserver') }}"
 database_keyserver_deploy_user: keyserver-deploy
 database_keyserver_deploy_password: "{{ lookup('file', inventory_dir+'/password/database_keyserver_deploy') }}"
-
-# Used by stepup-gateway role to configure u2f
-database_u2f_name: u2f
-database_u2f_user: u2f
-database_u2f_password: "{{ lookup('file', inventory_dir+'/password/database_u2f') }}"

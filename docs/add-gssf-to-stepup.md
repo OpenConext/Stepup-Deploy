@@ -15,7 +15,7 @@ The Ansible playbooks in Stepup-Deploy were updated to work with the two GSSPs t
         loa: 2 
     ```
 
-2. Update `stepup_enabled_factors`. This variable no longer control the GSSPs but controls _only_ the build-in second factor types ("yubikey", "sms" and "u2f").
+2. Update `stepup_enabled_factors`. This variable no longer control the GSSPs but controls _only_ the build-in second factor types ("yubikey", "sms").
 
 If your are updating an existing configuration that is deployed using Stepup-Deploy then the two changes above are the only two required changes.
 

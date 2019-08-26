@@ -86,14 +86,6 @@
   copy: content="{{ gateway_gssp_idp_publickey }}" dest={{ component_dir_name }}/app/config/idp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
-# U2F support for facets:
-- name: Set U2F app-id directory rights
-  file: path={{ component_dir_name }}/web/u2f state=directory group={{ component_group }} mode={{ component_mode_755 }}
-
-- name: Put facet ids
-  template: src=app-id.json.j2 dest={{ component_dir_name }}/web/u2f/app-id group={{ component_group }} mode={{ component_mode_644 }}
-
-
 - name: Put middleware configuration scripts in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:

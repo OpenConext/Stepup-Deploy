@@ -20,7 +20,7 @@
     name: "{{ database_middleware_deploy_user }}"
     host: "%"
     password: "{{ database_middleware_deploy_password | vault(vault_keydir) }}"
-    priv: "{{ database_gateway_name }}_test.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}_test.*:ALL\ PRIVILEGES,GRANT/{{ database_u2f_name }}_test.*:ALL\ PRIVILEGES,GRANT"
+    priv: "{{ database_gateway_name }}_test.*:ALL\ PRIVILEGES,GRANT/{{ database_middleware_name }}_test.*:ALL\ PRIVILEGES"
     append_privs: yes
     login_host: "127.0.0.1"
     login_user: "root"
@@ -60,22 +60,6 @@
     host: "%"
     password: "{{ database_tiqr_password | vault(vault_keydir) }}"
     priv: "{{ database_tiqr_name }}_test.*:ALL\ PRIVILEGES,GRANT"
-    append_privs: yes
-    login_host: "127.0.0.1"
-    login_user: root
-    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
-
-
-# Add test u2f for middleware to allow functional testing in development environment
-- name: Create u2f test database
-  mysql_db: name={{ database_u2f_name }}_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
-
-- name: Set permissions for gateway test database
-  mysql_user:
-    name: "{{ database_u2f_user }}"
-    host: "%"
-    password: "{{ database_u2f_password | vault(vault_keydir) }}"
-    priv: "{{ database_u2f_name }}_test.*:ALL\ PRIVILEGES,GRANT"
     append_privs: yes
     login_host: "127.0.0.1"
     login_user: root

@@ -1,8 +1,8 @@
 ---
-# Ansible playbook for setting up the step-up infrastructure
+# Ansible playbook for setting up the Openconext-Stepup infrastructure
 # Run:
 # cd Stepup-Deploy
-# ansible-playbook -i inventory environment/<env>/inventory site.yml
+# ansible-playbook -i <environment_directory>/inventory site.yml
 
 
 - hosts: all

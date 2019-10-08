@@ -29,13 +29,12 @@
         "blacklisted_encryption_algorithms": []
 </xsl:template>  
 
-<xsl:template match="md:KeyDescriptor[not(@use)]">
-  <xsl:apply-templates select="/*/ds:X509Certificate"/>
+<xsl:template match="md:KeyDescriptor[not(@use) or @use='signing']">
+  <xsl:apply-templates select="ds:KeyInfo/ds:X509Data/ds:X509Certificate"/>
 </xsl:template>
   
-<xsl:template match="md:KeyDescriptor[@use='signing']">
-  <xsl:apply-templates select="/*/ds:X509Certificate"/>  
-</xsl:template>
+<xsl:template match="md:KeyDescriptor[@use!='signing']" />  
+
 
 <xsl:template match="ds:X509Certificate">
         "public_key": "<xsl:value-of select="translate(normalize-space(.),' ','')"/>",</xsl:template>

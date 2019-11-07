@@ -10,16 +10,16 @@
 
 
 - name: Install MariaDB, Galera, rsync, MySQL-python
-  yum: name={{item}} state=installed
-  with_items:
-  - MariaDB-Galera-server
-  - MariaDB-client
-  - galera
-  - rsync         # For galera sync
-  - MySQL-python  # Required for using the Ansible mysql_* modules
-  - memcached
-  - php-pecl-memcached
-
+  yum:
+    name:
+      - MariaDB-Galera-server
+      - MariaDB-client
+      - galera
+      - rsync         # For galera sync
+      - MySQL-python  # Required for using the Ansible mysql_* modules
+      - memcached
+      - php-pecl-memcached
+    state: installed
 
 - name: Start and enable memcached
   service: name=memcached state=started enabled=true
@@ -63,12 +63,12 @@
            If this is the first node in the database cluster that is started the node
            must be bootstrapped first. To do this run the playbook again with:
                ansible-playbook ... -e "galera_bootstrap_node={{ inventory_hostname }}"
-  when: (status_result.rc != 0) and (start_result|failed) and (galera_bootstrap_node != inventory_hostname)
+  when: (status_result.rc != 0) and (start_result is failed) and (galera_bootstrap_node != inventory_hostname)
 
 # Only bootstrap when galera_bootstrap_node allows us to bootsrap this node, and the node is not running
 - name: Bootstrap first MariaDB server
   command: /sbin/service mysql bootstrap
-  when: (status_result.rc != 0) and (start_result|failed) and (galera_bootstrap_node == inventory_hostname)
+  when: (status_result.rc != 0) and (start_result is failed) and (galera_bootstrap_node == inventory_hostname)
 
 # Bootstrap database
 # - Set root password

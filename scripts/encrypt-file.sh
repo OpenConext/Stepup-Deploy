@@ -14,10 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os.path
 import sys
+import os.path
 from optparse import OptionParser
-from keyczar import keyczar
+try:
+  from keyczar import keyczar
+except ImportError:
+  raise ImportError('The required "keyczar" module was not found. You can install it using e.g. pip: "pip install python-keyczar" or "pip install python3-keyczar"')
 
 parser = OptionParser(usage="usage: %prog [options] <keyczar keystore directory>")
 parser.add_option("-f", "--file", help="the input file", dest="filename", metavar="FILE")
@@ -29,7 +32,7 @@ if len(args) != 1:
   parser.error("wrong number of arguments")
 
 if not os.path.isdir(args[0]):
-  print 'Error: keystore directory "%s" not found' % args[0]
+  print('Error: keystore directory "%s" not found' % args[0])
   sys.exit(1)
 
 if options.filename:
@@ -38,10 +41,10 @@ if options.filename:
     keydir = os.path.expanduser(args[0])
     crypter = keyczar.Crypter.Read(keydir)
     if options.decrypt:
-      print crypter.Decrypt(content)
+      print(crypter.Decrypt(content))
     else:
       encrypted_secret = crypter.Encrypt(content)
-      print encrypted_secret
+      print(encrypted_secret)
 else:
   parser.print_help()
 

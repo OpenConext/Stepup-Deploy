@@ -1,10 +1,11 @@
 ---
 
 - name: Install nginx
-  yum: name={{item}} state=present
-  with_items:
-  - nginx
-  - python-passlib     # For Ansible htpasswd module
+  yum:
+    name:
+    - nginx
+    - python-passlib     # For Ansible htpasswd module
+    state: present
 
 
 # Remove default distro conf files

@@ -1,8 +1,16 @@
 parameters:
+    # IP addresses of any HTTP proxies that are sitting in from of the application
+    # See: http://symfony.com/doc/current/request/load_balancer_reverse_proxy.html
+    trusted_proxies:   [ 127.0.0.1 ]
+
     database_driver:   pdo_mysql
 
     database_host:     {{ database_lb_address }}
     database_port:     3306
+    # The database server version is used in the dbal configuration and is required to prevent issues when the database
+    # connection is booted. See https://github.com/doctrine/DoctrineBundle/issues/351 for more details on this.
+    # Also see: https://symfony.com/doc/current/reference/configuration/doctrine.html#doctrine-dbal-configuration
+    database_server_version: 5.6
     database_middleware_name:     {{ database_middleware_name }}
     database_middleware_user:     {{ database_middleware_user }}
     database_middleware_password: {{ database_middleware_password | vault(vault_keydir)}}
@@ -12,6 +20,7 @@ parameters:
     # TODO: Deploy creds should only be available during deploy
     database_deploy_user:      {{ database_middleware_deploy_user }}
     database_deploy_password:  {{ database_middleware_deploy_password | vault(vault_keydir) }}
+    database_server_version:   {{ database_server_version | default("5.6") }}
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -41,10 +50,14 @@ parameters:
     self_service_url:  https://{{ selfservice_vhost_name }}
 
     enabled_generic_second_factors:
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
       {{ key }}:
         loa: {{ value.loa }}
 {% endfor %}
 
-    # TODO: Remove once no longer required by configuration
+    # Sets the number of tokens allowed for each identity.
+    #
+    # This is the global, application wide default. This configuration should be specified for each institution in the
+    # institution config (middleware api). The value configured in the parameters.yml will be used as the
+    # fallback/default value.
     number_of_tokens_per_identity: 1

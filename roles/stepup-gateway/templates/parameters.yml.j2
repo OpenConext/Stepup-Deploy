@@ -12,6 +12,7 @@ parameters:
     database_u2f_password:     {{ database_u2f_password | vault(vault_keydir)}}
     database_deploy_user:      {{ database_gateway_deploy_user }}
     database_deploy_password:  {{ database_gateway_deploy_password | vault(vault_keydir) }}
+    database_server_version:   {{ database_server_version | default("5.6") }}
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -22,7 +23,7 @@ parameters:
     locales:              [{{ enabled_locales | join(",") }}]
     locale_cookie_domain: {{ locale_cookie_domain }}
 
-    app_name: "Stepup Gateway"
+    app_name: {{ gateway_app_name | default("Stepup Gateway") }}
 
     secret:            {{ gateway_secret | vault(vault_keydir) }}
 

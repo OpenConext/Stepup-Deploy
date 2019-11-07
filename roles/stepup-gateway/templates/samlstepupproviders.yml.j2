@@ -8,7 +8,7 @@ surfnet_stepup_gateway_saml_stepup_provider:
         consume_assertion: gssp_consume_assertion
         metadata: gssp_saml_metadata
     providers:
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
         {{ key }}:
 {# TODO: "enabled" does not seem to do anything anymore #}
             enabled: true

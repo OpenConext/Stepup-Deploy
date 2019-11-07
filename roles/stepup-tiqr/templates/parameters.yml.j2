@@ -18,9 +18,11 @@ parameters:
     base_url: 'https://{{ tiqr_vhost_name }}'
     tiqr_identity: {{ tiqr_vhost_name }}
 
+    use_firebase_fallback_for_gcm: true
+
     # View parameters
     support_url:
-{% for locale, url in tiqr_support_url.iteritems() %}
+{% for locale, url in tiqr_support_url.items() %}
         {{ locale }}: "{{ url | replace('%', '%%') }}"
 {% endfor %}
 
@@ -44,6 +46,10 @@ parameters:
           gcm:
             apikey: '{{ tiqr_gcm_apikey | vault(vault_keydir) }}'
             application: 'nl.surfnet.authenticator'
+{% endif %}
+{% if tiqr_firebase_apikey is defined %}
+          firebase:
+            apikey: '{{ tiqr_firebase_apikey | vault(vault_keydir) }}'
 {% endif %}
           apns:
             certificate: '{{ component_dir_name }}/app/config/apns.pem'

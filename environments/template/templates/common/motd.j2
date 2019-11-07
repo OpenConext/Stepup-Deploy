@@ -1,0 +1,16 @@
+{#
+TODO: Update the information below. It is displayed as message of the day (MOTD) after login to the host
+      After updating this file run the site.yml ansible-playbook with "-t motd"
+#}
+
+This server is managed though Ansible. See: https://github.com/OpenConext/Stepup-Deploy
+Hostname: {{ inventory_hostname }}
+Roles: {{ group_names | join(", ") }}
+Stepup domain: {{ locale_cookie_domain }}
+{#
+Remote IdP: ...
+Ansible environment: ...
+Stepup Release: ...
+...
+#}
+

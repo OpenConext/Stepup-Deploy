@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CWD=`pwd`
 BASEDIR=`dirname $0`

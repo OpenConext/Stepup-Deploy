@@ -4,33 +4,34 @@
 # Not safe for production use
 
 - name: Install development specific RPM's
-  yum: name={{ item }}
-  with_items:
-    # For SSP install
-    - git
+  yum:
+    name:
+      # For SSP install
+      - git
 
-    # For Mailcatcher
-    - ruby
-    - ruby-devel
-    - gcc
-    - gcc-c++
-    - sqlite
-    - sqlite-devel
-    - make
+      # For Mailcatcher
+      - ruby
+      - ruby-devel
+      - gcc
+      - gcc-c++
+      - sqlite
+      - sqlite-devel
+      - make
 
-    # For jsonlint -- use "jsonlint <filename>" to do a syntax check on a JSON file
-    - python-demjson
+      # For jsonlint -- use "jsonlint <filename>" to do a syntax check on a JSON file
+      - python-demjson
 
-    # xdebug, the PHP debug extension
-    - php-pecl-xdebug
+      # xdebug, the PHP debug extension
+      - php-pecl-xdebug
 
-    # telnet client
-    - telnet
+      # telnet client
+      - telnet
+    state: present
 
 
 ## Composer ##
 
-# Install systemwide composer
+# Install systemwide composer in /usr/local/bin
 - name: Download /usr/local/bin/composer from https://getcomposer.org/composer.phar
   get_url: url=https://getcomposer.org/composer.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
 
@@ -60,7 +61,7 @@
 # Accessible at http://<server>:1080/
 
 - name: Install mailcatcher
-  command: gem install mailcatcher creates=/usr/local/bin/mailcatcher
+  command: gem install mailcatcher --no-rdoc --no-ri creates=/usr/local/bin/mailcatcher
 
 # Create user and group for running the mailcatcher daemon
 - name: Add group mailcatcher
@@ -128,7 +129,7 @@
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
 - name: Add saml2debug module
-  shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && composer require simplesamlphp/simplesamlphp-module-saml2debug
+  shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
@@ -203,3 +204,6 @@
 
 - name: Enable SSP webapp
   file: src=/usr/local/share/simplesamlphp/ dest=/opt/www/{{ ssp_vhost_name }} state=link
+
+
+- include: db.yml

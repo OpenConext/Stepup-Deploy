@@ -2,7 +2,8 @@
 ES_HOME=/usr/share/elasticsearch
 
 # Heap Size (defaults to 256m min, 1g max)
-#ES_HEAP_SIZE=2g
+# Allocate max half of system memory to the ES heap
+ES_HEAP_SIZE={{ (ansible_memtotal_mb * 0.5) | int }}m
 
 # Heap new generation
 #ES_HEAP_NEWSIZE=

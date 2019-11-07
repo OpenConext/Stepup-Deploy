@@ -13,22 +13,12 @@
 </xsl:template>
 
 <xsl:template match="md:EntityDescriptor">      {
-        "entity_id": "<xsl:value-of select="//@entityID"/>",<xsl:apply-templates select="md:SPSSODescriptor"/>
-      }
+        "entity_id": "<xsl:value-of select="//@entityID"/>",<xsl:apply-templates select="md:SPSSODescriptor"/>      }
 </xsl:template>
-
-<xsl:template match="md:KeyDescriptor"/>
-
-<xsl:template match="md:KeyDescriptor[@use='signing']">
-<xsl:apply-templates/>
-</xsl:template>
-
-<xsl:template match="ds:X509Certificate">
-        "public_key": "<xsl:value-of select="translate(normalize-space(.),' ','')"/>",</xsl:template>
-
-<xsl:template match="md:AssertionConsumerService[@Binding='urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']">
-        "acs": [
-          "<xsl:value-of select="@Location"/>"
+  
+<xsl:template match="md:SPSSODescriptor">
+  <xsl:apply-templates select="md:KeyDescriptor"/>
+        "acs": [<xsl:apply-templates select="md:AssertionConsumerService[@Binding='urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']"/>     
         ],
         "loa": {
           "__default__": "{{ stepup_uri_loa2 }}"
@@ -36,10 +26,24 @@
         "assertion_encryption_enabled": false,
         "second_factor_only": false,
         "second_factor_only_nameid_patterns": [],
-        "blacklisted_encryption_algorithms": []</xsl:template>
+        "blacklisted_encryption_algorithms": []
+</xsl:template>  
 
-<xsl:template match="md:Extensions"/>
-<xsl:template match="md:NameIDFormat"/>
-<xsl:template match="md:ContactPerson"/>
+<xsl:template match="md:KeyDescriptor[not(@use)]">
+  <xsl:apply-templates select="/*/ds:X509Certificate"/>
+</xsl:template>
+  
+<xsl:template match="md:KeyDescriptor[@use='signing']">
+  <xsl:apply-templates select="/*/ds:X509Certificate"/>  
+</xsl:template>
+
+<xsl:template match="ds:X509Certificate">
+        "public_key": "<xsl:value-of select="translate(normalize-space(.),' ','')"/>",</xsl:template>
+
+<xsl:template match="md:AssertionConsumerService[@Binding='urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST']">           
+          "<xsl:value-of select="@Location"/>"<xsl:if test="position() != last()">
+    <xsl:text>,</xsl:text>
+  </xsl:if>        
+</xsl:template>
 
 </xsl:stylesheet>

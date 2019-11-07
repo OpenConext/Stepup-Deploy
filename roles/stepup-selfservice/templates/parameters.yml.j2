@@ -64,12 +64,15 @@ parameters:
     stepup_loa_loa2: {{ stepup_uri_loa2 }}
     stepup_loa_loa3: {{ stepup_uri_loa3 }}
 
-    logout_redirect_url: {{ logout_redirect_url }}
+    logout_redirect_url:
+{% for key, value in logout_redirect_url.items() %}
+      {{ key }}: {{ value }}
+{% endfor %}
 
     enabled_second_factors: [ {{ stepup_enabled_factors }} ]
 
     enabled_generic_second_factors:
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
       {{ key }}:
         loa: {{ value.loa }}
 {% endfor %}

@@ -7,7 +7,7 @@ surfnet_stepup_ra_saml_stepup_provider:
         metadata: ra_vetting_gssf_metadata
 
     providers:
-{% for key, value in stepup_enabled_generic_second_factors.iteritems() %}
+{% for key, value in stepup_enabled_generic_second_factors.items() %}
         {{ key }}:
             hosted:
                 service_provider:

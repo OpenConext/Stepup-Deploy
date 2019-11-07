@@ -1,0 +1,12 @@
+---
+
+- stat:
+    path: "{{ file_path }}"
+    checksum_algorithm: sha256
+    get_checksum: yes
+  register: stat_result
+
+- debug:
+    msg: "SHA256 {{ file_path }}: {{ stat_result.stat.checksum }} ({{ lookup[stat_result.stat.checksum] | default('UNKNOWN') }})"
+
+

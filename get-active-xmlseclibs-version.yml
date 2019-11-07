@@ -1,0 +1,30 @@
+---
+# Get the active xmlselibs version (hash)
+# Usage:
+# ansible-playbook -i <environment_directory>/inventory get-active-xmlseclibs-version.yml
+
+- name: Setup application servers
+  hosts: app
+  become: True
+  serial: 1
+
+  tasks:
+
+    - include: print_file_hash.yml
+      vars:
+        file_path: "/opt/www/{{ item }}/vendor/robrichards/xmlseclibs/src/XMLSecurityDSig.php"
+        lookup:
+          "f02a7abf1622d8f74dfd22e9309a6c29e9826740469664846255bad9fa17b4dd": "3.0.4 OK"
+          "57569be9ddd3a17d0bffd3b18155d892b8852cacfa3079d3e23c2a131ba00be3": "3.0.3 FAIL"
+          "94820cfd6c775020524d3b8f54966142451a7932067d7678fb7bf608b6bf239d": "3.0.1 FAIL"
+          "90db5885e3cac09fec0adfacc92c08b7ada7b6d8e2a056c3f934d98486a0a713": "3.0.1 PATCHED OK"
+          "e1f6ac091afbe014c439f3e3ca4b96fb4531a12aad611eeee3f4ec47482f3dbd": "3.0.3 PATCHED OK"
+
+      with_items:
+        - "{{ gateway_vhost_name }}"
+        - "{{ middleware_vhost_name }}"
+        - "{{ ra_vhost_name }}"
+        - "{{ selfservice_vhost_name }}"
+        - "{{ tiqr_vhost_name }}"
+
+

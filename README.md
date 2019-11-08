@@ -31,7 +31,7 @@ Setting up a new Stepup infrastructure consists of 4 steps:
 3. [Deploy the Stepup components](#deploy). This installs the stepup applications ("components") and writes the application configuration: stepup-gateway, stepup-middleware, stepup-selfservice, stepup-ra, steup-tiqr and oath-server-php. 
 4. [Post installation configuration](#postinstall). This includes executing the scripts on the application server that initialise or update the database and running the scripts that push the configuration to the database.  
 
-### <a name="create-environment"></a> [Step 1: Creating a new Environment] (id:create-environment) ###
+### [Step 1: Creating a new Environment](id:create-environment) ###
 
 Using the [`create_new_environment.sh`](scripts/create_new_environment.sh) script a new environment can be created based on a [template](environments/template/). This new environment does not have to (and typically shouldn't) be stored in this repository. The intended use is to store the environment in a different, private, repository. The secrets (private keys, password etc) in the environment are stored in files that are encrypted with a symmetric key using [python-keyczar](https://pypi.python.org/pypi/python-keyczar). This keyczar key can be stored in a safe location (e.g. on a deploy host), separate from the environment. The standard Ansible vault is not used in this process.
 
@@ -62,7 +62,7 @@ For any other environment than one that targets the Stepup-VM you will need to m
 
 More information on the "environment" concept can be found in [ansible-tools](https://github.com/pmeulen/ansible-tools)
 
-### <a name="site"></a>[Step 2: Create / update infrastructure] (id:site)###
+### [Step 2: Create / update infrastructure](id:site) ###
 
 The [site.yml](site.yml) playbook handles the configuration of your infrastructure. This playbook requires [Ansible](http://ansible.com) version 2.x with python < 3.0 and the environment created in the previous step. You execute Ansible from a Deploy host (e.g. you laptop) to configure other machines. Please consult the extensive [Ansible documentation](http://docs.ansible.com/ansible/) for [Ansible installation instructions]((http://docs.ansible.com/ansible/intro_installation.html)) and more.
 
@@ -85,7 +85,7 @@ The inventory consists of one database running on the application server. The pl
 
 If you are using the minimal configuration in the inventory from the template, you have one database that is running on the application server. This database is configured as a cluster consisting of one node (you could add more nodes later). In this case the most important difference between a normal mysql/mariaDB and the Galera cluster version is that you ever need to start the database you must use `service mysql bootstrap` instead of `service mysql start`.
 
-### <a name="deploy"></a> [Step 3: Deploy the Stepup components] (id:deploy> ###
+### [Step 3: Deploy the Stepup components](id:deploy) ###
 
 Stepup components are the applications that together make up the Stepup service. These are:
 
@@ -113,7 +113,7 @@ Before a component can be deployed it must be built. This creates a tarball (tar
 Prebuild components can be downloaded from the release page of the component on GitHub. Make sure to get the prebuild component tar.bz2, and not the source tarball that is automatically created by GitHub. The name of a component has the form `<component-name>-<tag of branch>-<timestamp of last commit>-<git commit SHA1>.tar.bz2`. For example: `Stepup-RA-1.0.2-20150623082722Z-2c4b6389cdbb015ddd470a19f1c04a9feb429032.tar.bz2`
 
 
-### <a name="postinstall"></a> [Step 4: Post Installation Configuration] (id:postinstall) ###
+### [Step 4: Post Installation Configuration](id:postinstall) ###
 
 The fourth and last step is to perform post installation configuration. This consists of:
 - Creating database schema's for the applications
@@ -125,7 +125,7 @@ The databases schemas and users for the Stepup components were created by the db
 
 To perform the post installation configuration you must execute each of these scripts once. Because some scripts are order dependent they are numbered in the order they should be executed. If two scrips have the same number, their order is not important. All the scripts except "06-middleware-bootstrap-sraa-users.sh" are idempotent, meaning they can be called multiple times without ill effect.
 
-#### Bootstrap and creating SRAAs
+#### Bootstrap and creating SRAAs ####
 
 The bootstrap script is used to create the first user(s). These users cannot use the normal process via the self service and then getting vetted in the RA interface because there is no RA yet that can vet them. The bootstrap proces creates the user, called an identity in Stepup, and registers an activatated (i.e. vetted) Yubikey token for that identity.
 
@@ -135,7 +135,7 @@ Note that the bootsrap script only works for identities that do not yet exist in
 
 
 [More information](id:moreinfo)
-================
+==================
 
 CHANGELOG
 ---------
@@ -143,7 +143,7 @@ CHANGELOG
 The [https://github.com/OpenConext/Stepup-Deploy/blob/master/CHANGELOG](CHANGELOG) in this repo lists the changes of not only the deployment scripts, but also the changes in the stepup components.
 
 [Pivotal Issue tracker](id:pivotal)
----------------------
+-----------------------
 
 Much of the development discussions take place outside github in a pivotal tracker: https://www.pivotaltracker.com/n/projects/1163646
 

@@ -33,7 +33,8 @@ crypter = keyczar.Crypter.Read(expanded_keydir)
 sys.stdout.write(crypter.Decrypt("%s"))
   """ % (keydir, encrypted)
   from subprocess import check_output
-  return check_output(["python", "-c", method], universal_newlines=True)
+  import sys
+  return check_output([sys.executable, "-c", method], universal_newlines=True)
 
 
 # Compatible with python2 and python3

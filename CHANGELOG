@@ -4,25 +4,13 @@ More fine grained authorization (FGA) of RAs, Fix wrong Issuer in Gateway SAMLRe
 This release introduces the possibility for users to have the RA or RAA role in other institutions than their own institution.
 The institutions for which a user can be an RA(A) are controlled though the institution configuration.
 
----
-
-* Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
-  on an app server
-
-* Added a second, independent and optional, remote loghost for sending logs using RELP over TLS.
-  Enabled by defining rsyslog_remote_server, rsyslog_remote_port, rsyslog_certificate, rsyslog_ca_certificate and rsyslog_key
-  See all.yml in the template environment for details.
-
-* Stepup-tiqr:
-  - Removed tiqr_gcm_apikey. The google cloud messaging API has been deprecated by Google.
-
----
-
+CHANGES
 * Stepup-Middleware
   - Add "select_raa", "use_ra" and "use_raa" optional configuration options to the institution configuration. These
     options list the institutions (by SHO) from which users can get the RA(A) ("select_raa") role for the institution, or
     from which all RAs (use_ra) or RAAs (use_raa) have will have role for this institution.
     See https://github.com/OpenConext/Stepup-Middleware/blob/master/docs/MiddlewareConfiguration.md#institution-configuration-structure
+  - Update xmlseclibs for CVE-2019-3465
 
 * Stepup-RA
   - Add "Institution Configuration" page where (S)RAAs can the the configuration of the selected institution (https://www.pivotaltracker.com/story/show/160283525)
@@ -37,33 +25,44 @@ The institutions for which a user can be an RA(A) are controlled though the inst
     screen as user's the roles because of "use_ra" and "ra_raa" are shown.
   - Fix: Missing paging controls in token overview page (https://www.pivotaltracker.com/story/show/165629990)
   - Show the SHO of the RA that vetted the user in the audit log (https://www.pivotaltracker.com/story/show/160283522)
+  - Fix XML Signature validation bypass critical vulnerability (CVE-2019-3465)
 
 * Stepup-Selfservice
+  - Fix XML Signature validation bypass critical vulnerability (CVE-2019-3465)
+
 * Stepup-Gateway
   - Add WantAuthnRequestsSigned="true" to thew IDPSSODescriptor in the IdP metadata (https://www.pivotaltracker.com/story/show/166266929)
   - Fix: Wrong Issuer and incomplete Status code from gateway in response to GSSP AuthnFailed (https://www.pivotaltracker.com/story/show/164657123)
+  - Fix XML Signature validation bypass critical vulnerability (CVE-2019-3465)
 
-* Deploy components:
-  - Stepup-Middleware
-  - Stepup-Gateway
-  - Stepup-SelfService
-  - Stepup-RA
-  - Stepup-tiqr
+* Stepup-tiqr
+  - Removed tiqr_gcm_apikey. The google cloud messaging API has been deprecated by Google.
+  - Update xmlseclibs for CVE-2019-3465
 
-* Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
-    on an app server
-
-* Added a second, independent and optional, remote loghost for sending logs using RELP over TLS.
+* Infrastructure
+- Added a second, independent and optional, remote loghost for sending logs using RELP over TLS.
   Enabled by defining rsyslog_remote_server, rsyslog_remote_port, rsyslog_certificate, rsyslog_ca_certificate and rsyslog_key
   See all.yml in the template environment for details.
 
-* Stepup-tiqr:
-  - Removed tiqr_gcm_apikey. The google cloud messaging API has been deprecated by Google.
+
+INSTALL
+* Deploy components
+  - Stepup-Middleware 3.0.2
+  - Stepup-Gateway 2.10.5
+  - Stepup-SelfService 3.0.1
+  - Stepup-RA 3.0.1
+  - Stepup-tiqr 2.1.9
+
+* Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
+  on an app server.
+  The new gateway will continue to work with the database schema of release 16. The new middleware (and by extension the
+  SelfService and the RA components) require the database schema to be updated to work.
 
 
 Release 16
 Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
 
+CHANGES
 * All stepup applications (except the keyserver) were updated to Symfony 3.4 LTS
 
 * Stepup-SelfService
@@ -112,10 +111,11 @@ Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
   - Stepup-Deploy can now be used to deploy a development VM (see OpenConext/Stepup-VM) and run behat integration tests in this
     VM.
 
+
 * Infrastructure:
   - Restrict download of .php files for tiqr app. Redeploy the app role to update the nginx config for tiqr
 
-
+INSTALL
 * Deploy components:
   - Stepup-Middleware 2.9.3
   - Stepup-Gateway 2.10.3
@@ -138,6 +138,7 @@ Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
 Release 15
 Support for multiple ACS locations, various improvements to error pages, several UI improvements, multiple-token configuration per-institution, various bugfixes and Stepup is now brandless (no more "SURFisms").
 
+CHANGES
 * Gateway:
   - Support multiple ACS locations and use the AssertionConsumerServiceUrl from the AuthnRequest (https://www.pivotaltracker.com/story/show/155288768)
   - Improve styling of WAYG token selection screen (https://www.pivotaltracker.com/story/show/152918604)
@@ -188,7 +189,7 @@ Important changes - attention required:
   - the parameters.yml parameter `number_of_tokens_per_identity` can be removed from SelfService,
     in Middleware, the parameter is still required
 
-Install:
+INSTALL
 * Deploy components:
   - Stepup-Middleware: 2.8.2
   - Stepup-Gateway: 2.9.2
@@ -220,6 +221,7 @@ Release 14
 Export RA token overview, add GSSP tokens though configuraton, registration code expiry reminder emails support for
 multiple tokens per user (experimental)
 
+CHANGES
 * Allow multiple tokens per user (experimental). Tokens must be of a different type. I.e when set to 2, a user could
   register a Tiqr token and a yubiKey token, but not two YubiKey tokens or two Tiqr tokens.
   This is a global setting that is configured though 'number_of_tokens_per_identity' in group_vars/all.yml. Setting this
@@ -261,7 +263,7 @@ multiple tokens per user (experimental)
   - Fix: "verify identity" button not working in small browser window
     (https://www.pivotaltracker.com/story/show/144698163)
 
-Install:
+INSTALL
 * Deploy components:
   - Stepup-Middleware 2.7.1
   - Stepup-Gateway 2.8.3
@@ -276,6 +278,8 @@ Install:
 
 
 Release 13.2 (hotfix)
+
+CHANGES
 - Hotfix for two SimpleSAMLphp vulnerabilities
 - Fix Tiqr authentication from Microsoft Office 365 applications
 
@@ -285,7 +289,7 @@ Release 13.2 (hotfix)
 * Stepup-tiqr
 - Fix a Script error when authenticating with Tiqr from Microsoft Office 365 applications
 
-Install:
+INSTALL
 * Deploy components:
   - Stepup-Gateway 2.7.5
   - Stepup-SelfService 2.7.2

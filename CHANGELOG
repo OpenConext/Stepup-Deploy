@@ -4,6 +4,20 @@ More fine grained authorization (FGA) of RAs, Fix wrong Issuer in Gateway SAMLRe
 This release introduces the possibility for users to have the RA or RAA role in other institutions than their own institution.
 The institutions for which a user can be an RA(A) are controlled though the institution configuration.
 
+---
+
+* Update middleware database schema to 20190211163604 (from 20180409100948) by running /root/01-middleware-db_migrate.sh
+  on an app server
+
+* Added a second, independent and optional, remote loghost for sending logs using RELP over TLS.
+  Enabled by defining rsyslog_remote_server, rsyslog_remote_port, rsyslog_certificate, rsyslog_ca_certificate and rsyslog_key
+  See all.yml in the template environment for details.
+
+* Stepup-tiqr:
+  - Removed tiqr_gcm_apikey. The google cloud messaging API has been deprecated by Google.
+
+---
+
 * Stepup-Middleware
   - Add "select_raa", "use_ra" and "use_raa" optional configuration options to the institution configuration. These
     options list the institutions (by SHO) from which users can get the RA(A) ("select_raa") role for the institution, or

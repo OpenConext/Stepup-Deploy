@@ -1,0 +1,5 @@
+# Config for webauthn component
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+# Certificate in all.yml group_vars
+webauthn_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_idp.key') }}"

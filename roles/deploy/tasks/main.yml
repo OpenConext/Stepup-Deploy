@@ -61,6 +61,11 @@
 
 - block:
 # Production
+  - name: Ensure group exists
+    group:
+      name: "{{ component_name }}"
+      state: present
+
   - name: Create stepup directory
     file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
 
@@ -157,3 +162,4 @@
       when: component_name != "tiqr" and component_name != "keyserver"
 
   when: develop | default(false)
+  

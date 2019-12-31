@@ -210,6 +210,16 @@ stepup-app
 stepup-app
 
 
+#############
+# stepup-webauthn
+#############
+
+[stepup-webauthn]
+
+[stepup-webauthn:children]
+stepup-app
+
+
 ##################
 # stepup-keyserver
 ##################

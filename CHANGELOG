@@ -138,38 +138,12 @@ Update Symfony to 3.4 LTS, bugfixes, Tiqr push notification fixes
 Release 15
 Support for multiple ACS locations, various improvements to error pages, several UI improvements, multiple-token configuration per-institution, various bugfixes and Stepup is now brandless (no more "SURFisms").
 
-Deploy
-* Environment images can now be set per environment.
-  - Put environment specific images in the <environment>/files/stepup-app/images/ directory. These images are uploaded
-    to the web/images direcory of each component.
-  - Stepup components use the image named "header-logo.png" from the web/images direcory as their logo
-* New GSSP methods can be added though configuration. This intoduces several changes to the configuration of existing
-  environments. Existing environments must be updated:
-  - The GSSP proxy of the Stepup-Gateway now uses the same IdP and SP certificates for all GSSP methods. The variables
-    gateway_gssp_sp_privatekey, gateway_gssp_sp_publickey, gateway_gssp_idp_privatekey, gateway_gssp_idp_privatekey,
-    ra_gssp_sp_privatekey, ra_gssp_sp_publickey, selfservice_gssp_sp_privatekey and selfservice_gssp_sp_publickey
-    replace the per method (e.g. gateway_tiqr_sp_privatekey) variables.
-  - A configuration for the tiqr GSSP as well as a second (commented out) "example_gssp" GSSP method configuration is
-    provided in the environments/template. Please refer to these to see how to update the GSSP configuration.
-* Added optional sendmail_smarthost_port to specify the port on the sendmail_smarthost to use
-* Added gateway_support_url and tiqr_support_url
-* Completely overhauled the Stepup-Tiqr component. This introduces: tiqr_secret, tiqr_support_url, tiqr_info_url and
-  tiqr_info_name in the tiqr.yml group_vars which must be configured before deploying the new tiqr.
-* In the institution configuration the maximum number of tokens that can be registerd is set on a per institution bases
-  using "number_of_tokens_per_identity"
-* Development
-  - Allow deployment of components from source
-  - Add "dev" role with SimpleSAMLphp based test IdP, SP, mailcatcher, xdebug
-  - Update the template environment to be suitable for deployment to a VM created with https://github.com/OpenConext/Stepup-VM/
-
 * Gateway:
   - Support multiple ACS locations and use the AssertionConsumerServiceUrl from the AuthnRequest (https://www.pivotaltracker.com/story/show/155288768)
   - Improve styling of WAYG token selection screen (https://www.pivotaltracker.com/story/show/152918604)
   - Change layout of login screens (https://www.pivotaltracker.com/story/show/155856648)
   - Change layout of error screens (https://www.pivotaltracker.com/story/show/156343095)
   - Document use of state by the different SAML flows that are supported by the Stepup-Gateway (https://www.pivotaltracker.com/story/show/155969747)
-  - In the SAML Response from the gateway, use same NotOnOrAfter in SubjectConfirmationData as in Conditions (https://www.pivotaltracker.com/story/show/157880479)
-  - Fix ducht Yubikey authentication instructions (https://www.pivotaltracker.com/story/show/158792924)
 * SelfService:
   - Show end-user if his activation code has expired (https://www.pivotaltracker.com/story/show/155467915)
   - Confusing UI when testing one of several tokens with different LoAs (https://www.pivotaltracker.com/story/show/154476963)

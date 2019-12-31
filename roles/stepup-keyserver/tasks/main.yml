@@ -1,20 +1,22 @@
 # Infra stuff for key server
+- name: Create /app/config/ directory
+  file: path={{ component_dir_name }}/app/config/ state=directory group={{ component_name }} mode=755
 
 - name: Put parameters.yml
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
 
 - name: assets:install
-  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
+  command: php bin/console assets:install --symlink --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: Dump Assetic Assets
-  command: php app/console assetic:dump --env=prod {{ debug_flag }}
+  command: php bin/console assetic:dump --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: Clear cache
-  command: php app/console cache:clear --env=prod {{ debug_flag }}
+  command: php bin/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
 

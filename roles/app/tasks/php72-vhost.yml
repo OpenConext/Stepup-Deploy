@@ -32,17 +32,17 @@
 
 
 # Put httpd vhost config
-- name: Put httpd vhost config for {{ vhost_name }}
-  action: template src='nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
+- name: Put httpd vhost config for {{ vhost_name }} (php72)
+  action: template src='php72-nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
   notify:
     - restart nginx
 
 
 # Put fpm config
-- name: Put php-fpm config
-  template: src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.conf'
+- name: Put php72-php-fpm config
+  template: src='php72-fpm-pool.conf.j2' dest='/etc/opt/remi/php72/php-fpm.d/{{ vhost_name }}.conf'
   notify:
-    - restart php-fpm
+    - restart php72-php-fpm
 
 - name: Put rsyslog vhost config
   template: src='rsyslog_nginx_vhost.conf.j2' dest='/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf'

@@ -37,6 +37,14 @@
     proxy_key: "{{ proxy_tiqr_key }}"
   when: "inventory_hostname in groups['stepup-tiqr']"
 
+- include: proxy.yml
+  vars:
+    vhost_name: "{{ webauthn_vhost_name }}"
+    component_name: webauthn
+    proxy_certificate: "{{ proxy_webauthn_certificate }}"
+    proxy_key: "{{ proxy_webauthn_key }}"
+  when: "inventory_hostname in groups['stepup-webauthn']"
+
 # TODO: adapt so that TLS terminates on key server instead of proxy/LB
 - include: proxy.yml
   vars:

@@ -49,6 +49,7 @@ selfservice_vhost_name: selfservice.stepup.example.com
 ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
+webauthn_vhost_name: webauthn.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
 ssp_vhost_name: ssp.stepup.example.com # Used by the "dev" role only
 
@@ -195,6 +196,12 @@ gateway_gssp_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway
 # Private key in stepup-tiqr.yml
 # Format: PEM X.509 certificate
 tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') }}"
+
+# Public SAML signing key of the Webauthn GSSP IDP
+# Private key in stepup-webauthn.yml
+# Format: PEM X.509 certificate
+webauthn_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_idp.crt') }}"
+
 
 # Public SAML signing key of the "example_gssp" GSSP IDP
 # Format: PEM X.509 certificate

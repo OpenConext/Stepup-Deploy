@@ -127,6 +127,9 @@
 - include: php72-vhost.yml
   vars: { component_name: webauthn,  vhost_name: "{{ webauthn_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-webauthn']"
+- include: php72-vhost.yml
+  vars: { component_name: azuremfa,  vhost_name: "{{ azuremfa_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-azuremfa']"
 - include: vhost.yml
   vars: { component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-middleware']"
@@ -182,4 +185,3 @@
   with_items:
   - compress-stepup-authnlogs.cron
   - delete-old-stepup-authnlogs.cron
-

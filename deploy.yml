@@ -114,7 +114,7 @@
 
 
 - name: Install Stepup-Azure-MFA IDP
-  hosts: stepup-azure-mfa
+  hosts: stepup-azuremfa
   become: True
   tags: stepup-azure-mfa
 

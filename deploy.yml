@@ -111,3 +111,19 @@
       component_vhost_name: "{{ keyserver_vhost_name }}"
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
+
+
+- name: Install Stepup-Azure-MFA IDP
+  hosts: stepup-azure-mfa
+  become: True
+  tags: stepup-azure-mfa
+
+  roles:
+        - stepup-azure-mfa
+
+  vars:
+      component_tarball_name: "{{ tarball_location }}/Stepup-Azure-MFA-0.2.6-20191223115638Z-74c9b883a2f21aa1702eb01eaa978fd934221a1c.tar.bz2"
+      component_name: azure-mfa
+      component_vhost_name: "{{ azuremfa_vhost_name }}"
+      component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"

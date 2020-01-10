@@ -1,5 +1,5 @@
-Feature: A RAA manages tokens tokens registered in the selfservice portal
-  In order to manage tokens
+Feature: A RAA manages RA(A)'s on the promotion page
+  In order to manage RA(A)'s
   As a RAA
   I must be able to promote and demote identities to RA(A)'s
 

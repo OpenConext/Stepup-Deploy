@@ -2,6 +2,7 @@ Feature: A RA(A) should only have access to certain pages
 
   Scenario: Provision an institution and a user to promote later on by an authorized institution
     Given institution "stepup.example.com" can "select_raa" from institution "stepup.example.com"
+    And institution "stepup.example.com" can "use_raa" from institution "stepup.example.com"
     And institution "institution-a.example.com" can "use_ra" from institution "stepup.example.com"
     And institution "institution-b.example.com" can "use_raa" from institution "stepup.example.com"
     And institution "institution-d.example.com" can "select_raa" from institution "institution-d.example.com"

@@ -129,7 +129,7 @@ class CommandPayloadFactory
 
                 return sprintf(
                     $payload,
-                    $context->identityId,
+                    $context->activationContext->actorId,
                     $context->institution,
                     (string)Uuid::uuid4(),
                     $context->activationContext->actorId,

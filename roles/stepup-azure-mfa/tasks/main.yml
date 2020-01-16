@@ -10,7 +10,7 @@
   #template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
-  - parameters.yml
+  - parameters.yaml
   - institutions.yaml
 
 # - name: Put images from <env>/files/stepup-app into web/images

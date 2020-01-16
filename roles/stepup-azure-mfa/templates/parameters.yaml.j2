@@ -12,3 +12,12 @@ parameters:
     saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/azure-mfa/metadata'
     saml_remote_sp_certificate: '{{ component_dir_name }}/app/config/gateway.crt'
     saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/azure-mfa/consume-assertion'
+
+    # View parameters
+    support_url:
+{% for locale, url in azuremfa_support_url.items() %}
+        {{ locale }}: "{{ url | replace('%', '%%') }}"
+{% endfor %}
+
+    support_email: support@surfconext.nl
+    

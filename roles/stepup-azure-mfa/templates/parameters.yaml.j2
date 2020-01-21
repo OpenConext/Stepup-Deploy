@@ -9,9 +9,9 @@ parameters:
     saml_metadata_publickey: '{{ component_dir_name }}/app/config/cert.pem'
     saml_metadata_privatekey: '{{ component_dir_name }}/app/config/key.pem'
 
-    saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/azure-mfa/metadata'
+    saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/azuremfa/metadata'
     saml_remote_sp_certificate: '{{ component_dir_name }}/app/config/gateway.crt'
-    saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/azure-mfa/consume-assertion'
+    saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/azuremfa/consume-assertion'
 
     # View parameters
     support_url:
@@ -20,4 +20,3 @@ parameters:
 {% endfor %}
 
     support_email: support@surfconext.nl
-    

@@ -74,6 +74,20 @@ class RaContext implements Context
      */
     public function iAmLoggedInIntoTheRaPortalAs($userName, $tokenType)
     {
+        // Login into RA
+        $this->iTryToLoginIntoTheRaPortalAs($userName, $tokenType);
+
+        // We are now on the RA homepage
+        $this->minkContext->assertPageAddress('https://ra.stepup.example.com');
+        $this->minkContext->assertPageContainsText('RA Management Portal');
+        $this->minkContext->assertPageContainsText('Token activation');
+    }
+
+    /**
+     * @Given /^I try to login into the ra portal as "([^"]*)" with a "([^"]*)" token$/
+     */
+    public function iTryToLoginIntoTheRaPortalAs($userName, $tokenType)
+    {
         // The ra session is used to vet the token
         $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
 
@@ -96,12 +110,8 @@ class RaContext implements Context
                 );
                 break;
         }
-
-        // We are now on the RA homepage
-        $this->minkContext->assertPageAddress('https://ra.stepup.example.com');
-        $this->minkContext->assertPageContainsText('RA Management Portal');
-        $this->minkContext->assertPageContainsText('Token activation');
     }
+
 
     /**
      * @Given /^I visit the "([^"]*)" page in the RA environment$/

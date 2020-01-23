@@ -4,7 +4,7 @@
     path: "{{ component_dir_name }}/app/config/"
     state: directory
     group: "{{ component_group }}"
-    mode: "{{ component_mode_640 }}"
+    mode: "{{ component_mode_755 }}"
 
 - name: Put parameters.yml
   #template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
@@ -42,10 +42,10 @@
 
 
 - name: Write Azure-MFA GSSP sp certificate
-  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_group }} mode={{ component_mode_644 }}
 
 - name: Write Azure-MFA GSSP idp certificate
-  copy: content="{{ azuremfa_idp_publickey }}" dest={{ component_dir_name }}/app/config/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ azuremfa_idp_publickey }}" dest={{ component_dir_name }}/app/config/cert.pem group={{ component_group }} mode={{ component_mode_644 }}
 
 - name: Write Azure-MFA GSSP idp private key
   copy: content="{{ azuremfa_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}

@@ -7,17 +7,19 @@
     mode: "{{ component_mode_755 }}"
 
 - name: Put parameters.yml
-  #template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
   - parameters.yaml
+
+- name: Put institutions.yml
+  template: src={{ inventory_dir }}/files/stepup-azuremfa/{{ item}}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+  with_items:
   - institutions.yaml
 
 # - name: Put images from <env>/files/stepup-app into web/images
 #   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
 #   with_fileglob:
 #   - "{{inventory_dir }}/files/stepup-app/images/*"
-
 
 - name: Clear cache
   command: php72 bin/console cache:clear --env=prod {{ debug_flag }}

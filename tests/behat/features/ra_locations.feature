@@ -49,7 +49,7 @@ Feature: A RAA can view the institution configuration
         | ra_create_ra_location_name               | The name of the test location for institution D   |
         | ra_create_ra_location_location           | The location itself for institution D             |
         | ra_create_ra_location_contactInformation | An address for the test location of institution D |
-      And I press "ra_create_ra_location_create_ra_location"
+      And I press "ra_create_ra_location_button-group_create_ra_location"
     Then I should see "Locations of institution-d.example.com"
       And I should see "The name of the test location for institution D"
       And I should see "The location itself for institution D"
@@ -69,7 +69,7 @@ Feature: A RAA can view the institution configuration
         | ra_change_ra_location_name               | The name of the test location for institution D, updated!   |
         | ra_change_ra_location_location           | The location itself for institution D, updated!             |
         | ra_change_ra_location_contactInformation | An address for the test location of institution D, updated! |
-      And I press "ra_change_ra_location_change_ra_location"
+      And I press "ra_change_ra_location_button-group_change_ra_location"
     Then I should see "Locations of institution-d.example.com"
       And I should see "The name of the test location for institution D, updated!"
       And I should see "The location itself for institution D, updated!"

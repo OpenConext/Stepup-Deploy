@@ -1,22 +1,25 @@
-# Install webauthn component
-
+# Install AzureMFA component
+- name: Create app directory
+  file:
+    path: "{{ component_dir_name }}/app/config/"
+    state: directory
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_755 }}"
 - name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
   - parameters.yml
 
-- name: Put images from <env>/files/stepup-app into web/images
-  copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
-  with_fileglob:
-  - "{{inventory_dir }}/files/stepup-app/images/*"
-
+# - name: Put images from <env>/files/stepup-app into web/images
+#   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
+#   with_fileglob:
+#   - "{{inventory_dir }}/files/stepup-app/images/*"
 
 - name: Clear cache
-  command: php bin/console cache:clear --env=prod {{ debug_flag }}
+  command: php72 bin/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
   when: not (develop | default(false))
-
 
 - name: Restrict app dir to the application
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
@@ -31,8 +34,6 @@
   - "{{ component_dir_name }}/var/logs"
   when: not (develop | default(false))
 
-
-
 - name: Write webauthn GSSP sp certificate
   copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
 
@@ -42,10 +43,6 @@
 - name: Write webauthn GSSP idp private key
   copy: content="{{ webauthn_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
 
-
-
 # Finish
 - name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
-
-
+  file: src={{ component_dir_name }} dest=/opt/www/{{ webauthn_vhost_name }} state=link

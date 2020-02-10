@@ -55,7 +55,7 @@
       - php72-php-bcmath
       - php72-php-gmp
       - php72-php-pecl-memcache
-      - php72-php-pecl-libsodium
+      - php72-php-sodium
 
       - nodejs
       - nodejs-less.noarch

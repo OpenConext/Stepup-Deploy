@@ -14,7 +14,7 @@ class CommandPayloadFactory
             case "Identity:CreateIdentity":
                 $identityCreatedPayload = '{
                     "meta": {
-                        "actor": null,
+                        "actor_id": null,
                         "actor_institution": null
                     },
                     "command": {
@@ -48,7 +48,7 @@ class CommandPayloadFactory
 
                 $payload = '{
                     "meta": {
-                        "actor": "%s",
+                        "actor_id": "%s",
                         "actor_institution": "%s"
                     },
                     "command": {
@@ -79,7 +79,7 @@ class CommandPayloadFactory
 
                 $payload = '{
                     "meta": {
-                        "actor": "%s",
+                        "actor_id": "%s",
                         "actor_institution": "%s"
                     },
                     "command": {
@@ -108,7 +108,7 @@ class CommandPayloadFactory
 
                 $payload = '{
                     "meta": {
-                        "actor": "%s",
+                        "actor_id": "%s",
                         "actor_institution": "%s"
                     },
                     "command": {
@@ -129,7 +129,7 @@ class CommandPayloadFactory
 
                 return sprintf(
                     $payload,
-                    $context->identityId,
+                    $context->activationContext->actorId,
                     $context->institution,
                     (string)Uuid::uuid4(),
                     $context->activationContext->actorId,
@@ -147,7 +147,7 @@ class CommandPayloadFactory
     {
         $payload = '{
                     "meta": {
-                        "actor": "%s",
+                        "actor_id": "%s",
                         "actor_institution": "%s"
                     },
                     "command": {

@@ -200,6 +200,25 @@ class FeatureContext implements Context
         }
 
         $tokenId = (string)Uuid::uuid4();
+        $this->theUserHasAVerifiedToken($nameId, $tokenType, $registrationCode, $tokenId);
+    }
+
+
+    /**
+     * @Given /^the user "([^"]*)" has a verified "([^"]*)" with registration code "([^"]*)" and secondFactorId "([^"]*)"$/
+     */
+    public function theUserHasAVerifiedToken($nameId, $tokenType, $registrationCode, $tokenId)
+    {
+        // First test if this identity was already provisioned
+        if (!isset($this->identityStore[$nameId])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'This identity "%s" is not yet known use the "aUserIdentifiedByWithAVettedTokenAndTheRole" step to create a new identity.',
+                    $nameId
+                )
+            );
+        }
+
         $token = SecondFactorToken::from($tokenId, $tokenType, '03945859');
         $identityData = $this->identityStore[$nameId];
         $identityData->tokens = [$token];

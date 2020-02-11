@@ -60,14 +60,41 @@ class RaContext implements Context
         $this->minkContext->visit($this->raUrl);
 
         $this->iAmLoggedInIntoTheRaPortalAs('admin', 'yubikey');
-        $this->findsTokenForActivation();
-        $this->userProvesPosessionOfSmsToken();
-        $this->adminVerifiesUserIdentity();
-        $this->vettingProcessIsCompleted();
+        $this->iVetASecondFactor($this->selfServiceContext->getVerifiedSecondFactorId(), $this->selfServiceContext->getActivationCode());
 
         // Switch back to the default session
         $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_DEFAULT);
     }
+
+
+    /**
+     * @Given /^I vet the last added second factor$/
+     */
+    public function iVetTheLastAddedSecondFactor()
+    {
+        $secondFactorId = $this->selfServiceContext->getVerifiedSecondFactorId();
+        $activationCode = $this->selfServiceContext->getActivationCode();
+
+        $this->findsTokenForActivation($activationCode);
+        $this->userProvesPosessionOfSmsToken($secondFactorId);
+        $this->adminVerifiesUserIdentity($secondFactorId);
+        $this->vettingProcessIsCompleted($secondFactorId);
+    }
+
+    /**
+     * @Given /^I vet a second factor with id "([^"]*)" and with activation code "([^"]*)"$/
+     */
+    public function iVetASecondFactor($secondFactorId, $activationCode)
+    {
+        // We visit the RA location url
+        $this->minkContext->visit($this->raUrl);
+
+        $this->findsTokenForActivation($activationCode);
+        $this->userProvesPosessionOfSmsToken($secondFactorId);
+        $this->adminVerifiesUserIdentity($secondFactorId);
+        $this->vettingProcessIsCompleted($secondFactorId);
+    }
+
 
     /**
      * @Given /^I am logged in into the ra portal as "([^"]*)" with a "([^"]*)" token$/
@@ -125,10 +152,9 @@ class RaContext implements Context
         $this->minkContext->visit($this->raUrl.'/'.$uri);
     }
 
-    public function findsTokenForActivation()
+    public function findsTokenForActivation($activationCode)
     {
         // The activation token was previously set on the SP context, and can be retrieved here.
-        $activationCode = $this->selfServiceContext->getActivationCode();
         $this->minkContext->fillField('ra_start_vetting_procedure_registrationCode', $activationCode);
         $this->minkContext->pressButton('Search');
     }
@@ -166,14 +192,14 @@ class RaContext implements Context
         $this->minkContext->pressButton('Submit');
     }
 
-    private function userProvesPosessionOfSmsToken()
+    private function userProvesPosessionOfSmsToken($secondFactorId)
     {
         $vettingProcedureUrl = 'https://ra.stepup.example.com/vetting-procedure/%s/send-sms-challenge';
 
         $this->minkContext->assertPageAddress(
             sprintf(
                 $vettingProcedureUrl,
-                $this->selfServiceContext->getVerifiedSecondFactorId()
+                $secondFactorId
             )
         );
 
@@ -184,14 +210,14 @@ class RaContext implements Context
         $this->minkContext->pressButton('Verify code');
     }
 
-    private function adminVerifiesUserIdentity()
+    private function adminVerifiesUserIdentity($verifiedSecondFactorId)
     {
         $vettingProcedureUrl = 'https://ra.stepup.example.com/vetting-procedure/%s/verify-identity';
 
         $this->minkContext->assertPageAddress(
             sprintf(
                 $vettingProcedureUrl,
-                $this->selfServiceContext->getVerifiedSecondFactorId()
+                $verifiedSecondFactorId
             )
         );
         $this->minkContext->fillField('ra_verify_identity_documentNumber', '654321');
@@ -199,14 +225,14 @@ class RaContext implements Context
         $this->minkContext->pressButton('Verify identity');
     }
 
-    private function vettingProcessIsCompleted()
+    private function vettingProcessIsCompleted($verifiedSecondFactorId)
     {
         $vettingProcedureUrl = 'https://ra.stepup.example.com/vetting-procedure/%s/completed';
 
         $this->minkContext->assertPageAddress(
             sprintf(
                 $vettingProcedureUrl,
-                $this->selfServiceContext->getVerifiedSecondFactorId()
+                $verifiedSecondFactorId
             )
         );
         $this->minkContext->assertPageContainsText('Token activated');
@@ -302,7 +328,7 @@ class RaContext implements Context
     }
 
     /**
-     * @Given I remove token from user arg1
+     * @Given I remove token from user :arg1
      */
     public function removeTokenFromUser($name)
     {

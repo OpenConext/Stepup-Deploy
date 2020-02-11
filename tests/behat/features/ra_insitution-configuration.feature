@@ -40,9 +40,9 @@ Feature: A RAA can view the institution configuration
         | E-mail verification enabled?                                                               | Yes                              |
         | Allowed second factor tokens                                                               | All enabled tokens are available |
         | Number of tokens per identity                                                              | 2                                |
-        | From which other institution(s) can users be assigned the RA(A) role for this institution? | institution-a.example.com        |
-        | In which other institution(s) are the RAs from this institution an RA?                     | institution-a.example.com        |
-        | From which other institution(s) the RAAs are also an RAA for this institution?             | institution-a.example.com        |
+        | From which institution(s) can users be assigned the RA(A) role for this institution?       | institution-a.example.com        |
+        | From which institution(s) are the RAs an RA for this institution?                          | institution-a.example.com        |
+        | From which institution(s) are the RAAs an RAA for this institution?                        | institution-a.example.com        |
      Then I switch to institution "institution-d.example.com" with institution switcher
      Then I should see "Configuration of institution-d.example.com"
       And The institution configuration should be:
@@ -52,6 +52,6 @@ Feature: A RAA can view the institution configuration
         | E-mail verification enabled?                                                               | No                               |
         | Allowed second factor tokens                                                               | sms |
         | Number of tokens per identity                                                              | 1                                |
-        | From which other institution(s) can users be assigned the RA(A) role for this institution? | institution-d.example.com        |
-        | In which other institution(s) are the RAs from this institution an RA?                     | institution-d.example.com        |
-        | From which other institution(s) the RAAs are also an RAA for this institution?             | institution-a.example.com        |
+        | From which institution(s) can users be assigned the RA(A) role for this institution?       | institution-d.example.com        |
+        | From which institution(s) are the RAs an RA for this institution?                          | institution-d.example.com        |
+        | From which institution(s) are the RAAs an RAA for this institution?                        | institution-a.example.com        |

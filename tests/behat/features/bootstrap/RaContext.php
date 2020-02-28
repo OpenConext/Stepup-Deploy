@@ -313,6 +313,28 @@ class RaContext implements Context
     }
 
     /**
+     * @When I click on the token export button
+     */
+    public function clickOnTheTokenExportButton()
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $page->pressButton('Export');
+    }
+
+    /**
+     * @Then I should not see a token export button
+     */
+    public function shouldNotSeeATokenExportButton()
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        if ($page->hasButton('Export') ) {
+            throw new Exception(
+                sprintf('A token export button should not be visible')
+            );
+        }
+    }
+
+    /**
      * @Then I should see :arg1 in the audit log identity overview
      */
     public function iShouldSeeInAuditLogIdentityOverview($institution)

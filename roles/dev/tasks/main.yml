@@ -23,7 +23,7 @@
 
       # xdebug, the PHP debug extension
       - php-pecl-xdebug
-
+      - php72-php-pecl-xdebug
       # telnet client
       - telnet
     state: present
@@ -54,6 +54,10 @@
 
 - name: Put /etc/php.d/15-xdebug.ini
   template: src=15-xdebug.ini.j2 dest=/etc/php.d/15-xdebug.ini
+  notify: Restart php-fpm
+
+- name: Put xdebug.ini
+  template: src=15-xdebug.ini.j2 dest=/etc/php.d/xdebug.ini
   notify: Restart php-fpm
 
 ## Mailcatcher ##

@@ -116,7 +116,9 @@ class RaContext implements Context
     public function iTryToLoginIntoTheRaPortalAs($userName, $tokenType)
     {
         // The ra session is used to vet the token
-        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
+//        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
+        $this->minkContext->getSession(FeatureContext::SESSION_RA)->stop();
+//        $this->minkContext->getSession(FeatureContext::SESSION_RA)->reset();
 
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl);
@@ -143,11 +145,11 @@ class RaContext implements Context
     /**
      * @Given /^I visit the "([^"]*)" page in the RA environment$/
      */
-    public function iVisitAPageinTheRaEnvironment($uri)
+    public function iVisitAPageInTheRaEnvironment($uri)
     {
-        // The ra session is used to vet the token
-        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
-
+//        // The ra session is used to vet the token
+//        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
+//
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl.'/'.$uri);
     }
@@ -258,16 +260,6 @@ class RaContext implements Context
         $this->minkContext->assertElementOnPage('[href="/management/search-ra-candidate"]');
         $this->minkContext->clickLink('Add RA(A)');
         $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
-    }
-
-    /**
-     * @Given /^I filter the RA promotion page on actor institution "([^"]*)"$/
-     */
-    public function iFilterTheRaManagementPromotionPageOnInstitution($institution)
-    {
-        $this->minkContext->assertPageAddress('https://ra.stepup.example.com/management/search-ra-candidate');
-        $this->minkContext->selectOption('ra_search_ra_candidates_raInstitution', $institution);
-        $this->minkContext->pressButton('Search');
     }
 
     /**
@@ -401,7 +393,7 @@ class RaContext implements Context
         $this->minkContext->pressButton('ra_search_ra_candidates_search');
 
         $page = $this->minkContext->getSession()->getPage();
-
+$c = $page->getContent();
         // There should be a td with the username in it, select that TR to press that button on.
         $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
 
@@ -481,6 +473,15 @@ class RaContext implements Context
      */
     public function iShouldSeeTheFollowingCandidates(TableNode $table)
     {
+        $this->iShouldSeeTheFollowingCandidateFors(null, $table);
+    }
+
+    /**
+     * @Given /^I should see the following candidates for "([^"]*)":$/
+     * @param TableNode $table
+     */
+    public function iShouldSeeTheFollowingCandidateFors($forInstitution, TableNode $table)
+    {
         $page = $this->minkContext->getSession()->getPage();
 
         // build hashmap to check identities
@@ -494,11 +495,12 @@ class RaContext implements Context
         // get identities form page
         $searchResult = $page->findAll('xpath', "//tr[./td]");
         foreach ($searchResult as $result) {
+
             $name = $result->find('css', 'td:nth-of-type(2)')->getText();
             $institution = $result->find('css', 'td:nth-of-type(1)')->getText();
             $key = $name . '|' . $institution;
 
-            if (!array_key_exists($key, $data)) {
+            if (($forInstitution == $institution || is_null($forInstitution)) && !array_key_exists($key, $data)) {
                 throw new Exception(sprintf('Unexpected user found on page: "%s"', $key));
             }
 

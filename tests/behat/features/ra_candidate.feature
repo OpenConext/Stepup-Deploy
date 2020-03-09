@@ -1,7 +1,7 @@
-Feature: A RAA manages tokens tokens registered in the selfservice portal
-  In order to manage tokens
+Feature: A RAA manages ra candidates in the ra environment
+  In order to promote candidates
   As a RAA
-  I must be able to manage second factor tokens from my institution
+  I must be able to promote and demote identities
 
   Scenario: Provision a institution and a user to promote later on by an authorized institution
     Given institution "institution-a.example.com" can "select_raa" from institution "institution-a.example.com"
@@ -19,7 +19,6 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
   Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions (without filtering)
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
     When I visit the RA promotion page
-      And I filter the RA promotion page on actor institution ""
     Then I should see the following candidates:
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
@@ -28,16 +27,14 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
   Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions (with filtering on institution-a)
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
     When I visit the RA promotion page
-      And I filter the RA promotion page on actor institution "institution-a.example.com"
-    Then I should see the following candidates:
+    Then I should see the following candidates for "institution-a.example.com":
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
 
   Scenario: SRAA user checks if "Jane Toppan" is a candidate for all institutions (with filtering on institution-b)
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
     When I visit the RA promotion page
-      And I filter the RA promotion page on actor institution "institution-b.example.com"
-    Then I should see the following candidates:
+    Then I should see the following candidates for "institution-b.example.com":
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
 
@@ -49,8 +46,7 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
   Scenario: SRAA user checks if "Jane Toppan" is a candidate for "institution-a"
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
     When I visit the RA promotion page
-      And I filter the RA promotion page on actor institution "institution-a.example.com"
-    Then I should see the following candidates:
+    Then I should see the following candidates for "institution-a.example.com":
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
       | Jane Toppan                       | institution-a.example.com |
@@ -58,8 +54,7 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
   Scenario: SRAA user checks if "Jane Toppan" is not a candidate for "institution-b"
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
     When I visit the RA promotion page
-      And I filter the RA promotion page on actor institution "institution-b.example.com"
-    Then I should see the following candidates:
+    Then I should see the following candidates for "institution-b.example.com":
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
 

@@ -17,7 +17,6 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
   Scenario: SRAA user checks if "Jane Toppan" is not a candidate for institutions
     Given I am logged in into the ra portal as "admin" with a "yubikey" token
     When I visit the RA promotion page
-      And I filter the RA promotion page on actor institution ""
     Then I should see the following candidates:
       | name                              | institution               |
       | jane-a1 institution-a.example.com | institution-a.example.com |
@@ -39,7 +38,6 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
     When I visit the Tokens page
       And I remove token with identifier "00000004" from user "Jane Toppan"
     Then I visit the RA promotion page
-      And I filter the RA promotion page on actor institution ""
       And I should see the following candidates:
         | name                              | institution               |
         | jane-a1 institution-a.example.com | institution-a.example.com |
@@ -51,7 +49,6 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
     When I visit the Tokens page
       And I remove token with identifier "00000005" from user "Jane Toppan"
     Then I visit the RA promotion page
-      And I filter the RA promotion page on actor institution ""
       And I should see the following candidates:
         | name                              | institution               |
         | jane-a1 institution-a.example.com | institution-a.example.com |

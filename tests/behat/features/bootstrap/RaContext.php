@@ -53,17 +53,11 @@ class RaContext implements Context
      */
     public function iVetMySecondFactorAtTheInformationDesk()
     {
-        // The ra session is used to vet the token
-        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
-
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl);
 
         $this->iAmLoggedInIntoTheRaPortalAs('admin', 'yubikey');
         $this->iVetASecondFactor($this->selfServiceContext->getVerifiedSecondFactorId(), $this->selfServiceContext->getActivationCode());
-
-        // Switch back to the default session
-        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_DEFAULT);
     }
 
 
@@ -115,10 +109,8 @@ class RaContext implements Context
      */
     public function iTryToLoginIntoTheRaPortalAs($userName, $tokenType)
     {
-        // The ra session is used to vet the token
-//        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
-        $this->minkContext->getSession(FeatureContext::SESSION_RA)->stop();
-//        $this->minkContext->getSession(FeatureContext::SESSION_RA)->reset();
+        $this->minkContext->getSession()->stop();
+        $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
 
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl);
@@ -147,9 +139,6 @@ class RaContext implements Context
      */
     public function iVisitAPageInTheRaEnvironment($uri)
     {
-//        // The ra session is used to vet the token
-//        $this->minkContext->getMink()->setDefaultSessionName(FeatureContext::SESSION_RA);
-//
         // We visit the RA location url
         $this->minkContext->visit($this->raUrl.'/'.$uri);
     }
@@ -393,7 +382,7 @@ class RaContext implements Context
         $this->minkContext->pressButton('ra_search_ra_candidates_search');
 
         $page = $this->minkContext->getSession()->getPage();
-$c = $page->getContent();
+
         // There should be a td with the username in it, select that TR to press that button on.
         $searchResult = $page->find('xpath', sprintf("//td[contains(.,'%s')]/..", $userName));
 

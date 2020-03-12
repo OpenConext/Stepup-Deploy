@@ -28,11 +28,3 @@ default:
                     goutte:
                         guzzle_parameters:
                             verify: False
-                ra:
-                    goutte:
-                        guzzle_parameters:
-                            verify: False
-                ss:
-                    goutte:
-                        guzzle_parameters:
-                            verify: False

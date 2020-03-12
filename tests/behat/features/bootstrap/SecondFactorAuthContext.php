@@ -197,7 +197,7 @@ class SecondFactorAuthContext implements Context
         // Give an OTP
         $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');
         // Simulate the enter press the yubikey otp generator
-        $form = $this->minkContext->getSession()->getPage()->find('css', '[name="gateway_verify_yubikey_otp"]');
+        $form = $this->minkContext->getSession()->getPage()->find('css', '[id="gateway_verify_yubikey_otp_otp"]');
         if (!$form) {
             throw new ElementNotFoundException('Yubikey OTP Submit form could not be found on the page');
         }

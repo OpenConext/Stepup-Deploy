@@ -13,6 +13,8 @@ parameters:
     saml_remote_sp_certificate: '{{ component_dir_name }}/app/config/gateway.crt'
     saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/azuremfa/consume-assertion'
 
+    ra_issuer_entity_id_regex: '@@^https://(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/vetting-procedure/gssf/azuremfa/metadata$@'
+
     # View parameters
     support_url:
 {% for locale, url in azuremfa_support_url.items() %}

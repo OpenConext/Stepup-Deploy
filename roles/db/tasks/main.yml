@@ -121,3 +121,4 @@
 - include: tiqr.yml
 - include: keyserver.yml
 - include: u2f.yml
+- include: webauthn.yml

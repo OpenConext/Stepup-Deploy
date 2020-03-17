@@ -127,3 +127,18 @@
       component_vhost_name: "{{ azuremfa_vhost_name }}"
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
+
+- name: Install Stepup-Webauthn IDP
+  hosts: stepup-webauthn
+  become: True
+  tags: stepup-webauthn
+
+  roles:
+        - stepup-webauthn
+
+  vars:
+      component_tarball_name: "{{ tarball_location }}/Stepup-Webauthn-feature_build-artifacts-20200124121812Z-617b85bcf44851711208518a1362935173c3d57d.tar.bz2"
+      component_name: webauthn
+      component_vhost_name: "{{ webauthn_vhost_name }}"
+      component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
+      stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"

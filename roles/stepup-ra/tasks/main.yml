@@ -13,6 +13,11 @@
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/*"
 
+- name: Put images from <env>/files/stepup-app/second-factor into web/images/second-factor
+  copy: src={{ item }} dest={{ component_dir_name }}/web/images/second-factor mode={{ component_mode_444 }} group={{ component_group }}
+  with_fileglob:
+  - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
+
 - name: assets:install
   command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
   args:

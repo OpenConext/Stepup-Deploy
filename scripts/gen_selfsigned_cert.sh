@@ -21,7 +21,7 @@
 # If a keyczar directory is provided, the key that is output is encrypted.
 
 CERT_VALID_DAYS=1825
-RSA_MODULUS_SIZE_BITS=2048
+RSA_MODULUS_SIZE_BITS=3072
 CWD=`pwd`
 BASEDIR=`dirname $0`
 
@@ -104,4 +104,3 @@ fi
 rm -r ${tmpdir}
 
 exit 0
-

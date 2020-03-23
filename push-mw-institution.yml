@@ -18,7 +18,6 @@
     - middleware-institution.json
 
 # The /opt/scripts/middleware-* scripts were written by middleware deploy
-  - name: Push middleware istitution configuration
+  - name: Push middleware institution configuration
     command: /opt/scripts/middleware-push-institution.sh
     run_once: True
-

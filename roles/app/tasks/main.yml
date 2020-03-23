@@ -55,6 +55,7 @@
       - php72-php-bcmath
       - php72-php-gmp
       - php72-php-pecl-memcache
+      - php72-php-sodium
 
       - nodejs
       - nodejs-less.noarch
@@ -124,9 +125,12 @@
   file: path=/opt/scripts/ state=directory owner=root group={{ app_deploy_user }} mode=770
 
 # Create vhosts for stepup components
-- include: php72-vhost.yml
+- include: php72-vhost-symfony4.yml
   vars: { component_name: webauthn,  vhost_name: "{{ webauthn_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-webauthn']"
+- include: php72-vhost-symfony4.yml
+  vars: { component_name: azuremfa,  vhost_name: "{{ azuremfa_vhost_name }}" }
+  when: "inventory_hostname in groups['stepup-azuremfa']"
 - include: vhost.yml
   vars: { component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}" }
   when: "inventory_hostname in groups['stepup-middleware']"
@@ -182,4 +186,3 @@
   with_items:
   - compress-stepup-authnlogs.cron
   - delete-old-stepup-authnlogs.cron
-

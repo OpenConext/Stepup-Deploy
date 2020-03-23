@@ -21,6 +21,9 @@ Feature: Use case C: Closely cooperating institutions
                 "select_raa": [
                     "institution-a.example.com",
                     "institution-d.example.com"
+                ],
+                "use_raa": [
+                    "institution-d.example.com"
                 ]
             },
             "institution-d.example.com": {
@@ -32,6 +35,9 @@ Feature: Use case C: Closely cooperating institutions
                 "select_raa": [
                     "institution-a.example.com",
                     "institution-d.example.com"
+                ],
+                "use_raa": [
+                    "institution-a.example.com"
                 ]
             }
         }

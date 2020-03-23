@@ -14,10 +14,6 @@ use Surfnet\StepupBehat\ValueObject\InstitutionConfiguration;
 
 class FeatureContext implements Context
 {
-        const SESSION_RA = 'ra';
-        const SESSION_MW = 'mw';
-        const SESSION_SS = 'ss';
-        const SESSION_DEFAULT = 'default';
     /**
      * @var \Behat\MinkExtension\Context\MinkContext
      */
@@ -84,8 +80,6 @@ class FeatureContext implements Context
 
         // Set the testcookie, effectively putting the Stepup suite in test mode
         $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
-        $this->minkContext->getSession('ra')->setCookie('testcookie', 'testcookie');
-        $this->minkContext->getSession('ss')->setCookie('testcookie', 'testcookie');
 
         $this->payloadFactory = new CommandPayloadFactory();
         $this->repository = new SecondFactorRepository();
@@ -106,7 +100,6 @@ class FeatureContext implements Context
 
         return $this->aUserIdentifiedByWithAVettedTokenAndTheRoleWithUuid($commonName, $nameId, $institution, $uuid);
     }
-
 
     /**
      * @Given /^a user "([^"]*)" identified by "([^"]*)" from institution "([^"]*)" with UUID "([^"]*)"$/
@@ -200,6 +193,25 @@ class FeatureContext implements Context
         }
 
         $tokenId = (string)Uuid::uuid4();
+        $this->theUserHasAVerifiedToken($nameId, $tokenType, $registrationCode, $tokenId);
+    }
+
+
+    /**
+     * @Given /^the user "([^"]*)" has a verified "([^"]*)" with registration code "([^"]*)" and secondFactorId "([^"]*)"$/
+     */
+    public function theUserHasAVerifiedToken($nameId, $tokenType, $registrationCode, $tokenId)
+    {
+        // First test if this identity was already provisioned
+        if (!isset($this->identityStore[$nameId])) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'This identity "%s" is not yet known use the "aUserIdentifiedByWithAVettedTokenAndTheRole" step to create a new identity.',
+                    $nameId
+                )
+            );
+        }
+
         $token = SecondFactorToken::from($tokenId, $tokenType, '03945859');
         $identityData = $this->identityStore[$nameId];
         $identityData->tokens = [$token];

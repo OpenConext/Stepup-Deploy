@@ -1,0 +1,59 @@
+# Install AzureMFA component
+- name: Create app directory
+  file:
+    path: "{{ component_dir_name }}/app/config/"
+    state: directory
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_755 }}"
+
+- name: Put parameters.yml
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+  with_items:
+  - parameters.yaml
+
+- name: Put institutions.yml
+  template: src={{ inventory_dir }}/files/stepup-azuremfa/{{ item}}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+  with_items:
+  - institutions.yaml
+
+# - name: Put images from <env>/files/stepup-app into web/images
+#   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
+#   with_fileglob:
+#   - "{{inventory_dir }}/files/stepup-app/images/*"
+
+- name: Clear cache
+  command: php72 bin/console cache:clear --env=prod {{ debug_flag }}
+  args:
+      chdir: "{{ component_dir_name }}"
+  when: not (develop | default(false))
+
+
+- name: Restrict app dir to the application
+  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/app"
+  when: not (develop | default(false))
+
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
+  with_items:
+  - "{{ component_dir_name }}/var/cache"
+  - "{{ component_dir_name }}/var/logs"
+  when: not (develop | default(false))
+
+
+
+- name: Write Azure-MFA GSSP sp certificate
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_group }} mode={{ component_mode_644 }}
+
+- name: Write Azure-MFA GSSP idp certificate
+  copy: content="{{ azuremfa_idp_publickey }}" dest={{ component_dir_name }}/app/config/cert.pem group={{ component_group }} mode={{ component_mode_644 }}
+
+- name: Write Azure-MFA GSSP idp private key
+  copy: content="{{ azuremfa_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+
+
+
+# Finish
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ azuremfa_vhost_name }} state=link

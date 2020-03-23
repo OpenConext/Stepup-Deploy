@@ -1,5 +1,5 @@
-Feature: A RAA manages tokens tokens registered in the selfservice portal
-  In order to manage tokens
+Feature: A RAA manages RA(A)'s on the promotion page
+  In order to manage RA(A)'s
   As a RAA
   I must be able to promote and demote identities to RA(A)'s
 
@@ -9,6 +9,7 @@ Feature: A RAA manages tokens tokens registered in the selfservice portal
     And institution "institution-a.example.com" can "select_raa" from institution "institution-a.example.com"
     And institution "institution-a.example.com" can "select_raa" from institution "institution-d.example.com"
     And institution "institution-d.example.com" can "use_raa" from institution "institution-a.example.com"
+    And institution "institution-a.example.com" can "use_raa" from institution "institution-a.example.com"
 
   Scenario: SRAA user promotes "jane-a1" to be an RAA
     Given I am logged in into the ra portal as "admin" with a "yubikey" token

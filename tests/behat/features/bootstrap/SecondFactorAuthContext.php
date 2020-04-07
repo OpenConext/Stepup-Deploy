@@ -192,7 +192,7 @@ class SecondFactorAuthContext implements Context
 
     public function authenticateUserYubikeyInGateway()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/yubikey');
+        $this->minkContext->assertUrlRegExp('@^/verify-second-factor/s[s|f]o/yubikey$@');
 
         // Give an OTP
         $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');
@@ -208,7 +208,7 @@ class SecondFactorAuthContext implements Context
 
     public function authenticateUserSmsInGateway()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sms');
+        $this->minkContext->assertUrlRegExp('@^/verify-second-factor/s[s|f]o/sms$@');
 
         // Give an OTP
         $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');
@@ -235,7 +235,7 @@ class SecondFactorAuthContext implements Context
 
     public function cancelYubikeyAuthentication()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/yubikey');
+        $this->minkContext->assertUrlRegExp('@^/verify-second-factor/s[s|f]o/yubikey$@');
         // Cancel the yubikey authentication action.
         $this->minkContext->pressButton('Cancel');
 
@@ -245,14 +245,14 @@ class SecondFactorAuthContext implements Context
 
     public function passTroughGatewaySsoAssertionConsumerService()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/authentication/consume-assertion');
+        $this->minkContext->assertUrlRegExp('@^/authentication/s[s|f]o/consume-assertion$@');
 
         $this->minkContext->pressButton('Submit');
     }
 
     public function passTroughGatewayProxyAssertionConsumerService()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/gssp/dummy/consume-assertion');
+        $this->minkContext->assertUrlRegExp('@^/gssp/dummy/s[s|f]o/consume-assertion$@');
 
         $this->minkContext->pressButton('Submit');
     }

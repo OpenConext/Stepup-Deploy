@@ -1,3 +1,20 @@
+Release 17.1
+
+Support a normal and a SFO authentication concurrently in the same session in the Stepup-Gateway. This allows the
+remote IdP to use SFO.
+
+CHANGES
+* Stepup-Gateway
+  - Allow a normal and a SFO authentication concurrently in the same session in the Stepup-Gateway.
+    This allows the remote IdP (e.g. OpenConext EngineBlock) to use SFO. This allows seamless migration of SPs, that
+    meet the requirements of the remote IdP, from the Stepup-Gateway to the remote IdP
+    (https://www.pivotaltracker.com/n/projects/1163646/stories/171569114)
+
+INSTALL
+ * Deploy components
+   - Stepup-Gateway 3.0.0
+
+
 Release 17
 More fine grained authorization (FGA) of RAs, Fix wrong Issuer in Gateway SAMLResponse
 

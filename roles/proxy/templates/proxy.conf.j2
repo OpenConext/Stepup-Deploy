@@ -29,6 +29,9 @@ server {
         # proxy_pass (i.e. localhost:80). We need to keep the real hostname here.
         proxy_set_header    Host            $host;
 
+        # Set cookie to samesite=none
+        proxy_cookie_path ~(/*) "/; secure; HttpOnly; SameSite=none";
+
         # Append the client IP to the X-Forwarded-For header. This header is later used
         # by the nginx vhost to get the real client IP, just like when using a separate reverse
         # proxy (i.e. haproxy on the host)

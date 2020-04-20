@@ -56,9 +56,6 @@ class FeatureContext implements Context
         shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:create --env=smoketest");
         shell_exec("/src/Stepup-Gateway/app/console doctrine:schema:create --env=test");
 
-        echo "Create RA Candidate view\n";
-        shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/view-ra-candidate.sql");
-
         echo "Replaying event stream\n";
         // Import the events.sql into middleware
         shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/events.sql");

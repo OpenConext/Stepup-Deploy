@@ -20,6 +20,7 @@ INSTALL
    on an app server.
    A restore of the middleware and gateway schema's is required to perform a rollback of the middleware.
 
+
 Release 17.1
 
 Support a normal and a SFO authentication concurrently in the same session in the Stepup-Gateway. This allows the

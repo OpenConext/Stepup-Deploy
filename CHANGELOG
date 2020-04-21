@@ -1,3 +1,25 @@
+Release 17.2
+
+Bugfix release.
+
+CHANGES:
+* Stepup-Gateway:
+  - Fix: No SAMLError response is sent when using the SFO endpoint (https://www.pivotaltracker.com/story/show/172262049)
+
+* Stepup-Middleware:
+  - Fix: Performance issue updating the ra_candidates projection. For lager number of users with an active token this
+    results in a PHP execution timeout when pushing an institution configuration or when assigning an RA or RAA role to
+    a user. (https://www.pivotaltracker.com/story/show/172245466)
+
+INSTALL
+ * Deploy components
+   - Stepup-Gateway 3.0.1
+   - Stepup-Middleware 3.1.7
+
+ * Update middleware database schema to 20200416135127 (from 20190211163604) by running /root/01-middleware-db_migrate.sh
+   on an app server.
+   A restore of the middleware and gateway schema's is required to perform a rollback of the middleware.
+
 Release 17.1
 
 Support a normal and a SFO authentication concurrently in the same session in the Stepup-Gateway. This allows the
@@ -75,6 +97,7 @@ INSTALL
   on an app server.
   The new gateway will continue to work with the database schema of release 16. The new middleware (and by extension the
   SelfService and the RA components) require the database schema to be updated to work.
+  A restore of the middleware and gateway schema's is required to perform a rollback.
 
 
 Release 16

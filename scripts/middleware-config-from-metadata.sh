@@ -25,4 +25,4 @@ if [ -z "${metadataurl}"  ]; then
 fi
 
 #echo $metadataurl
-xsltproc ${BASEDIR}/middleware-config-from-metadata.xslt $metadataurl
+xsltproc ${BASEDIR}/middleware-config-from-metadata.xslt "$metadataurl"

@@ -24,13 +24,10 @@
   args:
       chdir: "{{ component_dir_name }}"
 
-- name: mopa:bootstrap:symlink:less
-  command: php app/console mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
-
 - name: Dump Assetic Assets
-  shell: php {{ component_dir_name }}/app/console assetic:dump --env=prod {{ debug_flag }}
+  command: php app/console assetic:dump --env=prod {{ debug_flag }}
+  args:
+    chdir: "{{ component_dir_name }}"
 
 - name: Clear and warmup cache
   command: php app/console cache:clear --env=prod {{ debug_flag }}

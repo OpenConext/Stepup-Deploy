@@ -2,7 +2,7 @@
 - name: Check if PHP7 is needed
   set_fact:
     needphp7: True
-  when: "'stepup-webauthn' in group_names or 'stepup-azuremfa' in group_names"
+  when: "'stepup-webauthn' in group_names or 'stepup-azuremfa' in group_names or 'stepup-ra' in group_names or 'stepup-middleware' in group_names"
 
 # Install the "REMI" repo which contain newer php packages that override the default
 # that come with the distro (CentOS7: 5.4; CentOS6: 5.3)
@@ -143,7 +143,7 @@
 - include: php72-vhost-symfony4.yml
   vars: { component_name: azuremfa,  vhost_name: "{{ azuremfa_vhost_name }}" }
   when: "'stepup-azuremfa' in group_names"
-- include: vhost.yml
+- include: php72-vhost-symfony4-flex.yml
   vars: { component_name: middleware,  vhost_name: "{{ middleware_vhost_name }}" }
   when: "'stepup-middleware' in group_names"
 - include: vhost.yml
@@ -152,7 +152,7 @@
 - include: vhost.yml
   vars: { component_name: selfservice, vhost_name: "{{ selfservice_vhost_name }}" }
   when: "'stepup-selfservice' in group_names"
-- include: vhost.yml
+- include: php72-vhost-symfony4-flex.yml
   vars: { component_name: ra,          vhost_name: "{{ ra_vhost_name }}" }
   when: "'stepup-ra' in group_names"
 - include: vhost.yml

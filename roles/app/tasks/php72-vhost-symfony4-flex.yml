@@ -17,10 +17,10 @@
 # Create a default app
 # When no app is installed yet in the webdirectory then a link to the default app is created
 - name: Create default app directory for {{ vhost_name }}
-  file: path=/opt/default/{{ vhost_name }}/web/ state=directory
+  file: path=/opt/default/{{ vhost_name }}/public/ state=directory
 
-- name: Create default /opt/default/{{ vhost_name }}/web/app.php
-  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/web/app.php'
+- name: Create default /opt/default/{{ vhost_name }}/public/app.php
+  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/public/app.php'
 
 
 - stat: path=/opt/www/{{ vhost_name }}
@@ -33,10 +33,9 @@
 
 # Put httpd vhost config
 - name: Put httpd vhost config for {{ vhost_name }} (php72)
-  action: template src='php72-nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
+  action: template src='php72-nginx-vhost-symfony4-flex.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
   notify:
     - restart nginx
-
 
 # Put fpm config
 - name: Put php72-php-fpm config

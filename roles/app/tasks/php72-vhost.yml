@@ -30,13 +30,18 @@
   file: src=/opt/default/{{ vhost_name }} dest=/opt/www/{{ vhost_name }} state=link force=no
   when: (r.stat.exists == false)
 
-
 # Put httpd vhost config
 - name: Put httpd vhost config for {{ vhost_name }} (php72)
   action: template src='php72-nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
   notify:
     - restart nginx
 
+- name: Remove php5 php-fpm config if present
+  file:
+    path: '/etc/php-fpm.d/{{ vhost_name }}.conf'
+    state: absent
+  notify:
+    - restart php-fpm
 
 # Put fpm config
 - name: Put php72-php-fpm config

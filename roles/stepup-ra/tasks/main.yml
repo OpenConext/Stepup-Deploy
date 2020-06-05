@@ -36,7 +36,7 @@
 - name: Clear and warmup cache
   command: php app/console cache:clear --env=prod {{ debug_flag }}
   args:
-      chdir: "{{ component_dir_name }}"
+    chdir: "{{ component_dir_name }}"
   when: not (develop | default(false))
 
 - name: Restrict app dir to the application

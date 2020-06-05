@@ -1,6 +1,6 @@
 # Infra stuff for key server
 - name: Create /app/config/ directory
-  file: path={{ component_dir_name }}/app/config/ state=directory group={{ component_name }} mode=755
+  file: path={{ component_dir_name }}/app/config/ state=directory group={{ component_group }} mode={{ component_mode_755 }}
 
 - name: Put parameters.yml
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}

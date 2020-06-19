@@ -29,14 +29,14 @@ Feature: A RAA can export tokens registered in the selfservice portal
     Given I am logged in into the ra portal as "jane-a-raa" with a "yubikey" token
     When I visit the Tokens page
       And I click on the token export button
-    Then the response should contain "Token ID,Type,Name,Email,Institution,Document Number,Status"
-      And the response should contain "03945859,yubikey,Jane Raa,foo@bar.com,institution-a.example.com,123456,vetted"
-      And the response should contain "03945859,yubikey,Jane Ra,foo@bar.com,institution-a.example.com,123456,vetted"
+    Then the response should contain "\"Token ID\",Type,Name,Email,Institution,\"Document Number\",Status"
+    Then the response should contain "03945859,yubikey,\"Jane Raa\",foo@bar.com,institution-a.example.com,123456,vetted"
+    Then the response should contain "03945859,yubikey,\"Jane Ra\",foo@bar.com,institution-a.example.com,123456,vetted"
 
   Scenario: a user which is at least RAA for one institution can export tokens
     Given I am logged in into the ra portal as "joe-a-raa" with a "yubikey" token
     When I visit the Tokens page
       And I click on the token export button
-    Then the response should contain "Token ID,Type,Name,Email,Institution,Document Number,Status"
-      And the response should contain "03945859,yubikey,Jane Raa,foo@bar.com,institution-a.example.com,123456,vetted"
-      And the response should contain "03945859,yubikey,Jane Ra,foo@bar.com,institution-a.example.com,123456,vetted"
+    Then the response should contain "\"Token ID\",Type,Name,Email,Institution,\"Document Number\",Status"
+    Then the response should contain "03945859,yubikey,\"Jane Raa\",foo@bar.com,institution-a.example.com,123456,vetted"
+    Then the response should contain "03945859,yubikey,\"Jane Ra\",foo@bar.com,institution-a.example.com,123456,vetted"

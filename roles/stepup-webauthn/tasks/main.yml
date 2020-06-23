@@ -1,4 +1,4 @@
-# Install AzureMFA component
+# Install Webauthn component
 - name: Create app directory
   file:
     path: "{{ component_dir_name }}/app/config/"

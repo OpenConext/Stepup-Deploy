@@ -1,7 +1,7 @@
 # Infra suff for middleware
 
-- name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/config/legacy/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
+- name: Put parameters.yaml
+  template: src=parameters.yml.j2 dest={{ component_dir_name }}/config/legacy/parameters.yaml mode={{ component_mode_640 }} group={{ component_group }}
 
 - name: Clear and warmup cache
   command: php bin/console cache:clear --env=prod {{ debug_flag }}

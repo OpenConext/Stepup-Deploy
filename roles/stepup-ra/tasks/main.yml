@@ -1,12 +1,12 @@
 # Infra suff for RA
 
-- name: Put parameters.yml, samlstepupproviders(_parameters).yml and global_view_parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/config/legacy/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+- name: Put parameters.yaml, samlstepupproviders(_parameters).yaml and global_view_parameters.yaml
+  template: src={{ item }}.yml.j2 dest={{ component_dir_name }}/config/legacy/{{ item }}.yaml mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
-  - parameters.yml
-  - samlstepupproviders.yml
-  - samlstepupproviders_parameters.yml
-  - global_view_parameters.yml
+  - parameters
+  - samlstepupproviders
+  - samlstepupproviders_parameters
+  - global_view_parameters
 
 - name: Put images from <env>/files/stepup-app into public/images
   copy: src={{ item }} dest={{ component_dir_name }}/public/images mode=444 group={{ component_group }}

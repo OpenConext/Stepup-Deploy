@@ -19,9 +19,10 @@
   - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
 
 - name: Install frontend assets
-  command: yarn build
+  command: php72 /usr/local/bin/composer frontend-install
   args:
     chdir: "{{ component_dir_name }}"
+    when: (develop | default(false))
 
 - name: Clear and warmup cache
   command: php72 bin/console cache:clear --env=prod {{ debug_flag }}

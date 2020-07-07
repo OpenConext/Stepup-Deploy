@@ -10,7 +10,6 @@ parameters:
     # The database server version is used in the dbal configuration and is required to prevent issues when the database
     # connection is booted. See https://github.com/doctrine/DoctrineBundle/issues/351 for more details on this.
     # Also see: https://symfony.com/doc/current/reference/configuration/doctrine.html#doctrine-dbal-configuration
-    database_server_version: 5.6
     database_middleware_name:     {{ database_middleware_name }}
     database_middleware_user:     {{ database_middleware_user }}
     database_middleware_password: {{ database_middleware_password | vault(vault_keydir)}}

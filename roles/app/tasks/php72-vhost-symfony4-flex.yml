@@ -37,6 +37,13 @@
   notify:
     - restart nginx
 
+- name: Remove php5 php-fpm config if present
+  file:
+    path: '/etc/php-fpm.d/{{ vhost_name }}.conf'
+    state: absent
+  notify:
+    - restart php-fpm
+
 # Put fpm config
 - name: Put php72-php-fpm config
   template: src='php72-fpm-pool.conf.j2' dest='/etc/opt/remi/php72/php-fpm.d/{{ vhost_name }}.conf'

@@ -167,14 +167,12 @@
   vars: { component_name: ssp,   vhost_name: "{{ ssp_vhost_name }}" }
   when: "inventory_hostname in groups['dev']"
 
-
 # Because nginx will restart with an invalid config without service detecting this, so we test the config  first
 - name: Test nginx config
   command: /sbin/nginx -t
   register: nginx_test
   changed_when: False
   failed_when: nginx_test.rc > 0
-
 
 - name: Start and enable nginx & php-fpm & smtp services
   service: name={{item}} state=started enabled=true

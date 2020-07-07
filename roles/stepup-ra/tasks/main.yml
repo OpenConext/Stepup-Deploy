@@ -18,17 +18,17 @@
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
 
-- name: Install frontend assets
-  command: php72 /usr/local/bin/composer frontend-install
-  args:
-    chdir: "{{ component_dir_name }}"
-    when: (develop | default(false))
-
 - name: Clear and warmup cache
   command: php72 bin/console cache:clear --env=prod {{ debug_flag }}
   args:
     chdir: "{{ component_dir_name }}"
   when: not (develop | default(false))
+
+- name: Create a directory for keys and certificates if it does not exist
+  file:
+    path: "{{ component_dir_name }}/config/keys/"
+    state: directory
+    mode: '0755'
 
 - name: Restrict app dir to the application
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes

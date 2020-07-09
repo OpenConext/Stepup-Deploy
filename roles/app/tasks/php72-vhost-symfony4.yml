@@ -33,7 +33,7 @@
 
 # Put httpd vhost config
 - name: Put httpd vhost config for {{ vhost_name }} (php72)
-  action: template src='php72-nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
+  action: template src='php72-nginx-vhost-symfony4.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
   notify:
     - restart nginx
 

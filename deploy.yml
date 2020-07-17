@@ -142,3 +142,33 @@
       component_vhost_name: "{{ webauthn_vhost_name }}"
       component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
       stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
+
+
+# Demo GSSP's only for development purposes
+- name: Install Stepup-Demo-GSSP
+  hosts: stepup-demo-gssp
+  become: True
+  tags: stepup-demo-gssp
+
+  roles:
+    - stepup-gssp-example
+    - deploy
+
+  vars:
+    component_name: demo-gssp
+    component_vhost_name: "{{ demo_gssp_vhost_name }}"
+    stable_nonce: "develop"
+
+- name: Install Stepup-Demo-GSSP 2
+  hosts: stepup-demo-gssp-2
+  become: True
+  tags: stepup-demo-gssp-2
+
+  roles:
+    - stepup-gssp-example
+    - deploy
+
+  vars:
+    component_name: demo-gssp-2
+    component_vhost_name: "{{ demo_gssp_2_vhost_name }}"
+    stable_nonce: "develop"

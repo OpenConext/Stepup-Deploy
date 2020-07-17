@@ -1,0 +1,14 @@
+# This file is a "template" of what your parameters.yml file should look like
+# Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
+# https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
+
+parameters:
+    saml_idp_publickey: '%kernel.root_dir%/../../../../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
+    saml_idp_privatekey: '%kernel.root_dir%/../../../../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
+    saml_metadata_publickey: '%kernel.root_dir%/../../../../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_publickey.cer'
+    saml_metadata_privatekey: '%kernel.root_dir%/../../../../vendor/surfnet/stepup-saml-bundle/src/Resources/keys/development_privatekey.pem'
+    saml_remote_sp_entity_id: 'https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp'
+    saml_remote_sp_sso_url: '"https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp"'
+    saml_remote_sp_certificate: '%kernel.root_dir%/../../../../vendor/surfnet/stepup-gssp-bundle/src/Resources/keys/pieter.aai.surfnet.nl.pem'
+    saml_remote_sp_acs: 'https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/saml2-acs.php/default-sp'
+

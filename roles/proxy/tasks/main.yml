@@ -53,3 +53,20 @@
     proxy_certificate: "{{ proxy_keyserver_certificate }}"
     proxy_key: "{{ proxy_keyserver_key }}"
   when: "inventory_hostname in groups['stepup-keyserver']"
+
+
+- include: proxy.yml
+  vars:
+    vhost_name: "{{ demo_gssp_vhost_name }}"
+    component_name: demogssp
+    proxy_certificate: "{{ proxy_tiqr_certificate }}"
+    proxy_key: "{{ proxy_tiqr_key }}"
+  when: "inventory_hostname in groups['stepup-demo-gssp']"
+
+- include: proxy.yml
+  vars:
+    vhost_name: "{{ demo_gssp_2_vhost_name }}"
+    component_name: demogssp2
+    proxy_certificate: "{{ proxy_tiqr_certificate }}"
+    proxy_key: "{{ proxy_tiqr_key }}"
+  when: "inventory_hostname in groups['stepup-demo-gssp-2']"

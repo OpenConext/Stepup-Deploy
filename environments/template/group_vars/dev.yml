@@ -19,3 +19,17 @@ ssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt
 
 ssp_sp2_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.key') }}"
 ssp_sp2_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.crt') }}"
+
+# Enabled development second factors
+stepup_enabled_generic_second_factors:
+  tiqr:
+    loa: 2
+  demo-gssp:
+    loa: 2
+  demo-gssp-2:
+    loa: 2
+
+# Skip the prove token possession step
+skip_prove_possession_second_factors:
+  - gssp-2
+

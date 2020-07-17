@@ -21,6 +21,10 @@
 #   version
 
 # All the ground and "root" work to host the components (nginx, php-fpm etc) was performed by the app role.
+- name: Check if PHP7 is needed
+  set_fact:
+    needphp7: True
+  when: "'webauthn' == component_name or 'azuremfa' == component_name or 'ra' == component_name or 'middleware' == component_name or 'demo-gssp' == component_name or 'demo-gssp-2' == component_name"
 
 
 - name: Get active component
@@ -124,17 +128,33 @@
 
     # If composer install fails:
     # - Remove the non .dist versions of the configuration in /app/config
-    - name: DEVELOP - Composer install
-      shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
+    - name: DEVELOP - Composer install (php72)
+      shell: /usr/bin/php72 /usr/local/bin/composer install --no-interaction --no-cache
+      args:
+        chdir: '{{ component_dir_name }}'
+      when: needphp7
+
+    - name: DEVELOP - Composer install (php)
+      shell: /usr/local/bin/composer install --no-interaction --no-cache
+      args:
+        chdir: '{{ component_dir_name }}'
+      when: not needphp7
+
+    # Install frontend assets Npm/Yarn
+    - name: DEVELOP - Frontend install
+      shell:  /usr/bin/php72 /usr/local/bin/composer frontend-install
+      args:
+        chdir: '{{ component_dir_name }}'
+      when: "'ra' == component_name or 'demo-gssp' == component_name or 'demo-gssp-2' == component_name"
 
     # Rebuild cache
-    - name: DEVELOP - Clear cache (/app/console)
-      shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
-      when: component_name != "tiqr"
+    - name: DEVELOP - Clear cache (/app/console) (php72)
+      shell: /usr/bin/php72 {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup
+      when: needphp7
 
-    - name: DEVELOP - Clear cache (/bin/console)
-      shell: php {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup
-      when: component_name == "tiqr"
+    - name: DEVELOP - Clear cache (/bin/console) (php)
+      shell: /usr/bin/php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
+      when: not needphp7
 
     - name: DEVELOP - Set debug, mode, owner and group for develop
       set_fact:
@@ -160,10 +180,10 @@
 
     - name: DEVELOP - put app_dev.php
       copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
-      when: component_name != "tiqr" and component_name != "keyserver"
+      when: not needphp7
 
     - name: DEVELOP - put app_test.php
       copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
-      when: component_name != "tiqr" and component_name != "keyserver"
+      when: not needphp7
 
   when: develop | default(false)

@@ -24,11 +24,6 @@
       chdir: "{{ component_dir_name }}"
 
 # TODO: Requires composer on app server. Need to fix
-- name: mopa:bootstrap:symlink:less
-  command: php app/console mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
-
 - name: Dump Assetic Assets
   command: php app/console assetic:dump --env=prod {{ debug_flag }}
   args:

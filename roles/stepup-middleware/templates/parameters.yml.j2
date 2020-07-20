@@ -60,3 +60,7 @@ parameters:
     # institution config (middleware api). The value configured in the parameters.yml will be used as the
     # fallback/default value.
     number_of_tokens_per_identity: 1
+    skip_prove_possession_second_factors:
+    {% for value in skip_prove_possession_second_factors %}
+      - {{ value }}
+    {% endfor %}

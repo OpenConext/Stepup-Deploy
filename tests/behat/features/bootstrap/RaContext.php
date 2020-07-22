@@ -227,7 +227,7 @@ class RaContext implements Context
             )
         );
         $this->minkContext->assertPageContainsText('Token activated');
-        $this->minkContext->assertPageContainsText('The user has proven posession of his token');
+        $this->minkContext->assertPageContainsText('The user has proven possession of his token');
     }
 
     /**

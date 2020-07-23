@@ -129,9 +129,7 @@ keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use addre
 # Because the logs are sent unencrypted the network between all hosts and the remote log host must be trusted
 # The rsyslog configuration is in the "common" role, in common/templaes/rsyslog/rsyslog.conf.j2
 # TODO: Set to address and port of logserver
-# The - no so readable - expression below set loghost_relp_address to the host_ipv4 for the first host in the manage group,
-# or sets it to "false" if the manage group is empty
-loghost_relp_address: "{{ (groups['manage'][0] | default(false)) | ternary(hostvars[groups['manage'][0]|default(inventory_hostname)]['host_ipv4'], false) }}"
+loghost_relp_address: false
 
 # The port on the remote loghost to connect to. The manage role uses 10514 as the RELP port externally
 loghost_relp_port: 10514

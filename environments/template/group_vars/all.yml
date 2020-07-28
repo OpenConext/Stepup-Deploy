@@ -50,6 +50,7 @@ ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
 webauthn_vhost_name: webauthn.stepup.example.com
+azuremfa_vhost_name: azuremfa.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
 
 ssp_vhost_name: ssp.stepup.example.com # Used by the "dev" role only

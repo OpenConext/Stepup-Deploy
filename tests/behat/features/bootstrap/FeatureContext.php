@@ -51,16 +51,17 @@ class FeatureContext implements Context
     {
         // Generate test databases
         echo "Preparing test schemas\n";
-        shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:drop --env=smoketest --force");
-        shell_exec("/src/Stepup-Gateway/app/console doctrine:schema:drop --env=test --force");
-        shell_exec("/src/Stepup-Middleware/app/console doctrine:schema:create --env=smoketest");
-        shell_exec("/src/Stepup-Gateway/app/console doctrine:schema:create --env=test");
+        shell_exec("php72 /src/Stepup-Middleware/bin/console doctrine:schema:drop --env=smoketest --force");
+        shell_exec("php72 /src/Stepup-Middleware/bin/console doctrine:schema:create --env=smoketest");
+
+        shell_exec("php72 /src/Stepup-Gateway/app/console doctrine:schema:drop --env=test --force");
+        shell_exec("php72 /src/Stepup-Gateway/app/console doctrine:schema:create --env=test");
 
         echo "Replaying event stream\n";
         // Import the events.sql into middleware
         shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/events.sql");
         // Perform an event replay
-        shell_exec("/src/Stepup-Middleware/app/console middleware:event:replay --env=smoketest_event_replay --no-interaction -q");
+        shell_exec("php72 /src/Stepup-Middleware/bin/console middleware:event:replay --env=smoketest_event_replay --no-interaction -q");
 
         echo "Update the keys\n";
         // Update the `saml_entities` projection in `gateway_test`

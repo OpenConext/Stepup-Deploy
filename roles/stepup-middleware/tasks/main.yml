@@ -1,15 +1,10 @@
 # Infra suff for middleware
 
-- name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
-
-- name: assets:install
-  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
+- name: Put parameters.yaml
+  template: src=parameters.yml.j2 dest={{ component_dir_name }}/config/legacy/parameters.yaml mode={{ component_mode_640 }} group={{ component_group }}
 
 - name: Clear and warmup cache
-  command: php app/console cache:clear --env=prod {{ debug_flag }}
+  command: php72 bin/console cache:clear --env=prod {{ debug_flag }}
   args:
       chdir: "{{ component_dir_name }}"
   when: not (develop | default(false))
@@ -17,14 +12,14 @@
 - name: Restrict app dir to the application
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
-  - "{{ component_dir_name }}/app"
+  - "{{ component_dir_name }}/var"
   when: not (develop | default(false))
 
 - name: Grant app write access to cache and log dirs
   file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
   with_items:
-  - "{{ component_dir_name }}/app/cache"
-  - "{{ component_dir_name }}/app/logs"
+  - "{{ component_dir_name }}/var/cache"
+  - "{{ component_dir_name }}/var/log"
   when: not (develop | default(false))
 
 - name: Put middleware configuration scripts in /root/

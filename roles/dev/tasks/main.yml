@@ -38,12 +38,21 @@
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
 
-## Yarn ##
+## Nodejs / NPM / Yarn stack ##
 
-# Required for dev install of Symfony 3 components
+# Needed to build the frontend assets in development
+- name: Add Nodesource repositories for Node.js
+  yum:
+    name: "https://rpm.nodesource.com/pub_12.x/el/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/nodesource-release-el{{ ansible_distribution_major_version }}-1.noarch.rpm"
+    state: present
 
-- name: Install yarn
-  shell: npm install -g yarn
+- name: Ensure Node.js and npm are installed
+  yum:
+    name:
+      - "nodejs-12*"
+    state: latest
+    enablerepo: nodesource
+
 
 ## XDebug ##
 

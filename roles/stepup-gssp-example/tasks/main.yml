@@ -1,0 +1,20 @@
+# Install demo gssp component
+
+- name: Exit if not develop
+  fail: msg="You should never install the demo gssp in production"
+  when: not (develop | default(false))
+
+
+- name: Copy .env file
+  copy: remote_src=True src={{ component_dir_name }}/.env.ci dest={{ component_dir_name }}/.env
+
+
+- name: Put parameters.yml
+  template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode=666
+  with_items:
+    - parameters.yaml
+
+
+# Finish
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ component_vhost_name }} state=link

@@ -76,6 +76,19 @@ class RaContext implements Context
     }
 
     /**
+     * @Given /^I vet the last added second factor, not requiring proof of possession$/
+     */
+    public function iVetTheLastAddedSecondFactorNoProofOfPossession()
+    {
+        $secondFactorId = $this->selfServiceContext->getVerifiedSecondFactorId();
+        $activationCode = $this->selfServiceContext->getActivationCode();
+
+        $this->findsTokenForActivation($activationCode);
+        $this->adminVerifiesUserIdentity($secondFactorId);
+        $this->vettingProcessIsCompleted($secondFactorId);
+    }
+
+    /**
      * @Given /^I vet a second factor with id "([^"]*)" and with activation code "([^"]*)"$/
      */
     public function iVetASecondFactor($secondFactorId, $activationCode)

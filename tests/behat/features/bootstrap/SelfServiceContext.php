@@ -149,6 +149,41 @@ class SelfServiceContext implements Context
     }
 
     /**
+     * @When /^I register a new demogssp token$/
+     */
+    public function iRegisterANewDemogsspToken()
+    {
+        // Click 'add token' on the overview page
+        $this->minkContext->clickLink('Add token');
+
+        $this->minkContext->assertPageAddress('/registration/select-token');
+
+        // Select the dummy second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/gssf/demogssp/initiate"]')->click();
+
+        $this->minkContext->assertPageAddress('/registration/gssf/demogssp/initiate');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Register with Demogssp');
+        $this->minkContext->pressButton('Register with Demogssp');
+
+        // Register onthe dummy application
+        $this->minkContext->assertPageAddress('http://localhost:1234/app_dev.php/registration');
+        $this->minkContext->pressButton('Register user');
+
+        // Pass trough GSSP return action
+        $this->minkContext->pressButton('Submit');
+
+        // Pass trough gateway
+        $this->authContext->passTroughGatewayProxyAssertionConsumerService();
+
+        $this->minkContext->assertPageContainsText('Verify your e-mail');
+        $this->minkContext->assertPageContainsText('Check your inbox');
+    }
+
+    /**
      * @When I verify my e-mail address
      */
     public function verifyEmailAddress()

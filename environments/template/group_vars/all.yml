@@ -51,7 +51,7 @@ gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
 webauthn_vhost_name: webauthn.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
-ssp_vhost_name: ssp.stepup.example.com # Used by the "dev" role only
+
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
 # user's locale preference with other (stepup) components
@@ -98,12 +98,11 @@ stepup_enabled_factors: sms, yubikey, u2f
 # Tip: search for "example_gssp" to see where you need to make changes.
 # TODO: Select GSSPs to enable, and specify the LoA level to assign to the GSSP
 # Available LoA levels: 2 and 3
+# Note you cannot use a dash ('-') in a GSSP name, use an underscore ("_") instead
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
-# example_gssp:
-#   loa: 2
-
+# Note: for the Stepup-VM this is overridden in dev.yml
 
 # Set the addres(ses) of the loadbalancer(s)
 # These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.
@@ -199,11 +198,6 @@ tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') 
 # Private key in stepup-webauthn.yml
 # Format: PEM X.509 certificate
 webauthn_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_idp.crt') }}"
-
-
-# Public SAML signing key of the "example_gssp" GSSP IDP
-# Format: PEM X.509 certificate
-#gssp_example_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gssp_example_idp.crt') }}"
 
 
 # Database tables and users for Stepup applications, keyserver

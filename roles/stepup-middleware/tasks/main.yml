@@ -1,4 +1,4 @@
-# Infra suff for middleware
+# Infra stuff for middleware
 
 - name: Put parameters.yml
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}

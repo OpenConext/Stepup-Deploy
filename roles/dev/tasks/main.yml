@@ -38,20 +38,33 @@
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
 
+
 ## Nodejs / NPM / Yarn stack ##
 
-# Needed to build the frontend assets in development
-- name: Add Nodesource repositories for Node.js
-  yum:
-    name: "https://rpm.nodesource.com/pub_12.x/el/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/nodesource-release-el{{ ansible_distribution_major_version }}-1.noarch.rpm"
-    state: present
+# Note that that the centos 7 nodejs (version 6), nmp and the nodjejs-less module are installed for
+# the Stepup components that still use Assetic. Currently (Release 17) these are: Stepup-Gateway, Stepup-Selfservice
+# and Stepup-RA.
 
-- name: Ensure Node.js and npm are installed
-  yum:
-    name:
-      - "nodejs-12*"
-    state: latest
-    enablerepo: nodesource
+# Newer components require a newer nodejs at build time only. We use nvm to install newer node versions and to switch to
+# a newer node version
+# nvm is installed as root. Add "source /root/.bashrc" to the shell command to enable nvm, then use "nvm use <version>"
+# to enable one of the installed versions.
+
+- name: "Install node version manager (nvm)"
+  shell:
+    cmd: "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash"
+    warn: false # disable curl warning
+    creates: /root/.nvm/
+
+
+# stepup-example-gssp requires node 12 with yarn
+- name: "Install node version 12"
+  shell:
+    cmd: "source /root/.bashrc && nvm install 12"
+
+- name: "Install npm module 'yarn'"
+  shell:
+    cmd: "source /root/.bashrc && nvm use 12 && npm install --global yarn"
 
 
 ## XDebug ##

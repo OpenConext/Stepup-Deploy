@@ -31,8 +31,10 @@
       - mysql
       - bzip2
       - nginx
-      - nodejs
-      - nodejs-less.noarch
+
+      - nodejs # CentOS 7 nodejs = 6.11.1
+      - nodejs-less.noarch # nodejs less module required for assetic:dump by SS, RA and GW <= release 17
+
       - sendmail
       - sendmail-cf
       # PHP 5.6 from remi-php56 repo. These override the centos base php versions

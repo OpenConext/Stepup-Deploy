@@ -122,19 +122,24 @@
     # - "--ignore-platform-reqs"
     # - "--optimize-autoloader"
 
+    # Set php cli command based on whether the component requires php7
+    - set_fact:
+        php_cli: "{{ needphp7 | ternary('php72', 'php') }}"
+        symfony4: "{{ component_name in ['tiqr', 'webauthn', 'demo-gssp', 'demo-gssp-2'] }}"
+
     # If composer install fails:
     # - Remove the non .dist versions of the configuration in /app/config
     - name: DEVELOP - Composer install
-      shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
+      shell: "export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}"
 
     # Rebuild cache
     - name: DEVELOP - Clear cache (/app/console)
-      shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
-      when: component_name != "tiqr"
+      shell: "{{ php_cli }} {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup"
+      when: not symfony4
 
     - name: DEVELOP - Clear cache (/bin/console)
-      shell: php {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup
-      when: component_name == "tiqr"
+      shell: "{{ php_cli }} {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup"
+      when: symfony4
 
     - name: DEVELOP - Set debug, mode, owner and group for develop
       set_fact:
@@ -160,10 +165,10 @@
 
     - name: DEVELOP - put app_dev.php
       copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
-      when: component_name != "tiqr" and component_name != "keyserver"
+      when: component_name not in ["tiqr", "keyserver", "demo-gssp", "demo-gssp-2"]
 
     - name: DEVELOP - put app_test.php
       copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
-      when: component_name != "tiqr" and component_name != "keyserver"
+      when: component_name not in ["tiqr", "keyserver", "demo-gssp", "demo-gssp-2"]
 
   when: develop | default(false)

@@ -51,6 +51,13 @@
       - php-gmp
       - php-pecl-memcache
 
+# Fix for php-gmp not being installed even though it is listed above
+- name: Install php-gmp again
+  yum:
+    name:
+      - php-gmp
+
+
 - name: Install PHP7 components if needed
   yum:
     name:
@@ -68,6 +75,7 @@
       - php72-php-gmp
       - php72-php-pecl-memcache
       - php72-php-sodium
+      - php72-php-gd
     state: present
   when: needphp7
 

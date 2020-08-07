@@ -24,5 +24,29 @@ if [ -z "${metadataurl}"  ]; then
     exit 1;
 fi
 
-#echo $metadataurl
-xsltproc ${BASEDIR}/middleware-config-from-metadata.xslt "$metadataurl"
+tmpfile=$(mktemp mw-from-meta.XXXXXX)
+rv=$?
+if [ $rv -ne 0 ]; then
+  echo "Error creating temporary file"
+  exit $rv
+fi
+
+# Download metadata using curl
+# --fail makes curl return a non zero exit code when the server return a non 2xx HTTP response
+curl --fail "${metadataurl}" > "${tmpfile}"
+rv=$?
+if [ $rv -ne 0 ]; then
+  echo "Error downloading metadata"
+  rm "$tmpfile"
+  exit 1
+fi
+
+xsltproc ${BASEDIR}/middleware-config-from-metadata.xslt "${tmpfile}"
+rv=$?
+if [ $rv -ne 0 ]; then
+  echo "Error processing metadata"
+fi
+
+rm "$tmpfile"
+exit $rv
+

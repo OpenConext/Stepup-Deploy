@@ -17,7 +17,7 @@ else
 fi
 if [[ ${REPLY} =~ ^[Yy]$ ]]
 then
-    php app/console middleware:bootstrap:identity-with-yubikey --env=prod {{ sraa.nameid }} {{ sraa.institution }} "{{ sraa.cn }}" {{ sraa.email }} {{ sraa.lang }} {{ sraa['yubikey_id'] }}
+    php bin/console middleware:bootstrap:identity-with-yubikey --env=prod {{ sraa.nameid }} {{ sraa.institution }} "{{ sraa.cn }}" {{ sraa.email }} {{ sraa.lang }} {{ sraa['yubikey_id'] }}
 fi
 {% endfor %}
 popd

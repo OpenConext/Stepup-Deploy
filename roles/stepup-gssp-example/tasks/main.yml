@@ -7,7 +7,7 @@
 # nodejs 12 and yarn were installed by the dev role using nvm
 - name: Run yarn encore dev using nodejs 12
   shell:
-    cmd: source /root/.bashrc && nvm use 12 && yarn encore dev
+    cmd: source /root/.bashrc && nvm use 12 && yarn && yarn encore dev
     chdir: "{{ component_dir_name }}"
 
 - name: Copy .env file

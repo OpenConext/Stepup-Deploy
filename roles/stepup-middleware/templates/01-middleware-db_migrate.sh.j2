@@ -1,5 +1,5 @@
 #!/bin/bash
 
 pushd /opt/www/{{ middleware_vhost_name }}
-php app/console middleware:migrations:migrate --env=prod
+php bin/console middleware:migrations:migrate --env=prod
 popd

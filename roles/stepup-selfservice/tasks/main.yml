@@ -29,11 +29,6 @@
   args:
       chdir: "{{ component_dir_name }}"
 
-- name: Dump Assetic Assets
-  command: php app/console assetic:dump --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
-
 - name: Clear and warmup cache
   command: php app/console cache:clear --env=prod {{ debug_flag }}
   args:

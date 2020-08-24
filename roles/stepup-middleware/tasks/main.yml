@@ -4,12 +4,12 @@
   template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
 
 - name: assets:install
-  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
+  command: "{{ php_cli }} {{ console }} assets:install --symlink --env=prod {{ debug_flag }}"
   args:
       chdir: "{{ component_dir_name }}"
 
 - name: Clear and warmup cache
-  command: php app/console cache:clear --env=prod {{ debug_flag }}
+  command: "{{ php_cli }} {{ console }} cache:clear --env=prod {{ debug_flag }}"
   args:
       chdir: "{{ component_dir_name }}"
   when: not (develop | default(false))

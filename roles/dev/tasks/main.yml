@@ -21,6 +21,9 @@
       # For jsonlint -- use "jsonlint <filename>" to do a syntax check on a JSON file
       - python-demjson
 
+      # For composer install
+      - unzip
+
       # xdebug, the PHP debug extension
       - php-pecl-xdebug
       - php72-php-pecl-xdebug

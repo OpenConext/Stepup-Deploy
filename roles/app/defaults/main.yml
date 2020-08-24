@@ -1,1 +1,34 @@
-needphp7: False
+# True when one or more components need php72, false otherwise
+# Controls installation php72
+app_require_php72: False
+
+# True when one or more components need php56
+# Controls installation php56
+app_require_php56: True
+
+# True when php56 is to be removed
+# Controls removal of php56
+app_remove_php56: False
+
+# Default list of applications that require php72
+# Using php72 implies using the component uses the Symfony 4 layout as well, relevant for the nginx configuration.
+# app_symfony_3_components overrides this.
+# Component names are the group names of the component in the inventory (i.e. with the stepup-prefix)
+app_php72_components: [] # none
+
+# Note: the following components *always* use php72 as there has never been an php56 / Symfony 2/3 version of these:
+#  - stepup-webauthn
+#  - stepup-azure
+#  - stepup-demo-gssp
+#  - stepup-demo-gssp-2
+
+# Components that use Symfony 3
+# Defaults to the components of R17
+# Component names are the group names of the component in the inventory (i.e. with the stepup-prefix)
+app_symfony_3_components:
+  - stepup-middleware
+  - stepup-gateway
+  - stepup-selfservice
+  - stepup-ra
+  - stepup-tiqr
+  - stepup-keyserver

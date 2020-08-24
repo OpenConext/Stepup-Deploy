@@ -1,10 +1,9 @@
 server {
     # Listen to 433 both IPv4 and IPv6
-    listen 443;
-    listen [::]:443;
-    server_name {{ vhost_name }};
+    listen 443      ssl;
+    listen [::]:443 ssl;
+    server_name     {{ vhost_name }};
 
-    ssl on;
     ssl_certificate     /etc/nginx/proxy_{{ component_name }}.crt;
     ssl_certificate_key /etc/nginx/proxy_{{ component_name }}.key;
 

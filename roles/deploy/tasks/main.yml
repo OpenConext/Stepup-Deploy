@@ -23,6 +23,12 @@
 # All the ground and "root" work to host the components (nginx, php-fpm etc) was performed by the app role.
 
 
+- name: Set component_dir_name and stable_nonce from component_tarball_name
+  set_fact:
+    component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
+    stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
+
+
 - name: Get active component
   shell: readlink /opt/www/{{ component_vhost_name }}
   ignore_errors: true
@@ -30,6 +36,18 @@
 
 - debug:
     msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+- name: Get vhost_component_info
+  uri:
+    url: http://127.0.0.1/vhost_component_info
+    headers:
+      Host: "{{ component_vhost_name }}"
+    return_content: yes
+  register: vhost_component_info
+
+- name: Show vhost_component_info
+  debug:
+    msg: "{{ vhost_component_info.content | from_json }}"
 
 
 # There are two modes in which a component can be installed. Which mode is active is determined by the "develop" variable.
@@ -43,8 +61,8 @@
 
 # 2. Development (DEVELOP) mode:
 #    - Components are installed from source (i.e. git clone)
-#    - Intended to be used with the Stepup-VM in dev mode (i.e. ENV=dev).
-#    - NOT FOR PRODUCTION USE
+#    - Intended to be used with the Stepup-VM in dev mode (i.e. ENV=dev)
+#    - NOT FOR PRODUCTION USE -- file system permissions are unsafe
 
 # The development VM mounts a remote directory from the host in the development-VM at "/src". This will typically be a
 # NFS mount. It requires some work to make the production deploy tasks, that need set owner, group and mode for production
@@ -94,6 +112,66 @@
         component_mode_770: "770" # rwx rwx ---
   when: not develop | default(false)
 
+# Read "{{ component_dir_name }}/component_info" into component_info.content when it exists
+# content is base64 encoded.
+# When successful component_info.failed == false
+- name: Read component_info from component on host
+  slurp:
+      path: "{{ component_dir_name }}/component_info"
+  register: component_info
+  ignore_errors: yes
+
+# Use regex_search to read the values for PHP_VERSION, ASSETIC etc from the component_info file
+# When not present in the file these will be empty strings.
+# The '\1' in regex_search is a backreference which makes the filter return the result of the match in the first "()" in
+# the regex as a list.
+# When there is no match an empty string is returned.
+- name: Fetch component requirements from component_info
+  set_fact:
+      component_info_php_version: "{{ component_info.content | b64decode | regex_search('PHP_VERSION=(.*)', '\\1' ) }}"
+      component_info_assetic: "{{ component_info.content | b64decode | regex_search('ASSETIC=(.*)', '\\1' ) }}"
+      component_info_symfony_version: "{{ component_info.content | b64decode | regex_search('SYMFONY_VERSION=(.*)', '\\1' ) }}"
+  when: not component_info.failed
+
+- name: component_info
+  debug:
+    msg: "Component requirements from component_info file: PHP version={{component_info_php_version}}; assetic={{component_info_assetic}}; Symfony version={{component_info_symfony_version}}"
+  when: not component_info.failed
+
+# Set deploy_<var> to component_info_<var> when component_info_<var> has length > 0, otherwise keep the current value of deploy_<var>
+# The deploy_<var> contain the defaults for the component for Release-17. component_info_<var> were read from the component_info file in the component tarball / git checkout
+# regex_search returns a list of matches, so we need to add [0] the get to the string
+- name: Update component deploy configuration from component_info
+  set_fact:
+      deploy_php_version: "{{ (component_info_php_version | length > 0) | ternary(component_info_php_version[0], deploy_php_version) }}"
+      deploy_assetic: "{{ (component_info_assetic | length > 0) | ternary(component_info_assetic[0], deploy_assetic) }}"
+      deploy_symfony_version: "{{ (component_info_symfony_version | length > 0) | ternary(component_info_symfony_version[0], deploy_symfony_version) }}"
+      deploy_symfony_4: "{{ (deploy_symfony_version | int) == (4 | int) }}"
+      deploy_symfony_3: "{{ (deploy_symfony_version | int) == (3 | int) }}"
+  when: not component_info.failed
+
+- name: Component rquirements
+  debug:
+    msg: "Component requirements: PHP version={{deploy_php_version}}; assetic={{deploy_assetic}}; Symfony version={{deploy_symfony_version}}"
+
+- name: Set vhost_component_info from JSON
+  set_fact:
+      vhost_component_info: "{{ vhost_component_info.content | from_json }}"
+
+- name: Vhost configuration
+  debug:
+    msg: "Vhost configuration: PHP version={{ vhost_component_info.PHP_VERSION }}; Symfony version={{ vhost_component_info.SYMFONY_VERSION }}"
+
+- name: Fail when component PHP version requirements do not match
+  fail:
+    msg: "The component PHP version requirements do not match with the current vhost configuration. The component requires PHP {{deploy_php_version}} but the vhost is configured for PHP {{vhost_component_info.PHP_VERSION}}"
+  when: deploy_php_version | int != vhost_component_info.PHP_VERSION | int
+
+- name: Fail when component Symfony version requirements do not match
+  fail:
+    msg: "The component Symfony version requirements do not match with the current vhost configuration. The component requires Symfony {{deploy_symfony_version}} but the vhost is configured for Symfony {{vhost_component_info.SYMFONY_VERSION}}"
+  when: deploy_symfony_version | int != vhost_component_info.SYMFONY_VERSION | int
+
 
 - block:
 # DEVELOP
@@ -113,62 +191,58 @@
 #      with_items:
 #        - "{{ component_name }}"
 
-    # Install dependencies
-    #
-    # Note: This composer install command is similar to the command used by the build script in Stepup-Build. The
-    # differences are that the DEVELOP version omits:
-    # - "--prefer-dist"
-    # - "--no-dev"
-    # - "--ignore-platform-reqs"
-    # - "--optimize-autoloader"
+  # Install dependencies
+  #
+  # Note: This composer install command is similar to the command used by the build script in Stepup-Build. The
+  # differences are that the DEVELOP version omits:
+  # - "--prefer-dist"
+  # - "--no-dev"
+  # - "--ignore-platform-reqs"
+  # - "--optimize-autoloader"
 
-    # Set php cli command based on whether the component requires php7
-    - set_fact:
-        php_cli: "{{ needphp7 | ternary('php72', 'php') }}"
-        symfony4: "{{ component_name in ['tiqr', 'webauthn', 'demo-gssp', 'demo-gssp-2'] }}"
+  # Set php cli command based on whether the component requires php7
+  - name: Set php cli command and console command based on component php and symfony versions
+    set_fact:
+      php_cli: "{{ (deploy_php_version | int == '72' | int) | ternary('php72', 'php') }}"
+      console: "{{ (deploy_symfony_version | int == '4' | int) | ternary('bin/console', 'app/console') }}"
 
-    # If composer install fails:
-    # - Remove the non .dist versions of the configuration in /app/config
-    - name: DEVELOP - Composer install
-      shell: "export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}"
+  # If composer install fails:
+  # - Remove the non .dist versions of the configuration in /app/config
+  - name: DEVELOP - Composer install
+    shell: "export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}"
 
-    # Rebuild cache
-    - name: DEVELOP - Clear cache (/app/console)
-      shell: "{{ php_cli }} {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup"
-      when: not symfony4
+  # Rebuild cache
+  - name: DEVELOP - Clear cache (/app/console)
+    shell: "{{ php_cli }} {{ component_dir_name }}/{{ console }} cache:clear --env=prod --no-warmup"
 
-    - name: DEVELOP - Clear cache (/bin/console)
-      shell: "{{ php_cli }} {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup"
-      when: symfony4
+  - name: DEVELOP - Set debug, mode, owner and group for develop
+    set_fact:
+        debug_flag: ""
 
-    - name: DEVELOP - Set debug, mode, owner and group for develop
-      set_fact:
-          debug_flag: ""
+        component_group:
+        #component_group: "{{ omit }}"
 
-          component_group:
-          #component_group: "{{ omit }}"
+        component_owner:
+        #component_owner: "{{ omit }}"
 
-          component_owner:
-          #component_owner: "{{ omit }}"
+        component_mode_400: "444"
+        component_mode_444: "444"
+        component_mode_640: "666"
+        component_mode_644: "666"
+        component_mode_755: "777"
+        component_mode_770: "777"
+        #component_mode_400: "{{ omit }}"
+        #component_mode_640: "{{ omit }}"
+        #component_mode_644: "{{ omit }}"
+        #component_mode_755: "{{ omit }}"
+        #component_mode_770: "{{ omit }}"
 
-          component_mode_400: "444"
-          component_mode_444: "444"
-          component_mode_640: "666"
-          component_mode_644: "666"
-          component_mode_755: "777"
-          component_mode_770: "777"
-          #component_mode_400: "{{ omit }}"
-          #component_mode_640: "{{ omit }}"
-          #component_mode_644: "{{ omit }}"
-          #component_mode_755: "{{ omit }}"
-          #component_mode_770: "{{ omit }}"
+  - name: DEVELOP - put app_dev.php
+    copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
+    when: deploy_symfony_3 and component_name not in ["tiqr", "keyserver"]
 
-    - name: DEVELOP - put app_dev.php
-      copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
-      when: component_name not in ["tiqr", "keyserver", "demo-gssp", "demo-gssp-2"]
-
-    - name: DEVELOP - put app_test.php
-      copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
-      when: component_name not in ["tiqr", "keyserver", "demo-gssp", "demo-gssp-2"]
+  - name: DEVELOP - put app_test.php
+    copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
+    when: deploy_symfony_3 and component_name not in ["tiqr", "keyserver"]
 
   when: develop | default(false)

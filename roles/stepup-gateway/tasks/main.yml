@@ -20,17 +20,19 @@
   - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
 
 - name: assets:install
-  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
+  command: "{{ php_cli }} {{ console }} assets:install --symlink --env=prod {{ debug_flag }}"
   args:
       chdir: "{{ component_dir_name }}"
+  when: deploy_assetic
 
 - name: Dump Assetic Assets
-  command: php app/console assetic:dump --env=prod {{ debug_flag }}
+  command: "{{ php_cli }} {{ console }} assetic:dump --env=prod {{ debug_flag }}"
   args:
     chdir: "{{ component_dir_name }}"
+  when: deploy_assetic
 
 - name: Clear and warmup cache
-  command: php app/console cache:clear --env=prod {{ debug_flag }}
+  command: "{{ php_cli }} {{ console }} cache:clear --env=prod {{ debug_flag }}"
   args:
       chdir: "{{ component_dir_name }}"
   when: not (develop | default(false))

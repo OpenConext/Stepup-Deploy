@@ -1,24 +1,24 @@
 # Setup vhost. Included from vhost.yml
-# Call with
 # - component_name: a unique name for the component user in user-, group, directory and file names
 # - vhost_name: the FQDN of the vhost
+
 
 # Create a default app
 # When no app is installed yet in the webdirectory then a link to a default app is created
 # The default app simply returns "No application installed for vhost {{ vhost_name }}"
-# For Symfony 4 config the app location is public/index.php
+# For symfony 3 the app location is web/app.php
 - name: Create default app directory for {{ vhost_name }}
-  file: path=/opt/default/{{ vhost_name }}/public/ state=directory
+  file: path=/opt/default/{{ vhost_name }}/web/ state=directory
 
-- name: Create default /opt/default/{{ vhost_name }}/public/index.php
-  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/public/index.php'
+- name: Create default /opt/default/{{ vhost_name }}/web/app.php
+  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/web/app.php'
 
 
 
 # Put httpd vhost config
-- name: Put httpd vhost config for {{ vhost_name }} (php72) (symfony4)
+- name: Put httpd vhost config for {{ vhost_name }} (php72) (symfony3)
   template:
-    src: "{{ nginx_vhost_template | default('php72-nginx-vhost-symfony4.conf.j2') }}"
+    src: "{{ nginx_vhost_template | default('php72-nginx-vhost-symfony3.conf.j2') }}"
     dest: "/etc/nginx/conf.d/{{ vhost_name }}.conf"
   notify:
     - restart nginx

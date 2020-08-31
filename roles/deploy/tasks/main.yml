@@ -143,12 +143,14 @@
 # regex_search returns a list of matches, so we need to add [0] the get to the string
 - name: Update component deploy configuration from component_info
   set_fact:
-      deploy_php_version: "{{ (component_info_php_version | length > 0) | ternary(component_info_php_version[0], deploy_php_version) }}"
-      deploy_assetic: "{{ (component_info_assetic | length > 0) | ternary(component_info_assetic[0], deploy_assetic) }}"
-      deploy_symfony_version: "{{ (component_info_symfony_version | length > 0) | ternary(component_info_symfony_version[0], deploy_symfony_version) }}"
       deploy_symfony_4: "{{ (deploy_symfony_version | int) == (4 | int) }}"
       deploy_symfony_3: "{{ (deploy_symfony_version | int) == (3 | int) }}"
   when: not component_info.failed
+
+- name: Update flags for symfony version to deploy
+  set_fact:
+      deploy_symfony_4: "{{ (deploy_symfony_version | int) == (4 | int) }}"
+      deploy_symfony_3: "{{ (deploy_symfony_version | int) == (3 | int) }}"
 
 - name: Component rquirements
   debug:

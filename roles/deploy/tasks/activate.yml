@@ -1,0 +1,19 @@
+---
+
+# This file is included from the stepup-<component> roles that handle the configuration of the stepup components
+# during deploy. It actives the component by updating the symlink in /opt/www/<vhost> to the /opt/stepup/<component_dir_name>
+
+# Include this from the stepup-<component> role after the component has been deployed and all configuration
+# is dome.
+#   # include ../../deploy/activate.yml
+#   - name: Deploy Symfony component
+#     include_role:
+#       name: deploy
+#       tasks_from: activate
+
+- name: Set stepup directory rights
+  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
+  when: not (develop | default(false))
+
+- name: Activate component
+  file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link

@@ -1,0 +1,15 @@
+---
+
+- name: Restrict var and coofig dirs to the application
+  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
+  with_items:
+    - "{{ component_dir_name }}/config"
+    - "{{ component_dir_name }}/var"
+  when: not (develop | default(false))
+
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
+  with_items:
+    - "{{ component_dir_name }}/var/cache"
+    - "{{ component_dir_name }}/var/logs"
+  when: not (develop | default(false))

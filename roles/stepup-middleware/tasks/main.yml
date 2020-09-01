@@ -1,31 +1,34 @@
-# Infra stuff for middleware
+# Configure stepup middleware
+---
 
-- name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
+# TODO: Do we want stepup-middleware config in legacy dir?
+- name: Set Symfony 4 config dir
+  set_fact:
+      component_config_dir_name: "{{ component_dir_name }}/config/legacy"
+  when: deploy_symfony_4
 
-- name: assets:install
-  command: "{{ php_cli }} {{ console }} assets:install --symlink --env=prod {{ debug_flag }}"
-  args:
-      chdir: "{{ component_dir_name }}"
 
-- name: Clear and warmup cache
-  command: "{{ php_cli }} {{ console }} cache:clear --env=prod {{ debug_flag }}"
-  args:
-      chdir: "{{ component_dir_name }}"
-  when: not (develop | default(false))
+- name: Put parameters.yml (SF 3)
+  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
+  when: deploy_symfony_3
 
-- name: Restrict app dir to the application
-  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app"
-  when: not (develop | default(false))
+- name: Put parameters.yaml (SF 4)
+  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.yaml mode={{ component_mode_640 }} group={{ component_group }}
+  when: deploy_symfony_4
 
-- name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app/cache"
-  - "{{ component_dir_name }}/app/logs"
-  when: not (develop | default(false))
+
+# Include ../../deploy/deploy.yml
+- name: Deploy Symfony component
+  include_role:
+    name: deploy
+    tasks_from: deploy
+
+# include ../../deploy/activate.yml
+- name: Deploy Symfony component
+  include_role:
+    name: deploy
+    tasks_from: activate
+
 
 - name: Put middleware configuration scripts in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
@@ -54,14 +57,6 @@
     "middleware-push-config.sh": "02-middleware-config.sh"
     "middleware-push-whitelist.sh": "04-middleware-whitelist.sh"
     "middleware-push-institution.sh": "05-middleware-institution.sh"
-
-- name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
-  when: not (develop | default(false))
-
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link
-
 
 - name: Show database configuration hint
   debug:

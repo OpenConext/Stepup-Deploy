@@ -6,6 +6,9 @@
 # component instead
 deploy_php_version: 56
 deploy_symfony_version: 3
+deploy_symfony_3: yes
+deploy_symfony_4: no
 deploy_assetic: no
+deploy_mopa_bootstrap: no
 
 

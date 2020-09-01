@@ -1,0 +1,44 @@
+---
+
+# This file is included from the stepup-<component> roles that handle the configuration of the stepup components
+# during deploy
+# Include this from the stepup-<component> role after the component configuration has been written using:
+#   # include ../../deploy/deploy.yml
+#   - name: Deploy Symfony component
+#     include_role:
+#       name: deploy
+#       tasks_from: deploy
+
+- name: assets:install
+  command: "{{ php_cli }} {{ console }} assets:install --symlink --env=prod {{ debug_flag }}"
+  args:
+    chdir: "{{ component_dir_name }}"
+# when: deploy_assetic
+
+- name: Dump Assetic Assets
+  command: "{{ php_cli }} {{ console }} assetic:dump --env=prod {{ debug_flag }}"
+  args:
+    chdir: "{{ component_dir_name }}"
+  when: deploy_assetic
+
+- name: Run mopa:bootstrap:symlink:less for SF3 selfservice, ra and tiqr
+  command: "{{ php_cli }} {{ console }} mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}"
+  args:
+      chdir: "{{ component_dir_name }}"
+  when: deploy_symfony_3 and component_name in ['selfservice', 'ra', 'tiqr']
+
+- name: Clear and warmup cache
+  command: "{{ php_cli }} {{ console }} cache:clear --env=prod {{ debug_flag }}"
+  args:
+    chdir: "{{ component_dir_name }}"
+  when: not (develop | default(false))
+
+# Set filesystem rights for Symfony 3 / Symfony 4
+
+- name: Deploy Symfony 3 component
+  include_tasks: deploy_symfony3
+  when: deploy_symfony_3
+
+- name: Deploy Symfony 4 component
+  include_tasks: deploy_symfony4
+  when: deploy_symfony_4

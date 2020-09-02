@@ -5,8 +5,8 @@ server {
     server_name  {{ vhost_name }};
     root         /opt/www/{{ vhost_name }}/public;
 
-    error_log syslog:server=unix:/dev/log,tag=nginx_error_{{ component_name }},nohostname;
-    access_log syslog:server=unix:/dev/log,tag=nginx_access_{{ component_name }},nohostname combinedProxy;
+    error_log syslog:server=unix:/dev/log,tag=nginx_error_{{ component_name }},nohostname,facility=local3;
+    access_log syslog:server=unix:/dev/log,tag=nginx_access_{{ component_name }},nohostname,facility=local3 combinedProxy;
 
     location /heartbeat {
         return 200 'Heartbeat for {{ vhost_name }}';

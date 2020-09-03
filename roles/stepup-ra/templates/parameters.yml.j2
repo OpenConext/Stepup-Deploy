@@ -34,11 +34,11 @@ parameters:
     sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}
     sms_maximum_otp_requests: {{ sms_maximum_otp_requests }}
 
-    saml_sp_publickey: {{ component_config_dir_name }}/sp.crt
-    saml_sp_privatekey: {{ component_config_dir_name }}/sp.key
+    saml_sp_publickey: {{ component_config_file_dir_name }}/sp.crt
+    saml_sp_privatekey: {{ component_config_file_dir_name }}/sp.key
 
-    saml_metadata_publickey: {{ component_config_dir_name }}/sp.crt
-    saml_metadata_privatekey: {{ component_config_dir_name }}/sp.key
+    saml_metadata_publickey: {{ component_config_file_dir_name }}/sp.crt
+    saml_metadata_privatekey: {{ component_config_file_dir_name }}/sp.key
 
     saml_remote_idp_entity_id: https://{{ gateway_vhost_name }}/authentication/metadata
     saml_remote_idp_sso_url: https://{{ gateway_vhost_name }}/authentication/single-sign-on

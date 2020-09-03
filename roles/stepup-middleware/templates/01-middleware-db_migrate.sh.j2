@@ -20,6 +20,7 @@ pushd /opt/www/{{ middleware_vhost_name }}
 # console middleware:migrations:migrate --env=prod
 
 # Run the middleware and gateway database migrations
-{{ php_cli }} {{ console }} doctrine:migrations:execute --env=prod --em=deploy
+echo "{{ php_cli }} {{ console }} doctrine:migrations:migrate --env=prod --em=deploy"
+{{ php_cli }} {{ console }} doctrine:migrations:migrate --env=prod --em=deploy
 
 popd

@@ -1,6 +1,6 @@
 ---
 
-- name: Restrict var and coofig dirs to the application
+- name: Restrict var and config dirs to the application
   file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
   with_items:
     - "{{ component_dir_name }}/config"

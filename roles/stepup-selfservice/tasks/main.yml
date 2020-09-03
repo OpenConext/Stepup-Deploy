@@ -1,12 +1,16 @@
 # Install selfservice component
 
-- name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+- name: Put parameters, samlstepupproviders, samlstepupproviders_parameters and global_view_parameters YAML config
+  template:
+    src: "{{ item }}.yml.j2"
+    dest: "{{ component_config_dir_name }}/{{ item }}.{{ component_config_yaml_extension }}"
+    mode: "{{ component_mode_640 }}"
+    group: "{{ component_group }}"
   with_items:
-  - parameters.yml
-  - samlstepupproviders.yml
-  - samlstepupproviders_parameters.yml
-  - global_view_parameters.yml
+    - parameters
+    - samlstepupproviders
+    - samlstepupproviders_parameters
+    - global_view_parameters
 
 - name: Put images from <env>/files/stepup-app into web/images
   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
@@ -20,23 +24,23 @@
 
 
 # Deploy does change file rights in config, so run deploy first, then write files
-- name: Deploy Symfony component
+- name: Deploy selfservice component
   include_role:
     name: deploy
     tasks_from: deploy
 
 
 - name: Write SP private key
-  copy: content="{{ selfservice_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} group={{ component_group }} mode={{ component_mode_400 }}
+  copy: content="{{ selfservice_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_config_file_dir_name }}/sp.key owner={{ component_owner }} group={{ component_group }} mode={{ component_mode_400 }}
 
 - name: Write SP certificate
-  copy: content="{{ selfservice_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ selfservice_saml_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write GSSP SP private key
-  copy: content="{{ selfservice_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ selfservice_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_config_file_dir_name }}/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write GSSP SP certificate
-  copy: content="{{ selfservice_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ selfservice_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
 - name: Activate selfservice component

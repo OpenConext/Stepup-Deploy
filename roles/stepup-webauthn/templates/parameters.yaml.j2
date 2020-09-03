@@ -9,15 +9,23 @@ parameters:
     saml_metadata_publickey: '{{ component_config_file_dir_name }}/cert.pem'
     saml_metadata_privatekey: '{{ component_config_file_dir_name }}/key.pem'
 
-    saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/azuremfa/metadata'
+    saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/webauthn/metadata'
     saml_remote_sp_certificate: '{{ component_config_file_dir_name }}/gateway.crt'
-    saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/azuremfa/consume-assertion'
+    saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/webauthn/consume-assertion'
 
     # View parameters
     support_url:
-{% for locale, url in azuremfa_support_url.items() %}
+{% for locale, url in webauthn_support_url.items() %}
         {{ locale }}: "{{ url | replace('%', '%%') }}"
 {% endfor %}
 
+    # TODO: Configure from environment. A generic support email address makes sense.
     support_email: support@surfconext.nl
-    ra_issuer_entity_id_regex: '@@^https://(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/vetting-procedure/gssf/azuremfa/metadata$@'
+
+    # TODO: Configure from environment. No SURF references please. This is OpenConext.
+    user_display_name: SURFsecureID
+    webauthn_name: SURFsecureID
+    # TODO: Take logo from environment. Use same mechanism as selfservice, RA etc.
+    webauthn_logo: 'https://webauthn.test/images/surfconext-logo.png'
+
+    trusted_certificates_directory: '{{ component_config_file_dir_name }}/trusted_certificates'

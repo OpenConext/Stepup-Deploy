@@ -1,20 +1,7 @@
 # Configure stepup middleware
 ---
-
-# TODO: Do we want stepup-middleware config in legacy dir?
-- name: Set Symfony 4 config dir
-  set_fact:
-      component_config_dir_name: "{{ component_dir_name }}/config/legacy"
-  when: deploy_symfony_4
-
-
-- name: Put parameters.yml (SF 3)
-  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
-  when: deploy_symfony_3
-
-- name: Put parameters.yaml (SF 4)
-  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.yaml mode={{ component_mode_640 }} group={{ component_group }}
-  when: deploy_symfony_4
+- name: Put parameters YAML config
+  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.{{ component_config_yaml_extension }} mode={{ component_mode_640 }} group={{ component_group }}
 
 
 # Include ../../deploy/deploy.yml
@@ -24,7 +11,7 @@
     tasks_from: deploy
 
 # include ../../deploy/activate.yml
-- name: Deploy Symfony component
+- name: Activate Symfony component
   include_role:
     name: deploy
     tasks_from: activate

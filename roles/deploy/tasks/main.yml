@@ -109,6 +109,7 @@
         component_mode_640: "640" # rw- r-- ---
         component_mode_644: "644" # rw- r-- r--
         component_mode_755: "755" # rwx r-x r-x
+        component_mode_750: "750" # rwx r-x ---
         component_mode_770: "770" # rwx rwx ---
   when: not develop | default(false)
 
@@ -143,16 +144,19 @@
 # regex_search returns a list of matches, so we need to add [0] the get to the string
 - name: Update component deploy configuration from component_info
   set_fact:
-      deploy_symfony_4: "{{ (deploy_symfony_version | int) == (4 | int) }}"
-      deploy_symfony_3: "{{ (deploy_symfony_version | int) == (3 | int) }}"
+      deploy_php_version: "{{ (component_info_php_version | length > 0) | ternary(component_info_php_version[0], deploy_php_version) }}"
+      deploy_assetic: "{{ (component_info_assetic | length > 0) | ternary(component_info_assetic[0], deploy_assetic) }}"
+      deploy_symfony_version: "{{ (component_info_symfony_version | length > 0) | ternary(component_info_symfony_version[0], deploy_symfony_version) }}"
   when: not component_info.failed
 
 - name: Update flags for symfony version to deploy
   set_fact:
       deploy_symfony_4: "{{ (deploy_symfony_version | int) == (4 | int) }}"
       deploy_symfony_3: "{{ (deploy_symfony_version | int) == (3 | int) }}"
+      deploy_php_56: "{{ (deploy_php_version | int) == (56 | int) }}"
+      deploy_php_72: "{{ (deploy_php_version | int) == (72 | int) }}"
 
-- name: Component rquirements
+- name: Component requirements
   debug:
     msg: "Component requirements: PHP version={{deploy_php_version}}; assetic={{deploy_assetic}}; Symfony version={{deploy_symfony_version}}"
 
@@ -173,6 +177,27 @@
   fail:
     msg: "The component Symfony version requirements do not match with the current vhost configuration. The component requires Symfony {{deploy_symfony_version}} but the vhost is configured for Symfony {{vhost_component_info.SYMFONY_VERSION}}"
   when: deploy_symfony_version | int != vhost_component_info.SYMFONY_VERSION | int
+
+
+# Set php cli command based on whether the component requires php7
+- name: Set php cli command and console command based on component php and symfony versions
+  set_fact:
+    php_cli: "{{ deploy_php_72 | ternary('php72', 'php') }}"
+    console: "{{ deploy_symfony_4 | ternary('bin/console', 'app/console') }}"
+
+# These facts/variables hande the differences between the Symfony 3 and Symfony 4 file layout
+# Using YAML Configuration has become lagacy in symfony 4, in favour of ENV. We'll make that cahnge later
+# But for SF4 we need to make two changes:
+# - File extension of yaml files is now "yaml" instead of "yml" in SF 3
+# - Configuration file location is "config/legacy" instead of "app/config" in SF 3
+# - For files that are referenced from the configuration like keys and certs we've decided
+#   to stop using the app/config directory in SF4. These go to app/files now.
+#   TODO: Finalise name for this directory
+- name: Set component directories based on symfony version
+  set_fact:
+    component_config_dir_name:       "{{ component_dir_name }}/{{ deploy_symfony_4 | ternary('config/legacy', 'app/config') }}"
+    component_config_file_dir_name:  "{{ component_dir_name }}/{{ deploy_symfony_4 | ternary('app/files', 'app/config') }}"
+    component_config_yaml_extension: "{{ deploy_symfony_4 | ternary('yaml', 'yml') }}"
 
 
 - block:
@@ -202,12 +227,6 @@
   # - "--ignore-platform-reqs"
   # - "--optimize-autoloader"
 
-  # Set php cli command based on whether the component requires php7
-  - name: Set php cli command and console command based on component php and symfony versions
-    set_fact:
-      php_cli: "{{ (deploy_php_version | int == '72' | int) | ternary('php72', 'php') }}"
-      console: "{{ (deploy_symfony_version | int == '4' | int) | ternary('bin/console', 'app/console') }}"
-
   # If composer install fails:
   # - Remove the non .dist versions of the configuration in /app/config
   - name: DEVELOP - Composer install
@@ -217,6 +236,9 @@
   - name: DEVELOP - Clear cache (/app/console)
     shell: "{{ php_cli }} {{ component_dir_name }}/{{ console }} cache:clear --env=prod --no-warmup"
 
+  # In a develop deploy the components are installed from source in the Stepup-VM. The sources are
+  # mounted from the host into the VM. This means that we must not set owner and group IDs on files
+  # For component_mode_xxx we set the least restrictive for user, group and other.
   - name: DEVELOP - Set debug, mode, owner and group for develop
     set_fact:
         debug_flag: ""
@@ -232,12 +254,9 @@
         component_mode_640: "666"
         component_mode_644: "666"
         component_mode_755: "777"
+        component_mode_750: "777"
         component_mode_770: "777"
-        #component_mode_400: "{{ omit }}"
-        #component_mode_640: "{{ omit }}"
-        #component_mode_644: "{{ omit }}"
-        #component_mode_755: "{{ omit }}"
-        #component_mode_770: "{{ omit }}"
+
 
   - name: DEVELOP - put app_dev.php
     copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
@@ -248,3 +267,14 @@
     when: deploy_symfony_3 and component_name not in ["tiqr", "keyserver"]
 
   when: develop | default(false)
+
+
+- name: Ensure component config direcories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ component_mode_550 }}"
+    group: "{{ component_group }}"
+  with_items:
+  - "{{ component_config_dir_name }}"
+  - "{{ component_config_file_dir_name }}"

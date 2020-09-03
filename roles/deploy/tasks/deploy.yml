@@ -13,19 +13,19 @@
   command: "{{ php_cli }} {{ console }} assets:install --symlink --env=prod {{ debug_flag }}"
   args:
     chdir: "{{ component_dir_name }}"
-# when: deploy_assetic
+
+- name: Run mopa:bootstrap:symlink:less for SF3 gateway, selfservice, ra and tiqr
+  command: "{{ php_cli }} {{ console }} mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}"
+  args:
+      chdir: "{{ component_dir_name }}"
+  # Make conditional on deploy_assetic as well?
+  when: deploy_symfony_3 and component_name in ['gateway', 'selfservice', 'ra', 'tiqr']
 
 - name: Dump Assetic Assets
   command: "{{ php_cli }} {{ console }} assetic:dump --env=prod {{ debug_flag }}"
   args:
     chdir: "{{ component_dir_name }}"
   when: deploy_assetic
-
-- name: Run mopa:bootstrap:symlink:less for SF3 selfservice, ra and tiqr
-  command: "{{ php_cli }} {{ console }} mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}"
-  args:
-      chdir: "{{ component_dir_name }}"
-  when: deploy_symfony_3 and component_name in ['selfservice', 'ra', 'tiqr']
 
 - name: Clear and warmup cache
   command: "{{ php_cli }} {{ console }} cache:clear --env=prod {{ debug_flag }}"
@@ -34,11 +34,13 @@
   when: not (develop | default(false))
 
 # Set filesystem rights for Symfony 3 / Symfony 4
-
 - name: Deploy Symfony 3 component
-  include_tasks: deploy_symfony3
+  include_tasks: deploy_symfony3.yml
   when: deploy_symfony_3
 
 - name: Deploy Symfony 4 component
-  include_tasks: deploy_symfony4
+  include_tasks: deploy_symfony4.yml
   when: deploy_symfony_4
+
+
+

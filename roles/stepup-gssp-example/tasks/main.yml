@@ -14,7 +14,7 @@
   copy: remote_src=True src={{ component_dir_name }}/.env.ci dest={{ component_dir_name }}/.env
 
 - name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode=666
+  template: src={{ item }}.j2 dest={{ component_config_dir_name }}/{{ item }} mode=666
   with_items:
     - parameters.yaml
 
@@ -26,15 +26,15 @@
 
 # This is the certificate of the SP that the Demo GSSP trusts for validating SAML AuthnRequests form the Stepup-Gateway
 - name: Write Demo GSSP SP certificate
-  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/config/sp.pem group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp.pem group={{ component_group }} mode={{ component_mode_640 }}
 
 
 # These are the certificate and key that the Demo GSSP uses for signing SAML Responses for the Stepup-Gateway
 - name: Write Demo GSSP idp certificate
-  copy: content="{{ demo_gssp_idp_publickey }}" dest={{ component_dir_name }}/config/idp.pem group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ demo_gssp_idp_publickey }}" dest={{ component_config_file_dir_name }}/idp.pem group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write Demo GSSP idp private key
-  copy: content="{{ demo_gssp_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/config/idp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ demo_gssp_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/idp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 
 # Finish

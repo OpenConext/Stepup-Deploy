@@ -1,12 +1,16 @@
 # Infra suff for RA
 
-- name: Put parameters.yml, samlstepupproviders(_parameters).yml and global_view_parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+- name: Put parameters, samlstepupproviders(_parameters) and global_view_parameters YAML config
+  template:
+    src: "{{ item }}.yml.j2"
+    dest: "{{ component_config_dir_name }}/{{ item }}.{{ component_config_yaml_extension }}"
+    mode: "{{ component_mode_640 }}"
+    group: "{{ component_group }}"
   with_items:
-  - parameters.yml
-  - samlstepupproviders.yml
-  - samlstepupproviders_parameters.yml
-  - global_view_parameters.yml
+  - parameters
+  - samlstepupproviders
+  - samlstepupproviders_parameters
+  - global_view_parameters
 
 
 # Deploy does change file rights in config, so run deploy first, then write files
@@ -30,18 +34,18 @@
 # SAML SP signing certificate for authentication to the normal authentication (i.e. /authentication/metadata) IdP enspoint
 # on the Stepup-Gateway
 - name: Write SAML SP private key
-  copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ ra_saml_sp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write SAML SP certificate
-  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ ra_saml_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 # SAML SP signing certificate for authentication to the GSSP IdP proxy enspoint(s)
 # on the Stepup-Gateway
 - name: Write GSSP SP private key
-  copy: content="{{ ra_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_dir_name }}/app/config/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ ra_gssp_sp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
 
 - name: Write GSSP SP certificate
-  copy: content="{{ ra_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ ra_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 
 - name: Activate selfservice component

@@ -106,6 +106,7 @@
         component_owner: "{{ component_name }}"
         component_mode_400: "400" # r-- --- ---
         component_mode_444: "444" # r-- r-- r--
+        component_mode_550: "550" # r-x r-x ---
         component_mode_640: "640" # rw- r-- ---
         component_mode_644: "644" # rw- r-- r--
         component_mode_755: "755" # rwx r-x r-x
@@ -251,6 +252,7 @@
 
         component_mode_400: "444"
         component_mode_444: "444"
+        component_mode_550: "555"
         component_mode_640: "666"
         component_mode_644: "666"
         component_mode_755: "777"

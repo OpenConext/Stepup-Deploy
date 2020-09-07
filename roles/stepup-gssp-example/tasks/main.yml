@@ -7,9 +7,11 @@
 # Note: deploy.yml from the deploy role is not used
 
 # nodejs 12 and yarn encore installed by the dev role using nvm
-- name: Run yarn encore dev using nodejs 12
+# Using the yarn globally installed by the dev role failes: "yarn encore dev" gives:
+# 'error Command "dev" not found'
+- name: Install and run yarn encore dev using nodejs 12
   shell:
-    cmd: source /root/.bashrc && nvm use 12 && yarn encore dev
+    cmd: source /root/.bashrc && nvm use 12 && yarn install && yarn encore dev
     chdir: "{{ component_dir_name }}"
 
 - name: Put parameters.yml

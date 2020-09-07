@@ -235,6 +235,7 @@
   - name: Set nodejs version from component_info
     set_fact:
       deploy_node_version: "{{ (component_info_node_version | length > 0) | ternary(component_info_node_version[0], deploy_node_version) }}"
+    when: not component_info.failed
 
   - name: Set NVM command
     set_fact:

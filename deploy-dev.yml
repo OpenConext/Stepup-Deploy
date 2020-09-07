@@ -12,6 +12,7 @@
 
 
   vars:
+    component_tarball_name: ''
     component_name: demo-gssp
     component_vhost_name: "{{ demo_gssp_vhost_name }}"
     stable_nonce: "develop"
@@ -29,6 +30,7 @@
     - stepup-gssp-example
 
   vars:
+    component_tarball_name: ''
     component_name: demo-gssp-2
     component_vhost_name: "{{ demo_gssp_2_vhost_name }}"
     stable_nonce: "develop"

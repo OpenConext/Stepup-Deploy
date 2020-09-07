@@ -186,6 +186,11 @@
     php_cli: "{{ deploy_php_72 | ternary('php72', 'php') }}"
     console: "{{ deploy_symfony_4 | ternary('bin/console', 'app/console') }}"
 
+- name: Overwrite console command for Tiqr component
+  set_fact:
+      console : bin/console
+  when: deploy_symfony_3 and component_name == "tiqr"
+
 # These facts/variables hande the differences between the Symfony 3 and Symfony 4 file layout
 # Using YAML Configuration has become lagacy in symfony 4, in favour of ENV. We'll make that cahnge later
 # But for SF4 we need to make two changes:

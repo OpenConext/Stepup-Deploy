@@ -19,7 +19,7 @@
   args:
       chdir: "{{ component_dir_name }}"
   # Make conditional on deploy_assetic as well?
-  when: deploy_symfony_3 and component_name in ['gateway', 'selfservice', 'ra', 'tiqr']
+  when: deploy_symfony_3 and component_name in ['gateway', 'selfservice', 'ra']
 
 - name: Dump Assetic Assets
   command: "{{ php_cli }} {{ console }} assetic:dump --env=prod {{ debug_flag }}"
@@ -41,6 +41,3 @@
 - name: Deploy Symfony 4 component
   include_tasks: deploy_symfony4.yml
   when: deploy_symfony_4
-
-
-

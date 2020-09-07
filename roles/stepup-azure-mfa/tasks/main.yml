@@ -34,3 +34,9 @@
   copy: content="{{ azuremfa_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
 
 
+# include ../../deploy/activate.yml
+- name: Activate Symfony component
+  include_role:
+    name: deploy
+    tasks_from: activate
+

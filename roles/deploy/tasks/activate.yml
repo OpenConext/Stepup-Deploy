@@ -16,4 +16,4 @@
   when: not (develop | default(false))
 
 - name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link
+  file: src={{ component_dir_name }} dest=/opt/www/{{ component_vhost_name }} state=link

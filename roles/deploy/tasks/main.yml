@@ -224,6 +224,21 @@
 #      with_items:
 #        - "{{ component_name }}"
 
+  # The dev role installed nvm (node version manager) for nodejs
+  # Read the NODE_VERSION form component_info (if any)
+  - name: Fetch nodejs version from component_info
+    set_fact:
+      component_info_node_version: "{{ component_info.content | b64decode | regex_search('NODE_VERSION=(.*)', '\\1' ) }}"
+    when: not component_info.failed
+
+  - name: Set nodejs version from component_info
+    set_fact:
+      deploy_node_version: "{{ (component_info_node_version | length > 0) | ternary(component_info_node_version[0], deploy_node_version) }}"
+
+  - name: Set NVM command
+    set_fact:
+      set_nvm_nodejs_version_cmd: "source /root/.nvm/nvm.sh && nvm use {{ deploy_node_version }}"
+
   # Install dependencies
   #
   # Note: This composer install command is similar to the command used by the build script in Stepup-Build. The
@@ -280,7 +295,7 @@
   file:
     path: "{{ item }}"
     state: directory
-    mode: "{{ component_mode_550 }}"
+    mode: "{{ component_mode_770 }}"
     group: "{{ component_group }}"
   with_items:
   - "{{ component_config_dir_name }}"

@@ -60,6 +60,17 @@
     creates: /root/.nvm/
 
 
+# Old components use nodejs 10
+- name: "Install node version 10"
+  shell:
+    cmd: "source /root/.bashrc && nvm install 10"
+
+- name: "Install npm module 'yarn'"
+  shell:
+    cmd: "source /root/.bashrc && nvm use 10 && npm install --global yarn"
+
+
+
 # stepup-example-gssp requires node 12 with yarn
 - name: "Install node version 12"
   shell:

@@ -236,7 +236,7 @@
   # If composer install fails:
   # - Remove the non .dist versions of the configuration in /app/config
   - name: DEVELOP - Composer install
-    shell: "export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}"
+    shell: "{{ set_nvm_nodejs_version_cmd }} && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}"
 
   # Rebuild cache
   - name: DEVELOP - Clear cache (/app/console)

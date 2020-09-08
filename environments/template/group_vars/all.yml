@@ -102,7 +102,9 @@ stepup_enabled_factors: sms, yubikey, u2f
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
-# Note: for the Stepup-VM this is overridden in dev.yml
+  webauthn:
+    loa: 2
+# Note: for the Stepup-VM this is overridden in the dev.yml group_vars
 
 # Set the addres(ses) of the loadbalancer(s)
 # These are the IP addresses for which the X-Forwarded-For HTTP header is honoured.

@@ -83,6 +83,16 @@ gateway_tiqr_title:
   nl_NL: "Tiqr"
 
 
+# Webauthn GSSP configuration
+gateway_webauthn_remote_entity_id: 'https://{{ webauthn_vhost_name }}/saml/metadata'
+gateway_webauthn_remote_sso_url: 'https://{{ webauthn_vhost_name }}/saml/sso'
+gateway_webauthn_remote_certificate: "{{ webauthn_idp_publickey | depem }}"
+gateway_webauthn_logo: "/images/second-factor/webauthn.png"
+gateway_webauthn_title:
+  en_GB: "Webauthn"
+  nl_NL: "Webauthn"
+
+
 # Configuration for adding an additional GSSP IdP "example_gssp"
 # You can get this information from the
 # Entity ID of the remote "example_gssp" Idp

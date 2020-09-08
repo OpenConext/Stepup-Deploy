@@ -60,6 +60,39 @@ ss_gssp_tiqr_pop_failed:
     en_GB: 'Registration of your token failed. Please try again.'
     nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
 
+# "webauthn" GSSP
+ss_gssp_webauthn_logo: /images/second-factor/webauthn.png
+ss_gssp_webauthn_app_android_url: ""
+ss_gssp_webauthn_app_ios_url: ""
+
+ss_gssp_webauthn_alt:
+    en_GB: 'Webauthn'
+    nl_NL: 'Webauthn'
+ss_gssp_webauthn_title:
+    en_GB: 'Webauthn'
+    nl_NL: 'Webauthn'
+ss_gssp_webauthn_description:
+    en_GB: 'Log in using Webauthn. %%ios_link_start%% %%ios_link_end%% %%android_link_start%% %%android_link_end%%'
+    nl_NL: 'Log in met een Webauthn. %%ios_link_start%% %%ios_link_end%% %%android_link_start%% %%android_link_end%%'
+ss_gssp_webauthn_button_use:
+    en_GB: 'Select'
+    nl_NL: 'Selecteer'
+ss_gssp_webauthn_initiate_title:
+    en_GB: 'Register a Webauthn token'
+    nl_NL: 'Registreer een Webauthn token'
+ss_gssp_webauthn_initiate_button:
+    en_GB: 'Register using Webauthn'
+    nl_NL: 'Registreer met Webauthn'
+ss_gssp_webauthn_explanation:
+    en_GB: 'Click the button below to register a Webauthn token.'
+    nl_NL: 'Klik op de knop hieronder een Webauthn token te registreren.'
+ss_gssp_webauthn_authn_failed:
+    en_GB: 'Registration using Webauthn has failed. Please try again.'
+    nl_NL: 'Registratie met Webauthn is mislukt. Probeer het nogmaals.'
+ss_gssp_webauthn_pop_failed:
+    en_GB: 'Registration of your token failed. Please try again.'
+    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
 
 # "example_gssp" GSSP
 # Logo on the token selection page

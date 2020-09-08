@@ -49,6 +49,8 @@ ssp_sp2_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.c
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
+  webauthn:
+    loa: 3
   demo_gssp:
     loa: 2
   demo_gssp_2:

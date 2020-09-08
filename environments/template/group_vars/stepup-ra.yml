@@ -35,8 +35,8 @@ ra_gssp_tiqr_page_title:
     en_GB: 'Verify with Tiqr'
     nl_NL: 'Tiqr verifiëren'
 ra_gssp_tiqr_explanation:
-    en_GB: 'Click the button below to verify the registrant owns the Tiqr account he or she registered with in the Self-Service application.'
-    nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+    en_GB: 'Click the button below to verify the registrant owns the Tiqr account he or she registered in the Self-Service application.'
+    nl_NL: 'Klik op de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
 ra_gssp_tiqr_initiate:
     en_GB: 'Verify with Tiqr'
     nl_NL: 'Verifiëren bij Tiqr'

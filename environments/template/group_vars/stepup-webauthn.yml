@@ -3,3 +3,8 @@
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 # Certificate in all.yml group_vars
 webauthn_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_idp.key') }}"
+
+# TODO: Configure
+webauthn_support_url:
+  nl_NL: "https://webauthn.stepup.example.com/nl_NL/support_url"
+  en_GB: "https://webauthn.stepup.example.com/en_GB/support_url"

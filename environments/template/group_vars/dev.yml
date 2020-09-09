@@ -61,6 +61,7 @@ stepup_enabled_generic_second_factors:
 # Skip the prove token possession step
 skip_prove_possession_second_factors:
   - gssp-2
+  - webauthn
   - azuremfa
 
 

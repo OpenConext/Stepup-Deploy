@@ -85,12 +85,12 @@ gateway_demo_gssp_title:
   nl_NL: "Demo GSSP"
 
 # Entity ID of the remote "example_gssp" Idp
-gateway_demo_gssp_2_remote_entity_id: 'https://{{ demo_gssp_vhost_name }}/saml/metadata'
+gateway_demo_gssp_2_remote_entity_id: 'https://{{ demo_gssp_2_vhost_name }}/saml/metadata'
 # SingleSingOn Location of the remote "example_gssp" IdP
-gateway_demo_gssp_2_remote_sso_url: 'https://{{ demo_gssp_vhost_name }}/saml/sso'
+gateway_demo_gssp_2_remote_sso_url: 'https://{{ demo_gssp_2_vhost_name }}/saml/sso'
 # SAML signing certificate of the "example_gssp" IdP
 # Format: Base64 encoded X.509 certificate without PEM headers
-gateway_demo_gssp_2_remote_certificate: "{{ demo_gssp_idp_publickey | depem }}"
+gateway_demo_gssp_2_remote_certificate: "{{ demo_gssp_2_idp_publickey | depem }}"
 
 #Logo and description for the WAYG (token selection) screen on the gateway
 #Add the new logo to files/stepup-app/images to make it available on the server

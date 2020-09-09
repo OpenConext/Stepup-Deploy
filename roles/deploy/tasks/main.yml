@@ -268,7 +268,12 @@
   #   should do the trick. Note this will discard any uncommited changes you made.
 
   # TODO: Fix this
-  - name: Stepup-Webauthn fix
+  # A valid parameters.yml must exist for composer install to succeed. Make one
+  # from the .dist version. To fix this:
+  # - use SF 4 extension (yaml)
+  # - use config/legacy config location. Fix this in the stepup-webauthn role as well
+  # - find a way to provide defaults for composer install
+  - name: Stepup-Webauthn parameters.yml fix
     copy:
       src: "{{ component_dir_name }}/config/packages/parameters.yml.dist"
       dest: "{{ component_dir_name }}/config/packages/parameters.yml"

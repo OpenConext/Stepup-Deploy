@@ -82,8 +82,7 @@ gateway_tiqr_title:
   en_GB: "Tiqr"
   nl_NL: "Tiqr"
 
-
-# Webauthn GSSP configuration
+# "webauthn" GSSP configuration
 gateway_webauthn_remote_entity_id: 'https://{{ webauthn_vhost_name }}/saml/metadata'
 gateway_webauthn_remote_sso_url: 'https://{{ webauthn_vhost_name }}/saml/sso'
 gateway_webauthn_remote_certificate: "{{ webauthn_idp_publickey | depem }}"

@@ -1,0 +1,13 @@
+# Config for AzureMFA component
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+# Corresponding public key is in all.yml
+azuremfa_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/azuremfa_idp.key') }}"
+
+
+# Support URLs displayed in the AzureMFA user interface
+# TODO: Set support URL
+azuremfa_support_url:
+  en_GB: "https://azuremfa.stepup.example.com/en_GB/azuremfa_support"
+  nl_NL: "https://azuremfa.stepup.example.com/nl_NL/azuremfa_support"
+

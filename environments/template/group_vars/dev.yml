@@ -51,6 +51,8 @@ stepup_enabled_generic_second_factors:
     loa: 2
   webauthn:
     loa: 3
+  azuremfa:
+    loa: 2
   demo_gssp:
     loa: 2
   demo_gssp_2:
@@ -59,6 +61,7 @@ stepup_enabled_generic_second_factors:
 # Skip the prove token possession step
 skip_prove_possession_second_factors:
   - gssp-2
+  - azuremfa
 
 
 ##############################################################################

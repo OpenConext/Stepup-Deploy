@@ -61,6 +61,24 @@ ra_gssp_webauthn_gssf_id_mismatch:
     en_GB: "The Webauthn server responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
     nl_NL: 'De Webauthn-server heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
 
+# "azuremfa" GSSP
+ra_gssp_azuremfa_title:
+    en_GB: 'AzureMFA'
+    nl_NL: 'AzureMFA'
+ra_gssp_azuremfa_page_title:
+    en_GB: 'Verify with AzureMFA'
+    nl_NL: 'AzureMFA verifiëren'
+ra_gssp_azuremfa_explanation:
+    en_GB: 'Click the button below to verify the registrant owns the Microsoft account he or she registered with in the Self-Service application.'
+    nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Microsoft account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+ra_gssp_azuremfa_initiate:
+    en_GB: 'Verify with AzureMFA'
+    nl_NL: 'Verifiëren bij AzureMFA'
+ra_gssp_azuremfa_gssf_id_mismatch:
+    en_GB: "The institutions ADFS responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
+    nl_NL: 'De ADFS van de instelling heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
+
 # "example_gssp" GSSP
 #ra_gssp_example_gssp_title:
 #      en_GB: 'Example GSSP'

@@ -92,6 +92,15 @@ gateway_webauthn_title:
   en_GB: "Webauthn"
   nl_NL: "Webauthn"
 
+# "azuremfa" GSSP configuration
+gateway_azuremfa_remote_entity_id: 'https://{{ azuremfa_vhost_name }}/saml/metadata'
+gateway_azuremfa_remote_sso_url: 'https://{{ azuremfa_vhost_name }}/saml/sso'
+gateway_azuremfa_remote_certificate: "{{ azuremfa_idp_publickey | depem }}"
+gateway_azuremfa_logo: "/images/second-factor/azuremfa.png"
+gateway_azuremfa_title:
+  en_GB: "AzureMFA"
+  nl_NL: "AzureMFA"
+
 
 # Configuration for adding an additional GSSP IdP "example_gssp"
 # You can get this information from the

@@ -14,5 +14,6 @@ deploy_mopa_bootstrap: no
 # For develop deploy only
 deploy_node_version: 10
 deploy_encore: no
+deploy_ignore_platform_reqs: ""
 
 

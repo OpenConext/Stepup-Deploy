@@ -93,6 +93,40 @@ ss_gssp_webauthn_pop_failed:
     en_GB: 'Registration of your token failed. Please try again.'
     nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
 
+# "azuremfa" GSSP
+ss_gssp_azuremfa_logo: /images/second-factor/azuremfa.png
+ss_gssp_azuremfa_app_android_url: "https://play.google.com/store/apps/details?id=com.azure.authenticator"
+ss_gssp_azuremfa_app_ios_url: "https://apps.apple.com/nl/app/microsoft-authenticator/id983156458"
+
+# Translations
+ss_gssp_azuremfa_alt:
+    en_GB: 'azuremfa'
+    nl_NL: 'azuremfa'
+ss_gssp_azuremfa_title:
+    en_GB: 'azuremfa'
+    nl_NL: 'azuremfa'
+ss_gssp_azuremfa_description:
+    en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+    nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+ss_gssp_azuremfa_button_use:
+    en_GB: 'Select'
+    nl_NL: 'Selecteer'
+ss_gssp_azuremfa_initiate_title:
+    en_GB: 'Register with azuremfa'
+    nl_NL: 'Registreren bij azuremfa'
+ss_gssp_azuremfa_initiate_button:
+    en_GB: 'Register with azuremfa'
+    nl_NL: 'Registreer bij azuremfa'
+ss_gssp_azuremfa_explanation:
+    en_GB: 'Click the button below to register with azuremfa.'
+    nl_NL: 'Klik op de knop hieronder om je bij azuremfa te registreren.'
+ss_gssp_azuremfa_authn_failed:
+    en_GB: 'Registration with azuremfa has failed. Please try again.'
+    nl_NL: 'Registratie bij azuremfa is mislukt. Probeer het nogmaals.'
+ss_gssp_azuremfa_pop_failed:
+    en_GB: 'Registration of your token failed. Please try again.'
+    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
 
 # "example_gssp" GSSP
 # Logo on the token selection page

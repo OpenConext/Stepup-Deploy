@@ -1,13 +1,13 @@
 # True when one or more components need php72, false otherwise
-# Controls installation php72
+# Controls installation of php72 packages
 app_require_php72: False
 
 # True when one or more components need php56
-# Controls installation php56
+# Controls installation of php56 packages
 app_require_php56: True
 
 # True when php56 is to be removed
-# Controls removal of php56
+# Controls removal of php56 packages
 app_remove_php56: False
 
 # Default list of applications that require php72

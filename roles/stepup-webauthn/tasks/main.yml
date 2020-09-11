@@ -1,68 +1,56 @@
-# Install AzureMFA component
-- name: Create app directory
-  file:
-    path: "{{ component_dir_name }}/app/config/"
-    state: directory
-    group: "{{ component_group }}"
-    mode: "{{ component_mode_755 }}"
+# Install Webauthn component
 
-- name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/config/packages/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+
+# TODO: use component_config_dir_name for parameters and use yaml extension
+- name: Put parameters.yaml
+  template: src={{ item }}.yaml.j2 dest={{component_dir_name}}/config/packages/{{ item }}.yml mode={{ component_mode_640 }} group={{ component_group }}
   with_items:
-  - parameters.yml
+  - parameters
+
+- name: Put .env file
+  template: src=env.j2 dest={{ component_dir_name }}/.env.local group={{ component_group }} mode={{ component_mode_640 }}
+
+
+# Deploy does change file rights in config, so run deploy first, then write files
+- name: Deploy Symfony component
+  include_role:
+    name: deploy
+    tasks_from: deploy
+
 
 - name: Create trusted certificate directory
   file:
-    path: "{{ component_dir_name }}/trusted_certificates/"
+    path: "{{ component_config_file_dir_name }}/trusted_certificates/"
     state: directory
     group: "{{ component_group }}"
     mode: "{{ component_mode_755 }}"
 
 - name: Copy trusted certificates
-  copy: src={{ item }} dest={{ component_dir_name }}/trusted_certificates/ mode={{ component_mode_444 }} group={{ component_group }}
+  copy: src={{ item }} dest={{ component_config_file_dir_name }}/trusted_certificates/ mode={{ component_mode_444 }} group={{ component_group }}
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-webauthn/trusted_certificates/*"
 
-- name: Clear cache
-  command: php72 bin/console cache:clear --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
-  when: not (develop | default(false))
-
-- name: Put .env file
-  template: src=env.j2 dest={{ component_dir_name }}/.env.local group={{ component_group }} mode={{ component_mode_640 }}
-
-- name: Restrict app dir to the application
-  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app"
-  when: not (develop | default(false))
-
-- name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/var/cache"
-  - "{{ component_dir_name }}/var/logs"
-  when: not (develop | default(false))
 
 - name: Write webauthn GSSP sp certificate
-  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write webauthn GSSP idp certificate
-  copy: content="{{ webauthn_idp_publickey }}" dest={{ component_dir_name }}/app/config/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ webauthn_idp_publickey }}" dest={{ component_config_file_dir_name }}/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
 
 - name: Write webauthn GSSP idp private key
-  copy: content="{{ webauthn_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ webauthn_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+
+
+- name: Activate webauthn component
+  include_role:
+    name: deploy
+    tasks_from: activate
+
 
 - name: Put webauthn configuration script in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-webauthn-db_init.sh"
-
-# Finish
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ webauthn_vhost_name }} state=link
-
 
 - name: Show database configuration hint
   debug:

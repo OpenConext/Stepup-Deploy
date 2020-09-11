@@ -1,31 +1,21 @@
-# Infra stuff for middleware
+# Configure stepup middleware
+---
+- name: Put parameters YAML config
+  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.{{ component_config_yaml_extension }} mode={{ component_mode_640 }} group={{ component_group }}
 
-- name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
 
-- name: assets:install
-  command: php app/console assets:install --symlink --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
+# Include ../../deploy/deploy.yml
+- name: Deploy Symfony component
+  include_role:
+    name: deploy
+    tasks_from: deploy
 
-- name: Clear and warmup cache
-  command: php app/console cache:clear --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
-  when: not (develop | default(false))
+# include ../../deploy/activate.yml
+- name: Activate Symfony component
+  include_role:
+    name: deploy
+    tasks_from: activate
 
-- name: Restrict app dir to the application
-  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app"
-  when: not (develop | default(false))
-
-- name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app/cache"
-  - "{{ component_dir_name }}/app/logs"
-  when: not (develop | default(false))
 
 - name: Put middleware configuration scripts in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
@@ -54,14 +44,6 @@
     "middleware-push-config.sh": "02-middleware-config.sh"
     "middleware-push-whitelist.sh": "04-middleware-whitelist.sh"
     "middleware-push-institution.sh": "05-middleware-institution.sh"
-
-- name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
-  when: not (develop | default(false))
-
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ middleware_vhost_name }} state=link
-
 
 - name: Show database configuration hint
   debug:

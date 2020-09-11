@@ -1,81 +1,55 @@
+---
 # Install tiqr component
+# TODO: Test!
 
 - name: Put parameters.yml
-  template: src={{ item }}.j2 dest={{ component_dir_name }}/app/config/{{ item }} mode={{ component_mode_640 }} group={{ component_group }}
+  template:
+    src: "{{ item }}.yml.j2"
+    dest: "{{ component_config_dir_name }}/{{ item }}.{{ component_config_yaml_extension }}"
+    mode: "{{ component_mode_640 }}"
+    group: "{{ component_group }}"
   with_items:
-  - parameters.yml
+    - parameters
+
 
 - name: Put images from <env>/files/stepup-app into web/images
   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/*"
 
-# should no longer be needed:
-#- name: assets:install
-#  command: php bin/console assets:install --symlink --env=prod --no-debug
-#  args:
-#      chdir: "{{ component_dir_name }}"
 
-# TODO: Requires composer on app server. Need to fix
-#- name: mopa:bootstrap:symlink:less
-#  command: php bin/console mopa:bootstrap:symlink:less --env=prod --no-debug
-#  args:
-#      chdir: "{{ component_dir_name }}"
-# disabled due to error "There are no commands defined in the \"mopa:bootstrap:symlink\" namespace"
+# Deploy does change file rights in config, so run deploy first, then write files
+- name: Deploy tiqr component
+  include_role:
+    name: deploy
+    tasks_from: deploy
 
-#- name: Dump Assetic Assets
-#  command: php bin/console assetic:dump --env=prod --no-debug
-#  args:
-#      chdir: "{{ component_dir_name }}"
-# "There are no commands defined in the \"assetic\" namespace."
-
-- name: Clear cache
-  command: php bin/console cache:clear --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
-  when: not (develop | default(false))
-
-
-- name: Restrict app dir to the application
-  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app"
-  when: not (develop | default(false))
-
-- name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/var/cache"
-  - "{{ component_dir_name }}/var/logs"
-  when: not (develop | default(false))
 
 - name: Write tiqr APNS certificate
-  copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/apns.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/apns.pem owner={{ component_owner }} mode={{ component_mode_400 }}
   when: tiqr_apns_pemfile is defined
 
 # TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
 - name: Write tiqr sp certificate
-  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_dir_name }}/app/config/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
 
-# TODO: Explicitly config filenames
 - name: Write tiqr idp certificate
-  copy: content="{{ tiqr_idp_publickey }}" dest={{ component_dir_name }}/app/config/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
+  copy: content="{{ tiqr_idp_publickey }}" dest={{ component_config_file_dir_name }}/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
 
-# TODO: Explicitly config filenames
 - name: Write tiqr idp private key
-  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_dir_name }}/app/config/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+
+
+- name: Activate tiqr component
+  include_role:
+    name: deploy
+    tasks_from: activate
 
 
 - name: Put tiqr configuration script in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-tiqr-db_init.sh"
-
-
-# Finish
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ tiqr_vhost_name }} state=link
-
 
 - name: Show database configuration hint
   debug:

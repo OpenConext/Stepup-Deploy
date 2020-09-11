@@ -3,12 +3,12 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 
 parameters:
-    saml_idp_publickey: '{{ component_dir_name }}/config/idp.pem'
-    saml_idp_privatekey: '{{ component_dir_name }}/config/idp.key'
-    saml_metadata_publickey: '{{ component_dir_name }}/config/idp.pem'
-    saml_metadata_privatekey: '{{ component_dir_name }}/config/idp.key'
+    saml_idp_publickey: '{{ component_config_file_dir_name }}/idp.pem'
+    saml_idp_privatekey: '{{ component_config_file_dir_name }}/idp.key'
+    saml_metadata_publickey: '{{ component_config_file_dir_name }}/idp.pem'
+    saml_metadata_privatekey: '{{ component_config_file_dir_name }}/idp.key'
 
     saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/{{ component_name | replace('-', '_') }}/metadata'
-    saml_remote_sp_certificate: '{{ component_dir_name }}/config/sp.pem'
+    saml_remote_sp_certificate: '{{ component_config_file_dir_name }}/sp.pem'
     saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/{{ component_name | replace('-', '_') }}/consume-assertion'
 

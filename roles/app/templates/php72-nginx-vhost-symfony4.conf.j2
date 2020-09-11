@@ -1,7 +1,9 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+#template: php72-nginx-vhost-symfony4.conf.j2
 server {
     listen       80;
     server_name  {{ vhost_name }};
-    root /opt/www/{{ vhost_name }}/public;
+    root         /opt/www/{{ vhost_name }}/public;
 
     error_log /var/log/nginx/{{ component_name }}_error.log;
     error_log syslog:server=unix:/dev/log,tag=nginx_error_{{ component_name }},nohostname;
@@ -10,6 +12,10 @@ server {
 
     location /heartbeat {
         return 200 'Heartbeat for {{ vhost_name }}';
+    }
+    location /vhost_component_info {
+        add_header Content-Type application/json;
+        return 200 '{"SYMFONY_VERSION": 4, "PHP_VERSION": 72, "VHOST_NAME": "{{ vhost_name }}"}\n';
     }
 
     # Get the IP address from the X-Forwarded-For header and store it in $remote_addr, but
@@ -24,65 +30,32 @@ server {
     real_ip_header    X-Forwarded-For;
     real_ip_recursive off;
 
-    {# Configuration for stepup components #}
-    {% if 'dev' in group_names %}
-      {# Use development version of the component by using "app_dev.php" instead of app.php. This enables
-         development features like the symfony development toolbar #}
-      location / {
-          # try to serve file directly, fallback to app_dev.php
-          try_files $uri /app_dev.php$is_args$args;
-      }
+    {# Production config for stepup PHP72 / Symfony 4 components #}
+    location / {
+        # try to serve file directly, fallback to index.php
+        try_files $uri /index.php$is_args$args;
+    }
 
-      location ~ ^/app_(dev|test)\.php(/|$) {
-          # If testcookie is set use app_test.php
-          if ($cookie_testcookie) {
-            rewrite ^/app_dev\.php/?(.*)$ /app_test.php/$1;
-          }
+    location ~ ^/index\.php(/|$) {
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}_php72.socket;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        # Include fastcgi_params from /etc/nginx/fastcgi_params, then
+        # override some of them
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param HTTPS on;
+        fastcgi_param SYMFONY_ENV prod;
+    }
 
-          fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
-          fastcgi_split_path_info ^(.+\.php)(/.*)$;
-          # Include fastcgi_params from /etc/nginx/fastcgi_params, then
-          # override some of them
-          include fastcgi_params;
-          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-          fastcgi_param HTTPS on;
-          fastcgi_param SYMFONY_ENV prod;
-      }
-      {# Finally, disallow opening php files outside of app_dev.php #}
-      location ~* \.php$ {
-          return 404;
-      }
-      {# Finally, disallow opening php files outside of app_dev.php #}
-      location ~* \.php$ {
-          return 404;
-      }
+    {# Finally, disallow opening php files outside of index.php #}
+    {# For authentication with old tiqr accounts /tiqr.php and /tiqr/tiqr.php must be routed to app.php so exempt those. #}
+    {# TODO: Check how this will work for a php72 tiqr #}
+    {% if 'stepup-tiqr' in group_names %}
+    location ~* ^(?!/(tiqr/)?tiqr\.php$).*\.php$ {
     {% else %}
-      {# Producation config for stepup components #}
-      location / {
-          # try to serve file directly, fallback to app.php
-          try_files $uri /index.php$is_args$args;
-      }
-
-      location ~ ^/index\.php(/|$) {
-          fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
-          fastcgi_split_path_info ^(.+\.php)(/.*)$;
-          # Include fastcgi_params from /etc/nginx/fastcgi_params, then
-          # override some of them
-          include fastcgi_params;
-          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-          fastcgi_param HTTPS on;
-          fastcgi_param SYMFONY_ENV prod;
-      }
-
-      {# Finally, disallow opening php files outside of app.php #}
-      {# For authentication with old tiqr accounts /tiqr.php and /tiqr/tiqr.php must be routed to app.php so exempt those. #}
-          {% if 'stepup-tiqr' in group_names %}
-      location ~* ^(?!/(tiqr/)?tiqr\.php$).*\.php$ {
-          {% else %}
-      location ~* .php$ {
-          {% endif %}
-          return 404;
-      }
-
+    location ~* .php$ {
     {% endif %}
+        return 404;
+    }
+
 }

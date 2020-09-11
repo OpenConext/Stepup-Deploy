@@ -27,7 +27,7 @@ selfservice_gssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/self
 
 # GSSP Configuration
 
-# Tiqr GSSP
+# "tiqr" GSSP
 ss_gssp_tiqr_logo: /images/second-factor/tiqr.png
 ss_gssp_tiqr_app_android_url: https://play.google.com/store/apps/details?id=org.tiqr.authenticator&hl=en
 ss_gssp_tiqr_app_ios_url: https://itunes.apple.com/us/app/tiqr/id430838214?mt=8&ls=1
@@ -57,6 +57,73 @@ ss_gssp_tiqr_authn_failed:
     en_GB: 'Registration with Tiqr has failed. Please try again.'
     nl_NL: 'Registratie bij Tiqr is mislukt. Probeer het nogmaals.'
 ss_gssp_tiqr_pop_failed:
+    en_GB: 'Registration of your token failed. Please try again.'
+    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+# "webauthn" GSSP
+ss_gssp_webauthn_logo: /images/second-factor/webauthn.png
+ss_gssp_webauthn_app_android_url: ""
+ss_gssp_webauthn_app_ios_url: ""
+
+ss_gssp_webauthn_alt:
+    en_GB: 'Webauthn'
+    nl_NL: 'Webauthn'
+ss_gssp_webauthn_title:
+    en_GB: 'Webauthn'
+    nl_NL: 'Webauthn'
+ss_gssp_webauthn_description:
+    en_GB: 'Log in using Webauthn. %%ios_link_start%% %%ios_link_end%% %%android_link_start%% %%android_link_end%%'
+    nl_NL: 'Log in met een Webauthn. %%ios_link_start%% %%ios_link_end%% %%android_link_start%% %%android_link_end%%'
+ss_gssp_webauthn_button_use:
+    en_GB: 'Select'
+    nl_NL: 'Selecteer'
+ss_gssp_webauthn_initiate_title:
+    en_GB: 'Register a Webauthn token'
+    nl_NL: 'Registreer een Webauthn token'
+ss_gssp_webauthn_initiate_button:
+    en_GB: 'Register using Webauthn'
+    nl_NL: 'Registreer met Webauthn'
+ss_gssp_webauthn_explanation:
+    en_GB: 'Click the button below to register a Webauthn token.'
+    nl_NL: 'Klik op de knop hieronder een Webauthn token te registreren.'
+ss_gssp_webauthn_authn_failed:
+    en_GB: 'Registration using Webauthn has failed. Please try again.'
+    nl_NL: 'Registratie met Webauthn is mislukt. Probeer het nogmaals.'
+ss_gssp_webauthn_pop_failed:
+    en_GB: 'Registration of your token failed. Please try again.'
+    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+# "azuremfa" GSSP
+ss_gssp_azuremfa_logo: /images/second-factor/azuremfa.png
+ss_gssp_azuremfa_app_android_url: "https://play.google.com/store/apps/details?id=com.azure.authenticator"
+ss_gssp_azuremfa_app_ios_url: "https://apps.apple.com/nl/app/microsoft-authenticator/id983156458"
+
+# Translations
+ss_gssp_azuremfa_alt:
+    en_GB: 'azuremfa'
+    nl_NL: 'azuremfa'
+ss_gssp_azuremfa_title:
+    en_GB: 'azuremfa'
+    nl_NL: 'azuremfa'
+ss_gssp_azuremfa_description:
+    en_GB: 'Log in with a smartphone app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+    nl_NL: 'Log in met een app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+ss_gssp_azuremfa_button_use:
+    en_GB: 'Select'
+    nl_NL: 'Selecteer'
+ss_gssp_azuremfa_initiate_title:
+    en_GB: 'Register with azuremfa'
+    nl_NL: 'Registreren bij azuremfa'
+ss_gssp_azuremfa_initiate_button:
+    en_GB: 'Register with azuremfa'
+    nl_NL: 'Registreer bij azuremfa'
+ss_gssp_azuremfa_explanation:
+    en_GB: 'Click the button below to register with azuremfa.'
+    nl_NL: 'Klik op de knop hieronder om je bij azuremfa te registreren.'
+ss_gssp_azuremfa_authn_failed:
+    en_GB: 'Registration with azuremfa has failed. Please try again.'
+    nl_NL: 'Registratie bij azuremfa is mislukt. Probeer het nogmaals.'
+ss_gssp_azuremfa_pop_failed:
     en_GB: 'Registration of your token failed. Please try again.'
     nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
 

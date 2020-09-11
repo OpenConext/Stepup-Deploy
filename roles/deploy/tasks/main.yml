@@ -206,6 +206,20 @@
     component_config_file_dir_name:  "{{ component_dir_name }}/{{ deploy_symfony_4 | ternary('app/files', 'app/config') }}"
     component_config_yaml_extension: "{{ deploy_symfony_4 | ternary('yaml', 'yml') }}"
 
+# TODO: Fix this
+# Valid parameters.yml anf institutions.yaml must exist for composer install to succeed. Make one
+# from the included .dist versions. To fix this:
+# - use config/legacy config location. Fix this in the stepup-azure-mfa role as well
+# - find a way to provide defaults for composer install
+- name: Stepup-Azure-MFA parameters.yaml and instituions.yaml fix
+  copy:
+    src: "{{ component_dir_name }}/config/packages/{{ item }}.yaml.dist"
+    dest: "{{ component_dir_name }}/config/packages/{{ item }}.yaml"
+    remote_src: yes
+  with_items:
+  - parameters
+  - institutions
+  when: component_name == "azuremfa"
 
 - block:
 # DEVELOP
@@ -279,21 +293,6 @@
       dest: "{{ component_dir_name }}/config/packages/parameters.yml"
       remote_src: yes
     when: component_name == "webauthn"
-
-  # TODO: Fix this
-  # Valid parameters.yml anf institutions.yaml must exist for composer install to succeed. Make one
-  # from the included .dist versions. To fix this:
-  # - use config/legacy config location. Fix this in the stepup-azure-mfa role as well
-  # - find a way to provide defaults for composer install
-  - name: Stepup-Azure-MFA parameters.yaml and instituions.yaml fix
-    copy:
-      src: "{{ component_dir_name }}/config/packages/{{ item }}.yaml.dist"
-      dest: "{{ component_dir_name }}/config/packages/{{ item }}.yaml"
-      remote_src: yes
-    with_items:
-    - parameters
-    - institutions
-    when: component_name == "azuremfa"
 
   # TODO: Fix this
   # There is no zip extension in the REMI php72 repo from centos7

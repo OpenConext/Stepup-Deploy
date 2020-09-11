@@ -18,6 +18,7 @@ server {
         return 200 'Heartbeat for {{ vhost_name }}';
     }
     location /vhost_component_info {
+        add_header Content-Type application/json;
         return 200 '{"SYMFONY_VERSION": 3, "PHP_VERSION": 56, "VHOST_NAME": "{{ vhost_name }}"}\n';
     }
 

@@ -17,11 +17,10 @@
     name: deploy
     tasks_from: deploy
 
-# - name: Put images from <env>/files/stepup-app into web/images
-#   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
-#   with_fileglob:
-#   - "{{inventory_dir }}/files/stepup-app/images/*"
-
+- name: Put images from <env>/files/stepup-app into web/images
+  copy: src={{ item }} dest={{ component_dir_name }}/public/images mode=444 group={{ component_group }}
+  with_fileglob:
+  - "{{inventory_dir }}/files/stepup-app/images/*"
 
 - name: Write Azure-MFA GSSP SP certificate
   copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/gateway.crt group={{ component_group }} mode={{ component_mode_644 }}

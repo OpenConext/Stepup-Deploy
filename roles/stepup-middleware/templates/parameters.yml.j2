@@ -65,4 +65,7 @@ parameters:
     #
     # This is the global, application wide default. The configuration consists of an array with second factors types
     # that will skip the prove possession step in RA.
-    skip_prove_possession_second_factors: []
+    skip_prove_possession_second_factors:
+    {% for key in skip_prove_possession_second_factors %}
+      - {{ key }}
+    {% endfor %}

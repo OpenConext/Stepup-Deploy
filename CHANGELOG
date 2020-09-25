@@ -4,6 +4,14 @@ Release 19
   - Added skip_prove_possession_second_factors to the all.yml groups_vars. This controls whether the second factor proof
     of possession step during vetting in the RA is skipped for the listed second factors. The middleware must be redeployed
     after changing this option.
+    
+  - Stepup-Middleware 4.1.2
+    - Added identity & token bootstrap console commands (for test) #302 #303 #304 #305
+    - Drop support for php5.6 and support php7.2
+    - Make prove possession step optional
+  - Stepup-RA 4.1.1
+    - Drop support for php5.6 and support php7.2
+    - Make prove possession step optional
 
 
 Release 18

@@ -33,8 +33,9 @@
   file: path=/var/lib/stepup/session/{{ component_name }} state=directory owner={{ component_name }} group=root mode=770
 
 
-- name: Put rsyslog vhost config
-  template: src='rsyslog_nginx_vhost.conf.j2' dest='/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf'
+# This task can be removed once it has been run on all nodes
+- name: Remove rsyslog vhost config
+  file: path='/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf' state=absent
   notify:
   - restart rsyslog
 

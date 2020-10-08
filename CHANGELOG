@@ -12,6 +12,13 @@ Release 19
     - Drop support for php5.6 and support php7.2
     - Make prove possession step optional
 
+  - Make nginx log to rsyslog directly instead of reading from the nginx log files. Requires a redeploy of the "app" role.
+
+  - Require TLS for logging to rsyslog_remote_server. This is only enabled when rsyslog_remote_server is defined.
+    - You must add rsyslog_certificate, rsyslog_key and rsyslog_ca_certificate to the all.yml group_vars.
+    - Requires redeploy of the "common" role.
+    - Fix: syntax error in rsyslog.conf when using rsyslog_remote_server introduced in R17
+
 INSTALL
 * Update all.yaml group_vars to set the middleware and RA to SF 4 and PHP 7.2. I.e.:
   app_php72_components:

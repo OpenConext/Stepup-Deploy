@@ -1,0 +1,36 @@
+# Setup vhost. Included from vhost.yml
+# nginx and php-fpm pool vhost configuration for PHP 5.6 and Symfony 3
+
+# Create a default app
+# When no app is installed yet in the webdirectory then a link to the default app is created
+# The default app simply returns "No application installed for vhost {{ vhost_name }}"
+# For symfony 3 the app location is web/app.php
+- name: Create default app directory for {{ vhost_name }}
+  file: path=/opt/default/{{ vhost_name }}/web/ state=directory
+
+- name: Create default /opt/default/{{ vhost_name }}/web/app.php
+  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/web/app.php'
+
+
+# Put httpd vhost config
+- name: Put httpd vhost config for {{ vhost_name }} (php56) (symfony3)
+  template:
+    src: "{{ nginx_vhost_template | default('php56-nginx-vhost-symfony3.conf.j2') }}"
+    dest: '/etc/nginx/conf.d/{{ vhost_name }}.conf'
+  notify:
+    - restart nginx
+
+
+# Put fpm config for PHP 5.6
+- name: Put php-fpm config for {{ vhost_name  }}
+  template: src='php56-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.conf'
+  notify:
+    - restart php-fpm
+
+# Remove fpm config for PHP 7.2, if it exists
+- name: Remove php72-php-fpm config for {{ vhost_name }}
+  file:
+      path: "/etc/opt/remi/php72/php-fpm.d/{{ vhost_name }}.conf"
+      state: absent
+  notify:
+    - restart php72-php-fpm

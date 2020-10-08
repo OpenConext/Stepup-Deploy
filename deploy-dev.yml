@@ -1,0 +1,39 @@
+# Included from deploy.yml when dev==true
+# Demo GSSP's only for development purposes
+
+- name: Install Stepup-Demo-GSSP
+  hosts: stepup-demo-gssp
+  become: True
+  tags: stepup-demo-gssp
+
+  roles:
+    - deploy
+    - stepup-gssp-example
+
+
+  vars:
+    component_tarball_name: ''
+    component_name: demo-gssp
+    component_vhost_name: "{{ demo_gssp_vhost_name }}"
+    stable_nonce: "develop"
+    # Uses demo_gssp_idp_publickey from all.yaml
+    demo_gssp_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/demo_gssp_idp.key') }}"
+    deploy_php_version: 72 # Do not change, use component_info instead
+
+- name: Install Stepup-Demo-GSSP 2
+  hosts: stepup-demo-gssp-2
+  become: True
+  tags: stepup-demo-gssp-2
+
+  roles:
+    - deploy
+    - stepup-gssp-example
+
+  vars:
+    component_tarball_name: ''
+    component_name: demo-gssp-2
+    component_vhost_name: "{{ demo_gssp_2_vhost_name }}"
+    stable_nonce: "develop"
+    demo_gssp_idp_publickey: "{{ demo_gssp_2_idp_publickey }}"
+    demo_gssp_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/demo_gssp_2_idp.key') }}"
+    deploy_php_version: 72 # Do not change, use component_info instead

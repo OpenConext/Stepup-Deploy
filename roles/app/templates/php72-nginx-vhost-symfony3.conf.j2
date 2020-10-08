@@ -1,11 +1,9 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+#template: php72-nginx-vhost-symfony3.j2
 server {
     listen       80;
     server_name  {{ vhost_name }};
-{% if component_name == "ssp" %}
-    root /opt/www/{{ vhost_name }}/www;
-{% else %}
-    root /opt/www/{{ vhost_name }}/web;
-{% endif %}
+    root         /opt/www/{{ vhost_name }}/web;
 
     error_log /var/log/nginx/{{ component_name }}_error.log;
     error_log syslog:server=unix:/dev/log,tag=nginx_error_{{ component_name }},nohostname;
@@ -14,6 +12,10 @@ server {
 
     location /heartbeat {
         return 200 'Heartbeat for {{ vhost_name }}';
+    }
+    location /vhost_component_info {
+        add_header Content-Type application/json;
+        return 200 '{"SYMFONY_VERSION": 3, "PHP_VERSION": 72, "VHOST_NAME": "{{ vhost_name }}"}\n';
     }
 
 # Get the IP address from the X-Forwarded-For header and store it in $remote_addr, but
@@ -28,26 +30,8 @@ server {
     real_ip_header    X-Forwarded-For;
     real_ip_recursive off;
 
-{% if component_name == "ssp" %}
-    {# Configuration for SimpleSAMLphp test IdP and SP installed by 'dev' role #}
-    location / {
-        try_files $uri $uri/ =404;
-        index index.php index.html;
-    }
-
-    location ~ \.php(/|$) {
-        fastcgi_pass unix:/var/run/php-fpm/ssp.socket;
-
-        fastcgi_split_path_info ^(.+?\.php)(/.+)$;
-        fastcgi_param PATH_INFO $fastcgi_path_info;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-
-        include fastcgi_params;
-    }
-{% else %}
-    {# Configuration for stepup components #}
-    {% if 'dev' in group_names %}
+{# Develop config for stepup components #}
+{% if 'dev' in group_names %}
     {# Use development version of the component by using "app_dev.php" instead of app.php. This enables
        development features like the symfony development toolbar #}
     location / {
@@ -61,7 +45,7 @@ server {
           rewrite ^/app_dev\.php/?(.*)$ /app_test.php/$1;
         }
 
-        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}_php72.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         # Include fastcgi_params from /etc/nginx/fastcgi_params, then
         # override some of them
@@ -78,15 +62,15 @@ server {
     location ~* \.php$ {
         return 404;
     }
-    {% else %}
-    {# Producation config for stepup components #}
+{% else %}
+{# Production config for stepup components #}
     location / {
         # try to serve file directly, fallback to app.php
         try_files $uri /app.php$is_args$args;
     }
 
     location ~ ^/app\.php(/|$) {
-        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}.socket;
+        fastcgi_pass unix:/var/run/php-fpm/{{ component_name }}_php72.socket;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         # Include fastcgi_params from /etc/nginx/fastcgi_params, then
         # override some of them
@@ -105,7 +89,5 @@ server {
         {% endif %}
         return 404;
     }
-
-    {% endif %}
 {% endif %}
 }

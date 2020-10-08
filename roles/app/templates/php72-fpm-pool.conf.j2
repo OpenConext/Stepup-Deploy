@@ -11,7 +11,8 @@
 ; Note: This value is mandatory.
 
 ; Use unix socket
-listen = /var/run/php-fpm/{{ component_name }}.socket
+; Append "_php72" to socket names so the php56 and php72 pools use different sockets.
+listen = /var/run/php-fpm/{{ component_name }}_php72.socket
 
 ; Set listen(2) backlog. A value of '-1' means unlimited.
 ; Default Value: -1

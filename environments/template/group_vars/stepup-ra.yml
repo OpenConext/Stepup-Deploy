@@ -35,14 +35,49 @@ ra_gssp_tiqr_page_title:
     en_GB: 'Verify with Tiqr'
     nl_NL: 'Tiqr verifiëren'
 ra_gssp_tiqr_explanation:
-    en_GB: 'Click the button below to verify the registrant owns the Tiqr account he or she registered with in the Self-Service application.'
-    nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+    en_GB: 'Click the button below to verify the registrant owns the Tiqr account he or she registered in the Self-Service application.'
+    nl_NL: 'Klik op de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
 ra_gssp_tiqr_initiate:
     en_GB: 'Verify with Tiqr'
     nl_NL: 'Verifiëren bij Tiqr'
 ra_gssp_tiqr_gssf_id_mismatch:
     en_GB: "The Tiqr server responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
     nl_NL: 'De Tiqr-server heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
+# "webauthn" GSSP
+ra_gssp_webauthn_title:
+    en_GB: 'Webauthn'
+    nl_NL: 'Webauthn'
+ra_gssp_webauthn_page_title:
+    en_GB: 'Verify using Webauthn'
+    nl_NL: 'Webauthn verifiëren'
+ra_gssp_webauthn_explanation:
+    en_GB: 'Click the button below to verify the registrant owns the Webauth token he or she registered in the Self-Service application.'
+    nl_NL: 'Klik op de knop hieronder om te verifiëren dat de registrant het Webauthn token bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+ra_gssp_webauthn_initiate:
+    en_GB: 'Verify using Webauthn'
+    nl_NL: 'Webauthn verifiëren'
+ra_gssp_webauthn_gssf_id_mismatch:
+    en_GB: "The Webauthn server responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
+    nl_NL: 'De Webauthn-server heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
+# "azuremfa" GSSP
+ra_gssp_azuremfa_title:
+    en_GB: 'AzureMFA'
+    nl_NL: 'AzureMFA'
+ra_gssp_azuremfa_page_title:
+    en_GB: 'Verify with AzureMFA'
+    nl_NL: 'AzureMFA verifiëren'
+ra_gssp_azuremfa_explanation:
+    en_GB: 'Click the button below to verify the registrant owns the Microsoft account he or she registered with in the Self-Service application.'
+    nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Microsoft account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+ra_gssp_azuremfa_initiate:
+    en_GB: 'Verify with AzureMFA'
+    nl_NL: 'Verifiëren bij AzureMFA'
+ra_gssp_azuremfa_gssf_id_mismatch:
+    en_GB: "The institutions ADFS responded with an ID that doesn't match the requested ID the registrant registered with using the Self-Service application."
+    nl_NL: 'De ADFS van de instelling heeft een ID teruggegeven dat niet overeenkomt met het gevraagde ID, dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
 
 # "example_gssp" GSSP
 #ra_gssp_example_gssp_title:

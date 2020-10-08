@@ -50,8 +50,9 @@ ra_vhost_name: ra.stepup.example.com
 gateway_vhost_name: gateway.stepup.example.com
 tiqr_vhost_name: tiqr.stepup.example.com
 webauthn_vhost_name: webauthn.stepup.example.com
+azuremfa_vhost_name: azuremfa.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
-ssp_vhost_name: ssp.stepup.example.com # Used by the "dev" role only
+
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
 # user's locale preference with other (stepup) components
@@ -98,11 +99,23 @@ stepup_enabled_factors: sms, yubikey, u2f
 # Tip: search for "example_gssp" to see where you need to make changes.
 # TODO: Select GSSPs to enable, and specify the LoA level to assign to the GSSP
 # Available LoA levels: 2 and 3
+# Note you cannot use a dash ('-') in a GSSP name, use an underscore ("_") instead
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
-# example_gssp:
-#   loa: 2
+  webauthn:
+    loa: 2
+  azuremfa:
+    loa: 2
+# Note: for the Stepup-VM stepup_enabled_generic_second_factors is overridden in the dev.yml group_vars
+
+# List of the second factors types for which the token proof possession must be skipped
+# step during vetting by RA. If a second factor type is not listed here, the token proof possession
+# step is always executed for that token type.
+skip_prove_possession_second_factors:
+  - webauthn
+  - azuremfa
+# Note: for the Stepup-VM skip_prove_possession_second_factors is overridden in the dev.yml group_vars
 
 
 # Set the addres(ses) of the loadbalancer(s)
@@ -129,9 +142,7 @@ keyserver_lb_address: "{{ hostvars[groups['ks'][0]]['host_ipv4'] }}" # Use addre
 # Because the logs are sent unencrypted the network between all hosts and the remote log host must be trusted
 # The rsyslog configuration is in the "common" role, in common/templaes/rsyslog/rsyslog.conf.j2
 # TODO: Set to address and port of logserver
-# The - no so readable - expression below set loghost_relp_address to the host_ipv4 for the first host in the manage group,
-# or sets it to "false" if the manage group is empty
-loghost_relp_address: "{{ (groups['manage'][0] | default(false)) | ternary(hostvars[groups['manage'][0]|default(inventory_hostname)]['host_ipv4'], false) }}"
+loghost_relp_address: false
 
 # The port on the remote loghost to connect to. The manage role uses 10514 as the RELP port externally
 loghost_relp_port: 10514
@@ -191,7 +202,6 @@ ra_saml_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/ra_saml_sp.cr
 # Format: PEM X.509 certificate
 gateway_gssp_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gateway_gssp_idp.crt') }}"
 
-
 # Public SAML signing key of the Tiqr GSSP IDP
 # Private key in stepup-tiqr.yml
 # Format: PEM X.509 certificate
@@ -202,10 +212,10 @@ tiqr_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.crt') 
 # Format: PEM X.509 certificate
 webauthn_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_idp.crt') }}"
 
-
-# Public SAML signing key of the "example_gssp" GSSP IDP
+# Public SAML signing key of the AzureMFA IDP
+# Private key in stepup-azuremfa.yml
 # Format: PEM X.509 certificate
-#gssp_example_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/gssp_example_idp.crt') }}"
+azuremfa_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/azuremfa_idp.crt') }}"
 
 
 # Database tables and users for Stepup applications, keyserver

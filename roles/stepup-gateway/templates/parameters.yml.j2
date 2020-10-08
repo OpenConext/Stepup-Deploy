@@ -45,21 +45,21 @@ parameters:
 
     # The private key and certificate that are used by the Gateway SP to sign SAML AuthnRequests
     # Filename of the PEM CERTIFICATE
-    saml_sp_publickey: {{ component_dir_name }}/app/config/sp.crt
+    saml_sp_publickey: {{ component_config_file_dir_name }}/sp.crt
     # Filename of the PEM RSA PRIVATE KEY
-    saml_sp_privatekey: {{ component_dir_name }}/app/config/sp.key
+    saml_sp_privatekey: {{ component_config_file_dir_name }}/sp.key
 
     # The private key and certificate that are used by the Gateway IdP to sign SAML Responses/Assertions
     # Filename of the PEM CERTIFICATE
-    saml_idp_publickey: {{ component_dir_name }}/app/config/idp.crt
+    saml_idp_publickey: {{ component_config_file_dir_name }}/idp.crt
     # Filename of the PEM RSA PRIVATE KEY
-    saml_idp_privatekey: {{ component_dir_name }}/app/config/idp.key
+    saml_idp_privatekey: {{ component_config_file_dir_name }}/idp.key
 
     # The certificate and private key that are used by the Gateway to sign the metadata that it publishes
     # Filename of the PEM CERTIFICATE
-    saml_metadata_publickey: {{ component_dir_name }}/app/config/idp.crt
+    saml_metadata_publickey: {{ component_config_file_dir_name }}/idp.crt
     # Filename of the PEM RSA PRIVATE KEY
-    saml_metadata_privatekey: {{ component_dir_name }}/app/config/idp.key
+    saml_metadata_privatekey: {{ component_config_file_dir_name }}/idp.key
 
     # The remote IdP (i.e. not the local IdP that is part of the Gateway) is the IdP that provides the first
     # factor authentication of users to the Gateway.

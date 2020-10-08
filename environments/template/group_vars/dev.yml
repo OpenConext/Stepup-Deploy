@@ -1,6 +1,30 @@
-# Use mailcatcher as smarthost
-# Note: For production this would be set in app.yml group_var
+# vhost names for simple saml test idp and sp
+# For production these would be set in app.yml group_var
+ssp_vhost_name: ssp.stepup.example.com
+demo_gssp_vhost_name: demo-gssp.stepup.example.com
+demo_gssp_2_vhost_name: demo-gssp-2.stepup.example.com
 
+
+# TLS server certificates for the ssp en demo_gssp vhosts
+# For production these would be set in app.yml group_var
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_demo_gssp_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/demo-gssp.crt') }}"
+proxy_demo_gssp_2_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/demo-gssp-2.crt') }}"
+
+# Format: PEM RSA PRIVATE KEY
+proxy_demo_gssp_key: "{{ lookup('file', inventory_dir+'/ssl_cert/demo-gssp.key') }}"
+proxy_demo_gssp_2_key: "{{ lookup('file', inventory_dir+'/ssl_cert/demo-gssp-2.key') }}"
+
+
+
+# Public SAML signing keys of the demo_gssp's
+demo_gssp_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/demo_gssp_idp.crt') }}"
+demo_gssp_2_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/demo_gssp_2_idp.crt') }}"
+
+# Use mailcatcher as smarthost
 # Hostname of sendmail SMTP smarthost (optional)
 # Square brackets disable DNS lookup
 sendmail_smarthost: [localhost]
@@ -19,3 +43,174 @@ ssp_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp.crt
 
 ssp_sp2_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.key') }}"
 ssp_sp2_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/simplesaml_sp2.crt') }}"
+
+# Enabled development second factors
+# Overrides definition in all.yml
+stepup_enabled_generic_second_factors:
+  tiqr:
+    loa: 2
+  webauthn:
+    loa: 3
+  azuremfa:
+    loa: 2
+  demo_gssp:
+    loa: 2
+  demo_gssp_2:
+    loa: 3
+
+# Skip the prove token possession step
+skip_prove_possession_second_factors:
+  - gssp-2
+  - webauthn
+  - azuremfa
+
+
+##############################################################################
+# demo_gssp and demo_gssp_2 configuration
+# For production these would be set in stepup-gateway.yml group_var
+
+# Entity ID of the remote "example_gssp" Idp
+gateway_demo_gssp_remote_entity_id: 'https://{{ demo_gssp_vhost_name }}/saml/metadata'
+# SingleSingOn Location of the remote "example_gssp" IdP
+gateway_demo_gssp_remote_sso_url: 'https://{{ demo_gssp_vhost_name }}/saml/sso'
+# SAML signing certificate of the "example_gssp" IdP
+# Format: Base64 encoded X.509 certificate without PEM headers
+gateway_demo_gssp_remote_certificate: "{{ demo_gssp_idp_publickey | depem }}"
+
+#Logo and description for the WAYG (token selection) screen on the gateway
+#Add the new logo to files/stepup-app/images to make it available on the server
+gateway_demo_gssp_logo: "/images/demo-gssp.png"
+gateway_demo_gssp_title:
+  en_GB: "Demo GSSP"
+  nl_NL: "Demo GSSP"
+
+# Entity ID of the remote "example_gssp" Idp
+gateway_demo_gssp_2_remote_entity_id: 'https://{{ demo_gssp_2_vhost_name }}/saml/metadata'
+# SingleSingOn Location of the remote "example_gssp" IdP
+gateway_demo_gssp_2_remote_sso_url: 'https://{{ demo_gssp_2_vhost_name }}/saml/sso'
+# SAML signing certificate of the "example_gssp" IdP
+# Format: Base64 encoded X.509 certificate without PEM headers
+gateway_demo_gssp_2_remote_certificate: "{{ demo_gssp_2_idp_publickey | depem }}"
+
+#Logo and description for the WAYG (token selection) screen on the gateway
+#Add the new logo to files/stepup-app/images to make it available on the server
+gateway_demo_gssp_2_logo: "/images/demo-gssp.png"
+gateway_demo_gssp_2_title:
+  en_GB: "Demo GSSP"
+  nl_NL: "Demo GSSP"
+
+
+##############################################################################
+# demo_gssp and demo_gssp_2 configuration
+# For production these would be set in stepup-selfservice.yml group_var
+
+# Logo on the token selection page
+#Add the new logo to files/stepup-app/images to make it available on the server
+ss_gssp_demo_gssp_logo: /images/demo-gssp.png
+
+# Links to download the app for Android or IOS. See "ss_gssp_demo_gssp_description" for how these are used
+ss_gssp_demo_gssp_app_android_url: https://example.com/demo-gssp-android
+ss_gssp_demo_gssp_app_ios_url: https://example.com/demo-gssp-ios
+
+# Translations
+ss_gssp_demo_gssp_alt:
+    en_GB: 'demo_gssp'
+    nl_NL: 'demo_gssp'
+ss_gssp_demo_gssp_title:
+    en_GB: 'Demo GSSP'
+    nl_NL: 'Demonstratie GSSP'
+ss_gssp_demo_gssp_description:
+    en_GB: 'Log in with the "Demo GSSP" app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+    nl_NL: 'Log in met de "Demonstratie GSSP" app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+ss_gssp_demo_gssp_button_use:
+    en_GB: 'Select'
+    nl_NL: 'Selecteer'
+ss_gssp_demo_gssp_initiate_title:
+    en_GB: 'Register with the Demo GSSP'
+    nl_NL: 'Registreren bij de demonstratie GSSP'
+ss_gssp_demo_gssp_initiate_button:
+    en_GB: 'Register with the Demo GSSP'
+    nl_NL: 'Registreer bij de demonstratie GSSP'
+ss_gssp_demo_gssp_explanation:
+    en_GB: 'Click the button below to register with the Demo GSSP.'
+    nl_NL: 'Klik op de knop hieronder om je bij de demonstratie GSSP te registreren.'
+ss_gssp_demo_gssp_authn_failed:
+    en_GB: 'Registration with the Demo GSSP has failed. Please try again.'
+    nl_NL: 'Registratie bij demonstratie GSSP is mislukt. Probeer het nogmaals.'
+ss_gssp_demo_gssp_pop_failed:
+    en_GB: 'Registration of your token failed. Please try again.'
+    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+# Logo on the token selection page
+#Add the new logo to files/stepup-app/images to make it available on the server
+ss_gssp_demo_gssp_2_logo: /images/demo-gssp.png
+
+# Links to download the app for Android or IOS. See "ss_gssp_demo_gssp_description" for how these are used
+ss_gssp_demo_gssp_2_app_android_url: https://example.com/demo-gssp-2-android
+ss_gssp_demo_gssp_2_app_ios_url: https://example.com/demo-gssp-2-ios
+
+# Translations
+ss_gssp_demo_gssp_2_alt:
+  en_GB: 'demo_gssp_2'
+  nl_NL: 'demo_gssp_2'
+ss_gssp_demo_gssp_2_title:
+  en_GB: 'Demo GSSP 2'
+  nl_NL: 'Demonstratie GSSP 2'
+ss_gssp_demo_gssp_2_description:
+  en_GB: 'Log in with the "Demo GSSP 2" app. For all smartphones with %%ios_link_start%%Apple iOS%%ios_link_end%% or %%android_link_start%%Android%%android_link_end%%.'
+  nl_NL: 'Log in met de "Demonstratie GSSP 2" app op je smartphone. Geschikt voor smartphones met %%ios_link_start%%Apple iOS%%ios_link_end%% of %%android_link_start%%Android%%android_link_end%%.'
+ss_gssp_demo_gssp_2_button_use:
+  en_GB: 'Select'
+  nl_NL: 'Selecteer'
+ss_gssp_demo_gssp_2_initiate_title:
+  en_GB: 'Register with the Demo GSSP 2'
+  nl_NL: 'Registreren bij de demonstratie GSSP 2'
+ss_gssp_demo_gssp_2_initiate_button:
+  en_GB: 'Register with the Demo GSSP-2'
+  nl_NL: 'Registreer bij de demonstratie GSSP-2'
+ss_gssp_demo_gssp_2_explanation:
+  en_GB: 'Click the button below to register with the Demo GSSP 2'
+  nl_NL: 'Klik op de knop hieronder om je bij de demonstratie GSSP 2 te registreren'
+ss_gssp_demo_gssp_2_authn_failed:
+  en_GB: 'Registration with the Demo GSSP 2 has failed. Please try again.'
+  nl_NL: 'Registratie bij demonstratie GSSP 2 is mislukt. Probeer het nogmaals.'
+ss_gssp_demo_gssp_2_pop_failed:
+  en_GB: 'Registration of your token failed. Please try again.'
+  nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+
+##############################################################################
+# demo_gssp and demo_gssp_2 configuration
+# For production these would be set in stepup-ra.yml group_var
+
+ra_gssp_demo_gssp_title:
+  en_GB: 'Example GSSP'
+  nl_NL: 'Voorbeeld GSSP'
+ra_gssp_demo_gssp_page_title:
+  en_GB: 'Verify with Example GSSP'
+  nl_NL: 'Verifiëren met de voorbeeld GSSP'
+ra_gssp_demo_gssp_explanation:
+  en_GB: 'Click the button below to verify the registrant can authenticate with the "Example GSSP" token he or she registered with in the Self-Service application.'
+  nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+ra_gssp_demo_gssp_initiate:
+  en_GB: 'Verify with Example GSSP'
+  nl_NL: 'Verifiëren met de voorbeeld GSSP'
+ra_gssp_demo_gssp_gssf_id_mismatch:
+  en_GB: "The \"example GSSP\" responded with an ID that doesn't match the ID that the registrant registered with using the Self-Service application."
+  nl_NL: 'De "voorbeel GSSP" heeft een ID teruggegeven dat niet overeenkomt met het ID dat de registrant heeft geregistreerd in de Self-Service-applicatie.'
+
+ra_gssp_demo_gssp_2_title:
+  en_GB: 'Example GSSP'
+  nl_NL: 'Voorbeeld GSSP'
+ra_gssp_demo_gssp_2_page_title:
+  en_GB: 'Verify with Example GSSP'
+  nl_NL: 'Verifiëren met de voorbeeld GSSP'
+ra_gssp_demo_gssp_2_explanation:
+  en_GB: 'Click the button below to verify the registrant can authenticate with the "Example GSSP" token he or she registered with in the Self-Service application.'
+  nl_NL: 'Klik de knop hieronder om te verifiëren dat de registrant het Tiqr-account bezit dat hij of zij gebruikt heeft in de Self-Service-applicatie.'
+ra_gssp_demo_gssp_2_initiate:
+  en_GB: 'Verify with Example GSSP'
+  nl_NL: 'Verifiëren met de voorbeeld GSSP'
+ra_gssp_demo_gssp_2_gssf_id_mismatch:
+  en_GB: "The \"example GSSP\" responded with an ID that doesn't match the ID that the registrant registered with using the Self-Service application."
+  nl_NL: 'De "voorbeel GSSP" heeft een ID teruggegeven dat niet overeenkomt met het ID dat de registrant heeft geregistreerd in de Self-Service-applicatie.'

@@ -15,16 +15,16 @@ parameters:
     # Metadata URL: https://<gateway>/gssp/{{ key }}/metadata
 
     # GSSP SP Proxy for authenticating with the real (i.e. external) GSSP IdP
-    gssp_{{ key }}_sp_publickey: {{ component_dir_name }}/app/config/sp_gssp.crt
-    gssp_{{ key }}_sp_privatekey: {{ component_dir_name }}/app/config/sp_gssp.key
+    gssp_{{ key }}_sp_publickey: {{ component_config_file_dir_name }}/sp_gssp.crt
+    gssp_{{ key }}_sp_privatekey: {{ component_config_file_dir_name }}/sp_gssp.key
 
     # Certificate and private key of GSSP IdP Proxy for use by RA and SS
-    gssp_{{ key }}_idp_publickey: {{ component_dir_name }}/app/config/idp_gssp.crt
-    gssp_{{ key }}_idp_privatekey: {{ component_dir_name }}/app/config/idp_gssp.key
+    gssp_{{ key }}_idp_publickey: {{ component_config_file_dir_name }}/idp_gssp.crt
+    gssp_{{ key }}_idp_privatekey: {{ component_config_file_dir_name }}/idp_gssp.key
 
     # Metadata signing cert and key for tiqr SP/IdP proxy
-    gssp_{{ key }}_metadata_publickey: {{ component_dir_name }}/app/config/idp_gssp.crt
-    gssp_{{ key }}_metadata_privatekey: {{ component_dir_name }}/app/config/idp_gssp.key
+    gssp_{{ key }}_metadata_publickey: {{ component_config_file_dir_name }}/idp_gssp.crt
+    gssp_{{ key }}_metadata_privatekey: {{ component_config_file_dir_name }}/idp_gssp.key
 
     # Real (i.e. external) GSSP IdP
     gssp_{{ key }}_remote_entity_id: '{{ hostvars[inventory_hostname]['gateway_' + key + '_remote_entity_id'] }}'

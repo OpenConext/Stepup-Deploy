@@ -1,8 +1,27 @@
+---
 # Setup vhost. Call with
-# - comnponent_name: a unique name for the component user in user-, group, directory and file names
+# - component_name: a unique name for the component user in user-, group, directory and file names
 # - vhost_name: the FQDN of the vhost
+# - php_version: the php version of the component. Either 56 or 72
+# - nginx_vhost_template: Optional. Allows the nginx vhost configuration template to be overridden
 
-# Create user & group for FPM pool
+# Each component runs in a FPM pool under a separate user & group
+
+# Create user & group for the FPM pool
+- debug:
+    msg: "component_name: {{ component_name }}; vhost_name: {{ vhost_name }}; php_version: {{ php_version }}; symfony_version: {{ symfony_version}}"
+
+- name: Verify component php_version
+  fail:
+    msg: "php_version must be 56 or 72, php_version='{{ php_version }}'"
+  when: (php_version | int != 56) and (php_version | int != 72)
+
+- name: Verify component symfony_version
+  fail:
+    msg: "symfony_version must be 3 or 4, symfony_version='{{symfony_version }}'"
+  when: (symfony_version | int != 3) and (symfony_version | int != 4)
+
+
 - name: Add group {{ component_name }}
   group: name={{ component_name }} state=present
 
@@ -14,37 +33,31 @@
   file: path=/var/lib/stepup/session/{{ component_name }} state=directory owner={{ component_name }} group=root mode=770
 
 
-# Create a default app
-# When no app is installed yet in the webdirectory then a link to the default app is created
-- name: Create default app directory for {{ vhost_name }}
-  file: path=/opt/default/{{ vhost_name }}/web/ state=directory
-
-- name: Create default /opt/default/{{ vhost_name }}/web/app.php
-  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/web/app.php'
+- name: Put rsyslog vhost config
+  template: src='rsyslog_nginx_vhost.conf.j2' dest='/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf'
+  notify:
+  - restart rsyslog
 
 
+# Select the nginx and php-fpm vhost configuration to use for the component
+# Include based on the required configuration for the vhost
+- name: Configure vhost {{ vhost_name }} for PHP 7.2 with Symfony 4
+  include_tasks: php72-vhost-symfony4.yml
+  when: (php_version | int == 72) and (symfony_version | int == 4)
+
+- name: Configure vhost {{ vhost_name }} for PHP 7.2 with Symfony 3
+  include_tasks: php72-vhost-symfony3.yml
+  when: (php_version | int == 72) and (symfony_version | int == 3)
+
+- name: Configure vhost {{ vhost_name }} for PHP 5.6 with Symfony 3
+  include_tasks: php56-vhost-symfony3.yml
+  when: php_version | int == 56
+
+
+# Link to default app, when no app is installed
 - stat: path=/opt/www/{{ vhost_name }}
   register: r
 
 - name: Install default app when no app is installed (yet)
   file: src=/opt/default/{{ vhost_name }} dest=/opt/www/{{ vhost_name }} state=link force=no
   when: (r.stat.exists == false)
-
-
-# Put httpd vhost config
-- name: Put httpd vhost config for {{ vhost_name }}
-  action: template src='nginx-vhost.conf.j2' dest='/etc/nginx/conf.d/{{ vhost_name }}.conf'
-  notify:
-    - restart nginx
-
-
-# Put fpm config
-- name: Put php-fpm config
-  template: src='php-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.conf'
-  notify:
-    - restart php-fpm
-
-- name: Put rsyslog vhost config
-  template: src='rsyslog_nginx_vhost.conf.j2' dest='/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf'
-  notify:
-      - restart rsyslog

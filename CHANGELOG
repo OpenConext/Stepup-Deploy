@@ -1,5 +1,93 @@
-Release 17.1
+Release 19
+* Stepup-Deploy
+  - Added skip_prove_possession_second_factors to the all.yml groups_vars. This controls whether the second factor proof
+    of possession step during vetting in the RA is skipped for the listed second factors. The middleware must be redeployed
+    after changing this option.
+    
+  - Stepup-Middleware 4.1.2
+    - Added identity & token bootstrap console commands (for test) #302 #303 #304 #305
+    - Drop support for php5.6 and support php7.2
+    - Make prove possession step optional
+  - Stepup-RA 4.1.1
+    - Drop support for php5.6 and support php7.2
+    - Make prove possession step optional
 
+INSTALL
+* Update all.yaml group_vars to set the middleware and RA to SF 4 and PHP 7.2. I.e.:
+  app_php72_components:
+  - stepup-middleware
+  - stepup-ra
+  app_symfony_3_components:
+  - stepup-gateway
+  - stepup-selfservice
+  - stepup-ra
+  - stepup-tiqr
+  - stepup-keyserver
+
+  You need to run the app role to apply these changes. I.e.:
+  "ansible-playbook site.yml -t app -i <environment>/inventory"
+
+* Deploy components:
+  - Stepup-Middleware 4.1.2
+  - Stepup-RA 4.1.2
+
+
+Release 18
+* Add two new GSSPs: Stepup-Webauthn and Stepup-Azure-MFA
+  To use the new GSSP:
+  - Enable them in the all.yml groups_vars by adding them to stepup_enabled_generic_second_factors
+  - Add the GSSP configuration to the gateway.yml, selfservice.yml and ra.yml group_vars
+  You need to redeploy the Gateway, SelfService and RA components after making these changes.
+
+  Installing Release 19, which add support for skip_prove_possession_second_factors, and disabling proof of possession
+  is recommended because PoP is very user unfriendly and does not add to the security for these methods.
+
+* Support migration of components from Symfony 3 to Symfony 4 and from PHP 5.6 to PHP 7.2. For more information
+  see: https://github.com/OpenConext/Stepup-Deploy/wiki/component_info-RFC
+  In this release the new Stepup-Webauthn and Stepup-Azure-MFA use Symfony 4 and PHP 7.2, all the other components
+  remain at Symfony 3 and PHP 7.2
+
+* Stepup-Deploy
+  - Added app_php72_components and app_symfony_3_components to app.yml group_vars. These control the Symfony version and
+    PHP version configuration of the vhosts. The vhosts for the new Stepup-Webauthn and Stepup-Azure-MFA components are
+    by default configured for Symfony 4 and PHP 7.2. So these components do not need to added there. For this release
+    use the configuration below. Not you must run the app role from site.yml playbook after making these changes
+    app_php72_components: []
+    app_symfony_3_components:
+    - stepup-middleware
+    - stepup-gateway
+    - stepup-selfservice
+    - stepup-ra
+    - stepup-tiqr
+    - stepup-keyserver
+
+  - Added app_remove_php56 to the app.yml group_vars to control whether the PHP 5.6 RPMs are removed when it is determined
+    that none of the vhosts use PHP 5.6. The default is false.
+  - During deployment of a component, using the deploy.yml playbook that is called from the deploy.sh script, it is
+    verified that the PHP and Symfony configuration of the running vhost matches that of the component. The vhost
+    configuration is retrieved using the http://<vhosts>/vhost_component_info URL exposed by the vhost. The component
+    requirements are read from a component_info file in the tarball of the component. The component_info file is optional
+    in which case PHP 5.6 and Symfony 3 is assumed.
+  - Added webauthn_vhost_name and azuremfa_vhost_name to the all.yml groups_vars
+
+* Infrastructure
+  - The vhosts now expose a http://<vhosts>/vhost_component_info URL that returns the current Symfony and PHP vhost
+    configuration in JSON format.
+
+INSTALL
+* Run "ansible-playbook site.yml -t app -i <environment>/inventory" to deploy only the app role
+  This updates the nginx vhost configuration of all vhosts and installs PHP 7.2 when a vhost requires it.
+  This makes the http://<vhosts>/vhost_component_info URL available that is required to deploy components
+
+* Deploy components:
+  - Stepup-Webauthn
+  - Stepup-Azure-MFA
+  - Stepup-Gateway 2.10.3
+  - Stepup-SelfService 2.10.6
+  - Stepup-RA 2.10.6
+
+
+Release 17.1
 Support a normal and a SFO authentication concurrently in the same session in the Stepup-Gateway. This allows the
 remote IdP to use SFO.
 
@@ -93,7 +181,6 @@ CHANGES
   - Open manual in new tab (https://www.pivotaltracker.com/story/show/161718649)
   - Fix: Sorting on document number the in token overview results in an error (https://www.pivotaltracker.com/story/show/161721636)
 
-
 * Stepup-tiqr:
   - Fix: tiqr server keeps sending push notifications when challenges expire (https://www.pivotaltracker.com/story/show/159101661)
   - Fix: tiqr server blocks during authentication when translation service is unavailable (https://www.pivotaltracker.com/story/show/160510558)
@@ -109,8 +196,7 @@ CHANGES
   - Make the name of the Stepup Gateway displayed in the HTML title and on the Error pages of the Stepup-gateway configurable
     using the gateway_app_name group_var stepup-gateway.yml
 
-
-* Deploy
+* Stepup-Deploy
   - Add new variable 'gateway_app_name' to stepup-gateway.yml group_vars for the display name of the gateway. See the template environment for a description of
     this variable. You must add gateway_app_name in your environment(s).
   - The 'logout_redirect_url' in the app.yml group_vars is now set per locale. See the template environment for a description of
@@ -140,7 +226,6 @@ INSTALL
   - Stepup-SelfService 2.10.6
   - Stepup-RA 2.10.6
   - Stepup-tiqr 2.1.12
-
 
 * Redeploy the app role
   - Run "ansible-playbook site.yml -t app -i <environment>/inventory" to deploy only the app role

@@ -1,0 +1,19 @@
+# These are defaults for the deploy configuration
+# These are overridden on a component basis in the deploy.yml (and deploy-dev.yml) playbooks
+# Components after Release-17 include a component_info file, which has the final say.
+
+# Do not change these defaults. Use the component_info file to specify the deploy (and build) requirements of a
+# component instead
+deploy_php_version: 56
+deploy_symfony_version: 3
+deploy_symfony_3: yes
+deploy_symfony_4: no
+deploy_assetic: no
+deploy_mopa_bootstrap: no
+
+# For develop deploy only
+deploy_node_version: 10
+deploy_encore: no
+deploy_ignore_platform_reqs: ""
+
+

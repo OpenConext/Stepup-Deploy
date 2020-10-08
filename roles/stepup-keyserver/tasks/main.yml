@@ -1,46 +1,24 @@
 # Infra stuff for key server
-- name: Create /app/config/ directory
-  file: path={{ component_dir_name }}/app/config/ state=directory group={{ component_name }} mode=755
 
 - name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_dir_name }}/app/config/parameters.yml mode={{ component_mode_640 }} group={{ component_group }}
+  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.{{component_config_yaml_extension}} mode={{ component_mode_640 }} group={{ component_group }}
 
-- name: assets:install
-  command: php bin/console assets:install --symlink --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
 
-- name: Dump Assetic Assets
-  command: php bin/console assetic:dump --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
+# Include ../../deploy/deploy.yml
+- name: Deploy Symfony component
+  include_role:
+    name: deploy
+    tasks_from: deploy
 
-- name: Clear cache
-  command: php bin/console cache:clear --env=prod {{ debug_flag }}
-  args:
-      chdir: "{{ component_dir_name }}"
 
-- name: Restrict app dir to the application
-  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app"
-  when: not (develop | default(false))
+# include ../../deploy/activate.yml
+- name: Activate Symfony component
+  include_role:
+    name: deploy
+    tasks_from: activate
 
-- name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
-  with_items:
-  - "{{ component_dir_name }}/app/cache"
-  - "{{ component_dir_name }}/app/logs"
-  when: not (develop | default(false))
 
 - name: Put keyserver configuration script in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-keyserver-db_init.sh"
-
-
-- name: Set stepup directory rights
-  file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
-
-- name: Activate component
-  file: src={{ component_dir_name }} dest=/opt/www/{{ keyserver_vhost_name }} state=link

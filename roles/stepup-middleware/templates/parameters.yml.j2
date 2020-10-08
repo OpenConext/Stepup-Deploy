@@ -10,7 +10,6 @@ parameters:
     # The database server version is used in the dbal configuration and is required to prevent issues when the database
     # connection is booted. See https://github.com/doctrine/DoctrineBundle/issues/351 for more details on this.
     # Also see: https://symfony.com/doc/current/reference/configuration/doctrine.html#doctrine-dbal-configuration
-    database_server_version: 5.6
     database_middleware_name:     {{ database_middleware_name }}
     database_middleware_user:     {{ database_middleware_user }}
     database_middleware_password: {{ database_middleware_password | vault(vault_keydir)}}
@@ -24,8 +23,8 @@ parameters:
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
-    mailer_user:       ~
-    mailer_password:   ~
+    mailer_user:       ''
+    mailer_password:   ''
 
     default_locale:       {{ default_locale }}
     locales:              [{{ enabled_locales | join(",") }}]
@@ -61,3 +60,12 @@ parameters:
     # institution config (middleware api). The value configured in the parameters.yml will be used as the
     # fallback/default value.
     number_of_tokens_per_identity: 1
+
+    # Sets the tokens that can skip the prove possession step.
+    #
+    # This is the global, application wide default. The configuration consists of an array with second factors types
+    # that will skip the prove possession step in RA.
+    skip_prove_possession_second_factors:
+    {% for key in skip_prove_possession_second_factors %}
+      - {{ key }}
+    {% endfor %}

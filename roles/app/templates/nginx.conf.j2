@@ -38,6 +38,9 @@ http {
 
     #gzip  on;
 
+    # Hide Nginx server version on error pages
+    server_tokens off;
+
     # Load config files from the /etc/nginx/conf.d directory
     # The default server is in conf.d/default.conf
     include /etc/nginx/conf.d/*.conf;

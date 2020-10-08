@@ -6,7 +6,7 @@
 
 - name: Push middleware config
   hosts: stepup-middleware
-  become: No
+  become: "{{ deploy_become_override | default('no') }}"
   remote_user: "{{ app_deploy_user }}"
 
   tasks:

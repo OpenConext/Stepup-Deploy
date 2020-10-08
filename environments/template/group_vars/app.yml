@@ -110,4 +110,56 @@ app_session_max_duration: 3600
 # 60 * 15 = 900
 app_session_expiry_time: 900
 
+# The three settings below are used for the Symfony 3->4 and PHP 5.6->7.2 migration and control the configuration of
+# the vhosts:
+# 1. app_php72_components
+# 2. app_symfony_3_components
+# 3. app_remove_php56
+#
+# As always, redeploy the app role if you change any of these settings. The deploy role, used to deploy the stepup components
+# in the vhosts, now verifies if the requirements of the component (as specified in the component_info) match with the
+# configuration of the vhost (as published on the http://<component_vhost_name>/vhost_component_info URL. If there is a
+# mismatch the deploy will fail. So always first deploy the app role, then deploy the component.
+# Expect changing the vhost configuration to break an existing component, so take the component offline first using
+# e.g. loadbalancer or by removing the vhosts's symlink in /opt/www.
 
+# List of components that use php72 with Symfony 4 (instead of php56)
+# Used to control the migration from php56 to php72
+# If a component is on the list, its vhost will be configured for php72 and use Symfony 4 by default, otherwise a php56
+# with a Symfony 2/3 configuration is used.
+# The app_symfony_3_components can be used for php72 apps that still use Symfony 3
+# Available components: stepup-middleware, stepup-gateway, stepup-selfservice, stepup-ra, stepup-tiqr and stepup-keyserver
+# Note: for the components that always require PHP 7.2 (stepup-webauthn and stetup-azure-mfa) this setting has no effect
+#
+# If one of the above components requires PHP 7.2 it will have a component_info file in the root of its git repo / tarball
+# that states this requirement. The deploy playbook will verify that the component_info matches the the vhost configuration
+# and fail when there is a mismatch
+#
+# Use the inventory group name of the component
+#
+# TODO: Set the components that require PHP 7.2 and Symfony.
+# app_php72_components: [] # Configuration compatible with release-17
+# app_php72_components: ['stepup-middleware', 'stepup-gateway', 'stepup-selfservice', 'stepup-ra', 'stepup-tiqr', 'stepup-keyserver'] # Configuration compatible with release-18
+app_php72_components:
+- stepup-middleware
+- stepup-gateway
+- stepup-selfservice
+- stepup-ra
+- stepup-tiqr
+#- stepup-keyserver
+
+# When a component is in this list its vhost will always be configured for Symfony 3
+# stepup-middleware, stepup-gateway, stepup-selfservice, stepup-ra, stepup-tiqr and stepup-keyserver
+app_symfony_3_components:
+#- stepup-middleware
+- stepup-gateway
+- stepup-selfservice
+#- stepup-ra
+- stepup-tiqr
+- stepup-keyserver
+
+
+# Only when app_remove_php56 is set to true AND app_php72_components above indicates that ALL components are using PHP 7.2
+# PHP 5.6 will be removed
+# If app_remove_php56 is set to false then PHP 5.6 will not be removed.
+app_remove_php56: False

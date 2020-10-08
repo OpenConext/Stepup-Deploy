@@ -23,6 +23,12 @@
 # All the ground and "root" work to host the components (nginx, php-fpm etc) was performed by the app role.
 
 
+- name: Set component_dir_name and stable_nonce from component_tarball_name
+  set_fact:
+    component_dir_name: "/opt/stepup/{{ component_tarball_name | basename | regex_replace('^(.*)\\.tar\\.bz2$', '\\1') }}"
+    stable_nonce: "{{ component_tarball_name | basename | regex_replace('^.*-(.{8}).{32}\\.tar\\.bz2$', '\\1') }}"
+
+
 - name: Get active component
   shell: readlink /opt/www/{{ component_vhost_name }}
   ignore_errors: true
@@ -30,6 +36,18 @@
 
 - debug:
     msg: "Currently installed component: {{ active_component.stdout }}; Component to be installed: {{ component_dir_name }}; Asset version: {{ stable_nonce }}"
+
+- name: Get vhost_component_info
+  uri:
+    url: http://127.0.0.1/vhost_component_info
+    headers:
+      Host: "{{ component_vhost_name }}"
+    return_content: yes
+  register: vhost_component_info
+
+- name: Show vhost_component_info
+  debug:
+    msg: "{{ vhost_component_info.content | from_json }}"
 
 
 # There are two modes in which a component can be installed. Which mode is active is determined by the "develop" variable.
@@ -43,8 +61,8 @@
 
 # 2. Development (DEVELOP) mode:
 #    - Components are installed from source (i.e. git clone)
-#    - Intended to be used with the Stepup-VM in dev mode (i.e. ENV=dev).
-#    - NOT FOR PRODUCTION USE
+#    - Intended to be used with the Stepup-VM in dev mode (i.e. ENV=dev)
+#    - NOT FOR PRODUCTION USE -- file system permissions are unsafe
 
 # The development VM mounts a remote directory from the host in the development-VM at "/src". This will typically be a
 # NFS mount. It requires some work to make the production deploy tasks, that need set owner, group and mode for production
@@ -88,12 +106,120 @@
         component_owner: "{{ component_name }}"
         component_mode_400: "400" # r-- --- ---
         component_mode_444: "444" # r-- r-- r--
+        component_mode_550: "550" # r-x r-x ---
         component_mode_640: "640" # rw- r-- ---
         component_mode_644: "644" # rw- r-- r--
         component_mode_755: "755" # rwx r-x r-x
+        component_mode_750: "750" # rwx r-x ---
         component_mode_770: "770" # rwx rwx ---
   when: not develop | default(false)
 
+# Read "{{ component_dir_name }}/component_info" into component_info.content when it exists
+# content is base64 encoded.
+# When successful component_info.failed == false
+- name: Read component_info from component on host
+  slurp:
+      path: "{{ component_dir_name }}/component_info"
+  register: component_info
+  ignore_errors: yes
+
+# Use regex_search to read the values for PHP_VERSION, ASSETIC etc from the component_info file
+# When not present in the file these will be empty strings.
+# The '\1' in regex_search is a backreference which makes the filter return the result of the match in the first "()" in
+# the regex as a list.
+# When there is no match an empty string is returned.
+- name: Fetch component requirements from component_info
+  set_fact:
+      component_info_php_version: "{{ component_info.content | b64decode | regex_search('PHP_VERSION=(.*)', '\\1' ) }}"
+      component_info_assetic: "{{ component_info.content | b64decode | regex_search('ASSETIC=(.*)', '\\1' ) }}"
+      component_info_symfony_version: "{{ component_info.content | b64decode | regex_search('SYMFONY_VERSION=(.*)', '\\1' ) }}"
+  when: not component_info.failed
+
+- name: component_info
+  debug:
+    msg: "Component requirements from component_info file: PHP version={{component_info_php_version}}; assetic={{component_info_assetic}}; Symfony version={{component_info_symfony_version}}"
+  when: not component_info.failed
+
+# Set deploy_<var> to component_info_<var> when component_info_<var> has length > 0, otherwise keep the current value of deploy_<var>
+# The deploy_<var> contain the defaults for the component for Release-17. component_info_<var> were read from the component_info file in the component tarball / git checkout
+# regex_search returns a list of matches, so we need to add [0] the get to the string
+- name: Update component deploy configuration from component_info
+  set_fact:
+      deploy_php_version: "{{ (component_info_php_version | length > 0) | ternary(component_info_php_version[0], deploy_php_version) }}"
+      deploy_assetic: "{{ (component_info_assetic | length > 0) | ternary(component_info_assetic[0], deploy_assetic) }}"
+      deploy_symfony_version: "{{ (component_info_symfony_version | length > 0) | ternary(component_info_symfony_version[0], deploy_symfony_version) }}"
+  when: not component_info.failed
+
+- name: Update flags for symfony version to deploy
+  set_fact:
+      deploy_symfony_4: "{{ (deploy_symfony_version | int) == (4 | int) }}"
+      deploy_symfony_3: "{{ (deploy_symfony_version | int) == (3 | int) }}"
+      deploy_php_56: "{{ (deploy_php_version | int) == (56 | int) }}"
+      deploy_php_72: "{{ (deploy_php_version | int) == (72 | int) }}"
+
+- name: Component requirements
+  debug:
+    msg: "Component requirements: PHP version={{deploy_php_version}}; assetic={{deploy_assetic}}; Symfony version={{deploy_symfony_version}}"
+
+- name: Set vhost_component_info from JSON
+  set_fact:
+      vhost_component_info: "{{ vhost_component_info.content | from_json }}"
+
+- name: Vhost configuration
+  debug:
+    msg: "Vhost configuration: PHP version={{ vhost_component_info.PHP_VERSION }}; Symfony version={{ vhost_component_info.SYMFONY_VERSION }}"
+
+- name: Fail when component PHP version requirements do not match
+  fail:
+    msg: "The component PHP version requirements do not match with the current vhost configuration. The component requires PHP {{deploy_php_version}} but the vhost is configured for PHP {{vhost_component_info.PHP_VERSION}}"
+  when: deploy_php_version | int != vhost_component_info.PHP_VERSION | int
+
+- name: Fail when component Symfony version requirements do not match
+  fail:
+    msg: "The component Symfony version requirements do not match with the current vhost configuration. The component requires Symfony {{deploy_symfony_version}} but the vhost is configured for Symfony {{vhost_component_info.SYMFONY_VERSION}}"
+  when: deploy_symfony_version | int != vhost_component_info.SYMFONY_VERSION | int
+
+
+# Set php cli command based on whether the component requires php7
+- name: Set php cli command and console command based on component php and symfony versions
+  set_fact:
+    php_cli: "{{ deploy_php_72 | ternary('php72', 'php') }}"
+    console: "{{ deploy_symfony_4 | ternary('bin/console', 'app/console') }}"
+
+# These (SF3) components have the console in the SF 4 location (the /bin dir)
+- name: Override console command for tiqr and oath-service-php components
+  set_fact:
+      console: bin/console
+  when: deploy_symfony_3 and component_name in ["tiqr", "keyserver"]
+
+# These facts/variables hande the differences between the Symfony 3 and Symfony 4 file layout
+# Using YAML Configuration has become lagacy in symfony 4, in favour of ENV. We'll make that cahnge later
+# But for SF4 we need to make two changes:
+# - File extension of yaml files is now "yaml" instead of "yml" in SF 3
+# - Configuration file location is "config/legacy" instead of "app/config" in SF 3
+# - For files that are referenced from the configuration like keys and certs we've decided
+#   to stop using the app/config directory in SF4. These go to app/files now.
+#   TODO: Finalise name for this directory
+- name: Set component directories based on symfony version
+  set_fact:
+    component_config_dir_name:       "{{ component_dir_name }}/{{ deploy_symfony_4 | ternary('config/legacy', 'app/config') }}"
+    component_config_file_dir_name:  "{{ component_dir_name }}/{{ deploy_symfony_4 | ternary('app/files', 'app/config') }}"
+    component_config_yaml_extension: "{{ deploy_symfony_4 | ternary('yaml', 'yml') }}"
+
+# TODO: Fix this
+# Valid parameters.yml anf institutions.yaml must exist for composer install to succeed. Make one
+# from the included .dist versions. To fix this:
+# - use config/legacy config location. Fix this in the stepup-azure-mfa role as well
+# - find a way to provide defaults for composer install
+- name: Stepup-Azure-MFA parameters.yaml and instituions.yaml fix
+  copy:
+    src: "{{ component_dir_name }}/config/packages/{{ item }}.yaml.dist"
+    dest: "{{ component_dir_name }}/config/packages/{{ item }}.yaml"
+    remote_src: yes
+  with_items:
+  - parameters
+  - institutions
+  when: component_name == "azuremfa"
 
 - block:
 # DEVELOP
@@ -113,57 +239,125 @@
 #      with_items:
 #        - "{{ component_name }}"
 
-    # Install dependencies
-    #
-    # Note: This composer install command is similar to the command used by the build script in Stepup-Build. The
-    # differences are that the DEVELOP version omits:
-    # - "--prefer-dist"
-    # - "--no-dev"
-    # - "--ignore-platform-reqs"
-    # - "--optimize-autoloader"
+  # The dev role installed nvm (node version manager) for nodejs
+  # Read the NODE_VERSION form component_info (if any)
+  - name: Fetch nodejs version from component_info
+    set_fact:
+      component_info_node_version: "{{ component_info.content | b64decode | regex_search('NODE_VERSION=(.*)', '\\1' ) }}"
+      component_info_encore: "{{ component_info.content | b64decode | regex_search('ENCORE=(.*)', '\\1' ) }}"
+    when: not component_info.failed
 
-    # If composer install fails:
-    # - Remove the non .dist versions of the configuration in /app/config
-    - name: DEVELOP - Composer install
-      shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }}
+  - name: Set nodejs version from component_info
+    set_fact:
+      deploy_node_version: "{{ (component_info_node_version | length > 0) | ternary(component_info_node_version[0], deploy_node_version) }}"
+      deploy_encore: "{{ (component_info_encore | length > 0) | ternary(component_info_encore[0], deploy_encore) }}"
+    when: not component_info.failed
 
-    # Rebuild cache
-    - name: DEVELOP - Clear cache (/app/console)
-      shell: php {{ component_dir_name }}/app/console cache:clear --env=prod --no-warmup
-      when: component_name != "tiqr"
+  # A nodejs version other than 10 is only used for running encore. Encore is needed during develop deploy
+  # from source only.
+  - name: Nodejs version and encore
+    debug:
+      msg: "deploy_node_version={{ deploy_node_version }}; deploy_encore={{ deploy_encore }}"
 
-    - name: DEVELOP - Clear cache (/bin/console)
-      shell: php {{ component_dir_name }}/bin/console cache:clear --env=prod --no-warmup
-      when: component_name == "tiqr"
+  - name: Set NVM command
+    set_fact:
+      set_nvm_nodejs_version_cmd: "source /root/.nvm/nvm.sh && nvm use {{ deploy_node_version }}"
 
-    - name: DEVELOP - Set debug, mode, owner and group for develop
-      set_fact:
-          debug_flag: ""
+  # Install dependencies
+  #
+  # Note: This composer install command is similar to the command used by the build script in Stepup-Build. The
+  # differences are that the DEVELOP version omits:
+  # - "--prefer-dist"
+  # - "--no-dev"
+  # - "--ignore-platform-reqs"
+  # - "--optimize-autoloader"
 
-          component_group:
-          #component_group: "{{ omit }}"
+  # If composer install fails:
+  # - This can happen because of intermittent file system errors because /src is mounted from the host
+  # - The configuration set by the component role (i.e. stepup-<component name>) often interferes with the
+  #   included .dist file(s) because these only replace part of the componen's configuration files.
+  #   This causes composer install to fail with configuration paramters related errors once these
+  #   configuration file have been written. A solution is to reset the component, removing any changes:
+  #      git reset --hard && git clean -Xf
+  #   should do the trick. Note this will discard any uncommited changes you made.
 
-          component_owner:
-          #component_owner: "{{ omit }}"
+  # TODO: Fix this
+  # A valid parameters.yml must exist for composer install to succeed. Make one
+  # from the .dist version. To fix this:
+  # - use SF 4 extension (yaml)
+  # - use config/legacy config location. Fix this in the stepup-webauthn role as well
+  # - find a way to provide defaults for composer install
+  - name: Stepup-Webauthn parameters.yml fix
+    copy:
+      src: "{{ component_dir_name }}/config/packages/parameters.yml.dist"
+      dest: "{{ component_dir_name }}/config/packages/parameters.yml"
+      remote_src: yes
+    when: component_name == "webauthn"
 
-          component_mode_400: "444"
-          component_mode_444: "444"
-          component_mode_640: "666"
-          component_mode_644: "666"
-          component_mode_755: "777"
-          component_mode_770: "777"
-          #component_mode_400: "{{ omit }}"
-          #component_mode_640: "{{ omit }}"
-          #component_mode_644: "{{ omit }}"
-          #component_mode_755: "{{ omit }}"
-          #component_mode_770: "{{ omit }}"
+  # TODO: Fix this
+  # There is no zip extension in the REMI php72 repo from centos7
+  # Disable platform requirements checking to work around this
+  - name: Stepup-Azure-MFA ext-zip requirement fix
+    set_fact:
+      deploy_ignore_platform_reqs: "--ignore-platform-reqs"
+    when: component_name == "azuremfa"
 
-    - name: DEVELOP - put app_dev.php
-      copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
-      when: component_name != "tiqr" and component_name != "keyserver"
+  # The {{ set_nvm_nodejs_version_cmd }} is added for Tiqr versions that run encore during composer install
+  - name: DEVELOP - Composer install
+    shell: "{{ set_nvm_nodejs_version_cmd }} && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }} {{ deploy_ignore_platform_reqs }}"
 
-    - name: DEVELOP - put app_test.php
-      copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
-      when: component_name != "tiqr" and component_name != "keyserver"
+  # Run "yarn install && yarn encore dev" for those components that require it
+  # Note: this takes a long time
+  - name: DEVELOP - Run yarn install and yarn encore dev
+    shell: "{{ set_nvm_nodejs_version_cmd }} && yarn install && yarn encore dev"
+    args:
+      chdir: "{{ component_dir_name }}"
+    when: deploy_encore
+
+  # Rebuild cache
+  - name: DEVELOP - Clear cache (/app/console)
+    shell: "{{ php_cli }} {{ component_dir_name }}/{{ console }} cache:clear --env=prod --no-warmup"
+
+  # In a develop deploy the components are installed from source in the Stepup-VM. The sources are
+  # mounted from the host into the VM. This means that we must not set owner and group IDs on files
+  # For component_mode_xxx we set the least restrictive for user, group and other.
+  - name: DEVELOP - Set debug, mode, owner and group for develop
+    set_fact:
+        debug_flag: ""
+
+        component_group:
+        #component_group: "{{ omit }}"
+
+        component_owner:
+        #component_owner: "{{ omit }}"
+
+        component_mode_400: "444"
+        component_mode_444: "444"
+        component_mode_550: "555"
+        component_mode_640: "666"
+        component_mode_644: "666"
+        component_mode_755: "777"
+        component_mode_750: "777"
+        component_mode_770: "777"
+
+
+  - name: DEVELOP - put app_dev.php
+    copy: remote_src=true src={{ component_dir_name }}/app_dev.php.dist dest={{ component_dir_name }}/web/app_dev.php
+    when: deploy_symfony_3 and component_name not in ["tiqr", "keyserver"]
+
+  - name: DEVELOP - put app_test.php
+    copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
+    when: deploy_symfony_3 and component_name not in ["tiqr", "keyserver"]
 
   when: develop | default(false)
+
+
+- name: Ensure component config direcories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "{{ component_mode_770 }}"
+    group: "{{ component_group }}"
+  with_items:
+  - "{{ component_config_dir_name }}"
+  - "{{ component_config_file_dir_name }}"

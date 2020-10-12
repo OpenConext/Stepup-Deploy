@@ -18,16 +18,7 @@
         component_group:  "webauthn"
         component_mode: "444" # r-- r-- r--
 
-    - name: Sync inventory certificates with remote
-      synchronize:
-        src: "{{inventory_dir }}/files/stepup-webauthn/trusted_certificates/"
-        dest: "{{ component_config_file_dir_name }}/trusted_certificates/"
-        delete: yes
-
-    - name: Set file-rights on certificates
-      file:
-        path: "{{ component_config_file_dir_name }}/trusted_certificates/"
-        owner: root
-        group: "{{ component_group }}"
-        mode: "{{ component_mode }}"
-        recurse: yes
+    - name: Copy trusted certificates
+      copy: src={{ item }} dest={{ component_config_file_dir_name }}/trusted_certificates/ mode={{ component_mode }} group={{ component_group }}
+      with_fileglob:
+      - "{{inventory_dir }}/files/stepup-webauthn/trusted_certificates/*"

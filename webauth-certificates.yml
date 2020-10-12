@@ -1,0 +1,33 @@
+- name: Install certificates for Stepup-Webauthn GSSP
+  hosts: stepup-webauthn
+  become: True
+  tags: stepup-webauthn-certificates
+
+  tasks:
+    - name: Find path for webauthn GSSP
+      find:
+        paths: /opt/www
+        file_type: any
+        recurse: no
+        follow: yes
+        patterns: "webauthn.*"
+      register: dirs_matched
+
+    - set_fact:
+        component_config_file_dir_name: "{{ dirs_matched.files[0].path }}/app/files/"
+        component_group:  "webauthn"
+        component_mode: "444" # r-- r-- r--
+
+    - name: Sync inventory certificates with remote
+      synchronize:
+        src: "{{inventory_dir }}/files/stepup-webauthn/trusted_certificates/"
+        dest: "{{ component_config_file_dir_name }}/trusted_certificates/"
+        delete: yes
+
+    - name: Set file-rights on certificates
+      file:
+        path: "{{ component_config_file_dir_name }}/trusted_certificates/"
+        owner: root
+        group: "{{ component_group }}"
+        mode: "{{ component_mode }}"
+        recurse: yes

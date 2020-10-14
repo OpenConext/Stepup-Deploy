@@ -98,6 +98,12 @@
     notify:
       - restart php-fpm
 
+  # Add empty www.conf to prevent this file being created on php-fpm OS-updates
+  - name: Add empty www.conf in /etc/php-fpm.d/
+    copy: src='www.conf' dest='/etc/php-fpm.d/www.conf'
+    notify:
+      - restart php-fpm
+
   - name: Put /etc/php-fpm.conf
     copy: src='php-fpm.conf' dest='/etc/php-fpm.conf'
     notify:
@@ -140,6 +146,12 @@
         - /etc/opt/remi/php72/php-fpm.d/www.conf
       notify:
         - restart php72-php-fpm
+
+    # Add empty www.conf to prevent this file being created on php-fpm OS-updates
+    - name: Add empty www.conf in /etc/opt/remi/php72/php-fpm.d/www.conf 
+      copy: src='www.conf' dest='/etc/opt/remi/php72/php-fpm.d/www.conf'
+      notify:
+        - restart php-fpm
 
     - name: Put /etc/opt/remi/php72/php-fpm.conf
       copy: src='php72-php-fpm.conf' dest='/etc/opt/remi/php72/php-fpm.conf'
@@ -186,8 +198,8 @@
   - restart nginx
 
 # This task can be removed once deployed on all nodes
-- name: Remove obsolete Nginx rsyslog config 
-  file: path=/etc/rsyslog.d/nginx.conf state=absent 
+- name: Remove obsolete Nginx rsyslog config
+  file: path=/etc/rsyslog.d/nginx.conf state=absent
   notify: restart rsyslog
 
 # Set mode to a+x so components can access their subdirectories under session/

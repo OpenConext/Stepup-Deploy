@@ -1,0 +1,50 @@
+- name: Update config for AzureMFA gssp component
+  hosts: stepup-azuremfa
+  become: True
+  tags: stepup-azuremfa-config
+
+  tasks:
+    - name: Find path for AzureMFA GSSP
+      find:
+        paths: /opt/www
+        file_type: any
+        recurse: no
+        follow: yes
+        patterns: "azuremfa.*"
+      register: dirs_matched
+
+    - set_fact:
+        component_dir_name: "{{ dirs_matched.files[0].path }}"
+        component_group:  "azuremfa"
+        component_mode: "444" # r-- r-- r--
+        component_mode_640: "640" # rw- r-- ---
+        component_mode_755: "755" # rwx r-x r-x
+        component_mode_770: "770" # rwx rwx ---
+        debug_flag: "--no-debug"
+
+    - name: Put institutions.yaml from environment
+      template: src={{ inventory_dir }}/files/stepup-azuremfa/institutions.yaml.j2 dest={{ component_dir_name }}/config/packages/institutions.yaml mode={{ component_mode_640 }} group={{ component_group }}
+
+    - name: Clear and warmup cache
+      command: "/usr/bin/php72 ./bin/console cache:clear --env=prod {{ debug_flag }}"
+      args:
+        chdir: "{{ component_dir_name }}"
+      when: not (develop | default(false))
+
+    - name: Set stepup directory rights
+      file: path={{ component_dir_name }} state=directory group={{ component_group }} mode={{ component_mode_755 }}
+      when: not (develop | default(false))
+
+    - name: Restrict var and config dirs to the application
+      file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
+      with_items:
+        - "{{ component_dir_name }}/config"
+        - "{{ component_dir_name }}/var"
+      when: not (develop | default(false))
+
+    - name: Grant app write access to cache and log dirs
+      file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
+      with_items:
+        - "{{ component_dir_name }}/var/cache"
+        - "{{ component_dir_name }}/var/logs"
+      when: not (develop | default(false))

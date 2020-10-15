@@ -4,17 +4,9 @@
   tags: stepup-azuremfa-config
 
   tasks:
-    - name: Find path for AzureMFA GSSP
-      find:
-        paths: /opt/www
-        file_type: any
-        recurse: no
-        follow: yes
-        patterns: "azuremfa.*"
-      register: dirs_matched
-
     - set_fact:
-        component_dir_name: "{{ dirs_matched.files[0].path }}"
+        component_dir_name: "/opt/www/{{ azuremfa_vhost_name }}"
+        component_config_file_dir_name: "/opt/www/{{ azuremfa_vhost_name }}/app/files/"
         component_group:  "azuremfa"
         component_mode: "444" # r-- r-- r--
         component_mode_640: "640" # rw- r-- ---

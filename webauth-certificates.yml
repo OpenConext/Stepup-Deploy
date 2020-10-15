@@ -4,17 +4,9 @@
   tags: stepup-webauthn-certificates
 
   tasks:
-    - name: Find path for webauthn GSSP
-      find:
-        paths: /opt/www
-        file_type: any
-        recurse: no
-        follow: yes
-        patterns: "webauthn.*"
-      register: dirs_matched
-
     - set_fact:
-        component_config_file_dir_name: "{{ dirs_matched.files[0].path }}/app/files/"
+        component_dir_name: "/opt/www/{{ webauthn_vhost_name }}"
+        component_config_file_dir_name: "/opt/www/{{ webauthn_vhost_name }}/app/files/"
         component_group:  "webauthn"
         component_mode: "444" # r-- r-- r--
 

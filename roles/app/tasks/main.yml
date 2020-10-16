@@ -90,15 +90,7 @@
     notify:
       - restart php-fpm
 
-  # Remove php-fpm default distro conf files
-  - name: Remove known default distro files in /etc/php-fpm.d/
-    file: path={{item}} state=absent
-    with_items:
-      - /etc/php-fpm.d/www.conf
-    notify:
-      - restart php-fpm
-
-  # Add empty www.conf to prevent this file being created on php-fpm OS-updates
+  # Place empty www.conf to prevent this file being created on php-fpm OS-updates
   - name: Add empty www.conf in /etc/php-fpm.d/
     copy: src='www.conf' dest='/etc/php-fpm.d/www.conf'
     notify:
@@ -140,15 +132,8 @@
       notify:
         - restart php72-php-fpm
 
-    - name: Remove known default distro files in /etc/opt/remi/php72/php-fpm.d/
-      file: path={{item}} state=absent
-      with_items:
-        - /etc/opt/remi/php72/php-fpm.d/www.conf
-      notify:
-        - restart php72-php-fpm
-
-    # Add empty www.conf to prevent this file being created on php-fpm OS-updates
-    - name: Add empty www.conf in /etc/opt/remi/php72/php-fpm.d/www.conf 
+    # Place empty www.conf to prevent this file being created on php-fpm OS-updates
+    - name: Add empty www.conf in /etc/opt/remi/php72/php-fpm.d/www.conf
       copy: src='www.conf' dest='/etc/opt/remi/php72/php-fpm.d/www.conf'
       notify:
         - restart php-fpm

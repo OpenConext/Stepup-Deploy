@@ -136,7 +136,7 @@
     - name: Add empty www.conf in /etc/opt/remi/php72/php-fpm.d/www.conf
       copy: src='www.conf' dest='/etc/opt/remi/php72/php-fpm.d/www.conf'
       notify:
-        - restart php-fpm
+        - restart php72-php-fpm
 
     - name: Put /etc/opt/remi/php72/php-fpm.conf
       copy: src='php72-php-fpm.conf' dest='/etc/opt/remi/php72/php-fpm.conf'

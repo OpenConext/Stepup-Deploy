@@ -1,11 +1,15 @@
 # group_vars/all: Variables visible in all roles
 
-# The "create_new_environment.sh" script generates a key in {{ inventory_dir }}/stepup-ansible-keystore
+
+# When using keyczar, the "create_new_environment.sh" script generates a key in {{ inventory_dir }}/stepup-ansible-keystore
 # You can move the keydir to another location. When you do, update vault_keydir below
 # Location of the keystore directory on the deploy host
-#vault_keydir: "~/stepup-staging-ansible-keystore"
-vault_keydir: "{{ inventory_dir }}/stepup-ansible-keystore"
-
+#vault_keydir: "{{ inventory_dir }}/stepup-ansible-keystore"
+#
+# Set this to the empty string when using plaintext secrets, or when using secrets that were encrypted using ansible-vault
+# When using ansible-vault the vault password must me prrovided using the command line, e.g. using:
+# --vault-password-file=<environment dir>/stepup-ansible-vault-password
+vault_keydir: ""
 
 # Directory for keeping files on the remote host for use
 # by the playbook

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Usage: {{ foo | vault(path to keystore) }}
+# Usage: {{ foo | vault(path to keystore or path to Ansible vault password file) }}
 #        {{ foo | sha256 }}
 #        {{ foo | depem }}
 
@@ -22,7 +22,16 @@
 
 # Compatible with python2 and python3, but for python2 use python-keyczar and for python3 use python3-keyczar
 def vault(encrypted, keydir):
-  #keydir = "~/.stepup-ansible-keystore"
+
+  if not keydir:
+    # The keydir variable is empty. Assume we are not using keyczar i.e.:
+    # - We are using Ansible Vault, which would have already decrypted the string at this point, or
+    # - Passwords are stored plaintext
+
+    # The vault filter is a no-op in this case
+    return encrypted
+
+# Assume the string is encrypted using keyczar
   method = """
 from keyczar import keyczar
 import os.path

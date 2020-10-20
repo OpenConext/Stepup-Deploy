@@ -1,15 +1,15 @@
 ---
-# Drop middleware and gateway databases
+# Test vault filter by showing the decrypted mariadb_root_password
 
-- name: Drop middleware and gateway databases
+- name: Test vault filter by showing the decrypted mariadb_root_password
   hosts: all
 
   tasks:
   - name: Keydir
     debug: msg="vault_keydir = {{ vault_keydir }}"
 
-  - name: Encrypted
+  - name: Encrypted (only when using Keyczar)
     debug: msg="Encrypted mariadb_root_password = {{ mariadb_root_password }}"
 
-  - name: Test vault
+  - name: Test vault filter
     debug: msg="Decrypted mariadb_root_password = {{ mariadb_root_password | vault(vault_keydir) }}"

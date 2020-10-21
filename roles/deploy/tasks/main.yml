@@ -287,12 +287,19 @@
   # - use SF 4 extension (yaml)
   # - use config/legacy config location. Fix this in the stepup-webauthn role as well
   # - find a way to provide defaults for composer install
-  - name: Stepup-Webauthn parameters.yml fix
+  #
+  # For now: always copy parameters.yml.dist to parameter.yml in dev mode
+  - name: Copy dist files
     copy:
-      src: "{{ component_dir_name }}/config/packages/parameters.yml.dist"
-      dest: "{{ component_dir_name }}/config/packages/parameters.yml"
+      src: "{{ component_dir_name }}{{ item }}.dist"
+      dest: "{{ component_dir_name }}{{ item }}"
       remote_src: yes
-    when: component_name == "webauthn"
+    with_items:
+    - /config/packages/parameters.yml
+    - /app/config/parameters.yml
+    - /app/config/global_view_parameters.yml
+    - /app/config/samlstepupproviders_parameters.yml
+    ignore_errors: True
 
   # TODO: Fix this
   # There is no zip extension in the REMI php72 repo from centos7

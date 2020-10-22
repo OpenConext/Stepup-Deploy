@@ -12,15 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Usage: {{ foo | vault(path to keystore or path to Ansible vault password file) }}
+
+# Custom filter plugins
+#
+# Usage: {{ foo | vault(path to keystore or empty string when using ansible-vault or not using encryption) }}
 #        {{ foo | sha256 }}
 #        {{ foo | depem }}
-
 # vault: decrypt string using key stored in keyczar vault.
 # sha256: return hex encoded SHA-256 hash of string
 # depem: Strip PEM headers and remove all whitespace from string
 
-# Compatible with python2 and python3, but for python2 use python-keyczar and for python3 use python3-keyczar
+
+# vault filter
+# ------------
+#
+# When the keydir argument is set to an empty string, the "encrypted" value is returned and keyczar is
+# not invoked. Use this when using ansible-vault or when not using encryption.
+# This function is vompatible with both python2 and python3. When using keyczar the python keyzar module is required:
+# - for python2 install python-keyczar
+# - for python3 install python3-keyczar
 def vault(encrypted, keydir):
 
   if not keydir:
@@ -46,11 +56,26 @@ sys.stdout.write(crypter.Decrypt("%s"))
   return check_output([sys.executable, "-c", method], universal_newlines=True)
 
 
+# sha256 filter
+# -------------
+#
+# Calculate hex encoded sha256 checksum of "data"
+#
 # Compatible with python2 and python3
 def sha256s(data):
   import hashlib
   return hashlib.sha256(data.encode('utf-8')).hexdigest()
 
+
+# depem filter
+# -------------
+#
+# Remove PEM headers and whitespace from a PEM encoded object like a X.509 certificate or private key
+# leaving just the base64 encoded part without any whitespace
+#
+# This filter can be used to convert a PEM encoded X.509 certificate to the base64 representation used
+# in SAML Metadata
+#
 # Compatible with python2 and python3
 def depem(string):
   import re

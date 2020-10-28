@@ -37,8 +37,8 @@
 ## Composer ##
 
 # Install systemwide composer in /usr/local/bin
-- name: Download /usr/local/bin/composer from https://getcomposer.org/composer-stable.phar
-  get_url: url=https://getcomposer.org/composer-stable.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
+- name: Download version 1.10.16 /usr/local/bin/composer from https://getcomposer.org/composer-stable.phar
+  get_url: url=https://getcomposer.org/download/1.10.16/composer.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
 
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550

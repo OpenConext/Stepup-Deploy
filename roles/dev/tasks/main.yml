@@ -27,6 +27,8 @@
       # xdebug, the PHP debug extension
       - php-pecl-xdebug
       - php72-php-pecl-xdebug
+
+      - php72-php-pecl-zip
       # telnet client
       - telnet
     state: present

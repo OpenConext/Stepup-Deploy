@@ -306,14 +306,6 @@
     - /app/config/samlstepupproviders.yml
     ignore_errors: True
 
-  # TODO: Fix this
-  # There is no zip extension in the REMI php72 repo from centos7
-  # Disable platform requirements checking to work around this
-  - name: DEVELOP - Stepup-Azure-MFA ext-zip requirement fix
-    set_fact:
-      deploy_ignore_platform_reqs: "--ignore-platform-reqs"
-    when: component_name == "azuremfa"
-
   # The {{ set_nvm_nodejs_version_cmd }} is added for Tiqr versions that run encore during composer install
   - name: DEVELOP -  Composer install
     shell: "{{ set_nvm_nodejs_version_cmd }} && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }} {{ deploy_ignore_platform_reqs }}"

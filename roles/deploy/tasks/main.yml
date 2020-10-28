@@ -83,21 +83,25 @@
     group:
       name: "{{ component_name }}"
       state: present
+    when: not configonly | bool
 
   - name: Ensure user exists
     user:
       name: "{{ component_name }}"
       state: present
+    when: not configonly | bool
 
   - name: Create stepup directory
     file: path={{ component_dir_name }} state=directory group={{ component_name }} mode=755
+    when: not configonly | bool
 
   - name: Untar component
     unarchive: copy=yes src={{ component_tarball_name }} dest={{ component_dir_name }} group={{ component_name }}
-    when: component_unarchive | bool | default(true)
+    when: component_unarchive | bool | default(true) and not configonly | bool
 
   - name: Remove group and world write
     file: dest={{ component_dir_name }} group={{ component_name }} recurse=yes mode="g-w,o-w"
+    when: not configonly | bool
 
   - name: Set debug, mode, owner and group for production
     set_fact:
@@ -219,7 +223,7 @@
   with_items:
   - parameters
   - institutions
-  when: component_name == "azuremfa"
+  when: component_name == "azuremfa" and not configonly | bool
 
 - block:
 # DEVELOP
@@ -241,13 +245,13 @@
 
   # The dev role installed nvm (node version manager) for nodejs
   # Read the NODE_VERSION form component_info (if any)
-  - name: Fetch nodejs version from component_info
+  - name: DEVELOP - Fetch nodejs version from component_info
     set_fact:
       component_info_node_version: "{{ component_info.content | b64decode | regex_search('NODE_VERSION=(.*)', '\\1' ) }}"
       component_info_encore: "{{ component_info.content | b64decode | regex_search('ENCORE=(.*)', '\\1' ) }}"
     when: not component_info.failed
 
-  - name: Set nodejs version from component_info
+  - name: DEVELOP - Set nodejs version from component_info
     set_fact:
       deploy_node_version: "{{ (component_info_node_version | length > 0) | ternary(component_info_node_version[0], deploy_node_version) }}"
       deploy_encore: "{{ (component_info_encore | length > 0) | ternary(component_info_encore[0], deploy_encore) }}"
@@ -255,11 +259,11 @@
 
   # A nodejs version other than 10 is only used for running encore. Encore is needed during develop deploy
   # from source only.
-  - name: Nodejs version and encore
+  - name: DEVELOP - Nodejs version and encore
     debug:
       msg: "deploy_node_version={{ deploy_node_version }}; deploy_encore={{ deploy_encore }}"
 
-  - name: Set NVM command
+  - name: DEVELOP - Set NVM command
     set_fact:
       set_nvm_nodejs_version_cmd: "source /root/.nvm/nvm.sh && nvm use {{ deploy_node_version }}"
 
@@ -289,7 +293,7 @@
   # - find a way to provide defaults for composer install
   #
   # For now: always copy parameters.yml.dist to parameter.yml in dev mode
-  - name: Copy dist files
+  - name: DEVELOP - Copy dist files
     copy:
       src: "{{ component_dir_name }}{{ item }}.dist"
       dest: "{{ component_dir_name }}{{ item }}"
@@ -305,25 +309,25 @@
   # TODO: Fix this
   # There is no zip extension in the REMI php72 repo from centos7
   # Disable platform requirements checking to work around this
-  - name: Stepup-Azure-MFA ext-zip requirement fix
+  - name: DEVELOP - Stepup-Azure-MFA ext-zip requirement fix
     set_fact:
       deploy_ignore_platform_reqs: "--ignore-platform-reqs"
     when: component_name == "azuremfa"
 
   # The {{ set_nvm_nodejs_version_cmd }} is added for Tiqr versions that run encore during composer install
-  - name: DEVELOP - Composer install
+  - name: DEVELOP -  Composer install
     shell: "{{ set_nvm_nodejs_version_cmd }} && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }} {{ deploy_ignore_platform_reqs }}"
 
   # Run "yarn install && yarn encore dev" for those components that require it
   # Note: this takes a long time
-  - name: DEVELOP - Run yarn install and yarn encore dev
+  - name: DEVELOP -  Run yarn install and yarn encore dev
     shell: "{{ set_nvm_nodejs_version_cmd }} && yarn install && yarn encore dev"
     args:
       chdir: "{{ component_dir_name }}"
     when: deploy_encore
 
   # Rebuild cache
-  - name: DEVELOP - Clear cache (/app/console)
+  - name: DEVELOP -  Clear cache (/app/console)
     shell: "{{ php_cli }} {{ component_dir_name }}/{{ console }} cache:clear --env=prod --no-warmup"
 
   # In a develop deploy the components are installed from source in the Stepup-VM. The sources are
@@ -357,7 +361,7 @@
     copy: remote_src=true src={{ component_dir_name }}/app_test.php.dist dest={{ component_dir_name }}/web/app_test.php
     when: deploy_symfony_3 and component_name not in ["tiqr", "keyserver"]
 
-  when: develop | default(false)
+  when: develop | default(false) and not configonly | bool
 
 
 - name: Ensure component config direcories exist

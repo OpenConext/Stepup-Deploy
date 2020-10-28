@@ -17,3 +17,4 @@
 
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_vhost_name }} state=link
+  when: not component_info.failed

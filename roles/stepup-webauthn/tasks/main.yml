@@ -55,9 +55,9 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-webauthn-db_init.sh"
-  when: not component_info.failed
+  when: not configonly | bool
 
 - name: Show database configuration hint
   debug:
     msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-webauthn-db_init.sh' on an app server."
-  when: not component_info.failed
+  when: not configonly | bool

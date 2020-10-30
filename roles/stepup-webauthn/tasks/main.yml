@@ -28,6 +28,7 @@
     state: directory
     group: "{{ component_group }}"
     mode: "{{ component_mode_755 }}"
+  when: not configonly | bool
 
 - name: Copy trusted certificates
   copy: src={{ item }} dest={{ component_config_file_dir_name }}/trusted_certificates/ mode={{ component_mode_444 }} group={{ component_group }}

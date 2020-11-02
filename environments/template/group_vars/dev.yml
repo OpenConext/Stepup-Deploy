@@ -58,6 +58,14 @@ stepup_enabled_generic_second_factors:
   demo_gssp_2:
     loa: 3
 
+second_factors_display_name:
+  yubikey: Yubikey
+  azuremfa: AzureMFA
+  webauthn: WebAuthn
+  tiqr: Tiqr
+  demo_gssp: GSSP Demo
+  demo_gssp_2: GSSP Demo 2
+
 # Skip the prove token possession step
 skip_prove_possession_second_factors:
   - gssp-2

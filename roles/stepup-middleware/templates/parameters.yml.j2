@@ -54,6 +54,11 @@ parameters:
         loa: {{ value.loa }}
 {% endfor %}
 
+    second_factors_display_name:
+{% for key, value in second_factors_display_name.items() %}
+      {{ key }}: {{ value }}
+{% endfor %}
+
     # Sets the number of tokens allowed for each identity.
     #
     # This is the global, application wide default. This configuration should be specified for each institution in the

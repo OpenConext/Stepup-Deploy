@@ -43,7 +43,7 @@ ENVIRONMENT_DIR=$1
 shift
 
 if [ ! -d ${ENVIRONMENT_DIR} ]; then
-    error_exit "Environment directory not found"
+    error_exit "Environment directory '${ENVIRONMENT_DIR}' not found"
 fi
 ENVIRONMENT_DIR=`realpath ${ENVIRONMENT_DIR}`
 echo ""
@@ -81,10 +81,10 @@ esac
 done
 
 if [ ! -d ${KEYCZAR_DIR} ]; then
-    error_exit "Keyczar directory not found"
+    error_exit "Keyczar directory '${KEYCZAR_DIR}' not found"
 fi
 if [ ! -f ${VAULT_PASSWORD_FILE} ]; then
-    error_exit "Ansible vault password file not found"
+    error_exit "Ansible vault password file '${VAULT_PASSWORD_FILE}' not found"
 fi
 
 echo "Using keyczar directory: ${KEYCZAR_DIR}"

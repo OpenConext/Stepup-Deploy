@@ -1,5 +1,15 @@
 # Install selfservice component
 
+
+- name: Write Remote Vetting IdP certificate
+  copy:
+    content: "{{ ss_remote_vetting_idps[item].certificate }}"
+    dest: "{{ component_config_file_dir_name }}/{{ item }}}_sp.crt"
+    owner: "{{ component_owner }}"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_400 }}"
+  with_items: "{{ ss_remote_vetting_idps.keys() }}"
+
 - name: Put parameters, samlstepupproviders, samlstepupproviders_parameters and global_view_parameters YAML config
   template:
     src: "{{ item }}.yml.j2"
@@ -59,6 +69,29 @@
 - name: Write GSSP SP certificate
   copy: content="{{ selfservice_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
 
+- name: Write Remote Vetting SP private key
+  copy: content="{{ selfservice_remote_vetting_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_config_file_dir_name }}/remote_vetting_sp.key owner={{ component_owner }} group={{ component_group }} mode={{ component_mode_400 }}
+
+- name: Write Remote Vetting SP certificate
+  copy: content="{{ selfservice_remote_vetting_sp_publickey }}" dest={{ component_config_file_dir_name }}/remote_vetting_sp.crt group={{ component_group }} mode={{ component_mode_640 }}
+
+
+- name: Write Remote Vetting IdP certificates
+  copy:
+    content: "{{ ss_remote_vetting_idps[item].certificate }}"
+    dest: "{{ component_config_file_dir_name }}/{{ item }}_sp.crt"
+    owner: "{{ component_owner }}"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
+  with_items: "{{ ss_remote_vetting_idps.keys() }}"
+
+- name: Create directory for storing encrypted matching results
+  file:
+    path: /opt/remote-vetting-log
+    state: directory
+    mode: "{{ component_mode_750 }}"
+    owner: "{{ component_owner }}"
+    group: "{{ component_group }}"
 
 - name: Activate selfservice component
   include_role:

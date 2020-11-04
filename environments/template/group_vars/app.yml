@@ -155,7 +155,7 @@ app_symfony_3_components:
 - stepup-gateway
 - stepup-selfservice
 #- stepup-ra
-- stepup-tiqr
+#- stepup-tiqr
 - stepup-keyserver
 
 

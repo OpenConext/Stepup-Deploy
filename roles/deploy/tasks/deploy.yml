@@ -13,19 +13,21 @@
   command: "{{ php_cli }} {{ console }} assets:install --symlink --env=prod {{ debug_flag }}"
   args:
     chdir: "{{ component_dir_name }}"
+  when: not configonly | bool
+
 
 - name: Run mopa:bootstrap:symlink:less for SF3 gateway, selfservice, ra and tiqr
   command: "{{ php_cli }} {{ console }} mopa:bootstrap:symlink:less --env=prod {{ debug_flag }}"
   args:
       chdir: "{{ component_dir_name }}"
   # Make conditional on deploy_assetic as well?
-  when: deploy_symfony_3 and component_name in ['gateway', 'selfservice', 'ra']
+  when: deploy_symfony_3 and component_name in ['gateway', 'selfservice', 'ra'] and not configonly | bool
 
 - name: Dump Assetic Assets
   command: "{{ php_cli }} {{ console }} assetic:dump --env=prod {{ debug_flag }}"
   args:
     chdir: "{{ component_dir_name }}"
-  when: deploy_assetic
+  when: deploy_assetic and not configonly | bool
 
 - name: Clear and warmup cache
   command: "{{ php_cli }} {{ console }} cache:clear --env=prod {{ debug_flag }}"

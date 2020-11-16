@@ -28,6 +28,7 @@
     state: directory
     group: "{{ component_group }}"
     mode: "{{ component_mode_755 }}"
+  when: not configonly | bool
 
 - name: Copy trusted certificates
   copy: src={{ item }} dest={{ component_config_file_dir_name }}/trusted_certificates/ mode={{ component_mode_444 }} group={{ component_group }}
@@ -55,7 +56,9 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-webauthn-db_init.sh"
+  when: not configonly | bool
 
 - name: Show database configuration hint
   debug:
     msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-webauthn-db_init.sh' on an app server."
+  when: not configonly | bool

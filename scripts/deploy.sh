@@ -3,6 +3,7 @@
 CWD=`pwd`
 BASEDIR=`dirname $0`
 COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "Stepup-Webauthn" "oath-service-php" "Stepup-Azure-MFA")
+CONFIG_ONLY_COMPONENTS=("Stepup-Webauthn" "Stepup-Azure-MFA")
 UNARCHIVE=1
 CONFIGONLY=0
 VERBOSE=0
@@ -49,7 +50,7 @@ if [ -z "${COMPONENT_TARBALL}"  ]; then
     echo "-l|--limit: <SUBSET>   Limit option to pass to ansible (limits hosts)"
     echo "-K|--ask-sudo-pass     Ask for sudo password"
     echo "-n|--no-unarchive      Skip uploading and unarchiving the tarball on the remote"
-    echo "-c|--config-only       Only update the components configuration files (only for AzureMFA-gssp and WebAuthn-gssp)"
+    echo "-c|--config-only       Only update the components configuration files (only for: ${CONFIG_ONLY_COMPONENTS[*]})"
     echo "-v|--verbose           Pass \"-vvvv\" verbosity to ansible"
     echo "Supported components: ${COMPONENTS[*]}"
     exit 1;
@@ -113,6 +114,13 @@ for comp in "${COMPONENTS[@]}"; do
 done
 if [ "$found" -ne "1" ]; then
     error_exit "Tarball to deploy must end in .tar.bz2 and start with one of: ${COMPONENTS[*]}"
+fi
+
+#If -c is set, and componet does not support -c, error here
+if [ ${CONFIGONLY} -eq "1" ]; then
+  if [[ ! "${CONFIG_ONLY_COMPONENTS[@]}" =~ "${COMPONENT}" ]]; then
+    error_exit "${COMPONENT} does not support -c|--config-only"
+  fi
 fi
 
 # Get absolute path to component tarball

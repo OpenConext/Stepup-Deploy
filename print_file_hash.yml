@@ -1,6 +1,7 @@
 ---
 
-- stat:
+- name: get filepath
+  stat:
     path: "{{ file_path }}"
     checksum_algorithm: sha256
     get_checksum: yes

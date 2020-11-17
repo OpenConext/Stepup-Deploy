@@ -1,7 +1,11 @@
 # Infra stuff for key server
 
 - name: Put parameters.yml
-  template: src=parameters.yml.j2 dest={{ component_config_dir_name }}/parameters.{{component_config_yaml_extension}} mode={{ component_mode_640 }} group={{ component_group }}
+  template:
+    src: parameters.yml.j2
+    dest: "{{ component_config_dir_name }}/parameters.{{ component_config_yaml_extension }}"
+    mode: "{{ component_mode_640 }}"
+    group: "{{ component_group }}"
 
 
 # Include ../../deploy/deploy.yml
@@ -19,6 +23,11 @@
 
 
 - name: Put keyserver configuration script in /root/
-  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/root/{{ item }}"
+    group: root
+    owner: root
+    mode: 0500
   with_items:
   - "01-keyserver-db_init.sh"

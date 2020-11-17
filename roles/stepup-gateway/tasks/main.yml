@@ -21,14 +21,22 @@
 
 
 - name: Put images from <env>/files/stepup-app into web/images
-  copy: src={{ item }} dest={{ component_dir_name }}/web/images mode=444 group={{ component_group }}
+  copy:
+    src: "{{ item }}"
+    dest: "{{ component_dir_name }}/web/images"
+    mode: 0444
+    group: "{{ component_group }}"
   with_fileglob:
-  - "{{inventory_dir }}/files/stepup-app/images/*"
+  - "{{ inventory_dir }}/files/stepup-app/images/*"
 
 - name: Put images from <env>/files/stepup-app/second-factor into web/images/second-factor
-  copy: src={{ item }} dest={{ component_dir_name }}/web/images/second-factor mode={{ component_mode_444 }} group={{ component_group }}
+  copy:
+    src: "{{ item }}"
+    dest: "{{ component_dir_name }}/web/images/second-factor"
+    mode: "{{ component_mode_444 }}"
+    group: "{{ component_group }}"
   with_fileglob:
-  - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
+  - "{{ inventory_dir }}/files/stepup-app/images/second-factor/*"
 
 # Write the SAML certificates and the corresponding private keys of the gateway
 # The Gateway is a SAML proxy that has multiple IdP and SP Entities
@@ -42,48 +50,90 @@
 # signing the SAML Responses from the corresponding entity
 
 - name: Write SAML SP private key
-  copy: content="{{ gateway_saml_sp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/sp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy:
+    content: "{{ gateway_saml_sp_privatekey | vault(vault_keydir) }}"
+    dest: "{{ component_config_file_dir_name }}/sp.key"
+    owner: "{{ component_owner }}"
+    mode: "{{ component_mode_400 }}"
 
 - name: Write SAML SP certificate
-  copy: content="{{ gateway_saml_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp.crt group={{ component_group }} mode={{ component_mode_640 }}
-
+  copy:
+    content: "{{ gateway_saml_sp_publickey }}"
+    dest: "{{ component_config_file_dir_name }}/sp.crt"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
 
 - name: Write GSSP SP private key
-  copy: content="{{ gateway_gssp_sp_privatekey | vault(vault_keydir)  }}" dest={{ component_config_file_dir_name }}/sp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy:
+    content: "{{ gateway_gssp_sp_privatekey | vault(vault_keydir) }}"
+    dest: "{{ component_config_file_dir_name }}/sp_gssp.key"
+    owner: "{{ component_owner }}"
+    mode: "{{ component_mode_400 }}"
 
 - name: Write GSSP SP certificate
-  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/sp_gssp.crt  group={{ component_group }} mode={{ component_mode_640 }}
-
+  copy:
+    content: "{{ gateway_gssp_sp_publickey }}"
+    dest: "{{ component_config_file_dir_name }}/sp_gssp.crt"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
 
 - name: Write SAML IdP private key
-  copy: content="{{ gateway_saml_idp_privatekey | vault(vault_keydir)  }}" dest={{ component_config_file_dir_name }}/idp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy:
+    content: "{{ gateway_saml_idp_privatekey | vault(vault_keydir) }}"
+    dest: "{{ component_config_file_dir_name }}/idp.key"
+    owner: "{{ component_owner }}"
+    mode: "{{ component_mode_400 }}"
 
 - name: Write SAML IdP certificate
-  copy: content="{{ gateway_saml_idp_publickey }}" dest={{ component_config_file_dir_name }}//idp.crt group={{ component_group }} mode={{ component_mode_640 }}
-
+  copy:
+    content: "{{ gateway_saml_idp_publickey }}"
+    dest: "{{ component_config_file_dir_name }}/idp.crt"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
 
 - name: Write GSSP IdP private key
-  copy: content="{{ gateway_gssp_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/idp_gssp.key owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy:
+    content: "{{ gateway_gssp_idp_privatekey | vault(vault_keydir) }}"
+    dest: "{{ component_config_file_dir_name }}/idp_gssp.key"
+    owner: "{{ component_owner }}"
+    mode: "{{ component_mode_400 }}"
 
 - name: Write GSSP IdP certificate
-  copy: content="{{ gateway_gssp_idp_publickey }}" dest={{ component_config_file_dir_name }}/idp_gssp.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy:
+    content: "{{ gateway_gssp_idp_publickey }}"
+    dest: "{{ component_config_file_dir_name }}/idp_gssp.crt"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
 
 
 # U2F support for facets:
 - name: Set U2F app-id directory rights
-  file: path={{ component_dir_name }}/web/u2f state=directory group={{ component_group }} mode={{ component_mode_755 }}
+  file:
+    path: "{{ component_dir_name }}/web/u2f"
+    state: directory
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_755 }}"
 
 - name: Put facet ids
-  template: src=app-id.json.j2 dest={{ component_dir_name }}/web/u2f/app-id group={{ component_group }} mode={{ component_mode_644 }}
+  template:
+    src: app-id.json.j2
+    dest: "{{ component_dir_name }}/web/u2f/app-id"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_644 }}"
 
 
 - name: Put gateway database db_migrate scripts in /root/
-  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/root/{{ item }}"
+    group: root
+    owner: root
+    mode: 0500
   with_items:
   - "01-gateway-db_migrate.sh"
 
 
-- name: Actiavte gateway component
+- name: Activate gateway component
   include_role:
     name: deploy
     tasks_from: activate

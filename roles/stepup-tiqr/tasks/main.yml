@@ -1,4 +1,3 @@
----
 # Install tiqr component
 # TODO: Test!
 
@@ -13,9 +12,13 @@
 
 
 - name: Put images from <env>/files/stepup-app into web/images
-  copy: src={{ item }} dest={{ component_dir_name }}/web/images mode={{ component_mode_444 }} group={{ component_group }}
+  copy:
+    src: "{{ item }}"
+    dest: "{{ component_dir_name }}/web/images"
+    mode: "{{ component_mode_444 }}"
+    group: "{{ component_group }}"
   with_fileglob:
-  - "{{inventory_dir }}/files/stepup-app/images/*"
+  - "{{ inventory_dir }}/files/stepup-app/images/*"
 
 
 # Deploy does change file rights in config, so run deploy first, then write files
@@ -26,18 +29,34 @@
 
 
 - name: Write tiqr APNS certificate
-  copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/apns.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy:
+    content: "{{ tiqr_apns_pemfile | vault(vault_keydir) }}"
+    dest: "{{ component_config_file_dir_name }}/apns.pem"
+    owner: "{{ component_owner }}"
+    mode: "{{ component_mode_400 }}"
   when: tiqr_apns_pemfile is defined
 
 # TODO: Put cert in config. Hint: {{ gateway_tiqr_sp_publickey | depem }}
 - name: Write tiqr sp certificate
-  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
+  copy:
+    content: "{{ gateway_gssp_sp_publickey }}"
+    dest: "{{ component_config_file_dir_name }}/gateway.crt"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
 
 - name: Write tiqr idp certificate
-  copy: content="{{ tiqr_idp_publickey }}" dest={{ component_config_file_dir_name }}/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
+  copy:
+    content: "{{ tiqr_idp_publickey }}"
+    dest: "{{ component_config_file_dir_name }}/cert.pem"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
 
 - name: Write tiqr idp private key
-  copy: content="{{ tiqr_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+  copy:
+    content: "{{ tiqr_idp_privatekey | vault(vault_keydir) }}"
+    dest: "{{ component_config_file_dir_name }}/key.pem"
+    owner: "{{ component_owner }}"
+    mode: "{{ component_mode_400 }}"
 
 
 - name: Activate tiqr component
@@ -47,7 +66,12 @@
 
 
 - name: Put tiqr configuration script in /root/
-  template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
+  template:
+    src: "{{ item }}.j2"
+    dest: "/root/{{ item }}"
+    group: root
+    owner: root
+    mode: 0500
   with_items:
   - "01-tiqr-db_init.sh"
 

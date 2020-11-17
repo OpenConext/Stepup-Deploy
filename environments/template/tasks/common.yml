@@ -3,16 +3,22 @@
 # Note: adding notify to tasks in this file does not work, the handler will not be called
 
 - name: Disallow SSH root login
-  lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin\s" line="PermitRootLogin no"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin\s'
+    line: "PermitRootLogin no"
   tags: skip_docker_test
   register: ssh_result
 
   # In lieu of using a handler, restart sshd when the previous task changed
 - name: restart sshd
-  service: name=sshd state=restarted
+  service:
+    name: sshd
+    state: restarted
   when: ssh_result.changed
 
-
 - name: Set MOTD
-  template: src={{ inventory_dir + '/templates/common/motd.j2' }} dest=/etc/motd
+  template:
+    src: "{{ inventory_dir + '/templates/common/motd.j2' }}"
+    dest: /etc/motd
   tags: motd

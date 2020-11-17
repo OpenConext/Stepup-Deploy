@@ -36,10 +36,18 @@
 
 # Install systemwide composer in /usr/local/bin
 - name: Download /usr/local/bin/composer from https://getcomposer.org/composer-stable.phar
-  get_url: url=https://getcomposer.org/composer-stable.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
+  get_url:
+    url: "https://getcomposer.org/composer-stable.phar"
+    dest: /usr/local/bin/composer
+    mode: 0555
+    owner: root
+    group: root
 
 - name: Put /etc/rc.d/rc.local
-  copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
+  copy:
+    src: rc.local
+    dest: /etc/rc.d/rc.local
+    mode: 0550
 
 
 ## Nodejs / NPM / Yarn stack ##
@@ -89,11 +97,15 @@
 # Enable remote debugging with connect back to client @ port 9000
 
 - name: Put /etc/php.d/15-xdebug.ini
-  template: src=15-xdebug.ini.j2 dest=/etc/php.d/15-xdebug.ini
+  template:
+    src: 15-xdebug.ini.j2
+    dest: /etc/php.d/15-xdebug.ini
   notify: Restart php-fpm
 
 - name: Put xdebug.ini
-  template: src=15-xdebug.ini.j2 dest=/etc/php.d/xdebug.ini
+  template:
+    src: 15-xdebug.ini.j2
+    dest: /etc/php.d/xdebug.ini
   notify: Restart php-fpm
 
 ## Mailcatcher ##
@@ -105,17 +117,27 @@
 
 # Create user and group for running the mailcatcher daemon
 - name: Add group mailcatcher
-  group: name=mailcatcher state=present
+  group:
+    name: mailcatcher
+    state: present
 
 - name: Add user mailcatcher
-  user: name=mailcatcher group=mailcatcher createhome=yes state=present
+  user:
+    name: mailcatcher
+    group: mailcatcher
+    createhome: yes
+    state: present
 
 - name: Run mailcatcher as service
-  template: src=mailcatcher.service.j2 dest=/usr/lib/systemd/system/mailcatcher.service
+  template:
+    src: mailcatcher.service.j2
+    dest: /usr/lib/systemd/system/mailcatcher.service
 
 - name: Start and enable mailcatcher service
-  service: name=mailcatcher state=started enabled=true
-
+  service:
+    name: mailcatcher
+    state: started
+    enabled: true
 
 ## Maria DB ##
 
@@ -128,14 +150,22 @@
 # "mysql bootstrap" when the VM is started
 
 - name: Disable MariaDB (mysql) service on boot.
-  service: name=mysql enabled=false
+  service:
+    name: mysql
+    enabled: false
 
 # Bootstrap Mysql Galera cluster on boot
 - name: Put /root/bootstrap_mysql_galera.sh
-  copy: src=bootstrap_mysql_galera.sh dest=/root/bootstrap_mysql_galera.sh mode=550
+  copy:
+    src: bootstrap_mysql_galera.sh
+    dest: /root/bootstrap_mysql_galera.sh
+    mode: 0550
 
 - name: Put /etc/rc.d/rc.local
-  copy: src=rc.local dest=/etc/rc.d/rc.local mode=550
+  copy:
+    src: rc.local
+    dest: /etc/rc.d/rc.local
+    mode: 0550
 
 
 ## SSP ##
@@ -148,10 +178,17 @@
 #   Accessible at https://<ssp_vhost_name>/sp.php
 
 - name: Create SSP tmp directory
-  file: dest=/tmp/simplesaml owner=apache state=directory
+  file:
+    dest: /tmp/simplesaml
+    owner: apache
+    state: directory
 
 - name: Clone SSP repo
-  git: repo={{ ssp_source_repo }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }} version={{ ssp_version }} force=yes
+  git:
+    repo: "{{ ssp_source_repo }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}'
+    version: "{{ ssp_version }}"
+    force: yes
 
 - name: Create config and metadata from templates
   shell: cp -r /usr/local/share/simplesamlphp-{{ ssp_version }}/{{ item }}-templates /usr/local/share/simplesamlphp-{{ ssp_version }}/{{ item }}
@@ -161,7 +198,9 @@
   tags: ssp-config
 
 - name: Create cert dir
-  file: path=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert state=directory
+  file:
+    path: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert'
+    state: directory
 
 - name: Run composer install
   shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install
@@ -174,76 +213,138 @@
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
 - name: Put DebugSP SSP module
-  copy: src=DebugSP dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/
+  copy:
+    src: DebugSP
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/'
 
 - name: Put SSP config
-  template: src={{ item }}.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/config/{{ item }} mode=440 owner=root group=ssp
+  template:
+    src: "{{ item }}.j2"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/config/{{ item }}'
+    mode: 0440
+    owner: root
+    group: ssp
   with_items:
   - accountgen.inc
   - config.php
   - authsources.php
 
 - name: Put SSP attributemap
-  template: src=SURFconext_short_to_urn.php.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/attributemap/SURFconext_short_to_urn.php
+  template:
+    src: SURFconext_short_to_urn.php.j2
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/attributemap/SURFconext_short_to_urn.php'
 
 - name: Put SSP IdP private key
-  copy: content="{{ ssp_idp_privatekey | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.key owner=root group=ssp mode=440
+  copy:
+    content: "{{ ssp_idp_privatekey | vault(vault_keydir) }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.key'
+    owner: root
+    group: ssp
+    mode: 0440
 
 - name: Put SSP IdP cert
-  copy: content="{{ ssp_idp_publickey }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.crt owner=root group=ssp mode=440
+  copy:
+    content: "{{ ssp_idp_publickey }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/idp.crt'
+    owner: root
+    group: ssp
+    mode: 0440
 
 - name: Put SSP SP private key
-  copy: content="{{ ssp_sp_privatekey | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.key owner=root group=ssp mode=440
+  copy:
+    content: "{{ ssp_sp_privatekey | vault(vault_keydir) }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.key'
+    owner: root
+    group: ssp
+    mode: 0440
 
 - name: Put SSP SP cert
-  copy: content="{{ ssp_sp_publickey }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.crt owner=root group=ssp mode=440
+  copy:
+    content: "{{ ssp_sp_publickey }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp.crt'
+    owner: root
+    group: ssp
+    mode: 0440
 
 - name: Put SSP SP2 private key
-  copy: content="{{ ssp_sp2_privatekey | vault(vault_keydir) }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.key owner=root group=ssp mode=440
+  copy:
+    content: "{{ ssp_sp2_privatekey | vault(vault_keydir) }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.key'
+    owner: root
+    group: ssp
+    mode: 0440
 
 - name: Put SSP SP2 cert
-  copy: content="{{ ssp_sp2_publickey }}" dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.crt owner=root group=ssp mode=440
+  copy:
+    content: "{{ ssp_sp2_publickey }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/cert/sp2.crt'
+    owner: root
+    group: ssp
+    mode: 0440
 
 - name: Put SSP metadata's
-  template: src={{ item }}.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/metadata/{{ item }} owner=root group=ssp mode=440
+  template:
+    src: "{{ item }}.j2"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/metadata/{{ item }}'
+    owner: root
+    group: ssp
+    mode: 0440
   with_items:
   - saml20-idp-hosted.php
   - saml20-idp-remote.php
   - saml20-sp-remote.php
 
 - name: Enable SSP modules
-  file: path=/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/{{ item }}/enable state=touch
+  file:
+    path: "/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/{{ item }}/enable"
+    state: touch
   with_items:
   - exampleauth
   - saml2debug
   - DebugSP
 
 - name: Put Test SP
-  copy: src={{ item }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/{{ item }}
+  copy:
+    src: "{{ item }}"
+    dest: '/usr/local/share/simplesamlphp-{{ ssp_version }}/www/{{ item }}'
   with_items:
   - sp.php
   - sp-utils.inc
   tags: testsp
 
 - name: Put Test SP config
-  template: src=sp-config.inc.j2 dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/sp-config.inc
+  template:
+    src: sp-config.inc.j2
+    dest: "/usr/local/share/simplesamlphp-{{ ssp_version }}/www/sp-config.inc"
   tags: testsp
 
 - name: Enable SSP version
-  file: src=/usr/local/share/simplesamlphp-{{ ssp_version }} dest=/usr/local/share/simplesamlphp state=link
+  file:
+    src: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
+    dest: /usr/local/share/simplesamlphp
+    state: link
 
 - name: Create /etc/simplesamlphp
-  file: path=/etc/simplesamlphp state=directory mode=550
+  file:
+    path: /etc/simplesamlphp
+    state: directory
+    mode: 0550
 
 - name: Create /etc/simplesamlphp links to SSP config
-  file: src=/usr/local/share/simplesamlphp/{{ item }} dest=/etc/simplesamlphp/{{ item }} state=link
+  file:
+    src: "/usr/local/share/simplesamlphp/{{ item }}"
+    dest: '/etc/simplesamlphp/{{ item }}'
+    state: link
   with_items:
   - config
   - metadata
   - cert
 
 - name: Enable SSP webapp
-  file: src=/usr/local/share/simplesamlphp/ dest=/opt/www/{{ ssp_vhost_name }} state=link
+  file:
+    src: /usr/local/share/simplesamlphp/
+    dest: '/opt/www/{{ ssp_vhost_name }}'
+    state: link
 
 
 - include: db.yml

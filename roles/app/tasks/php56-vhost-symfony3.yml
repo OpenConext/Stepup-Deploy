@@ -6,10 +6,14 @@
 # The default app simply returns "No application installed for vhost {{ vhost_name }}"
 # For symfony 3 the app location is web/app.php
 - name: Create default app directory for {{ vhost_name }}
-  file: path=/opt/default/{{ vhost_name }}/web/ state=directory
+  file:
+    path: "/opt/default/{{ vhost_name }}/web/"
+    state: directory
 
 - name: Create default /opt/default/{{ vhost_name }}/web/app.php
-  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/web/app.php'
+  template:
+    src: 'httpd-index.php.j2'
+    dest: '/opt/default/{{ vhost_name }}/web/app.php'
 
 
 # Put httpd vhost config
@@ -23,7 +27,9 @@
 
 # Put fpm config for PHP 5.6
 - name: Put php-fpm config for {{ vhost_name  }}
-  template: src='php56-fpm-pool.conf.j2' dest='/etc/php-fpm.d/{{ vhost_name }}.conf'
+  template:
+    src: 'php56-fpm-pool.conf.j2'
+    dest: '/etc/php-fpm.d/{{ vhost_name }}.conf'
   notify:
     - restart php-fpm
 

@@ -3,7 +3,11 @@
 
 # Add test databases for middleware to allow functional testing in development environment
 - name: Create middleware test database
-  mysql_db: name={{ database_middleware_name }}_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  mysql_db:
+    name: "{{ database_middleware_name }}_test"
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Set permissions for middleware test database
   mysql_user:
@@ -28,7 +32,11 @@
 
 # Add test databases for gateway to allow functional testing in development environment
 - name: Create gateway test database
-  mysql_db: name={{ database_gateway_name }}_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  mysql_db:
+    name: "{{ database_gateway_name }}_test"
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Set permissions for gateway test database for gateway user
   mysql_user:
@@ -52,7 +60,11 @@
 
 # Add test databases for tiqr to allow functional testing in development environment
 - name: Create tiqr test database
-  mysql_db: name={{ database_tiqr_name }}_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  mysql_db:
+    name: "{{ database_tiqr_name }}_test"
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Set permissions for gateway test database
   mysql_user:
@@ -68,7 +80,11 @@
 
 # Add test u2f for middleware to allow functional testing in development environment
 - name: Create u2f test database
-  mysql_db: name={{ database_u2f_name }}_test state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  mysql_db:
+    name: "{{ database_u2f_name }}_test"
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Set permissions for gateway test database
   mysql_user:

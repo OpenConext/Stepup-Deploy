@@ -1,5 +1,6 @@
 # Install Webauthn component
 
+
 # TODO: use component_config_dir_name for parameters and use yaml extension
 - name: Put parameters.yaml
   template:
@@ -38,6 +39,7 @@
     state: directory
     group: "{{ component_group }}"
     mode: "{{ component_mode_755 }}"
+  when: not configonly | bool
 
 - name: Copy trusted certificates
   copy:
@@ -86,7 +88,9 @@
     mode: 0500
   with_items:
   - "01-webauthn-db_init.sh"
+  when: not configonly | bool
 
 - name: Show database configuration hint
   debug:
     msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-webauthn-db_init.sh' on an app server."
+  when: not configonly | bool

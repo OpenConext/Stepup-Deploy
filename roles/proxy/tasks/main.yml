@@ -37,7 +37,7 @@
     component_name: tiqr
     proxy_certificate: "{{ proxy_tiqr_certificate }}"
     proxy_key: "{{ proxy_tiqr_key }}"
-  when: "inventory_hostname in groups['stepup-tiqr']"
+  when: "inventory_hostname in groups['stepup-tiqr'] | default([])"
 
 - include: proxy.yml
   vars:
@@ -45,7 +45,7 @@
     component_name: webauthn
     proxy_certificate: "{{ proxy_webauthn_certificate }}"
     proxy_key: "{{ proxy_webauthn_key }}"
-  when: "inventory_hostname in groups['stepup-webauthn']"
+  when: "inventory_hostname in groups['stepup-webauthn'] | default([])"
 
 # TODO: adapt so that TLS terminates on key server instead of proxy/LB
 - include: proxy.yml
@@ -54,7 +54,7 @@
     component_name: keyserver
     proxy_certificate: "{{ proxy_keyserver_certificate }}"
     proxy_key: "{{ proxy_keyserver_key }}"
-  when: "inventory_hostname in groups['stepup-keyserver']"
+  when: "inventory_hostname in groups['stepup-keyserver'] | default([])"
 
 
 - include: proxy.yml
@@ -63,7 +63,7 @@
     component_name: demo-gssp
     proxy_certificate: "{{ proxy_demo_gssp_certificate }}"
     proxy_key: "{{ proxy_demo_gssp_key }}"
-  when: "inventory_hostname in groups['stepup-demo-gssp']"
+  when: "inventory_hostname in groups['stepup-demo-gssp'] | default([])"
 
 - include: proxy.yml
   vars:
@@ -71,4 +71,4 @@
     component_name: demo-gssp-2
     proxy_certificate: "{{ proxy_demo_gssp_2_certificate }}"
     proxy_key: "{{ proxy_demo_gssp_2_key }}"
-  when: "inventory_hostname in groups['stepup-demo-gssp-2']"
+  when: "inventory_hostname in groups['stepup-demo-gssp-2'] | default([])"

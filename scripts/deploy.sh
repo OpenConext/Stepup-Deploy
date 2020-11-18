@@ -3,7 +3,9 @@
 CWD=`pwd`
 BASEDIR=`dirname $0`
 COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "Stepup-Webauthn" "oath-service-php" "Stepup-Azure-MFA")
+CONFIG_ONLY_COMPONENTS=("Stepup-Webauthn" "Stepup-Azure-MFA")
 UNARCHIVE=1
+CONFIGONLY=0
 VERBOSE=0
 ASKSUDO=""
 INVENTORY=""
@@ -48,6 +50,7 @@ if [ -z "${COMPONENT_TARBALL}"  ]; then
     echo "-l|--limit: <SUBSET>   Limit option to pass to ansible (limits hosts)"
     echo "-K|--ask-sudo-pass     Ask for sudo password"
     echo "-n|--no-unarchive      Skip uploading and unarchiving the tarball on the remote"
+    echo "-c|--config-only       Only update the components configuration files (only for: ${CONFIG_ONLY_COMPONENTS[*]})"
     echo "-v|--verbose           Pass \"-vvvv\" verbosity to ansible"
     echo "Supported components: ${COMPONENTS[*]}"
     exit 1;
@@ -60,6 +63,10 @@ shift
 
 case $option in
     -n|--no-unarchive)
+    UNARCHIVE="0"
+    ;;
+    -c|--config-only)
+    CONFIGONLY="1"
     UNARCHIVE="0"
     ;;
     -K|--ask-sudo-pass)
@@ -109,6 +116,13 @@ if [ "$found" -ne "1" ]; then
     error_exit "Tarball to deploy must end in .tar.bz2 and start with one of: ${COMPONENTS[*]}"
 fi
 
+#If -c is set, and componet does not support -c, error here
+if [ ${CONFIGONLY} -eq "1" ]; then
+  if [[ ! "${CONFIG_ONLY_COMPONENTS[@]}" =~ "${COMPONENT}" ]]; then
+    error_exit "${COMPONENT} does not support -c|--config-only"
+  fi
+fi
+
 # Get absolute path to component tarball
 cd ${CWD}
 cd `dirname ${COMPONENT_TARBALL}`
@@ -120,6 +134,7 @@ echo "Deploying component: ${COMPONENT}"
 echo "Unsing inventory: ${INVENTORY}"
 echo "Host limit: ${LIMIT}"
 echo "unarchive=${UNARCHIVE}"
+echo "config only=${CONFIGONLY}"
 echo "verbose=${VERBOSE}"
 echo
 
@@ -155,6 +170,12 @@ if [ "${VERBOSE}" -eq "1" ]; then
     verbose_flag="-vvvv"
 fi
 
+configonly_flag="--extra-var configonly=False"
+if [ "${CONFIGONLY}" -eq "1" ]; then
+    configonly_flag="--extra-var configonly=True"
+fi
+
+
 inventory_option=""
 if [ -n "${INVENTORY}" ]; then
     inventory_option="-i ${INVENTORY}"
@@ -170,10 +191,10 @@ deploy_playbook_dir=`realpath "${BASEDIR}/../"`
 
 
 if [ "${VERBOSE}" -eq "1" ]; then
-    echo ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+    echo ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
 fi
 
-ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
+ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT ${configonly_flag} -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
 res=$?
 cd ${CWD}
 

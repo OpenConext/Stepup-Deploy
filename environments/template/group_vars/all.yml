@@ -107,6 +107,13 @@ stepup_enabled_generic_second_factors:
     loa: 2
   azuremfa:
     loa: 2
+
+second_factors_display_name:
+  yubikey: Yubikey
+  azuremfa: AzureMFA
+  webauthn: WebAuthn
+  tiqr: Tiqr
+
 # Note: for the Stepup-VM stepup_enabled_generic_second_factors is overridden in the dev.yml group_vars
 
 # List of the second factors types for which the token proof possession must be skipped

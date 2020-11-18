@@ -27,6 +27,8 @@
       # xdebug, the PHP debug extension
       - php-pecl-xdebug
       - php72-php-pecl-xdebug
+
+      - php72-php-pecl-zip
       # telnet client
       - telnet
     state: present
@@ -35,9 +37,9 @@
 ## Composer ##
 
 # Install systemwide composer in /usr/local/bin
-- name: Download /usr/local/bin/composer from https://getcomposer.org/composer-stable.phar
+- name: Download version 1 of /usr/local/bin/composer from https://getcomposer.org/composer-1.phar
   get_url:
-    url: "https://getcomposer.org/composer-stable.phar"
+    url: "https://getcomposer.org/composer-1.phar"
     dest: /usr/local/bin/composer
     mode: 0555
     owner: root

@@ -59,6 +59,7 @@ logout_redirect_url:
 # Message originator as displayed in SMS
 # "This can be a telephone number (including country code) or an alphanumeric string.
 #  In case of an alphanumeric string, the maximum length is 11 characters."
+# Regex for alphanumeric string is: "[a-z0-9]{1,11}"
 # Used by Gateway, SelfService and RA components
 # TODO: Set SMS sender name
 sms_originator: Stepup
@@ -155,7 +156,7 @@ app_symfony_3_components:
 - stepup-gateway
 - stepup-selfservice
 #- stepup-ra
-- stepup-tiqr
+#- stepup-tiqr
 - stepup-keyserver
 
 

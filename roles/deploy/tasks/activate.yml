@@ -24,3 +24,4 @@
     src: "{{ component_dir_name }}"
     dest: "/opt/www/{{ component_vhost_name }}"
     state: link
+  when: not configonly | bool

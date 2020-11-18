@@ -154,7 +154,7 @@ app_php72_components:
 app_symfony_3_components:
 #- stepup-middleware
 - stepup-gateway
-- stepup-selfservice
+#- stepup-selfservice
 #- stepup-ra
 #- stepup-tiqr
 - stepup-keyserver

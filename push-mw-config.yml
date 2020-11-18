@@ -11,7 +11,13 @@
 
   tasks:
   - name: Write middleware config and whitelist to /root/
-    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} group={{ app_deploy_user }} owner={{ app_deploy_user }} mode="400" backup=yes
+    template:
+      src: "{{ inventory_dir }}/templates/middleware/{{ item }}.j2"
+      dest: "/opt/scripts/{{ item }}"
+      group: "{{ app_deploy_user }}"
+      owner: "{{ app_deploy_user }}"
+      mode: 0400
+      backup: yes
     with_items:
     - middleware-config.json
     - middleware-whitelist.json

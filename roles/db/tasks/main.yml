@@ -1,12 +1,17 @@
 # Add MariaDB repo and key
 - name: Add MariaDB.org repository
-  template: src='mariadb.repo.j2' dest='/etc/yum.repos.d/mariadb.repo'
+  template: src='mariadb.repo.j2'
+  dest: '/etc/yum.repos.d/mariadb.repo'
 
 - name: Copy MariaDB repository key
-  copy: src=RPM-GPG-KEY-MariaDB dest={{ managed_file_dir }}/RPM-GPG-KEY-MariaDB
+  copy:
+    src: RPM-GPG-KEY-MariaDB
+    dest: "{{ managed_file_dir }}/RPM-GPG-KEY-MariaDB"
 
 - name: Add MariaDB.org repository key
-  rpm_key: state=present key={{ managed_file_dir }}/RPM-GPG-KEY-MariaDB
+  rpm_key:
+    state: present
+    key: "{{ managed_file_dir }}/RPM-GPG-KEY-MariaDB"
 
 
 - name: Install MariaDB, Galera, rsync, MySQL-python
@@ -22,10 +27,15 @@
     state: installed
 
 - name: Start and enable memcached
-  service: name=memcached state=started enabled=true
+  service:
+    name: memcached
+    state: started
+    enabled: true
 
 - name: Put mariadb server.cnf
-  template: src='server.cnf.j2' dest='/etc/my.cnf.d/server.cnf'
+  template:
+    src: 'server.cnf.j2'
+    dest: '/etc/my.cnf.d/server.cnf'
   notify:
     - restart mariadb
 
@@ -47,7 +57,10 @@
     msg: "Note: if no DB is running or reachable the next task takes a while to timeout. When it fails read the message about 'galera_bootstrap_node' to get the first DB node running"
 
 - name: Start and enable the MariaDB (mysql) service on boot.
-  service: name=mysql state=started enabled=true
+  service:
+    name: mysql
+    state: started
+    enabled: true
   ignore_errors: true
   register: start_result
 
@@ -101,14 +114,19 @@
   when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name: Add "backup" shell user
-  user: name=backup
+  user:
+    name: backup
   when: mariadb_enable_remote_ssh_backup | default(false)
 
 - name: Put mariadb_backup script
-  template: src='mariadb_backup.sh.j2' dest='/home/backup/mariadb_backup.sh' mode=500 owner=backup
+  template:
+    src: 'mariadb_backup.sh.j2'
+    dest: '/home/backup/mariadb_backup.sh'
+    mode: 0500
+    owner: backup
   when: mariadb_enable_remote_ssh_backup | default(false)
 
-- name:
+- name: copy ssh authkey for db backupuser
   authorized_key:
     user: "{{ mariadb_backup_user }}"
     key: "{{ mariadb_backup_sshkey }}"

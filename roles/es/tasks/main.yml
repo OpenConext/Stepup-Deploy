@@ -2,13 +2,19 @@
 
 # Add elasticsearch repo and repo key
 - name: Copy elasticsearch repository key
-  copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
+  copy:
+    src: GPG-KEY-elasticsearch
+    dest: "{{ managed_file_dir }}/GPG-KEY-elasticsearch"
 
 - name: Add elasticsearch repository key
-  rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
+  rpm_key:
+    state: present
+    key: "{{ managed_file_dir }}/GPG-KEY-elasticsearch"
 
 - name: Enable elasticsearch repo
-  copy: src=elasticsearch.repo dest=/etc/yum.repos.d/elasticsearch.repo
+  copy:
+    src: elasticsearch.repo
+    dest: /etc/yum.repos.d/elasticsearch.repo
 
 
 # Install ES and Java 8
@@ -21,17 +27,23 @@
 
 # Increase open file limits for ES
 - name: Put etc/security/elasticseach_limits.conf
-  copy: src=elasticsearch_limits.conf dest=/etc/security/limits.d/elasticsearch_limits.conf
+  copy:
+    src: elasticsearch_limits.conf
+    dest: /etc/security/limits.d/elasticsearch_limits.conf
   notify:
   - "Restart elasticsearch"
 
 - name: Determine number of nodes in cluser
-  set_fact: elastic_search_node_count={{ groups['es'] | length }}
+  set_fact:
+    elastic_search_node_count: "{{ groups['es'] | length }}"
 
-- debug: msg={{ elastic_search_node_count }}
+- debug:
+    msg: "{{ elastic_search_node_count }}"
 
 - name: Put elasticsearch config
-  template: src='{{ item }}.j2' dest='/etc/{{ item }}'
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/{{ item }}"
   with_items:
   - "sysconfig/elasticsearch"
   - "elasticsearch/elasticsearch.yml"
@@ -43,14 +55,20 @@
 
 # Enable ES on boot
 - name: Enable elasticsearch service
-  service: name=elasticsearch enabled=yes state=started
+  service:
+    name: elasticsearch
+    enabled: yes
+    state: started
 
 - name: Put elasticsearch utility scripts in /root/
-  template: src='elasticsearch/{{ item }}.j2' dest='/root/{{ item }}' mode=ug+x
+  template:
+    src: "elasticsearch/{{ item }}.j2"
+    dest: "/root/{{ item }}"
+    mode: ug+x
   with_items:
   - "es-get_health.sh"
   - "es-zap_node.sh"
 
 
 # Get health of ES cluster:
-# curl -XGET 'http://node_ip:9200/_cluster/health?pretty=true'
+# curl -XGET 'http://node_ip:9200/_cluster/health?pretty: true'

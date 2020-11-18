@@ -9,7 +9,7 @@
 
 # Create user & group for the FPM pool
 - debug:
-    msg: "component_name: {{ component_name }}; vhost_name: {{ vhost_name }}; php_version: {{ php_version }}; symfony_version: {{ symfony_version}}"
+    msg: "component_name: {{ component_name }}; vhost_name: {{ vhost_name }}; php_version: {{ php_version }}; symfony_version: {{ symfony_version }}"
 
 - name: Verify component php_version
   fail:
@@ -18,24 +18,37 @@
 
 - name: Verify component symfony_version
   fail:
-    msg: "symfony_version must be 3 or 4, symfony_version='{{symfony_version }}'"
+    msg: "symfony_version must be 3 or 4, symfony_version='{{ symfony_version }}'"
   when: (symfony_version | int != 3) and (symfony_version | int != 4)
 
 
 - name: Add group {{ component_name }}
-  group: name={{ component_name }} state=present
+  group:
+    name: "{{ component_name }}"
+    state: present
 
 - name: Add user {{ component_name }}
-  user: name={{ component_name }} group={{ component_name }} createhome=no state=present
+  user:
+    name: "{{ component_name }}"
+    group: "{{ component_name }}"
+    createhome: no
+    state: present
 
 
 - name: Create directory for vhosts to store PHP sessions
-  file: path=/var/lib/stepup/session/{{ component_name }} state=directory owner={{ component_name }} group=root mode=770
+  file:
+    path: "/var/lib/stepup/session/{{ component_name }}"
+    state: directory
+    owner: "{{ component_name }}"
+    group: root
+    mode: 0770
 
 
 # This task can be removed once it has been run on all nodes
 - name: Remove rsyslog vhost config
-  file: path='/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf' state=absent
+  file:
+    path: "/etc/rsyslog.d/nginx_vhost_{{ component_name }}.conf"
+    state: absent
   notify:
   - restart rsyslog
 
@@ -56,9 +69,15 @@
 
 
 # Link to default app, when no app is installed
-- stat: path=/opt/www/{{ vhost_name }}
-  register: r
+-  name: link to default app
+   stat:
+    path: "/opt/www/{{ vhost_name }}"
+   register: r
 
 - name: Install default app when no app is installed (yet)
-  file: src=/opt/default/{{ vhost_name }} dest=/opt/www/{{ vhost_name }} state=link force=no
+  file:
+    src: "/opt/default/{{ vhost_name }}"
+    dest: "/opt/www/{{ vhost_name }}"
+    state: link
+    force: no
   when: (r.stat.exists == false)

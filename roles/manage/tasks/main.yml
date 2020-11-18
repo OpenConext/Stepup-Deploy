@@ -2,14 +2,20 @@
 
 # Add logstash repo and repo key (same as ES key)
 - name: Copy elasticsearch repository key
-  copy: src=GPG-KEY-elasticsearch dest={{ managed_file_dir }}/GPG-KEY-elasticsearch
+  copy:
+    src: GPG-KEY-elasticsearch
+    dest: "{{ managed_file_dir }}/GPG-KEY-elasticsearch"
   tags: logstash
 
 - name: Add elasticsearch repository key
-  rpm_key: state=present key={{ managed_file_dir }}/GPG-KEY-elasticsearch
+  rpm_key:
+    state: present
+    key: "{{ managed_file_dir }}/GPG-KEY-elasticsearch"
 
 - name: Enable logstash repo
-  copy: src=logstash.repo dest=/etc/yum.repos.d/logstash.repo
+  copy:
+    src: logstash.repo
+    dest: /etc/yum.repos.d/logstash.repo
   tags: logstash
 
 # Install logstash and Java 8
@@ -23,7 +29,9 @@
   tags: logstash
 
 - name: Put logstash sysconfig
-  copy: src=logstash.sysconfig dest=/etc/sysconfig/logstash
+  copy:
+    src: logstash.sysconfig
+    dest: /etc/sysconfig/logstash
   notify: Restart logstash
   tags: logstash
 
@@ -44,7 +52,9 @@
   tags: logstash
 
 - name: Put logstash config
-  template: src='logstash/{{ item }}.j2' dest='/etc/logstash/conf.d/{{ item }}'
+  template:
+    src: "logstash/{{ item }}.j2"
+    dest: "/etc/logstash/conf.d/{{ item }}"
   with_items:
   - 10-rsyslog_relp_input.conf
   - 20-mysqld.conf
@@ -63,17 +73,22 @@
 
 # Enable logstash on boot
 - name: Enable logstash service
-  service: name=logstash enabled=yes state=started
+  service:
+    name: logstash
+    enabled: yes
+    state: started
   tags: logstash
-
 
 - name: Install kibana
   include: kibana.yml
 
-
 - name: Setup nginx HTTPS reverse proxy for kibana
   include: nginx.yml
 
-
 - name: Setup curator cron job to expire old indexes (log data)
-  template: src='cron.d/curator.j2' dest='/etc/cron.d/curator' owner=root group=root mode=640
+  template:
+    src: 'cron.d/curator.j2'
+    dest: '/etc/cron.d/curator'
+    owner: root
+    group: root
+    mode: 0640

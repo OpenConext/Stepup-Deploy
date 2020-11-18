@@ -8,11 +8,14 @@
 # The default app simply returns "No application installed for vhost {{ vhost_name }}"
 # For Symfony 4 config the app location is public/index.php
 - name: Create default app directory for {{ vhost_name }}
-  file: path=/opt/default/{{ vhost_name }}/public/ state=directory
+  file:
+    path: "/opt/default/{{ vhost_name }}/public/"
+    state: directory
 
 - name: Create default /opt/default/{{ vhost_name }}/public/index.php
-  template: src='httpd-index.php.j2' dest='/opt/default/{{ vhost_name }}/public/index.php'
-
+  template:
+    src: 'httpd-index.php.j2'
+    dest: '/opt/default/{{ vhost_name }}/public/index.php'
 
 
 # Put httpd vhost config

@@ -1,36 +1,51 @@
 # Set of tasks to apply to all hosts
 
-- name: Set /etc/hostname to {{ inventory_hostname }}
-  template: src='hostname.j2' dest='/etc/hostname'
+- name: Set /etc/hostname to "{{ inventory_hostname }}"
+  template:
+    src: 'hostname.j2'
+    dest: '/etc/hostname'
 
-- name: Write /etc/hosts with {{ inventory_hostname }}
-  template: src='hosts.j2' dest='/etc/hosts'
+- name: Write /etc/hosts with "{{ inventory_hostname }}"
+  template:
+    src: 'hosts.j2'
+    dest: '/etc/hosts'
   tags: skip_docker_test # Skip when running inside docker, /etc/host cannot be written then
 
 
 # Directory for keeping misc ansible files
 - name: Create managed files dir
-  file: name={{ managed_file_dir }} state=directory
-
+  file:
+    name: "{{ managed_file_dir }}"
+  state: directory
 
 - name: Disable SELinux policy
-  selinux: state=disabled
+  selinux:
+    state: disabled
   tags: skip_docker_test
 
 
 - name: Set timezone
-  file: src=/usr/share/zoneinfo/{{ timezone }}  dest=/etc/localtime state=link force=yes
+  file:
+    src: /usr/share/zoneinfo/"{{ timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: yes
 
 
 # Extra Packages for Enterprise Linux
 # https://fedoraproject.org/wiki/EPEL
 - name: Enable EPEL repo
-  yum: name=epel-release.noarch state=present
+  yum:
+    name: epel-release.noarch
+    state: present
 
 
 # Disable unused daemons
 - name: "Disable unused daemons"
-  service: name={{item}} enabled=no state=stopped
+  service:
+    name: "{{ item }}"
+    enabled: no
+    state: stopped
   with_items:
   - firewalld # Because we want to use iptables-services below
   - NetworkManager
@@ -51,31 +66,42 @@
   tags: rsyslog
 
 - debug:
-    msg: groups_names = {{ group_names | join(', ') }}
+    msg: groups_names = "{{ group_names | join(', ') }}
   tags: iptables
 
 - name: Put iptables
-  template: src={{ inventory_dir }}/templates/common/iptables.j2 dest='/etc/sysconfig/iptables'
+  template:
+    src: "{{ inventory_dir }}/templates/common/iptables.j2"
+    dest: '/etc/sysconfig/iptables'
   tags: skip_docker_test, iptables
   notify:
   - restart iptables
 
 - name: Put ip6tables
-  template: src={{ inventory_dir }}/templates/common/ip6tables.j2 dest='/etc/sysconfig/ip6tables'
+  template:
+    src: "{{ inventory_dir }}/templates/common/ip6tables.j2"
+    dest: '/etc/sysconfig/ip6tables'
   tags: skip_docker_test, iptables
   notify:
   - restart ip6tables
 
 - name: Put ntp.conf
-  template: src={{ inventory_dir }}/templates/common/ntp.conf.j2 dest='/etc/ntp.conf'
+  template:
+    src: "{{ inventory_dir }}/templates/common/ntp.conf.j2"
+    dest: '/etc/ntp.conf'
   notify:
   - restart ntpd
 
 - name: Put sysctl-local.conf
-  copy: src=sysctl-local.conf dest=/etc/sysctl.d/sysctl-local.conf
+  copy:
+    src: sysctl-local.conf
+    dest: /etc/sysctl.d/sysctl-local.conf
 
 - name: Start and enable services ntpd, iptables, iptables6
-  service: name={{item}} state=started enabled=true
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
   tags: skip_docker_test
   with_items:
   - ntpd
@@ -84,22 +110,34 @@
 
 # Create directory for rsyslog message buffer
 - name: Create rsyslog dir
-  file: name=/var/lib/rsyslog state=directory
+  file:
+    name: /var/lib/rsyslog
+    state: directory
   tags: rsyslog
 
 # Defining rsyslog_remote_server means you can use a remote syslog server using RELP + TLS. Make sure you create the corresponding keys and certificates  
 - name: Put rsyslog client cert
-  copy: content="{{ rsyslog_certificate }}" dest=/etc/pki/rsyslog/rsyslogclient.crt mode=0744
+  copy:
+    content: "{{ rsyslog_certificate }}"
+    dest: /etc/pki/rsyslog/rsyslogclient.crt
+    mode: 0744
   when: rsyslog_remote_server is defined
   tags: rsyslog
 
 - name: Put rsyslog client key
-  copy: content="{{ rsyslog_key | vault(vault_keydir) }}" dest=/etc/pki/rsyslog/rsyslogclient.key owner=root mode=400
+  copy:
+    content: "{{ rsyslog_key | vault(vault_keydir) }}"
+    dest: /etc/pki/rsyslog/rsyslogclient.key
+    owner: root
+    mode: 0400
   tags: rsyslog
   when: rsyslog_remote_server is defined
 
 - name: Put rsyslog client CA certificate
-  copy: content="{{ rsyslog_ca_certificate }}" dest=/etc/pki/rsyslog/rsyslogclientca.crt mode=0744
+  copy:
+  content: "{{ rsyslog_ca_certificate }}"
+  dest: /etc/pki/rsyslog/rsyslogclientca.crt
+  mode: 0744
   when: rsyslog_remote_server is defined
   tags: rsyslog
 
@@ -107,7 +145,9 @@
 # Note: Default template requires a host in the "manage" group.
 # If it's missing you get the error "AnsibleUndefinedVariable: list object has no element 0"
 - name: Put rsyslog config
-  template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
+  template:
+    src: 'rsyslog/rsyslog.conf.j2'
+    dest: '/etc/rsyslog.conf'
   notify: restart rsyslog
   tags: rsyslog
 

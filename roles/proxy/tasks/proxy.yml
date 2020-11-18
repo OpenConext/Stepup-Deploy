@@ -1,16 +1,24 @@
 
 - name: Put proxy cert for {{ component_name }}
-  copy: content="{{ proxy_certificate }}" dest=/etc/nginx/proxy_{{ component_name }}.crt
+  copy:
+    content: "{{ proxy_certificate }}"
+    dest: "/etc/nginx/proxy_{{ component_name }}.crt"
   notify:
       - restart nginx
 
 - name: Put proxy key for {{ component_name }}
-  copy: content="{{ proxy_key | vault(vault_keydir) }}" dest=/etc/nginx/proxy_{{ component_name }}.key owner=root mode=400
+  copy:
+    content: "{{ proxy_key | vault(vault_keydir) }}"
+    dest: "/etc/nginx/proxy_{{ component_name }}.key"
+    owner: root
+    mode: 0400
   notify:
       - restart nginx
 
 - name: Put proxy.conf for {{ vhost_name }}
-  template: src='proxy.conf.j2' dest='/etc/nginx/conf.d/proxy_{{ vhost_name }}.conf'
+  template:
+    src: 'proxy.conf.j2'
+    dest: '/etc/nginx/conf.d/proxy_{{ vhost_name }}.conf'
   notify:
       - restart nginx
 

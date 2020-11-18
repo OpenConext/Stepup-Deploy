@@ -13,7 +13,11 @@
 
   tasks:
   - name: Write middleware config and whitelist to /opt/scripts/
-    template: src={{ inventory_dir }}/templates/middleware/{{ item }}.j2 dest=/opt/scripts/{{ item }} mode="400" backup=yes
+    template:
+      src: "{{ inventory_dir }}/templates/middleware/{{ item }}.j2"
+      dest: /opt/scripts/"{{ item }}"
+      mode: 0400
+      backup: yes
     with_items:
     - middleware-config.json
     - middleware-whitelist.json

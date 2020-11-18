@@ -1,10 +1,16 @@
 ---
 
 - name: Restart kibana
-  service: name=kibana4 state=restarted
+  service:
+    name: kibana4
+    state: restarted
 
 - name: Restart logstash
-  service: name=logstash state=restarted
+  service:
+    name: logstash
+    state: restarted
 
 - name: restart nginx
-  service: name=nginx state=restarted
+  service:
+    name: nginx
+    state: restarted

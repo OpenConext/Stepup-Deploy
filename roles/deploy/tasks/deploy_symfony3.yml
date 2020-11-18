@@ -1,14 +1,21 @@
 ---
 
 - name: Restrict app dir to the application
-  file: path={{item}} group={{ component_group }} mode="o=" recurse=yes
+  file:
+    path: "{{ item }}"
+    group: "{{ component_group }}"
+    mode: "o="
+    recurse: yes
   with_items:
     - "{{ component_dir_name }}/app"
   when: not (develop | default(false))
 
 - name: Grant app write access to cache and log dirs
-  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
+  file:
+    path: "{{ item }}"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_770 }}"
+    recurse: yes
   with_items:
     - "{{ component_dir_name }}/app/cache"
-    - "{{ component_dir_name }}/app/logs"
   when: not (develop | default(false))

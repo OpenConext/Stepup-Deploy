@@ -25,7 +25,7 @@ parameters:
     gssp_{{ key }}_app_android_url: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_app_android_url'] }}'
     gssp_{{ key }}_app_ios_url: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_app_ios_url'] }}'
 
-{% for param in [ 'title', 'alt', 'title', 'description', 'button_use', 'initiate_title', 'initiate_button', 'explanation', 'authn_failed', 'pop_failed'] %}
+{% for param in [ 'title', 'alt', 'description', 'button_use', 'initiate_title', 'initiate_button', 'explanation', 'authn_failed', 'pop_failed'] %}
     gssp_{{ key }}_{{ param }}:
 {% for lang in enabled_locales %}
         {{ lang }}: '{{ hostvars[inventory_hostname]['ss_gssp_' + key + '_' + param][lang] | replace("'", "''") }}'

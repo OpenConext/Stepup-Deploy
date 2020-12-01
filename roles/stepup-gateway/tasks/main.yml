@@ -26,16 +26,31 @@
     name: deploy
     tasks_from: deploy
 
-
+#symfony 3 locations
 - name: Put images from <env>/files/stepup-app into web/images
   copy: src={{ item }} dest={{ component_dir_name }}/web/images mode=444 group={{ component_group }}
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/*"
+  when: deploy_symfony_3
 
 - name: Put images from <env>/files/stepup-app/second-factor into web/images/second-factor
   copy: src={{ item }} dest={{ component_dir_name }}/web/images/second-factor mode={{ component_mode_444 }} group={{ component_group }}
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
+  when: deploy_symfony_3
+
+#symfony 4 locations
+- name: Put images from <env>/files/stepup-app into public/images
+  copy: src={{ item }} dest={{ component_dir_name }}/public/images mode=444 group={{ component_group }}
+  with_fileglob:
+  - "{{inventory_dir }}/files/stepup-app/images/*"
+  when: deploy_symfony_4
+
+- name: Put images from <env>/files/stepup-app/second-factor into public/images/second-factor
+  copy: src={{ item }} dest={{ component_dir_name }}/public/images/second-factor mode={{ component_mode_444 }} group={{ component_group }}
+  with_fileglob:
+  - "{{inventory_dir }}/files/stepup-app/images/second-factor/*"
+  when: deploy_symfony_4
 
 # Write the SAML certificates and the corresponding private keys of the gateway
 # The Gateway is a SAML proxy that has multiple IdP and SP Entities

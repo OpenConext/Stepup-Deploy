@@ -12,6 +12,13 @@
   - samlstepupproviders_parameters
   - global_view_parameters
 
+- name: Put .env file
+  template:
+    src: env.j2
+    dest: "{{ component_dir_name }}/.env.local"
+    group: "{{ component_group }}"
+    mode: "{{ component_mode_640 }}"
+  when: deploy_symfony_4
 
 # Deploy does change file rsystem ights, so run deploy first, then write files
 - name: Deploy Symfony component

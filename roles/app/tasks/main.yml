@@ -275,6 +275,15 @@
     symfony_version: 4
   when: "'stepup-azuremfa' in group_names"
 
+- name: Configure readid vhost
+  include_tasks: vhost.yml
+  vars:
+    component_name:  readid
+    vhost_name:      "{{ readid_vhost_name }}"
+    php_version:     72
+    symfony_version: 4
+  when: "'stepup-readid' in group_names"
+
 - name: Configure demo_gssp vhost (DEVELOP)
   include_tasks: vhost.yml
   vars:

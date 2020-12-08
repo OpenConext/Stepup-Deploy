@@ -8,5 +8,7 @@
        group: vagrant
 
   tasks:
-  - name: Test arguments
-    file: "{{ arg }}"
+  - name: Test
+    debug:
+      msg: "{{ ss_remote_vetting_idps[item].certificate }}"
+    with_items: "{{ ss_remote_vetting_idps.keys() }}"

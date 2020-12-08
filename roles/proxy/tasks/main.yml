@@ -45,6 +45,14 @@
     proxy_key: "{{ proxy_webauthn_key }}"
   when: "inventory_hostname in groups['stepup-webauthn'] | default([])"
 
+- include: proxy.yml
+  vars:
+    vhost_name: "{{ readid_vhost_name }}"
+    component_name: readid
+    proxy_certificate: "{{ proxy_readid_certificate }}"
+    proxy_key: "{{ proxy_readid_key }}"
+  when: "inventory_hostname in groups['stepup-readid'] | default([])"
+
 # TODO: adapt so that TLS terminates on key server instead of proxy/LB
 - include: proxy.yml
   vars:

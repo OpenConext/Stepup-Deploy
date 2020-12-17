@@ -29,6 +29,13 @@
     name: deploy
     tasks_from: deploy
 
+# Tiqr symfony 3 version uses symfony 4 cache and log location
+- name: Grant app write access to cache and log dirs
+  file: path={{item}} group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
+  with_items:
+    - "{{ component_dir_name }}/var/cache"
+    - "{{ component_dir_name }}/var/logs"
+  when: deploy_symfony_3
 
 - name: Write tiqr APNS certificate
   copy: content="{{ tiqr_apns_pemfile | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/apns.pem owner={{ component_owner }} mode={{ component_mode_400 }}

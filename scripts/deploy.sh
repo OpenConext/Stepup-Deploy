@@ -2,7 +2,7 @@
 
 CWD=`pwd`
 BASEDIR=`dirname $0`
-COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "Stepup-Webauthn" "oath-service-php" "Stepup-Azure-MFA")
+COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "Stepup-Webauthn" "oath-service-php" "Stepup-Azure-MFA" "Stepup-ReadID")
 CONFIG_ONLY_COMPONENTS=("Stepup-Webauthn" "Stepup-Azure-MFA")
 UNARCHIVE=1
 CONFIGONLY=0

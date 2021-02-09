@@ -9,9 +9,9 @@ parameters:
     saml_metadata_publickey: '{{ component_config_file_dir_name }}/cert.pem'
     saml_metadata_privatekey: '{{ component_config_file_dir_name }}/key.pem'
 
-    saml_remote_sp_entity_id: 'https://{{ gateway_vhost_name }}/gssp/webauthn/metadata'
-    saml_remote_sp_certificate: '{{ component_config_file_dir_name }}/gateway.crt'
-    saml_remote_sp_acs: 'https://{{ gateway_vhost_name }}/gssp/webauthn/consume-assertion'
+    saml_remote_sp_entity_id: 'https://{{ selfservice_vhost_name }}/rv/metadata'
+    saml_remote_sp_certificate: '{{ component_config_file_dir_name }}/remote_vetting_sp.crt'
+    saml_remote_sp_acs: 'https://{{ selfservice_vhost_name }}/second-factor/acs'
 
     # View parameters
     support_url:

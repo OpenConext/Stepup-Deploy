@@ -10,28 +10,38 @@
 - name: Put .env file
   template: src=env.j2 dest={{ component_dir_name }}/.env.local group={{ component_group }} mode={{ component_mode_640 }}
 
+# Add new file to /config/packages/prod, for packeges/[test|dev] this file is named surfnet_saml.yml
+- name: Put surfnet_saml.yml file (parameters)
+  template: src=parameters.yaml.j2 dest={{ component_dir_name }}/config/packages/prod/surfnet_saml.yml group={{ component_group }} mode={{ component_mode_640 }}
 
-# Deploy does change file rights in config, so run deploy first, then write files
+# Overwrite existing file
+- name: Put surfnet_saml.yaml file
+  template: src=surfnet_saml.yaml.j2 dest={{ component_dir_name }}/config/packages/surfnet_saml.yml group={{ component_group }} mode={{ component_mode_640 }}
+
+# Deploy does warmup cache, so put new config in place before
+# Deploy does change file rights in config, so run deploy first, then write other files, or fix permissions after
 - name: Deploy Symfony component
   include_role:
     name: deploy
     tasks_from: deploy
 
+- name: Write Remote Vetting SP certificate
+  copy: content="{{ selfservice_remote_vetting_sp_publickey }}" dest={{ component_config_file_dir_name }}/remote_vetting_sp.crt group={{ component_group }} mode={{ component_mode_640 }}
+
+- name: Write ReadID idp certificate
+  copy: content="{{ readid_idp_publickey }}" dest={{ component_config_file_dir_name }}/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
+
+- name: Write ReadID idp private key
+  copy: content="{{ readid_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
+
+# TODO: Fix logging
+- name: Allow writing to var/log dir
+  file: path={{ component_dir_name }}/var/log group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
+
 - name: Put images from <env>/files/stepup-app into web/images
   copy: src={{ item }} dest={{ component_dir_name }}/public/images mode=444 group={{ component_group }}
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/*"
-
-
-#- name: Write webauthn GSSP sp certificate
-#  copy: content="{{ gateway_gssp_sp_publickey }}" dest={{ component_config_file_dir_name }}/gateway.crt group={{ component_group }} mode={{ component_mode_640 }}
-#
-#- name: Write webauthn GSSP idp certificate
-#  copy: content="{{ webauthn_idp_publickey }}" dest={{ component_config_file_dir_name }}/cert.pem group={{ component_group }} mode={{ component_mode_640 }}
-#
-#- name: Write webauthn GSSP idp private key
-#  copy: content="{{ webauthn_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
-
 
 - name: Activate readid component
   include_role:

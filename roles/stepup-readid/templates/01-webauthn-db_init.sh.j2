@@ -1,9 +1,0 @@
-#!/bin/bash
-#overwrite database settings for deploy
-export DATABASE_URL=mysql://{{ database_webauthn_deploy_user }}:{{ database_webauthn_deploy_password | vault(vault_keydir) }}@{{ database_lb_address }}:3306/{{ database_webauthn_name }}
-cd {{ component_dir_name }}
-echo "Create database if not exists"
-/usr/bin/php72 {{ component_dir_name }}/bin/console doctrine:database:create --if-not-exists
-echo "Create or migrate schema"
-/usr/bin/php72 {{ component_dir_name }}/bin/console doctrine:migrations:migrate
-echo "Done!"

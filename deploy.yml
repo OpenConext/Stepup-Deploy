@@ -137,5 +137,21 @@
       # Do not change, use component_info instead
       deploy_symfony_version: 4
 
+- name: Install Stepup-ReadID
+  hosts: stepup-readid
+  become: True
+  tags: stepup-readid
+
+  roles:
+        - stepup-readid
+
+  vars:
+      component_tarball_name: "{{ tarball_location }}/Stepup-ReadID-component_info-20210113143834Z-9d5907ff469ab0e3e0819f9fb74e230b32bcb568.tar.bz2"
+      component_name: readid
+      component_vhost_name: "{{ readid_vhost_name }}"
+      # Do not change, use component_info instead
+      deploy_symfony_version: 4
+
+
 - include: deploy-dev.yml
   when: develop | default(false)

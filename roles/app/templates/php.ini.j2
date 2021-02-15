@@ -454,7 +454,12 @@ max_input_time = 60
 
 ; Maximum amount of memory a script may consume (128MB)
 ; http://www.php.net/manual/en/ini.core.php#ini.memory-limit
+
+{% if 'dev' in group_names %}
+memory_limit = 512M
+{% else %}
 memory_limit = 128M
+{% endif %}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Error handling and logging ;

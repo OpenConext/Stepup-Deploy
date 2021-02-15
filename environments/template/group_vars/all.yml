@@ -30,6 +30,16 @@ server_admin_email: admin@stepup.example.com
 noreply_email: noreply@stepup.example.com
 noreply_email_name: Step-up Example
 
+# Support email address
+# TODO: Set support email address
+support_email: support@stepup.example.com
+support_email_name: Stepup Example Support
+
+
+# Name of this environment for display puposes to users
+# TODO: Set environment name
+environment_name: Stepup Example
+
 # FQDN for vhosts
 # These are the hostnames for the stepup web applications.
 #
@@ -56,6 +66,7 @@ tiqr_vhost_name: tiqr.stepup.example.com
 webauthn_vhost_name: webauthn.stepup.example.com
 azuremfa_vhost_name: azuremfa.stepup.example.com
 keyserver_vhost_name: keyserver.stepup.example.com
+readid_vhost_name: readid.stepup.example.com
 
 
 # Domain for the locale cookie that is set by gateway, selfservice and ra and that is used to share the
@@ -89,7 +100,7 @@ stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 # Format: comma separated list of factors to enable
 # Supported factors: sms, yubikey, u2f
 # TODO: Select second factors to enable
-stepup_enabled_factors: sms, yubikey, u2f
+stepup_enabled_factors: sms, yubikey
 
 # The generic second factor types to enable in the SS and the RA
 # You can define new GSSPs here. Note that you will have to add configuration and translation for the new GSSP in
@@ -107,10 +118,8 @@ stepup_enabled_factors: sms, yubikey, u2f
 stepup_enabled_generic_second_factors:
   tiqr:
     loa: 2
-  webauthn:
-    loa: 2
-  azuremfa:
-    loa: 2
+#  webauthn:
+#    loa: 2
 
 second_factors_display_name:
   yubikey: Yubikey
@@ -125,7 +134,7 @@ second_factors_display_name:
 # step is always executed for that token type.
 skip_prove_possession_second_factors:
   - webauthn
-  - azuremfa
+#  - azuremfa
 # Note: for the Stepup-VM skip_prove_possession_second_factors is overridden in the dev.yml group_vars
 
 
@@ -227,6 +236,8 @@ webauthn_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_id
 # Private key in stepup-azuremfa.yml
 # Format: PEM X.509 certificate
 azuremfa_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/azuremfa_idp.crt') }}"
+
+readid_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/readid_idp.crt') }}"
 
 
 # Database tables and users for Stepup applications, keyserver

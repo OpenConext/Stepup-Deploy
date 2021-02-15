@@ -38,7 +38,7 @@
 - name: Allow writing to var/log dir
   file: path={{ component_dir_name }}/var/log group={{ component_group }} mode={{ component_mode_770 }} recurse=yes
 
-- name: Put images from <env>/files/stepup-app into web/images
+- name: Put images from <env>/files/stepup-app into public/images
   copy: src={{ item }} dest={{ component_dir_name }}/public/images mode=444 group={{ component_group }}
   with_fileglob:
   - "{{inventory_dir }}/files/stepup-app/images/*"

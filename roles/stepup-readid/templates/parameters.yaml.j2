@@ -19,13 +19,9 @@ parameters:
         {{ locale }}: "{{ url | replace('%', '%%') }}"
 {% endfor %}
 
-    # TODO: Configure from environment. A generic support email address makes sense.
-    support_email: support@surfconext.nl
+    support_email: {{ support_email }}
 
-    # TODO: Configure from environment. No SURF references please. This is OpenConext.
-    user_display_name: SURFsecureID
-    webauthn_name: SURFsecureID
+    user_display_name: {{ environment_name }}
+
     # TODO: Take logo from environment. Use same mechanism as selfservice, RA etc.
-    webauthn_logo: 'https://webauthn.test/images/surfconext-logo.png'
-
-    trusted_certificates_directory: '{{ component_config_file_dir_name }}/trusted_certificates'
+    readid_logo: '/images/header-logo.png'

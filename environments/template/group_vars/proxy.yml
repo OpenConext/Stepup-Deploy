@@ -18,6 +18,9 @@ proxy_tiqr_key: "{{ lookup('file', inventory_dir+'/ssl_cert/tiqr.key') }}"
 # Format: PEM RSA PRIVATE KEY
 proxy_webauthn_key: "{{ lookup('file', inventory_dir+'/ssl_cert/webauthn.key') }}"
 
+# Format: PEM RSA PRIVATE KEY
+proxy_readid_key: "{{ lookup('file', inventory_dir+'/ssl_cert/readid.key') }}"
+
 
 # Format: PEM Certificate (chain)
 # Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
@@ -48,3 +51,8 @@ proxy_tiqr_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/tiqr.crt') }
 # Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
 # Do not include root CA certificate
 proxy_webauthn_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/webauthn.crt') }}"
+
+# Format: PEM Certificate (chain)
+# Order: SSL Server certificate followed by intermediate certificate(s) in chain order.
+# Do not include root CA certificate
+proxy_readid_certificate: "{{ lookup('file', inventory_dir+'/ssl_cert/readid.crt') }}"

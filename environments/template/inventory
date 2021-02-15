@@ -65,7 +65,7 @@ app.stepup.example.com host_ipv4=192.168.66.2 backend_ipv4=127.0.0.1
 [manage]
 # TODO: Set hostname and host_ipv4 of the manage server
 # If you do not want to use a manage server you can comment out the line below
-manage.stepup.example.com host_ipv4=192.168.66.3
+#manage.stepup.example.com host_ipv4=192.168.66.3
 
 
 ###########
@@ -103,8 +103,7 @@ stepup-app
 
 [es:children]
 # For the Stepup-VM we (mis)use manage server for hosting a single ES node
-manage
-
+es
 
 #######
 # proxy
@@ -237,6 +236,16 @@ stepup-azuremfa
 [stepup-azuremfa]
 
 [stepup-azuremfa:children]
+
+
+#############
+stepup-readid
+#############
+
+[stepup-readid]
+
+[stepup-readid:children]
+stepup-app
 
 
 #####

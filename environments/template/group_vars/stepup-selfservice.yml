@@ -165,3 +165,62 @@ ss_gssp_azuremfa_pop_failed:
 #ss_gssp_example_gssp_pop_failed:
 #    en_GB: 'Registration of your token failed. Please try again.'
 #    nl_NL: 'De registratie van uw token is mislukt. Probeer het nogmaals.'
+
+
+# SP for authentication to remote vetting IdPs
+#     entityId: "https://{{ selfservice_vhost_name }}/rv/metadata"
+#     assertionConsumerUrl: "https://{{ selfservice_vhost_name }}/second-factor/acs"
+# Note: There is no metadata published at https://{{ selfservice_vhost_name }}/rv/metadata
+#       TODO: (low-prio) fix entityID in code and make metadata availeble
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+selfservice_remote_vetting_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/remote_vetting_sp.crt') }}"
+# Format: PEM X.509 certificate
+selfservice_remote_vetting_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/remote_vetting_sp.key') }}"
+
+# Configuration of Remote vetting IdPs
+# These are the remote vetting methods a user can choose from
+ss_remote_vetting_idps:
+    irma:
+        name: "IRMA"
+        logo: "/images/second-factor/irma.png"
+        description:
+            en_GB: "IRMA"
+            nl_NL: "IRMA"
+        # Configuration of the Remote Vetting IdP
+        entity_id: "https://irma.vetting-poc.surfconext.nl/metadata"
+        sso_url: "https://irma.vetting-poc.surfconext.nl/sso"
+        certificate: |
+          -----BEGIN CERTIFICATE-----
+          MIICqjCCAZICCQDN8e1D1kTjczANBgkqhkiG9w0BAQsFADAXMRUwEwYDVQQDDAxT
+          QU1MIHNpZ25pbmcwHhcNMTkwNzE4MTE0NjU5WhcNMjkwNzE1MTE0NjU5WjAXMRUw
+          EwYDVQQDDAxTQU1MIHNpZ25pbmcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+          AoIBAQDlUMCGmkE7SBw7wOEdXuqsfxldw9gHS1aAcyQ7uVQ09olFhDrYFSRfJJsR
+          GUgLC9C8CXl6KtQRjfpKmnAjyWVzEk15OX9D6L8JHxFU/ySckwwbAf9eWw+A8IoA
+          3EyDiQ5vouVSym/czgk6cjyaBtVr/MDLzHsOJPpOF3V69Olnyt9Q6GrEN1vT15oV
+          K5ESKCMW+5XETRPt3TEFArrqEFA31PLFoOmKsyLtsIohmKB7QhuNbyCopLCUlYzw
+          JsjFh6R5Q89NKMoBVhfYb2vP9BSDSFLa1vvBNcG6H9jWSioXh92pVUJj7q6tWDTz
+          DIK8VQ/7ix/mKZW6H/ew7Ud6JEbRAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAKPh
+          uLSyXkjUe2OC8KLtFIa1ddpWYN/9GYdgetk9ek/siY+3XIzQCGHbaF0ySpXukiXC
+          nNMW3s3ZfY2AUPVwxIs1HW4Iy+X/1Q+6wsDgaDRhasxaU7GbsIytOG+JBM2XNWAz
+          ZhFgbgX5gmdGK5Wp/Avafb/V8vXKcu3fOx1RbI/CtM+pcLsI2IgDGLS2t8+nxzl9
+          Ksh+M8hkq4PD6CghxraF7EOyXcf0p6fOQipYbL+mZfPaURgnHyff1Jk2sQ7PaNef
+          ipu9+kKb6j+4sIRAPXjeRXtp2z9vcLEcDFVwh3FpONNdsAB6RVXx0UiMc/S8gvRc
+          A9y5NkGB28R5tlU0VyA=
+          -----END CERTIFICATE-----
+        attribute_mapping:
+            # remoteName: Name of the attribute as received from the IdP
+            # localName: Name of the attribute in SelfService
+
+            # Map of localName => remoteName e.g.:
+            # localName1: remoteName1
+            # localName2: remoteName2
+
+            # localNames: commonName, mail, schacHomeOrganization
+            # TODO: Need more local names. How to do this?
+            # TODO: How to deal with local name descriptions for display purposes?
+            # TODO: Deal with optional attributes
+            commonName: urn:mace:dir:attribute-def:cn
+
+# PEM X.509 certificate used for encrypting the match results that are written to disk
+ss_encryption_public_key: "{{ lookup('file', inventory_dir+'/saml_cert/encryption.crt') }}"

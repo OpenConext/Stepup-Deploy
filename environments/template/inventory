@@ -103,7 +103,7 @@ stepup-app
 
 [es:children]
 # For the Stepup-VM we (mis)use manage server for hosting a single ES node
-es
+manage
 
 #######
 # proxy

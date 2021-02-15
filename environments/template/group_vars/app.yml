@@ -142,21 +142,15 @@ app_session_expiry_time: 900
 # app_php72_components: [] # Configuration compatible with release-17
 # app_php72_components: ['stepup-middleware', 'stepup-gateway', 'stepup-selfservice', 'stepup-ra', 'stepup-tiqr', 'stepup-keyserver'] # Configuration compatible with release-18
 app_php72_components:
+
+# When a component is in this list its vhost will always be configured for Symfony 3
+# stepup-middleware, stepup-gateway, stepup-selfservice, stepup-ra, stepup-tiqr and stepup-keyserver
+app_symfony_3_components:
 - stepup-middleware
 - stepup-gateway
 - stepup-selfservice
 - stepup-ra
 - stepup-tiqr
-#- stepup-keyserver
-
-# When a component is in this list its vhost will always be configured for Symfony 3
-# stepup-middleware, stepup-gateway, stepup-selfservice, stepup-ra, stepup-tiqr and stepup-keyserver
-app_symfony_3_components:
-#- stepup-middleware
-- stepup-gateway
-#- stepup-selfservice
-#- stepup-ra
-#- stepup-tiqr
 - stepup-keyserver
 
 

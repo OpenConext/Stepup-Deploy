@@ -1,0 +1,10 @@
+# Config for webauthn component
+
+# Format: PEM RSA PRIVATE KEY (Vaulted)
+# Certificate in all.yml group_vars
+readid_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/readid_idp.key') }}"
+
+# TODO: Configure
+readid_support_url:
+  nl_NL: "https://readid.stepup.example.com/nl_NL/support_url"
+  en_GB: "https://readid.stepup.example.com/en_GB/support_url"

@@ -171,7 +171,7 @@
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
 - name: Add saml2debug module
-  shell: export COMPOSER_MEMORY_LIMIT=-1 && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug
+  shell: export COMPOSER_MEMORY_LIMIT=-1 && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug:v1.0
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 

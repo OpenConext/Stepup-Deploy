@@ -1,4 +1,5 @@
 ---
 
 ssp_source_repo: https://github.com/simplesamlphp/simplesamlphp.git
-ssp_version: adf1eb86215b3689a3c766dfa81cb9d55b786237
+# Last version that support PHP 5.6
+ssp_version: simplesamlphp-1.18

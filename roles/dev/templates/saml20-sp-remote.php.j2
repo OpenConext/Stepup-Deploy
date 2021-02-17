@@ -45,3 +45,37 @@ $metadata['https://{{ gateway_vhost_name }}/authentication/metadata'] = array(
         ),
     'certificate' => '{{ gateway_saml_sp_publickey | depem }}'
 );
+
+
+///////////////////////////////////////////////////////////////////////////////////
+// Remote Vetting SP of Stepup-SelfService
+$metadata['https://{{ selfservice_vhost_name }}/rv/metadata'] = array (
+    'entityid' => 'https://{{ selfservice_vhost_name }}/rv/metadata',
+    'metadata-set' => 'saml20-sp-remote',
+    'name' =>
+        array (
+            'nl' => 'Remote Vetting SP ({{ selfservice_vhost_name }})',
+            'en' => 'Remote Vetting SP ({{ selfservice_vhost_name }})',
+        ),
+    'saml20.sign.assertion' => true,
+    'AssertionConsumerService' =>
+        array (
+            0 =>
+                array (
+                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+                    'Location' => 'https://{{ selfservice_vhost_name }}/second-factor/acs',
+                    'index' => 0,
+                ),
+        ),
+    'keys' =>
+        array (
+            0 =>
+                array (
+                    'encryption' => false,
+                    'signing' => true,
+                    'type' => 'X509Certificate',
+                    'X509Certificate' => '',
+                ),
+        ),
+    'ForceAuthn' => true,
+);

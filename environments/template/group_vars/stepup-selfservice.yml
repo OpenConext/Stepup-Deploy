@@ -179,6 +179,31 @@ selfservice_remote_vetting_sp_privatekey: "{{ lookup('file', inventory_dir+'/sam
 # Configuration of Remote vetting IdPs
 # These are the remote vetting methods a user can choose from
 ss_remote_vetting_idps:
+    ssp:
+        name: "SimpleSAMLphp"
+        logo: "/images/simplesaml.png"
+        description:
+            en_GB: "Local SimpleSAMLphp IdP"
+            nl_NL: "Locale SimpleSAMLphp IdP"
+        # Configuration of the Remote Vetting IdP
+        entity_id: "https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php"
+        sso_url: "https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/SSOService.php"
+        certificate: |
+            {{ ssp_idp_publickey | indent(12, False) }}
+
+        attribute_mapping:
+            # remoteName: Name of the attribute as received from the IdP
+            # localName: Name of the attribute in SelfService
+
+            # Map of localName => remoteName e.g.:
+            # localName1: remoteName1
+            # localName2: remoteName2
+
+            # localNames: commonName, mail, schacHomeOrganization
+            # TODO: Need more local names. How to do this?
+            # TODO: How to deal with local name descriptions for display purposes?
+            # TODO: Deal with optional attributes
+            commonName: urn:mace:dir:attribute-def:cn
     irma:
         name: "IRMA"
         logo: "/images/second-factor/irma.png"

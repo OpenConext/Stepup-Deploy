@@ -174,8 +174,6 @@ ss_gssp_azuremfa_pop_failed:
 #       TODO: (low-prio) fix entityID in code and make metadata availeble
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
-selfservice_remote_vetting_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/remote_vetting_sp.crt') }}"
-# Format: PEM X.509 certificate
 selfservice_remote_vetting_sp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/remote_vetting_sp.key') }}"
 
 # Configuration of Remote vetting IdPs

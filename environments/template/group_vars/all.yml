@@ -237,7 +237,14 @@ webauthn_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_id
 # Format: PEM X.509 certificate
 azuremfa_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/azuremfa_idp.crt') }}"
 
+# Format: PEM X.509 certificate
 readid_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/readid_idp.crt') }}"
+
+# Public SAML signing key of the remote vetting SP in SelfService
+# Format: PEM X.509 certificate
+# Private key in stepup-selfservice.yml
+selfservice_remote_vetting_sp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/remote_vetting_sp.crt') }}"
+
 
 
 # Database tables and users for Stepup applications, keyserver

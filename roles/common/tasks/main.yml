@@ -104,13 +104,10 @@
   tags: rsyslog
 
 # Setup rsyslog
-# Note: Default template requires a host in the "manage" group.
-# If it's missing you get the error "AnsibleUndefinedVariable: list object has no element 0"
 - name: Put rsyslog config
   template: src='rsyslog/rsyslog.conf.j2' dest='/etc/rsyslog.conf'
   notify: restart rsyslog
   tags: rsyslog
-
 
 # Include environment specific tasks
 - include: "{{ inventory_dir }}/tasks/common.yml"

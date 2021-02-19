@@ -50,7 +50,7 @@ server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param HTTPS on;
-        fastcgi_param SYMFONY_ENV prod;
+        fastcgi_param SYMFONY_ENV dev; # Note: Typically has an override in app_dev.php
     }
     {# Finally, disallow opening php files outside of app_dev.php #}
     location ~* \.php$ {

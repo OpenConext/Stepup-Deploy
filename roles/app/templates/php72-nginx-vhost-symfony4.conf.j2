@@ -42,8 +42,13 @@ server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param HTTPS on;
+{% if 'dev' in group_names %}
+        fastcgi_param SYMFONY_ENV dev;
+        fastcgi_param APP_ENV dev;
+{% else %}
         fastcgi_param SYMFONY_ENV prod;
         fastcgi_param APP_ENV prod;
+{% endif %}
     }
 
     {# Finally, disallow opening php files outside of index.php #}

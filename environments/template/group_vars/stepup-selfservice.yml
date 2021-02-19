@@ -204,6 +204,23 @@ ss_remote_vetting_idps:
             # TODO: How to deal with local name descriptions for display purposes?
             # TODO: Deal with optional attributes
             commonName: urn:mace:dir:attribute-def:cn
+
+    # Build-in mock IdP of SelfService. Available only in Stepup-SelfSetvice (dev)elop deploy
+    # TODO: Delete when not used
+    mock:
+        name: 'Mock IDP'
+        logo: /images/mock.png
+        description:
+            nl_NL: 'This is enn geïntegreerde test IdP'
+            en_GB: 'This is an integration test IdP'
+        entityId: 'https://{{ selfservice_vhost_name }}/mock/metadata'
+        ssoUrl: 'https://{{ selfservice_vhost_name }}/second-factor/mock/sso'
+        certificateFile: '%saml_rv_publickey%'
+        privateKey: '%saml_rv_privatekey%'
+        attributeMapping:
+            givenName: firstName
+            surname: lastName
+
     irma:
         name: "IRMA"
         logo: "/images/second-factor/irma.png"

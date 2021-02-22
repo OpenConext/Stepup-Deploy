@@ -106,12 +106,21 @@ parameters:
 {% endfor %}
 {% endfor %}
 
-    remote_vetting_sp:
-      entityId: "https://{{ selfservice_vhost_name }}/rv/metadata"
-      assertionConsumerUrl: "https://{{ selfservice_vhost_name }}/second-factor/acs"
-      privateKey: "%saml_rv_privatekey%"
-      # Note that the corresponding certificate is not included in the configuration here and that no metadata is
-      # published. The corresponding certificate is written as remote_vetting_sp.key
+{% if 'dev' in group_names %}
+    - slug: mock
+      name: 'Mock IDP'
+      logo: /images/remote-vetting/mock.png
+      description:
+          nl_NL: 'This is an integration test IdP.'
+          en_GB: 'This is an integration test IdP.'
+      entityId: 'https://selfservice.stepup.example.com/mock/metadata'
+      ssoUrl: 'https://selfservice.stepup.example.com/second-factor/mock/sso'
+      certificateFile: '%saml_rv_publickey%'
+      privateKey: '%saml_rv_privatekey%'
+      attributeMapping:
+          givenName: firstName
+          surname: lastName
+{% endif %}
 
     identity_encryption_configuration:
       # The public key used to encrypt the remote vetting user data. The private key matching this is used to decrypt,

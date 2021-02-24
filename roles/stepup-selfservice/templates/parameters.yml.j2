@@ -99,7 +99,6 @@ parameters:
       entityId: "{{ value.entity_id }}"
       ssoUrl: "{{ value.sso_url }}"
       certificateFile: "{{ component_config_file_dir_name }}/{{ key }}_sp.crt"
-      privateKey: "{{ component_dir_name }}/src/Surfnet/StepupSelfService/SelfServiceBundle/Tests/Resources/test.key"
       attributeMapping:
 {% for k, v in value.attribute_mapping.items() %}
         "{{ k }}": "{{ v }}"
@@ -116,11 +115,12 @@ parameters:
       entityId: 'https://selfservice.stepup.example.com/mock/metadata'
       ssoUrl: 'https://selfservice.stepup.example.com/second-factor/mock/sso'
       certificateFile: '%saml_rv_publickey%'
-      privateKey: '%saml_rv_privatekey%'
       attributeMapping:
           givenName: firstName
           surname: lastName
 {% endif %}
+
+    remote_vetting_entity_id: "https://{{ selfservice_vhost_name }}/rv/metadata"
 
     identity_encryption_configuration:
       # The public key used to encrypt the remote vetting user data. The private key matching this is used to decrypt,
@@ -131,5 +131,9 @@ parameters:
       # The location on disk where the encrypted remote vetting user data is stored
       storage_location: "/opt/remote-vetting-log"
 
-    saml_rv_privatekey: "{{ component_config_file_dir_name }}/remote_vetting_sp.key"
+    # Saml Remote Vetting SP public key
     saml_rv_publickey: "{{ component_config_file_dir_name }}/remote_vetting_sp.crt"
+{% if 'dev' in group_names %}
+    # Saml Remote Vetting Mock IdP private key (used for development and testing, this value should be omitted in production)
+    saml_rv_privatekey: "{{ component_config_file_dir_name }}/remote_vetting_sp.key"
+{% endif %}

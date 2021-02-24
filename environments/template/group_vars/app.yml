@@ -141,15 +141,11 @@ app_session_expiry_time: 900
 # TODO: Set the components that require PHP 7.2 and Symfony.
 # app_php72_components: [] # Configuration compatible with release-17
 # app_php72_components: ['stepup-middleware', 'stepup-gateway', 'stepup-selfservice', 'stepup-ra', 'stepup-tiqr', 'stepup-keyserver'] # Configuration compatible with release-18
-app_php72_components: []
+app_php72_components: ['stepup-selfservice','stepup-middleware','stepup-ra','stepup-gateway']
 
 # When a component is in this list its vhost will always be configured for Symfony 3
 # stepup-middleware, stepup-gateway, stepup-selfservice, stepup-ra, stepup-tiqr and stepup-keyserver
 app_symfony_3_components:
-- stepup-middleware
-- stepup-gateway
-- stepup-selfservice
-- stepup-ra
 - stepup-tiqr
 - stepup-keyserver
 

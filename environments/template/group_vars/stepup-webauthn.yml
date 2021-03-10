@@ -4,6 +4,9 @@
 # Certificate in all.yml group_vars
 webauthn_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/webauthn_idp.key') }}"
 
+# Used for Symfony CSRF protection (Vaulted)
+webauthn_secret: "{{ lookup('file', inventory_dir+'/secret/webauthn') }}"
+
 # TODO: Configure
 webauthn_support_url:
   nl_NL: "https://webauthn.stepup.example.com/nl_NL/support_url"

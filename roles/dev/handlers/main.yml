@@ -2,3 +2,6 @@
 
 - name: Restart php-fpm
   service: name=php-fpm state=restarted
+
+- name: Restart php72-php-fpm
+  service: name=php72-php-fpm state=restarted

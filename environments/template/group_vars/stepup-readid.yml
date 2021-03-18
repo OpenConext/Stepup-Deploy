@@ -1,4 +1,7 @@
-# Config for webauthn component
+# Config for readid component
+
+# Used for Symfony CSRF protection
+readid_secret: "{{ lookup('file', inventory_dir+'/secret/readid') }}"
 
 # Format: PEM RSA PRIVATE KEY (Vaulted)
 # Certificate in all.yml group_vars

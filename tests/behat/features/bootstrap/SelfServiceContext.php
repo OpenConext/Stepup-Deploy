@@ -149,6 +149,35 @@ class SelfServiceContext implements Context
     }
 
     /**
+     * @When I self-vet a new demo token with my SMS token
+
+     */
+    public function selfVetNewDemoToken()
+    {
+        $this->minkContext->assertPageAddress('/registration/select-token');
+
+        // Select the dummy second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/gssf/demo_gssp/initiate')->click();
+
+        $this->minkContext->assertPageAddress('/registration/gssf/demo_gssp/initiate');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Send SMS code');
+        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+        $this->minkContext->pressButton('Register with the Demo GSSP');
+        $this->minkContext->pressButton('Register user');
+
+        // Now we should be on the choose vetting page
+        $this->minkContext->assertPageAddress('/second-factor/ea24660f-5f94-4bac-b2aa-49d55b6b67e3/vetting-types');
+        $this->minkContext->assertPageContainsText('Use an activated token');
+        $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
+
+        $this->minkContext->pressButton('Verify');
+    }
+
+    /**
      * @When I verify my e-mail address
      */
     public function verifyEmailAddress()

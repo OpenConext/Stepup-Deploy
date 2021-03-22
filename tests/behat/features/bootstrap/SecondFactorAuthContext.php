@@ -277,6 +277,7 @@ class SecondFactorAuthContext implements Context
      */
     public function authenticateWithIdentityProviderFor($userName)
     {
+        $this->minkContext->printLastResponse(); die;
         $this->minkContext->assertPageAddress('https://ssp.stepup.example.com/module.php/core/loginuserpass.php');
 
         $this->minkContext->fillField('username', $userName);

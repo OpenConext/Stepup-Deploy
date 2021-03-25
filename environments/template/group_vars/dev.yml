@@ -68,7 +68,7 @@ second_factors_display_name:
 
 # Skip the prove token possession step
 skip_prove_possession_second_factors:
-  - gssp-2
+  - demo_gssp_2
   - webauthn
   - azuremfa
 

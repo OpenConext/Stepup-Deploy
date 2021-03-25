@@ -85,7 +85,7 @@ stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
 # Format: comma separated list of factors to enable
 # Supported factors: sms, yubikey, u2f
 # TODO: Select second factors to enable
-stepup_enabled_factors: sms, yubikey, u2f
+stepup_enabled_factors: sms, yubikey
 
 # The generic second factor types to enable in the SS and the RA
 # You can define new GSSPs here. Note that you will have to add configuration and translation for the new GSSP in

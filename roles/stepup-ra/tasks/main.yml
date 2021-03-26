@@ -67,3 +67,9 @@
   include_role:
     name: deploy
     tasks_from: activate
+
+# include ../../deploy/cleanup.yml
+- name: Clean old releases
+  include_role:
+    name: deploy
+    tasks_from: cleanup

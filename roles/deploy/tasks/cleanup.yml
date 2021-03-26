@@ -1,0 +1,13 @@
+---
+# Remove all dirs, but keep the current version and the two previous versions
+#
+# $(echo "{{ component_dir_name }}" | cut -d "-" -f -2)-*   =   The basename of the component, eg /opt/stepup/Stepup-Selfservice-*
+# ls -td [basename]   =   list only directories, sorted by time, newest first
+# grep -v "{{ component_dir_name }}")   =   remove the current version from the output
+# tail -n +3   =   start output at the 3rd line (so the top 2 lines will not be passed to the next command, and not be deleted)
+# xargs --no-run-if-empty rm -rv   =   Recursively delete the directories, be verbose to show when something was deleted
+- name: Clean up old releases
+  shell: ls -td $(echo "{{ component_dir_name }}" | cut -d "-" -f -2)-* | grep -v "{{ component_dir_name }}" | tail -n +3 | xargs --no-run-if-empty rm -rv
+  register: clean_releases
+  changed_when: '"removed" in clean_releases.stdout'
+  when: not (develop | default(false))

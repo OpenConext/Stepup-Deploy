@@ -104,12 +104,16 @@
   with_items:
   - "01-gateway-db_migrate.sh"
 
-
-- name: Actiavte gateway component
+- name: Activate gateway component
   include_role:
     name: deploy
     tasks_from: activate
 
+# include ../../deploy/cleanup.yml
+- name: Clean old releases
+  include_role:
+    name: deploy
+    tasks_from: cleanup
 
 - name: Show database configuration hint
   debug:

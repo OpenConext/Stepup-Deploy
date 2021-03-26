@@ -51,6 +51,11 @@
     name: deploy
     tasks_from: activate
 
+# include ../../deploy/cleanup.yml
+- name: Clean old releases
+  include_role:
+    name: deploy
+    tasks_from: cleanup
 
 - name: Put webauthn configuration script in /root/
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"

@@ -34,9 +34,14 @@
 - name: Write Azure-MFA GSSP IdP private key
   copy: content="{{ azuremfa_idp_privatekey | vault(vault_keydir) }}" dest={{ component_config_file_dir_name }}/key.pem owner={{ component_owner }} mode={{ component_mode_400 }}
 
-
 # include ../../deploy/activate.yml
 - name: Activate Symfony component
   include_role:
     name: deploy
     tasks_from: activate
+
+# include ../../deploy/cleanup.yml
+- name: Clean old releases
+  include_role:
+    name: deploy
+    tasks_from: cleanup

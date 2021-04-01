@@ -346,6 +346,9 @@
 - name: Remove PHP 5.6
   block:
 
+  - name: Flush ansible handlers
+    meta: flush_handlers
+
   - name: Stop and disable php-fpm
     service: name={{item}} state=stopped enabled=false
     with_items:

@@ -143,6 +143,13 @@
       notify:
         - restart php72-php-fpm
 
+    - name: Put 72 php-fpm systemd override file to create the socket dir
+      copy:
+        src: "createrundir.conf"
+        dest: "/etc/systemd/system/php72-php-fpm.service.d/createrundir.conf"
+      notify:
+        - "restart php72-php-fpm"
+
   when: app_require_php72
 
 

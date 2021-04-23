@@ -21,28 +21,32 @@
     "show_raa_contact_information": true,
     "verify_email": false,
     "allowed_second_factors": [],
-    "number_of_tokens_per_identity": 5
+    "number_of_tokens_per_identity": 5,
+    "self_vet": true
   },
   "institution-a.example.com": {
     "use_ra_locations": true,
     "show_raa_contact_information": true,
     "verify_email": true,
     "allowed_second_factors": [],
-    "number_of_tokens_per_identity": 2
+    "number_of_tokens_per_identity": 2,
+    "self_vet": true
   },
   "institution-b.example.com": {
     "use_ra_locations": false,
     "show_raa_contact_information": true,
     "verify_email": false,
     "allowed_second_factors": [],
-    "number_of_tokens_per_identity": 1
+    "number_of_tokens_per_identity": 1,
+    "self_vet": false
   },
   "institution-d.example.com": {
     "use_ra_locations": true,
     "show_raa_contact_information": false,
     "verify_email": true,
     "allowed_second_factors": ["yubikey", "tiqr"],
-    "number_of_tokens_per_identity": 1
+    "number_of_tokens_per_identity": 1,
+    "self_vet": false
   },
   "institution-f.example.com": {
     "use_ra_locations": true,
@@ -52,7 +56,8 @@
     "number_of_tokens_per_identity": 2,
     "use_ra": [ "institution-f.example.com", "institution-a.example.com", "institution-b.example.com" ],
     "use_raa": [ "institution-f.example.com", "institution-a.example.com" ],
-    "select_raa": [ "institution-f.example.com" ]
+    "select_raa": [ "institution-f.example.com" ],
+    "self_vet": true
   },
   "institution-g.example.com": {
     "use_ra_locations": true,
@@ -62,7 +67,8 @@
     "number_of_tokens_per_identity": 2,
     "use_ra": [ "institution-g.example.com" ],
     "use_raa": [ "institution-g.example.com" ],
-    "select_raa": [ "institution-h.example.com", "institution-g.example.com" ]
+    "select_raa": [ "institution-h.example.com", "institution-g.example.com" ],
+    "self_vet": true
   },
   "institution-v.example.com": {
     "use_ra_locations": true,
@@ -72,7 +78,8 @@
     "number_of_tokens_per_identity": 2,
     "use_ra": [ ],
     "use_raa": [ ],
-    "select_raa": [ "institution-a.example.com", "institution-b.example.com" ]
+    "select_raa": [ "institution-a.example.com", "institution-b.example.com" ],
+    "self_vet": true
   },
   "institution-i.example.com": {
     "use_ra_locations": true,
@@ -82,7 +89,8 @@
     "number_of_tokens_per_identity": 2,
     "use_ra": [ "institution-v.example.com" ],
     "use_raa": [ "institution-v.example.com" ],
-    "select_raa": [ ]
+    "select_raa": [ ],
+    "self_vet": true
   }
 
 }

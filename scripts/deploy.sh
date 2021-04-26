@@ -131,7 +131,7 @@ cd ${CWD}
 
 COMPONENT=`echo ${COMPONENT} | tr '[:upper:]' '[:lower:]'`
 echo "Deploying component: ${COMPONENT}"
-echo "Unsing inventory: ${INVENTORY}"
+echo "Using inventory: ${INVENTORY}"
 echo "Host limit: ${LIMIT}"
 echo "unarchive=${UNARCHIVE}"
 echo "config only=${CONFIGONLY}"

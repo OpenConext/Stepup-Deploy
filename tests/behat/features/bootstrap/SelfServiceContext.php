@@ -185,9 +185,42 @@ class SelfServiceContext implements Context
         $form->submit();
         $this->minkContext->pressButton('Submit');
         $this->authContext->authenticateUserYubikeyInGateway();
-        $this->minkContext->printLastResponse(); die;
+    }
 
+    /**
+     * @Given /^I try to self\-vet a new Yubikey token with my SMS token$/
+     */
+    public function iTryToSelfVetANewYubikeyTokenWithMySMSToken()
+    {
+        $this->minkContext->visit($this->selfServiceUrl);
+        $this->minkContext->assertPageAddress('/overview');
 
+        $this->minkContext->assertPageContainsText('The following tokens are registered for your account');
+        $this->minkContext->assertPageContainsText('Yubikey');
+
+        $this->minkContext->visit('/registration/select-token');
+
+        // Select the sms second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/yubikey/prove-possession"]')->click();
+        $this->minkContext->assertPageAddress('/registration/yubikey/prove-possession');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Link your YubiKey');
+        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+        $this->minkContext->pressButton('Send code');
+
+        $this->minkContext->assertPageContainsText('Please validate that you can receive SMS messages on this phone');
+        $this->minkContext->fillField('ss_prove_yubikey_possession_otp', 'scvcb234cv3234213abas41');
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[name="ss_prove_yubikey_possession"]');
+        $form->submit();
+
+        $this->minkContext->visit(
+            $this->getEmailVerificationUrl()
+        );
+        $this->verifyEmailAddress();
     }
 
     /**

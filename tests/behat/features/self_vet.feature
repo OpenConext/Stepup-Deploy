@@ -37,3 +37,11 @@ Feature: A user manages his tokens in the selfservice portal
     Then I should see "The following tokens are registered for your account."
     And I should see "SMS"
     And I should see "Yubikey"
+
+  Scenario: A user needs a suitable token to self vet
+    Given a user "Ponder Stibbons" identified by "urn:collab:person:institution-a.example.com:joe-a2" from institution "institution-a.example.com"
+    And the user "urn:collab:person:institution-a.example.com:joe-a2" has a vetted "sms"
+    And I am logged in into the selfservice portal as "joe-a2"
+    And I try to self-vet a new Yubikey token with my SMS token
+    # The self vet option is not available on the token vetting page
+    Then I should not see "Use your existing token"

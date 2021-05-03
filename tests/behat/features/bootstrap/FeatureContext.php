@@ -52,13 +52,14 @@ class FeatureContext implements Context
         // Generate test databases
         echo "Preparing test schemas\n";
         shell_exec("php72 /src/Stepup-Middleware/bin/console doctrine:schema:drop --env=smoketest --force");
-        shell_exec("php72 /src/Stepup-Gateway/bin/console doctrine:schema:drop --env=test --force");
+        shell_exec("php72 /src/Stepup-Gateway/bin/console doctrine:schema:drop --env=smoketest --force");
         shell_exec("php72 /src/Stepup-Middleware/bin/console doctrine:schema:create --env=smoketest");
-        shell_exec("php72 /src/Stepup-Gateway/bin/console doctrine:schema:create --env=test");
+        shell_exec("php72 /src/Stepup-Gateway/bin/console doctrine:schema:create --env=smoketest");
 
         echo "Replaying event stream\n";
         // Import the events.sql into middleware
         shell_exec("mysql -uroot -ppassword middleware_test < ./fixtures/events.sql");
+        shell_exec("sh ./fixtures/mw-config-push.sh");
         // Perform an event replay
         shell_exec("php72 /src/Stepup-Middleware/bin/console middleware:event:replay --env=smoketest_event_replay --no-interaction -q");
 

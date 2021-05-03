@@ -1,0 +1,292 @@
+{
+  "sraa": ["urn:collab:person:stepup.example.com:admin"],
+  "email_templates": {
+    "confirm_email": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p>Thank you for registering your token. Please visit this link to verify your email address:</p> <p><a href='{{ verificationUrl }}'>{{ verificationUrl }}</a></p> <p>If you can not click on the URL, please copy the link and paste it in the address bar of your browser.</p>",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Bedankt voor het registreren van je token. Klik op onderstaande link om je e-mailadres te bevestigen:</p> <p><a href='{{ verificationUrl }}'>{{ verificationUrl }}</a></p> <p>Is klikken op de link niet mogelijk? Kopieer dan de link en plak deze in de adresbalk van je browser.</p>"
+    },
+    "registration_code_with_ras": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p>Thank you for registering your token. Please visit one of the locations below within 14 days to get your token activated. After {{ expirationDate | localizeddate('full', 'none', locale) }} your activation code is no longer valid.</p> <p>Please bring the following:</p> <ul> <li>Your token</li> <li>A valid proof of identity (passport, drivers license or national ID-card)</li> <li>The activation code from this e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p> <p>Location(s) to activate your token:</p> {% if ras is empty %} <p>No RAs are known.</p> {% else %} <ul> {% for ra in ras %} <li><address> <strong>{{ ra.commonName }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Bedankt voor het registreren van je token. Ga binnen 14 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode is geldig tot en met {{ expirationDate | localizeddate('full', 'none', locale) }}.</p> <p>Neem daarbij het volgende mee:</p> <ul> <li>Je token</li> <li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li> <li>De activatiecode uit deze e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p> <p>Locatie(s) om je token te activeren:</p> {% if ras is empty %} <p>Er zijn geen RAs bekend.</p> {% else %} <ul> {% for ra in ras %} <li><address> <strong>{{ ra.commonName }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}"
+    },
+    "second_factor_verification_reminder_with_ras": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p>You have registered, but not yet activated, a token. Please visit one of the locations below to get your token activated. After {{ expirationDate | localizeddate('full', 'none', locale) }} your activation code is no longer valid.</p> <p>Please bring the following:</p> <ul> <li>Your token</li> <li>A valid proof of identity (passport, drivers license or national ID-card).</li> <li>The activation code from this e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p> <p>Location(s) to activate your token:</p> {% if ras is empty %} <p>No RAs are known.</p> {% else %} <ul> {% for ra in ras %} <li><address> <strong>{{ ra.commonName }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Je hebt een token geregistreerd, maar het nog niet laten activeren. Je kunt tot en met {{ expirationDate | localizeddate('full', 'none', locale) }} bij een van de onderstaande locaties terecht om je token te laten activeren.</p> <p>Neem daarbij het volgende mee:</p> <ul> <li>Je token</li> <li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li> <li>De activatiecode uit deze e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p> <p>Locatie(s) om je token te activeren:</p> {% if ras is empty %} <p>Er zijn geen RAs bekend.</p> {% else %} <ul> {% for ra in ras %} <li><address> <strong>{{ ra.commonName }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}"
+    },
+    "registration_code_with_ra_locations": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p>Thank you for registering your token. Please visit one of the locations below within 14 days to get your token activated. After {{ expirationDate | localizeddate('full', 'none', locale) }} your activation code is no longer valid.</p> <p>Please bring the following:</p> <ul> <li>Your token</li> <li>A valid proof of identity (passport, drivers license or national ID-card)</li> <li>The activation code from this e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p> <p>Location(s) to activate your token:</p> {% if raLocations is empty %} <p>No locations known.</p> {% else %} <ul> {% for ra in raLocations %} <li><address> <strong>{{ ra.name }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }}</address> </li> {% endfor %} </ul> {% endif %}",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Bedankt voor het registreren van je token. Ga binnen 14 dagen naar een van de onderstaande locaties om je token te laten activeren. Je activatiecode is geldig tot en met {{ expirationDate | localizeddate('full', 'none', locale) }}.</p> <p>Neem daarbij het volgende mee:</p> <ul> <li>Je token</li> <li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li> <li>De activatiecode uit deze e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p> <p>Locatie(s) om je token te activeren:</p> {% if raLocations is empty %} <p>Er zijn geen Locaties bekend.</p> {% else %} <ul> {% for ra in raLocations %} <li><address> <strong>{{ ra.name }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}"
+    },
+    "second_factor_verification_reminder_with_ra_locations": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p>You have registered, but not yet activated, a token. Please visit one of the locations below to get your token activated. After {{ expirationDate | localizeddate('full', 'none', locale) }} your activation code is no longer valid.</p> <p>Please bring the following:</p> <ul> <li>Your token</li> <li>A valid proof of identity (passport, drivers license or national ID-card)</li> <li>The activation code from this e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activation code: <code>{{ registrationCode }}</code></p> <p>Location(s) to activate your token:</p> {% if raLocations is empty %} <p>No locations known.</p> {% else %} <ul> {% for ra in raLocations %} <li><address> <strong>{{ ra.name }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Je hebt een token geregistreerd, maar het nog niet laten activeren. Je kunt tot en met {{ expirationDate | localizeddate('full', 'none', locale) }} bij een van de onderstaande locaties terecht om je token te laten activeren.</p> <p>Neem daarbij het volgende mee:</p> <ul> <li>Je token</li> <li>Een geldig legitimatiebewijs (paspoort, rijbewijs of nationale ID-kaart)</li> <li>De activatiecode uit deze e-mail</li> </ul> <p style='font-size: 150%; text-align: center'>Activatiecode: <code>{{ registrationCode }}</code></p> <p>Locatie(s) om je token te activeren:</p> {% if raLocations is empty %} <p>Er zijn geen Locaties bekend.</p> {% else %} <ul> {% for ra in raLocations %} <li><address> <strong>{{ ra.name }}</strong><br /> {{ ra.location }}<br /> {{ ra.contactInformation }} </address></li> {% endfor %} </ul> {% endif %}"
+    },
+    "vetted": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p>Thank you for registering your token. Your token is ready to use. You can use this token for services connected to SURFconext that require two-step authentication. This e-mail contains more info on how to use your token.</p> <p><strong>Handle your token with care</strong></p> <ul> <li>Your token is private, do not share your token with others</li> <li>Never leave your token unattended</li> <li>Lock your phone, e.g. with a code or fingerprint</li> </ul> <p><strong>Token lost?</strong><br /> Did you lose your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> and remove your token registration. This way no one can take advantage of your token.</p> <p><strong>Replace token</strong><br /> Do you want to replace your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a>, remove your activated token and start the token registration process again.</p> <p><strong>Test token</strong><br /> Do you want to test your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> and select the \"Test\" button next to the token you want to test.</p>",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Bedankt voor het registreren van je token. Je token is nu klaar voor gebruik. Je kunt dit token gebruiken wanneer op SURFconext aangesloten services een tweede inlogstap vereisen. In deze e-mail vind je meer informatie over het gebruik van je token.</p> <p><strong>Ga zorgvuldig om met je token</strong></p> <ul> <li>Je token is persoonlijk, deel deze niet met anderen</li> <li>Laat je token nooit onbeheerd achter</li> <li>Vergrendel je telefoon met bijvoorbeeld een code of vingerafdruk</li> </ul> <p><strong>Token verloren?</strong><br /> Wat moet je doen als je jouw token verloren bent? Ga naar <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> en verwijder je tokenregistratie. Zo kan niemand misbruik maken van jouw token.</p> <p><strong>Nieuw token aanvragen</strong><br /> Wil je jouw token vervangen? Log in op <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a>, verwijder je geactiveerde token en doorloop het registratieproces opnieuw.</p> <p><strong>Token testen</strong><br /> Wil je de werking van je token testen? Log in op <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> en selecteer de \"Testen\" knop naast het token dat je wil testen.</p>"
+    },
+    "second_factor_revoked": {
+      "en_GB": "<p>Dear {{ commonName }},</p> <p> {% if isRevokedByRa %} The registration of your {{ tokenType }} with ID {{ tokenIdentifier }} was deleted by an administrator. {% else %} You have deleted the registration of your {{ tokenType }} token with ID {{ tokenIdentifier }}. If you did not delete your token you must immediately contact the support desk of your institution, as this may indicate that your account has been compromised. {% endif %} </p> <p>You can no longer use this token to access services that require two-step authentication.</p> <p>Do you want to replace your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> and register a new token.</p>",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p> {% if isRevokedByRa %} De registratie van je {{ tokenType }} token met ID {{ tokenIdentifier }} is verwijderd door een beheerder. {% else %} Je hebt de registratie voor je {{ tokenType }} token met ID {{ tokenIdentifier }} verwijderd. Neem direct contact op met de helpdesk van je instelling als je dit zelf niet gedaan hebt, omdat dit kan betekenen dat je account gecompromitteerd is. {% endif %} </p> <p>Je kunt dit token niet meer gebruiken om in te loggen bij services die een tweede inlogstap vereisen.</p> <p>Wil je een nieuw token aanvragen? Ga dan naar <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> en doorloop het registratieproces opnieuw.</p>"
+    }
+  },
+
+  "gateway": {
+
+    "service_providers": [{
+      "entity_id": "https://ra.stepup.example.com/authentication/metadata",
+      "public_key": "MIID4zCCAksCFE/RXnB+y6e2zlC0Zpi7Pl6GbyuAMA0GCSqGSIb3DQEBCwUAMC4xEzARBgNVBAMMClJBIFNBTUwgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyM1oXDTI2MDQxOTA3MDIyM1owLjETMBEGA1UEAwwKUkEgU0FNTCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCyMqGyevrF/Ms8fsGQdz6fqzCA8T/QKC9Jb3m7EpQOp/OMq/qBv4gjtFf0/bAun2N/u6zZOlPk61iVWRbxIet/O9BAoqRhtT6PHQVcReXR1F3+Dk2vH8+QyZwnWGENwh16BYuirIeWQuEgfVDUpSg2MBjkHjZmpF8Dxn6d485qwrdbFZN+z3QPtxNaNu1FBktsgPNjlpE7HNB9xcGy4DlgTIP+80nKgM+Kdopw9FVk71bfKKHp1m9qSSbFI+drtbtFJ7OPqFYDs9gJEY8ivALID1ERNQkAPImr/EIPiazHc4nkQfi4Kt5ohsvGufdCxYtOUGxjcrkq9oJX5YiiC9xfekPeU05F2FsYWxYK0nmnEP0tydgDFeKl2FI2vUhr2oOaiTs5VlNhMz43diX9AJzjmO4nrePsuA/T3wj8rSzhS9kD9IF6GkZ+y+1Yyzf8NWxPfFCL0K4B5/+pGDY5BETX+BHq4kKCGjWVWz9Whd9MeaJb4buycT9RyKZrmSEe/fkCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAjuAYYpA337xiUem4MTmCB68VVEPxVeiR3geTqZdk42ep6ATfalbAIAsqzTsh5QPU5FZByrZauOWA6m5HLmlEY3UQmI6l1P9KcOAIVfHQ0uVIpREuEaiFJlA2pif/Epk+Go/jp+yKPHms/IT/ZhZTzUCM3xbcan9rDA779pgi/NqYSHJ1EljiD+Wt8jDk67hZAjHum9b79UNsbJqB4wHrNkoyOZZnmW88nDeJGvBpoeo/zsy4xi20E23oBP7ti7QVEvsvaZtJ5L7SmysHP03fIkfquXswZ8Xl5wS3Vjr82wx9LOGunzZzFF4awRrsIuovvxrTBTD/NNHAv0Mm7UC0I8A27mlpufneN4TFcXmYW0KZxkiLbcrXtOicqgRyfEB1UC2C8RAPmeX3VGM+odFNhJjkCecms4/xpSqj13CE6S6ci2+osfiMWm5uBw6wAfPt/5rPrvy50dWxJ13vign9EqLAy7aVRzK8ghu1bOLlXV5Hp6kwwMYYqZBV5A0xOuSj",
+      "acs": [
+        "https://ra.stepup.example.com/authentication/consume-assertion"
+      ],
+      "loa": {
+        "__default__": "http://stepup.example.com/assurance/loa1"
+      },
+      "assertion_encryption_enabled": false,
+      "second_factor_only": false,
+      "second_factor_only_nameid_patterns": [],
+      "blacklisted_encryption_algorithms": []
+    },
+      {
+        "entity_id": "https://selfservice.stepup.example.com/authentication/metadata",
+        "public_key": "MIID9TCCAl0CFAnve9QqJ0J/EWyMQjYGnO3Bmgn3MA0GCSqGSIb3DQEBCwUAMDcxHDAaBgNVBAMME1NlbGZTZXJ2aWNlIFNBTUwgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyM1oXDTI2MDQxOTA3MDIyM1owNzEcMBoGA1UEAwwTU2VsZlNlcnZpY2UgU0FNTCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDuoCzIN4DaMNwxQ14NHc+CiAdu8ORrWPVAGZJJjfT8Dmuq5yrnjwyMK7N59cv/qarmK4qpNKNSxjlZ5nDlKiVcw4krRi+AYgRUnaZo51AbqoCSM04rdw8GbQOTWipenwpWGY4Gv278o4oODSheEDkVLOzQwE5xeS62cy/xYrjDLTU1WNGSQbZGv6c4K4UporTihn834HWu5rLKx+SNF6E1FUr41K1rtUsClZ18bs+G+Oi0tdPhIym4vQDlJ7EbaS/YsVabVK/9uOvXGoWFE4ybdb3efnZdKezYQ61fh1v5IhxjtdMPPuTqOb5iT/M7I5X0dstoR2oLrFPSfyDdt6jKKSPfLtwzmsUkkeOM4CrH468QvONzyrjRP1OYEEGZrN5RtmTbupnMca40s/Z14UAKlNwQNwotQS4S6I49VkO9FWFsJ5QdFtMu/tAqH0OlX2Spjnc7f8wPWun5+/xrIULKYqFALgIONw/b4TWtodNUS0ucsaFdr5g5TbgBV6URfF0CAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAm3mH0Sup3+nsBtiQ7Rd+Mplc3MbHIwn9/sQOMwopTlCXqYUBUbwpqbadxwHpVhUilT/DmrqA4VuCTpR3GFObOWWwyXcNiqSOEav2wmibLSQ7ZZh7SQMZKQUlbtvAdgrEudFJsLgQcsIAw2vZWG3PxRKtcGP9/L+Vqiz00xUdxdRCqOL16ei3DtCLXLXUL9a+KmYJkY2FUKZgJzXveTJjS9B3b5pXZ9Ld2/0Mpkxu3R3BXhow3Ml+WWDo7PeQ6qwOW9Lu8MCUWgOdsXxSJvaSJb7L86VNLiAPAmJ3BPKH9BNSdjlv3hgcRKZ7ig0m9Ajf9wsgLNSGYE3F+SKDJxD6kTyX2nrFaS39OrbWP+wSqOkrBBCJeb3ZyTGJVcjiyBexTB+MNSawvVtj3Q+BQAvRMeyckRjkt6mQaH+HLvQxi0VJmNswjuTNh+kBFItLs38hfzLopyt3Jw2PQvWaah3eFekq0NvOogwcLEnyhp4zcxgb09EVDYJ0v+RVLFAd3v7Z",
+        "acs": [
+          "https://selfservice.stepup.example.com/authentication/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+
+      {
+        "entity_id": "https://selfservice.stepup.example.com/registration/gssf/tiqr/metadata",
+        "public_key": "MIID9TCCAl0CFARJ9s2k1HSuOrxgd7OQs6wtzR+NMA0GCSqGSIb3DQEBCwUAMDcxHDAaBgNVBAMME1NlbGZTZXJ2aWNlIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNFoXDTI2MDQxOTA3MDIyNFowNzEcMBoGA1UEAwwTU2VsZlNlcnZpY2UgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDT5tfhevY3h2+ocZAbNIlZn/tONtLvlGXY45hHh0oqnRZrqlvwn5x5VUikt+FLwqidB5BLuo6fWvrQwB28H5VcWowcp0wMfeaJwVC45mnIeEa+Bptq14kfpPgvV6QpLktlmLcKWAcE++Xx+mYmtyOcNyGx0WII5IENZHgpjK5e/0ixAXm5LyZ9amWQBU/u1RJPMLtVhKBZaGS3OHCqgcQM1wCZjLcHe+tUFatXwjt/QXja68POx32jLSv4vGMrRh40R+YCAhKbtNRQL6KuhSQv5OYGaAptU6Tc7ycKQ01Or2uIxHGfdnuJtWct6glArHrQjQ86WLtgajo0xEo/1klcrILJVNapMrnKaIeSNw0G8UTumkU2EqEmIHqbHyggZvQEX36yX2YyZ4GIPb6h0LlfOBc8MOFKD/CXDo4LPbRXHpToT5exlhjPtHWLySXg6/0DEL9Z1KmxW4eFcxlg9xBTmYFjIJatH+Ex6X1sXcHRhgi842SA5nGRqnZ4adKUp/cCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAmDzjcp4wTdB67jyg0NdFl4f+MsRGBb54QqZNLTYCv7+Z+s3f8pzYkhZnxa2W0eWEJTOZ7x/HrHYgworwfSZBigh1P1ZrMKwq1P3qjXRGw/bUNphwx2EHoxYj7czf8ggWEVbCMorzOhXOuM2XFQNkveNZQ8GLzwrW7hulyqh1VFgY/BvceAQSlb+37ngVuVsdQ5llqkbDrts6G9v7l2peM/TEKe4/86pSLelUxVJrR4N73fFmLwZTFzuucRWt/KT6MYa9wZdmF3Tz1Plv4OqxEHqGL5exwgrih6tKqpdMC+5uG8E2JHhZmtFmQQearS6Q1FCd4WW0lAyQxuZQco0TClBt2BqA5laeya7DxhCZPdcCu84iNr3d4XutwqB9oDwacXEzQpjw70yKKlB3FNUzk82cX2AZqsUmXtS2nTisV6RUrHp7g6DenCNv1P65Fw4UlGJ/G2QEnonTevXA0kymE25ZLbMLJbts6VytHN0ETS2NtKzqAiKwg24S2CPwJ8GV",
+        "acs": [
+          "https://selfservice.stepup.example.com/registration/gssf/tiqr/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.stepup.example.com/vetting-procedure/gssf/tiqr/metadata",
+        "public_key": "MIID4zCCAksCFEXtGR5bhjnrAYZjbHT5031pep7cMA0GCSqGSIb3DQEBCwUAMC4xEzARBgNVBAMMClJBIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNVoXDTI2MDQxOTA3MDIyNVowLjETMBEGA1UEAwwKUkEgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCqMvWYW2jpxXmNB0jxzjgy/G6PQV2i9DQbYzrHvYe+R5u4bBNgdhrUx6TTBryxgq5IJ5nJI93ngK1Kqdy1Ij9+5PUBqc5l0tTPyGV/5aIf9cNNDdACGQ20Wtn5cL8/tMPkTKtlEPDW+qG8eTlZKdUCY5bQdI36VNZR7K7JQLEbfBJjBpy3scI8Uj6R9NPp0eLszRhMR4eSuBK3G9xJNassB6dhSmWOzmsvfb47VX1Io/9nG+iOv5FVaYb+VbcTaAhXES+xJbP9OjPgz25zFSajWgEcv8QWcJ7RaPqBu1VXIlB7gC0Kz/aJjKw++VfO+qFx+GOHyvRULpsUGVqeYX91lw7zwCBLp6UxUTzyel3lvDpQ1zWifEe/1TyjxHce4ZcMPv52Xw+g1TXJgXrc1KZo3tL0d75oF9jMIIa35Ek8HiApYio9QXDioIZVP59tRpG7gPy3/0sjkZS4Hm1DHuMjHRjLvs8GM3fBEeNbO/KAiaF6vkbPGN0I4krcKDr4C7UCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAHJXqx610HE8gGy8L0h/GDLbktws1Wqucr0pf8AT6s5zioOc9favYeyGNBXfVL8HuGwbtwFBmcRogdqDVKKXq0vhWmc3TNRDcOZXOjxUfqhaCKDY8ml7s/lHtoas9W1ZVso+DBcQCCxD2A15PKWJch5hPSGIhMZ+pH9UzOTh3gP3JWb7/tB/bboxAl3RKEV8/7OT56Zor9vMDDzyPjO9hW5vV0y7wn2uSbzewA68RSal5PLsO2CeycWMtms9HE9kvRf707CUsNs6HpJUEn60n8qLQmTVDuxvO6mXhHtobKaUxa37rwvLlj0lxOw3hD8dDai0jEKNk3ydmZOVo4tq5ELa1bXuUKIL4RGyuQNYuoKWs/IT/G80yEOkBDQnwiOMICIPLDSNIW+NVItfuM02ujXX61rIWG6yrnwFakJ8L2pmTKht+a2wW7LfAaLhGhuKsDMbWr9ORKbC+6fravAIuqMC0jtams+nVHWwlrzxCbYjXl7aMX7I7BLXb7gnQndq7",
+        "acs": [
+          "https://ra.stepup.example.com/vetting-procedure/gssf/tiqr/verify"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://selfservice.stepup.example.com/registration/gssf/webauthn/metadata",
+        "public_key": "MIID9TCCAl0CFARJ9s2k1HSuOrxgd7OQs6wtzR+NMA0GCSqGSIb3DQEBCwUAMDcxHDAaBgNVBAMME1NlbGZTZXJ2aWNlIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNFoXDTI2MDQxOTA3MDIyNFowNzEcMBoGA1UEAwwTU2VsZlNlcnZpY2UgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDT5tfhevY3h2+ocZAbNIlZn/tONtLvlGXY45hHh0oqnRZrqlvwn5x5VUikt+FLwqidB5BLuo6fWvrQwB28H5VcWowcp0wMfeaJwVC45mnIeEa+Bptq14kfpPgvV6QpLktlmLcKWAcE++Xx+mYmtyOcNyGx0WII5IENZHgpjK5e/0ixAXm5LyZ9amWQBU/u1RJPMLtVhKBZaGS3OHCqgcQM1wCZjLcHe+tUFatXwjt/QXja68POx32jLSv4vGMrRh40R+YCAhKbtNRQL6KuhSQv5OYGaAptU6Tc7ycKQ01Or2uIxHGfdnuJtWct6glArHrQjQ86WLtgajo0xEo/1klcrILJVNapMrnKaIeSNw0G8UTumkU2EqEmIHqbHyggZvQEX36yX2YyZ4GIPb6h0LlfOBc8MOFKD/CXDo4LPbRXHpToT5exlhjPtHWLySXg6/0DEL9Z1KmxW4eFcxlg9xBTmYFjIJatH+Ex6X1sXcHRhgi842SA5nGRqnZ4adKUp/cCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAmDzjcp4wTdB67jyg0NdFl4f+MsRGBb54QqZNLTYCv7+Z+s3f8pzYkhZnxa2W0eWEJTOZ7x/HrHYgworwfSZBigh1P1ZrMKwq1P3qjXRGw/bUNphwx2EHoxYj7czf8ggWEVbCMorzOhXOuM2XFQNkveNZQ8GLzwrW7hulyqh1VFgY/BvceAQSlb+37ngVuVsdQ5llqkbDrts6G9v7l2peM/TEKe4/86pSLelUxVJrR4N73fFmLwZTFzuucRWt/KT6MYa9wZdmF3Tz1Plv4OqxEHqGL5exwgrih6tKqpdMC+5uG8E2JHhZmtFmQQearS6Q1FCd4WW0lAyQxuZQco0TClBt2BqA5laeya7DxhCZPdcCu84iNr3d4XutwqB9oDwacXEzQpjw70yKKlB3FNUzk82cX2AZqsUmXtS2nTisV6RUrHp7g6DenCNv1P65Fw4UlGJ/G2QEnonTevXA0kymE25ZLbMLJbts6VytHN0ETS2NtKzqAiKwg24S2CPwJ8GV",
+        "acs": [
+          "https://selfservice.stepup.example.com/registration/gssf/webauthn/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.stepup.example.com/vetting-procedure/gssf/webauthn/metadata",
+        "public_key": "MIID4zCCAksCFEXtGR5bhjnrAYZjbHT5031pep7cMA0GCSqGSIb3DQEBCwUAMC4xEzARBgNVBAMMClJBIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNVoXDTI2MDQxOTA3MDIyNVowLjETMBEGA1UEAwwKUkEgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCqMvWYW2jpxXmNB0jxzjgy/G6PQV2i9DQbYzrHvYe+R5u4bBNgdhrUx6TTBryxgq5IJ5nJI93ngK1Kqdy1Ij9+5PUBqc5l0tTPyGV/5aIf9cNNDdACGQ20Wtn5cL8/tMPkTKtlEPDW+qG8eTlZKdUCY5bQdI36VNZR7K7JQLEbfBJjBpy3scI8Uj6R9NPp0eLszRhMR4eSuBK3G9xJNassB6dhSmWOzmsvfb47VX1Io/9nG+iOv5FVaYb+VbcTaAhXES+xJbP9OjPgz25zFSajWgEcv8QWcJ7RaPqBu1VXIlB7gC0Kz/aJjKw++VfO+qFx+GOHyvRULpsUGVqeYX91lw7zwCBLp6UxUTzyel3lvDpQ1zWifEe/1TyjxHce4ZcMPv52Xw+g1TXJgXrc1KZo3tL0d75oF9jMIIa35Ek8HiApYio9QXDioIZVP59tRpG7gPy3/0sjkZS4Hm1DHuMjHRjLvs8GM3fBEeNbO/KAiaF6vkbPGN0I4krcKDr4C7UCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAHJXqx610HE8gGy8L0h/GDLbktws1Wqucr0pf8AT6s5zioOc9favYeyGNBXfVL8HuGwbtwFBmcRogdqDVKKXq0vhWmc3TNRDcOZXOjxUfqhaCKDY8ml7s/lHtoas9W1ZVso+DBcQCCxD2A15PKWJch5hPSGIhMZ+pH9UzOTh3gP3JWb7/tB/bboxAl3RKEV8/7OT56Zor9vMDDzyPjO9hW5vV0y7wn2uSbzewA68RSal5PLsO2CeycWMtms9HE9kvRf707CUsNs6HpJUEn60n8qLQmTVDuxvO6mXhHtobKaUxa37rwvLlj0lxOw3hD8dDai0jEKNk3ydmZOVo4tq5ELa1bXuUKIL4RGyuQNYuoKWs/IT/G80yEOkBDQnwiOMICIPLDSNIW+NVItfuM02ujXX61rIWG6yrnwFakJ8L2pmTKht+a2wW7LfAaLhGhuKsDMbWr9ORKbC+6fravAIuqMC0jtams+nVHWwlrzxCbYjXl7aMX7I7BLXb7gnQndq7",
+        "acs": [
+          "https://ra.stepup.example.com/vetting-procedure/gssf/webauthn/verify"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://selfservice.stepup.example.com/registration/gssf/azuremfa/metadata",
+        "public_key": "MIID9TCCAl0CFARJ9s2k1HSuOrxgd7OQs6wtzR+NMA0GCSqGSIb3DQEBCwUAMDcxHDAaBgNVBAMME1NlbGZTZXJ2aWNlIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNFoXDTI2MDQxOTA3MDIyNFowNzEcMBoGA1UEAwwTU2VsZlNlcnZpY2UgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDT5tfhevY3h2+ocZAbNIlZn/tONtLvlGXY45hHh0oqnRZrqlvwn5x5VUikt+FLwqidB5BLuo6fWvrQwB28H5VcWowcp0wMfeaJwVC45mnIeEa+Bptq14kfpPgvV6QpLktlmLcKWAcE++Xx+mYmtyOcNyGx0WII5IENZHgpjK5e/0ixAXm5LyZ9amWQBU/u1RJPMLtVhKBZaGS3OHCqgcQM1wCZjLcHe+tUFatXwjt/QXja68POx32jLSv4vGMrRh40R+YCAhKbtNRQL6KuhSQv5OYGaAptU6Tc7ycKQ01Or2uIxHGfdnuJtWct6glArHrQjQ86WLtgajo0xEo/1klcrILJVNapMrnKaIeSNw0G8UTumkU2EqEmIHqbHyggZvQEX36yX2YyZ4GIPb6h0LlfOBc8MOFKD/CXDo4LPbRXHpToT5exlhjPtHWLySXg6/0DEL9Z1KmxW4eFcxlg9xBTmYFjIJatH+Ex6X1sXcHRhgi842SA5nGRqnZ4adKUp/cCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAmDzjcp4wTdB67jyg0NdFl4f+MsRGBb54QqZNLTYCv7+Z+s3f8pzYkhZnxa2W0eWEJTOZ7x/HrHYgworwfSZBigh1P1ZrMKwq1P3qjXRGw/bUNphwx2EHoxYj7czf8ggWEVbCMorzOhXOuM2XFQNkveNZQ8GLzwrW7hulyqh1VFgY/BvceAQSlb+37ngVuVsdQ5llqkbDrts6G9v7l2peM/TEKe4/86pSLelUxVJrR4N73fFmLwZTFzuucRWt/KT6MYa9wZdmF3Tz1Plv4OqxEHqGL5exwgrih6tKqpdMC+5uG8E2JHhZmtFmQQearS6Q1FCd4WW0lAyQxuZQco0TClBt2BqA5laeya7DxhCZPdcCu84iNr3d4XutwqB9oDwacXEzQpjw70yKKlB3FNUzk82cX2AZqsUmXtS2nTisV6RUrHp7g6DenCNv1P65Fw4UlGJ/G2QEnonTevXA0kymE25ZLbMLJbts6VytHN0ETS2NtKzqAiKwg24S2CPwJ8GV",
+        "acs": [
+          "https://selfservice.stepup.example.com/registration/gssf/azuremfa/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.stepup.example.com/vetting-procedure/gssf/azuremfa/metadata",
+        "public_key": "MIID4zCCAksCFEXtGR5bhjnrAYZjbHT5031pep7cMA0GCSqGSIb3DQEBCwUAMC4xEzARBgNVBAMMClJBIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNVoXDTI2MDQxOTA3MDIyNVowLjETMBEGA1UEAwwKUkEgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCqMvWYW2jpxXmNB0jxzjgy/G6PQV2i9DQbYzrHvYe+R5u4bBNgdhrUx6TTBryxgq5IJ5nJI93ngK1Kqdy1Ij9+5PUBqc5l0tTPyGV/5aIf9cNNDdACGQ20Wtn5cL8/tMPkTKtlEPDW+qG8eTlZKdUCY5bQdI36VNZR7K7JQLEbfBJjBpy3scI8Uj6R9NPp0eLszRhMR4eSuBK3G9xJNassB6dhSmWOzmsvfb47VX1Io/9nG+iOv5FVaYb+VbcTaAhXES+xJbP9OjPgz25zFSajWgEcv8QWcJ7RaPqBu1VXIlB7gC0Kz/aJjKw++VfO+qFx+GOHyvRULpsUGVqeYX91lw7zwCBLp6UxUTzyel3lvDpQ1zWifEe/1TyjxHce4ZcMPv52Xw+g1TXJgXrc1KZo3tL0d75oF9jMIIa35Ek8HiApYio9QXDioIZVP59tRpG7gPy3/0sjkZS4Hm1DHuMjHRjLvs8GM3fBEeNbO/KAiaF6vkbPGN0I4krcKDr4C7UCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAHJXqx610HE8gGy8L0h/GDLbktws1Wqucr0pf8AT6s5zioOc9favYeyGNBXfVL8HuGwbtwFBmcRogdqDVKKXq0vhWmc3TNRDcOZXOjxUfqhaCKDY8ml7s/lHtoas9W1ZVso+DBcQCCxD2A15PKWJch5hPSGIhMZ+pH9UzOTh3gP3JWb7/tB/bboxAl3RKEV8/7OT56Zor9vMDDzyPjO9hW5vV0y7wn2uSbzewA68RSal5PLsO2CeycWMtms9HE9kvRf707CUsNs6HpJUEn60n8qLQmTVDuxvO6mXhHtobKaUxa37rwvLlj0lxOw3hD8dDai0jEKNk3ydmZOVo4tq5ELa1bXuUKIL4RGyuQNYuoKWs/IT/G80yEOkBDQnwiOMICIPLDSNIW+NVItfuM02ujXX61rIWG6yrnwFakJ8L2pmTKht+a2wW7LfAaLhGhuKsDMbWr9ORKbC+6fravAIuqMC0jtams+nVHWwlrzxCbYjXl7aMX7I7BLXb7gnQndq7",
+        "acs": [
+          "https://ra.stepup.example.com/vetting-procedure/gssf/azuremfa/verify"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://selfservice.stepup.example.com/registration/gssf/demo_gssp/metadata",
+        "public_key": "MIID9TCCAl0CFARJ9s2k1HSuOrxgd7OQs6wtzR+NMA0GCSqGSIb3DQEBCwUAMDcxHDAaBgNVBAMME1NlbGZTZXJ2aWNlIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNFoXDTI2MDQxOTA3MDIyNFowNzEcMBoGA1UEAwwTU2VsZlNlcnZpY2UgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDT5tfhevY3h2+ocZAbNIlZn/tONtLvlGXY45hHh0oqnRZrqlvwn5x5VUikt+FLwqidB5BLuo6fWvrQwB28H5VcWowcp0wMfeaJwVC45mnIeEa+Bptq14kfpPgvV6QpLktlmLcKWAcE++Xx+mYmtyOcNyGx0WII5IENZHgpjK5e/0ixAXm5LyZ9amWQBU/u1RJPMLtVhKBZaGS3OHCqgcQM1wCZjLcHe+tUFatXwjt/QXja68POx32jLSv4vGMrRh40R+YCAhKbtNRQL6KuhSQv5OYGaAptU6Tc7ycKQ01Or2uIxHGfdnuJtWct6glArHrQjQ86WLtgajo0xEo/1klcrILJVNapMrnKaIeSNw0G8UTumkU2EqEmIHqbHyggZvQEX36yX2YyZ4GIPb6h0LlfOBc8MOFKD/CXDo4LPbRXHpToT5exlhjPtHWLySXg6/0DEL9Z1KmxW4eFcxlg9xBTmYFjIJatH+Ex6X1sXcHRhgi842SA5nGRqnZ4adKUp/cCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAmDzjcp4wTdB67jyg0NdFl4f+MsRGBb54QqZNLTYCv7+Z+s3f8pzYkhZnxa2W0eWEJTOZ7x/HrHYgworwfSZBigh1P1ZrMKwq1P3qjXRGw/bUNphwx2EHoxYj7czf8ggWEVbCMorzOhXOuM2XFQNkveNZQ8GLzwrW7hulyqh1VFgY/BvceAQSlb+37ngVuVsdQ5llqkbDrts6G9v7l2peM/TEKe4/86pSLelUxVJrR4N73fFmLwZTFzuucRWt/KT6MYa9wZdmF3Tz1Plv4OqxEHqGL5exwgrih6tKqpdMC+5uG8E2JHhZmtFmQQearS6Q1FCd4WW0lAyQxuZQco0TClBt2BqA5laeya7DxhCZPdcCu84iNr3d4XutwqB9oDwacXEzQpjw70yKKlB3FNUzk82cX2AZqsUmXtS2nTisV6RUrHp7g6DenCNv1P65Fw4UlGJ/G2QEnonTevXA0kymE25ZLbMLJbts6VytHN0ETS2NtKzqAiKwg24S2CPwJ8GV",
+        "acs": [
+          "https://selfservice.stepup.example.com/registration/gssf/demo_gssp/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.stepup.example.com/vetting-procedure/gssf/demo_gssp/metadata",
+        "public_key": "MIID4zCCAksCFEXtGR5bhjnrAYZjbHT5031pep7cMA0GCSqGSIb3DQEBCwUAMC4xEzARBgNVBAMMClJBIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNVoXDTI2MDQxOTA3MDIyNVowLjETMBEGA1UEAwwKUkEgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCqMvWYW2jpxXmNB0jxzjgy/G6PQV2i9DQbYzrHvYe+R5u4bBNgdhrUx6TTBryxgq5IJ5nJI93ngK1Kqdy1Ij9+5PUBqc5l0tTPyGV/5aIf9cNNDdACGQ20Wtn5cL8/tMPkTKtlEPDW+qG8eTlZKdUCY5bQdI36VNZR7K7JQLEbfBJjBpy3scI8Uj6R9NPp0eLszRhMR4eSuBK3G9xJNassB6dhSmWOzmsvfb47VX1Io/9nG+iOv5FVaYb+VbcTaAhXES+xJbP9OjPgz25zFSajWgEcv8QWcJ7RaPqBu1VXIlB7gC0Kz/aJjKw++VfO+qFx+GOHyvRULpsUGVqeYX91lw7zwCBLp6UxUTzyel3lvDpQ1zWifEe/1TyjxHce4ZcMPv52Xw+g1TXJgXrc1KZo3tL0d75oF9jMIIa35Ek8HiApYio9QXDioIZVP59tRpG7gPy3/0sjkZS4Hm1DHuMjHRjLvs8GM3fBEeNbO/KAiaF6vkbPGN0I4krcKDr4C7UCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAHJXqx610HE8gGy8L0h/GDLbktws1Wqucr0pf8AT6s5zioOc9favYeyGNBXfVL8HuGwbtwFBmcRogdqDVKKXq0vhWmc3TNRDcOZXOjxUfqhaCKDY8ml7s/lHtoas9W1ZVso+DBcQCCxD2A15PKWJch5hPSGIhMZ+pH9UzOTh3gP3JWb7/tB/bboxAl3RKEV8/7OT56Zor9vMDDzyPjO9hW5vV0y7wn2uSbzewA68RSal5PLsO2CeycWMtms9HE9kvRf707CUsNs6HpJUEn60n8qLQmTVDuxvO6mXhHtobKaUxa37rwvLlj0lxOw3hD8dDai0jEKNk3ydmZOVo4tq5ELa1bXuUKIL4RGyuQNYuoKWs/IT/G80yEOkBDQnwiOMICIPLDSNIW+NVItfuM02ujXX61rIWG6yrnwFakJ8L2pmTKht+a2wW7LfAaLhGhuKsDMbWr9ORKbC+6fravAIuqMC0jtams+nVHWwlrzxCbYjXl7aMX7I7BLXb7gnQndq7",
+        "acs": [
+          "https://ra.stepup.example.com/vetting-procedure/gssf/demo_gssp/verify"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://selfservice.stepup.example.com/registration/gssf/demo_gssp_2/metadata",
+        "public_key": "MIID9TCCAl0CFARJ9s2k1HSuOrxgd7OQs6wtzR+NMA0GCSqGSIb3DQEBCwUAMDcxHDAaBgNVBAMME1NlbGZTZXJ2aWNlIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNFoXDTI2MDQxOTA3MDIyNFowNzEcMBoGA1UEAwwTU2VsZlNlcnZpY2UgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQDT5tfhevY3h2+ocZAbNIlZn/tONtLvlGXY45hHh0oqnRZrqlvwn5x5VUikt+FLwqidB5BLuo6fWvrQwB28H5VcWowcp0wMfeaJwVC45mnIeEa+Bptq14kfpPgvV6QpLktlmLcKWAcE++Xx+mYmtyOcNyGx0WII5IENZHgpjK5e/0ixAXm5LyZ9amWQBU/u1RJPMLtVhKBZaGS3OHCqgcQM1wCZjLcHe+tUFatXwjt/QXja68POx32jLSv4vGMrRh40R+YCAhKbtNRQL6KuhSQv5OYGaAptU6Tc7ycKQ01Or2uIxHGfdnuJtWct6glArHrQjQ86WLtgajo0xEo/1klcrILJVNapMrnKaIeSNw0G8UTumkU2EqEmIHqbHyggZvQEX36yX2YyZ4GIPb6h0LlfOBc8MOFKD/CXDo4LPbRXHpToT5exlhjPtHWLySXg6/0DEL9Z1KmxW4eFcxlg9xBTmYFjIJatH+Ex6X1sXcHRhgi842SA5nGRqnZ4adKUp/cCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAmDzjcp4wTdB67jyg0NdFl4f+MsRGBb54QqZNLTYCv7+Z+s3f8pzYkhZnxa2W0eWEJTOZ7x/HrHYgworwfSZBigh1P1ZrMKwq1P3qjXRGw/bUNphwx2EHoxYj7czf8ggWEVbCMorzOhXOuM2XFQNkveNZQ8GLzwrW7hulyqh1VFgY/BvceAQSlb+37ngVuVsdQ5llqkbDrts6G9v7l2peM/TEKe4/86pSLelUxVJrR4N73fFmLwZTFzuucRWt/KT6MYa9wZdmF3Tz1Plv4OqxEHqGL5exwgrih6tKqpdMC+5uG8E2JHhZmtFmQQearS6Q1FCd4WW0lAyQxuZQco0TClBt2BqA5laeya7DxhCZPdcCu84iNr3d4XutwqB9oDwacXEzQpjw70yKKlB3FNUzk82cX2AZqsUmXtS2nTisV6RUrHp7g6DenCNv1P65Fw4UlGJ/G2QEnonTevXA0kymE25ZLbMLJbts6VytHN0ETS2NtKzqAiKwg24S2CPwJ8GV",
+        "acs": [
+          "https://selfservice.stepup.example.com/registration/gssf/demo_gssp_2/consume-assertion"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ra.stepup.example.com/vetting-procedure/gssf/demo_gssp_2/metadata",
+        "public_key": "MIID4zCCAksCFEXtGR5bhjnrAYZjbHT5031pep7cMA0GCSqGSIb3DQEBCwUAMC4xEzARBgNVBAMMClJBIEdTU1AgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyNVoXDTI2MDQxOTA3MDIyNVowLjETMBEGA1UEAwwKUkEgR1NTUCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCqMvWYW2jpxXmNB0jxzjgy/G6PQV2i9DQbYzrHvYe+R5u4bBNgdhrUx6TTBryxgq5IJ5nJI93ngK1Kqdy1Ij9+5PUBqc5l0tTPyGV/5aIf9cNNDdACGQ20Wtn5cL8/tMPkTKtlEPDW+qG8eTlZKdUCY5bQdI36VNZR7K7JQLEbfBJjBpy3scI8Uj6R9NPp0eLszRhMR4eSuBK3G9xJNassB6dhSmWOzmsvfb47VX1Io/9nG+iOv5FVaYb+VbcTaAhXES+xJbP9OjPgz25zFSajWgEcv8QWcJ7RaPqBu1VXIlB7gC0Kz/aJjKw++VfO+qFx+GOHyvRULpsUGVqeYX91lw7zwCBLp6UxUTzyel3lvDpQ1zWifEe/1TyjxHce4ZcMPv52Xw+g1TXJgXrc1KZo3tL0d75oF9jMIIa35Ek8HiApYio9QXDioIZVP59tRpG7gPy3/0sjkZS4Hm1DHuMjHRjLvs8GM3fBEeNbO/KAiaF6vkbPGN0I4krcKDr4C7UCAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAHJXqx610HE8gGy8L0h/GDLbktws1Wqucr0pf8AT6s5zioOc9favYeyGNBXfVL8HuGwbtwFBmcRogdqDVKKXq0vhWmc3TNRDcOZXOjxUfqhaCKDY8ml7s/lHtoas9W1ZVso+DBcQCCxD2A15PKWJch5hPSGIhMZ+pH9UzOTh3gP3JWb7/tB/bboxAl3RKEV8/7OT56Zor9vMDDzyPjO9hW5vV0y7wn2uSbzewA68RSal5PLsO2CeycWMtms9HE9kvRf707CUsNs6HpJUEn60n8qLQmTVDuxvO6mXhHtobKaUxa37rwvLlj0lxOw3hD8dDai0jEKNk3ydmZOVo4tq5ELa1bXuUKIL4RGyuQNYuoKWs/IT/G80yEOkBDQnwiOMICIPLDSNIW+NVItfuM02ujXX61rIWG6yrnwFakJ8L2pmTKht+a2wW7LfAaLhGhuKsDMbWr9ORKbC+6fravAIuqMC0jtams+nVHWwlrzxCbYjXl7aMX7I7BLXb7gnQndq7",
+        "acs": [
+          "https://ra.stepup.example.com/vetting-procedure/gssf/demo_gssp_2/verify"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+
+
+
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
+        "public_key": "MIID6TCCAlECFGWTHT0JOUOnXEEBIvEWxVdH+iz+MA0GCSqGSIb3DQEBCwUAMDExFjAUBgNVBAMMDXNpbXBsZXNhbWwgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyM1oXDTI2MDQxOTA3MDIyM1owMTEWMBQGA1UEAwwNc2ltcGxlc2FtbCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCXDHz9o6xHNDHcVOQTKD6I60smJ53bKHNdfdHUiBt8GtHHdwHKlaCsS+JEY0Vm1zVYiXIlSqQA3NKoE4D3hJOoW73tXwQKz10mxRf4NycJzudBPP1vOe8nrN830T0HoDmgJQwgTh7pJQJ9iFFihsVLUxLkRW+dQWuYZ3a/f62XwQGEEy64mhNnRwKKxfZWQe/2tS46ce6EQf5SjD2GbPn5xykeGDx3EoOGreyDxV3QDZS9q1MRL/x4ii51ELnYWHP3N99PVBFuQXaQzQmm8D510z1ICodPGNmdiFHyFD3NFJTPuwJM6T1qPoPEQx0WTwAdS01CyeGTFiJ1hltyb7XlL1PZ9cfTZZK/JZuiSfMmb2CwzBUi0yWEuQQjDEzmWGsDimmtUfVm9+K/eTfQiOw2+wA6M5CwgLSIi0AYG7Cvi1dFj5so7NbSUeViE2t/lkHnoLKCjsgQRGGa+CkCJnGu/irwZkWZLw361+drvZosGJmzBFzF6w8rx1hHwAaqen8CAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAfWmJQxwlNAElwQQqnQymxCEvhTp4t7MnIka9bFuFLzyME13hC8eBGBTsz54x2Z1yKTj2T2GgHXr4/I3aj2s7jCm9VZ1HhcLlFojcOLeI0ixIJchYA2rSzQtxrMZK/BKokdpDBy3OEQO6YqpqloDpFNCcxHiKFXXIlLADMYSupv3hfajlV2OppBhsltekUmvNLZB6vfhvkkSEzChPNFJm7Ln/V49G1nm0AlHbAOVYi2JcREKR7FO0o7sxrQWQlSqwLB1cfjphVk/33ASqdVDorJsiBgI6e3ehJrotZ4Ke7O2QfpGbmNCVx1FewINFLBk4kQrtBeDRP0Vu3UVgsOLjs6NqSe5J5IS5uh+sT2uYqOt4pgk07rD/8Rrn8IfTQUTmMe/4seoXSvRpp9MQ07Tn/a1UCvOyj2ZfdY+PaWwxjRN0SrDdeCl0JHnagRSI+kfA6EbK0MsYK1VLq0xmJMuY1cevU3FwBpiSVDJprjnE0KPCWWI7BclAId/DmSNz38BC",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/default-sp",
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/default-sp"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
+        "public_key": "MIID6TCCAlECFGWTHT0JOUOnXEEBIvEWxVdH+iz+MA0GCSqGSIb3DQEBCwUAMDExFjAUBgNVBAMMDXNpbXBsZXNhbWwgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyM1oXDTI2MDQxOTA3MDIyM1owMTEWMBQGA1UEAwwNc2ltcGxlc2FtbCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCXDHz9o6xHNDHcVOQTKD6I60smJ53bKHNdfdHUiBt8GtHHdwHKlaCsS+JEY0Vm1zVYiXIlSqQA3NKoE4D3hJOoW73tXwQKz10mxRf4NycJzudBPP1vOe8nrN830T0HoDmgJQwgTh7pJQJ9iFFihsVLUxLkRW+dQWuYZ3a/f62XwQGEEy64mhNnRwKKxfZWQe/2tS46ce6EQf5SjD2GbPn5xykeGDx3EoOGreyDxV3QDZS9q1MRL/x4ii51ELnYWHP3N99PVBFuQXaQzQmm8D510z1ICodPGNmdiFHyFD3NFJTPuwJM6T1qPoPEQx0WTwAdS01CyeGTFiJ1hltyb7XlL1PZ9cfTZZK/JZuiSfMmb2CwzBUi0yWEuQQjDEzmWGsDimmtUfVm9+K/eTfQiOw2+wA6M5CwgLSIi0AYG7Cvi1dFj5so7NbSUeViE2t/lkHnoLKCjsgQRGGa+CkCJnGu/irwZkWZLw361+drvZosGJmzBFzF6w8rx1hHwAaqen8CAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAfWmJQxwlNAElwQQqnQymxCEvhTp4t7MnIka9bFuFLzyME13hC8eBGBTsz54x2Z1yKTj2T2GgHXr4/I3aj2s7jCm9VZ1HhcLlFojcOLeI0ixIJchYA2rSzQtxrMZK/BKokdpDBy3OEQO6YqpqloDpFNCcxHiKFXXIlLADMYSupv3hfajlV2OppBhsltekUmvNLZB6vfhvkkSEzChPNFJm7Ln/V49G1nm0AlHbAOVYi2JcREKR7FO0o7sxrQWQlSqwLB1cfjphVk/33ASqdVDorJsiBgI6e3ehJrotZ4Ke7O2QfpGbmNCVx1FewINFLBk4kQrtBeDRP0Vu3UVgsOLjs6NqSe5J5IS5uh+sT2uYqOt4pgk07rD/8Rrn8IfTQUTmMe/4seoXSvRpp9MQ07Tn/a1UCvOyj2ZfdY+PaWwxjRN0SrDdeCl0JHnagRSI+kfA6EbK0MsYK1VLq0xmJMuY1cevU3FwBpiSVDJprjnE0KPCWWI7BclAId/DmSNz38BC",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/DebugSP/sp/saml2-acs.php/second-sp"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": true,
+        "second_factor_only_nameid_patterns": [
+          "urn:collab:person:stepup.example.com:admin",
+          "urn:collab:person:institution-a.example.com:*",
+          "urn:collab:person:Institution-D.EXAMPLE.COM:*"
+        ],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/third-sp",
+        "public_key": "MIID6TCCAlECFGWTHT0JOUOnXEEBIvEWxVdH+iz+MA0GCSqGSIb3DQEBCwUAMDExFjAUBgNVBAMMDXNpbXBsZXNhbWwgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyM1oXDTI2MDQxOTA3MDIyM1owMTEWMBQGA1UEAwwNc2ltcGxlc2FtbCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCXDHz9o6xHNDHcVOQTKD6I60smJ53bKHNdfdHUiBt8GtHHdwHKlaCsS+JEY0Vm1zVYiXIlSqQA3NKoE4D3hJOoW73tXwQKz10mxRf4NycJzudBPP1vOe8nrN830T0HoDmgJQwgTh7pJQJ9iFFihsVLUxLkRW+dQWuYZ3a/f62XwQGEEy64mhNnRwKKxfZWQe/2tS46ce6EQf5SjD2GbPn5xykeGDx3EoOGreyDxV3QDZS9q1MRL/x4ii51ELnYWHP3N99PVBFuQXaQzQmm8D510z1ICodPGNmdiFHyFD3NFJTPuwJM6T1qPoPEQx0WTwAdS01CyeGTFiJ1hltyb7XlL1PZ9cfTZZK/JZuiSfMmb2CwzBUi0yWEuQQjDEzmWGsDimmtUfVm9+K/eTfQiOw2+wA6M5CwgLSIi0AYG7Cvi1dFj5so7NbSUeViE2t/lkHnoLKCjsgQRGGa+CkCJnGu/irwZkWZLw361+drvZosGJmzBFzF6w8rx1hHwAaqen8CAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAfWmJQxwlNAElwQQqnQymxCEvhTp4t7MnIka9bFuFLzyME13hC8eBGBTsz54x2Z1yKTj2T2GgHXr4/I3aj2s7jCm9VZ1HhcLlFojcOLeI0ixIJchYA2rSzQtxrMZK/BKokdpDBy3OEQO6YqpqloDpFNCcxHiKFXXIlLADMYSupv3hfajlV2OppBhsltekUmvNLZB6vfhvkkSEzChPNFJm7Ln/V49G1nm0AlHbAOVYi2JcREKR7FO0o7sxrQWQlSqwLB1cfjphVk/33ASqdVDorJsiBgI6e3ehJrotZ4Ke7O2QfpGbmNCVx1FewINFLBk4kQrtBeDRP0Vu3UVgsOLjs6NqSe5J5IS5uh+sT2uYqOt4pgk07rD/8Rrn8IfTQUTmMe/4seoXSvRpp9MQ07Tn/a1UCvOyj2ZfdY+PaWwxjRN0SrDdeCl0JHnagRSI+kfA6EbK0MsYK1VLq0xmJMuY1cevU3FwBpiSVDJprjnE0KPCWWI7BclAId/DmSNz38BC",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/third-sp"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+      {
+        "entity_id": "https://ssp.stepup.example.com/simplesamlphp/module.php/saml/sp/metadata.php/fourth-sp",
+        "public_key": "MIID6TCCAlECFGWTHT0JOUOnXEEBIvEWxVdH+iz+MA0GCSqGSIb3DQEBCwUAMDExFjAUBgNVBAMMDXNpbXBsZXNhbWwgU1AxFzAVBgNVBAoMDkRldmVsb3BtZW50IFZNMB4XDTIxMDQyMDA3MDIyM1oXDTI2MDQxOTA3MDIyM1owMTEWMBQGA1UEAwwNc2ltcGxlc2FtbCBTUDEXMBUGA1UECgwORGV2ZWxvcG1lbnQgVk0wggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCXDHz9o6xHNDHcVOQTKD6I60smJ53bKHNdfdHUiBt8GtHHdwHKlaCsS+JEY0Vm1zVYiXIlSqQA3NKoE4D3hJOoW73tXwQKz10mxRf4NycJzudBPP1vOe8nrN830T0HoDmgJQwgTh7pJQJ9iFFihsVLUxLkRW+dQWuYZ3a/f62XwQGEEy64mhNnRwKKxfZWQe/2tS46ce6EQf5SjD2GbPn5xykeGDx3EoOGreyDxV3QDZS9q1MRL/x4ii51ELnYWHP3N99PVBFuQXaQzQmm8D510z1ICodPGNmdiFHyFD3NFJTPuwJM6T1qPoPEQx0WTwAdS01CyeGTFiJ1hltyb7XlL1PZ9cfTZZK/JZuiSfMmb2CwzBUi0yWEuQQjDEzmWGsDimmtUfVm9+K/eTfQiOw2+wA6M5CwgLSIi0AYG7Cvi1dFj5so7NbSUeViE2t/lkHnoLKCjsgQRGGa+CkCJnGu/irwZkWZLw361+drvZosGJmzBFzF6w8rx1hHwAaqen8CAwEAATANBgkqhkiG9w0BAQsFAAOCAYEAfWmJQxwlNAElwQQqnQymxCEvhTp4t7MnIka9bFuFLzyME13hC8eBGBTsz54x2Z1yKTj2T2GgHXr4/I3aj2s7jCm9VZ1HhcLlFojcOLeI0ixIJchYA2rSzQtxrMZK/BKokdpDBy3OEQO6YqpqloDpFNCcxHiKFXXIlLADMYSupv3hfajlV2OppBhsltekUmvNLZB6vfhvkkSEzChPNFJm7Ln/V49G1nm0AlHbAOVYi2JcREKR7FO0o7sxrQWQlSqwLB1cfjphVk/33ASqdVDorJsiBgI6e3ehJrotZ4Ke7O2QfpGbmNCVx1FewINFLBk4kQrtBeDRP0Vu3UVgsOLjs6NqSe5J5IS5uh+sT2uYqOt4pgk07rD/8Rrn8IfTQUTmMe/4seoXSvRpp9MQ07Tn/a1UCvOyj2ZfdY+PaWwxjRN0SrDdeCl0JHnagRSI+kfA6EbK0MsYK1VLq0xmJMuY1cevU3FwBpiSVDJprjnE0KPCWWI7BclAId/DmSNz38BC",
+        "acs": [
+          "https://ssp.stepup.example.com/module.php/saml/sp/saml2-acs.php/fourth-sp"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1",
+          "institution-a.example.com": "http://stepup.example.com/assurance/loa2",
+          "institution-d.example.com": "http://stepup.example.com/assurance/loa2"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      },
+
+      {
+        "entity_id": "https://dummy-sp",
+        "public_key": "MIICojCCAYoCCQD8o3774sHUMDANBgkqhkiG9w0BAQsFADATMREwDwYDVQQDDAhkdW1teS1zcDAeFw0xODEwMTcxMjA2NDhaFw0yMzEwMTYxMjA2NDhaMBMxETAPBgNVBAMMCGR1bW15LXNwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3yzbWio94u8uqmc0yeyh1fOwl0L3PYfjhq3W1R++Cs6Cm3JzW5j7uuGZi71l0TNH1f2kPa9pcgQc0kBRmzn1Em5n1swMM589PEL2x49z4l6NeuRB3RPx69GOFBD0N5jcnoIQsGI0hQxX5gw8XOtRQrREAUQNTFmmWnzMoXkZMbJrpIuZSnHX3DWBdadooEDIkak29y+E+dKM9Za7rj/GT+uXJZJCY29CrIAUeltSdv00R8bB3BS3VQAexGxcAT+sfZyo7I9O6d/YVdDDePdTqGJ0GDOCoTBfhA+QDkHCh9yaF9NwAgIZVpVdLSx2KzVFAg9Ll2OHBTTWYd/bLfJZ3wIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCvejcTBa15nmU6OQHUF7cozXbeUEUFE+ysCulAJA9L9JmukEd9FYLBmZDpYJ3YilQVAcsnuPHfFA47q/B0CxS28jWu87WcqdSUh87nqKjYISZJ1x+qa6JpLX2E6+bXWJuawOcL+t/9iOwr/jt1IQM+pVdxSkqbPalMu0j4C4eI7zwd+/cLrqkM+hXnPvRzD9A5hiPxM9KO+b9GitSAThe82PsnBMGg8xpWnUs+vDr3Vn047u1GbEWGDo/eMT/BO6/1sG44niL9/yzivIuwCBURAEyDjxtkErZ5q0zN35C6K9NALryD856rbhzuzOyftRERpsZ/pX9u6UbWNi9CfDEz",
+        "acs": [
+          "http://dummy-sp/acs"
+        ],
+        "loa": {
+          "__default__": "http://stepup.example.com/assurance/loa1"
+        },
+        "assertion_encryption_enabled": false,
+        "second_factor_only": false,
+        "second_factor_only_nameid_patterns": [],
+        "blacklisted_encryption_algorithms": []
+      }
+
+    ],
+
+    "identity_providers": []
+  }
+}

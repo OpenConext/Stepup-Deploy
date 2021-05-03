@@ -28,13 +28,12 @@ Feature: A user manages his tokens in the selfservice portal
     And I authenticate to the Middleware API
     And I request "POST /management/institution-configuration"
 
-  Scenario: A user registers a token in selfservice
-    Given I am logged in into the selfservice portal as "joe-a1"
-    When I register a new SMS token
-    And I verify my e-mail address
-    And I vet my second factor at the information desk
-    And I self-vet a new demo token with my SMS token
-    Then I visit the "overview" page in the selfservice portal
+  Scenario: A user self vets a token in selfservice
+    Given a user "Ponder Stibbons" identified by "urn:collab:person:institution-a.example.com:joe-a2" from institution "institution-a.example.com"
+    And the user "urn:collab:person:institution-a.example.com:joe-a2" has a vetted "yubikey"
+    And I am logged in into the selfservice portal as "joe-a2"
+    And I self-vet a new SMS token with my Yubikey token
+    And I visit the "overview" page in the selfservice portal
     Then I should see "The following tokens are registered for your account."
     And I should see "SMS"
-    And I should see "Dummy"
+    And I should see "Yubikey"

@@ -2,6 +2,7 @@
 
    - name: restart php-fpm
      service: name=php-fpm state=restarted
+     when: not app_remove_php56
 
    - name: restart php72-php-fpm
      service: name=php72-php-fpm state=restarted
@@ -20,4 +21,3 @@
 
    - name: reload sendmail
      service: name=sendmail state=restarted
-

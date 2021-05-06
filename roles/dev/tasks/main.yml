@@ -181,10 +181,12 @@
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
+# saml2debug seems broken, ignoring errors for now
 - name: Add saml2debug module
   shell: export COMPOSER_MEMORY_LIMIT=-1 && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug:v1.0
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
+  ignore_errors: yes
 
 - name: Put DebugSP SSP module
   copy: src=DebugSP dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/
@@ -224,12 +226,14 @@
   - saml20-idp-remote.php
   - saml20-sp-remote.php
 
+# saml2debug seems broken, ignoring errors for now
 - name: Enable SSP modules
   file: path=/usr/local/share/simplesamlphp-{{ ssp_version }}/modules/{{ item }}/enable state=touch
   with_items:
   - exampleauth
   - saml2debug
   - DebugSP
+  ignore_errors: yes
 
 - name: Put Test SP
   copy: src={{ item }} dest=/usr/local/share/simplesamlphp-{{ ssp_version }}/www/{{ item }}

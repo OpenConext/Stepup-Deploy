@@ -146,6 +146,7 @@ app_php72_components: ['stepup-selfservice','stepup-middleware','stepup-ra','ste
 # When a component is in this list its vhost will always be configured for Symfony 3
 # stepup-middleware, stepup-gateway, stepup-selfservice, stepup-ra, stepup-tiqr and stepup-keyserver
 app_symfony_3_components:
+- stepup-selfservice
 - stepup-tiqr
 - stepup-keyserver
 

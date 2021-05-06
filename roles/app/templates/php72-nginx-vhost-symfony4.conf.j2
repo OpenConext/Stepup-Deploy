@@ -42,6 +42,7 @@ server {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param HTTPS on;
+<<<<<<< HEAD
 {% if 'dev' in group_names %}
         fastcgi_param SYMFONY_ENV dev;
         fastcgi_param APP_ENV dev;
@@ -49,6 +50,27 @@ server {
         fastcgi_param SYMFONY_ENV prod;
         fastcgi_param APP_ENV prod;
 {% endif %}
+=======
+
+        {% if 'dev' not in group_names %}
+        # Non dev environments have the symfony env set to prod in a hardcoded manner
+        set $app_env "prod";
+        set $app_debug false;
+        {% elif 'dev' in group_names %}
+        # If the testcookie is present, we will kick the symfony environment into smoketest mode. Otherwise dev mode it is.
+        set $app_env "dev";
+        set $app_debug true;
+        if ($cookie_testcookie) {
+            set $app_env "smoketest";
+            set $app_debug true;
+        }
+        {% endif %}
+
+        fastcgi_param SYMFONY_ENV $app_env;
+        fastcgi_param APP_ENV $app_env;
+        fastcgi_param APP_DEBUG $app_debug;
+
+>>>>>>> 1287ad23634bbbd59e7419babd2a1690410f0338
     }
 
     {# Finally, disallow opening php files outside of index.php #}

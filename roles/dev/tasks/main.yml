@@ -107,7 +107,7 @@
 - name: Put php.ini for PHP 7.2 (/etc/opt/remi/php72/php.ini)
   template: src=15-xdebug.ini.j2 dest='/etc/opt/remi/php72/php.d/15-xdebug.ini'
   notify:
-    - restart php72-php-fpm
+    - Restart php72-php-fpm
 
 ## Mailcatcher ##
 
@@ -159,6 +159,10 @@
 #   Admin U/P: admin/admin
 # - A SP that has a web interface that can be used to test authentication to the Stepup-Gateway
 #   Accessible at https://<ssp_vhost_name>/sp.php
+
+# Note: Still requires PHP56.
+#       This role assumes that PHP56 is installed. Configure a php56 component (e.g. stepup-keyserver) to make the app role
+#       install PHP56
 
 - name: Create SSP tmp directory
   file: dest=/tmp/simplesaml owner=apache state=directory

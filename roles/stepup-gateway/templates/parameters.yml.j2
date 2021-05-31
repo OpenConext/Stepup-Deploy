@@ -46,7 +46,7 @@ parameters:
 {% else %}
     spryng_api_key: dummy_access_key
 {% endif %}
-    spryng_route: {{ spryng_route | default(1234) }}
+    spryng_route: {{ spryng_route | default('business') }}
 
     sms_originator: {{ sms_originator }}
     sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}

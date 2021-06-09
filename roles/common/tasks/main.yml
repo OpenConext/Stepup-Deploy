@@ -33,7 +33,6 @@
   service: name={{item}} enabled=no state=stopped
   with_items:
   - firewalld # Because we want to use iptables-services below
-  - NetworkManager
   - atd.service
   - smartd.service
   ignore_errors: yes

@@ -10,6 +10,7 @@ deploy_symfony_3: yes
 deploy_symfony_4: no
 deploy_assetic: no
 deploy_mopa_bootstrap: no
+configonly: no
 
 # For develop deploy only
 deploy_node_version: 10

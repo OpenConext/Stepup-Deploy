@@ -31,7 +31,22 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-    {% if messagebird_authorization | vault(vault_keydir) | length == 0 %}messagebird_authorization: AccessKey dummy_access_key{% else %}messagebird_authorization: AccessKey {{ messagebird_authorization | vault(vault_keydir) }}{% endif %}
+    # Choose which SMS service to use. At this moment you can choose: 'spryng' or 'messagebird'
+    sms_service: {{ sms_service | default('messagebird') }}
+
+{% if messagebird_authorization is defined %}
+    messagebird_authorization: AccessKey {{ messagebird_authorization | vault(vault_keydir) }}
+{% else %}
+    messagebird_authorization: AccessKey dummy_access_key
+{% endif %}
+
+    # Spryng config for sending SMS messages
+{% if spryng_api_key is defined %}
+    spryng_api_key: {{ spryng_api_key | vault(vault_keydir) }}
+{% else %}
+    spryng_api_key: dummy_access_key
+{% endif %}
+    spryng_route: {{ spryng_route | default('business') }}
 
     sms_originator: {{ sms_originator }}
     sms_otp_expiry_interval: {{ sms_otp_expiry_interval }}

@@ -133,7 +133,5 @@ parameters:
 
     # Saml Remote Vetting SP public key
     saml_rv_publickey: "{{ component_config_file_dir_name }}/remote_vetting_sp.crt"
-{% if 'dev' in group_names %}
-    # Saml Remote Vetting Mock IdP private key (used for development and testing, this value should be omitted in production)
+    # Saml Remote Vetting SP private key
     saml_rv_privatekey: "{{ component_config_file_dir_name }}/remote_vetting_sp.key"
-{% endif %}

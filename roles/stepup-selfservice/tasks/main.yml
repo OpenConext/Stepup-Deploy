@@ -93,6 +93,13 @@
     owner: "{{ component_owner }}"
     group: "{{ component_group }}"
 
+- name: Write remote vetting match screen attribute and institution translations to remote_vetting.json
+  template:
+    src: "{{ inventory_dir }}/templates/selfservice/remote_vetting.json.j2"
+    dest: "{{ component_dir_name }}/translations/remote_vetting.json"
+    mode: "{{ component_mode_644 }}"
+    group: "{{ component_group }}"
+
 - name: Activate selfservice component
   include_role:
     name: deploy

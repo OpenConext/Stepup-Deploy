@@ -15,11 +15,21 @@ gateway_support_url:
   nl_NL: "https://stepup.example.com/nl_NL/gateway_support_url"
 
 
+# Select the sms service to use. 'spryng' or 'messagebird'
+sms_service: 'spryng'
+
 # Messagebird (www.messagebird.com) REST API (v2 and above) access key (Vaulted)
-# Required for sending SMS messages
+# Required for sending SMS messages using sms_service: 'messagebird'
 # You can register at https://www.messagebird.com/ for a free developer / trial account
 # TODO: Set messagebird API access key
 messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+
+# Spring API key (vaulted)
+# Reuired for sending SMS messages using sms_service: 'spryng'
+spryng_api_key: "{{ lookup('file', inventory_dir+'/secret/spryng_authorization') }}"
+# Set the Spryng route parameter. The default is "business"
+spryng_route: "business"
+
 
 
 # Yubikey client_id (Plain) and secret (Vaulted) for accessing the yubico authentication service

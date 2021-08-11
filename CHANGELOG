@@ -1,3 +1,192 @@
+Release 23
+- Allow the user to activate a new token with their existing token
+- Add Spryng as SMS provider option
+
+* Stepup-Gateway 3.3.0
+- Add support for using Spryng (https://www.spryng.nl/) as SMS provider. Set the "sms_service" in the
+  stepup-gateway.yml group_vars to either "messagebird" or "spring" to select the SMS service provider to use.
+  See template environment for details.
+
+* Stepup-Webauthn 1.0.8
+- Add favicon
+
+* Stepup-AzureMFA 1.4.2
+- Add favicon
+
+INSTALL:
+* Deploy components:
+- Stepup-Gateway 3.3.0
+- Stepup-Webauthn 1.0.8
+- Stepup-AzureMFA 1.4.2
+
+
+Release 22
+- Add support for Self-Service vetting. Allow a user to activate a new token with their existing token without
+  vetting by an RA. This can be enabled per institution though middleware configuration.
+- Because since Release 20.2 php56 is no longer required, we recommend removing php56 by setting app_remove_php56
+  to false in the app.yml group_vars.
+
+* Deploy:
+- Ensure php-fpm runtime dir required for unix sockets is not removed when php56 is removed.
+
+* Stepup-Selfservice 3.4.0
+- Add Self-Vetting
+
+* Stepup-Middleware 4.2.1
+- Add Self-Vetting
+
+* Stepup-Gateway 3.2.4
+- Fix: Logins are no longer logged to the authentication log
+
+INSTALL:
+You need to run the app role to apply the pfp-fpm socket fix and to apply app_remove_php56 if that was set to false:
+  "ansible-playbook site.yml -t app -i <environment>/inventory"
+
+* Deploy components:
+- Stepup-Selfservice 3.4.0
+- Stepup-Middleware 4.2.1
+- Stepup-Gateway 3.2.4
+
+
+Release 21
+- SECURITY: Fix remote code execution in Stepup-Webauthn and Stepup-Azure-MFA
+- Deprecate u2f token, it is replaced by the WebAuthn GSSP
+- Upgrade final component (middleware) to PHP 7.2 and Symfony 4
+
+* Stepup-Deploy
+- Add required variables azuremfa_secret and webauthn_secret in the stepup-azure-mfa.yml and stepup-webauthn.yml
+  group vars respectively. Set these to a random value. See the template environment for details.
+- Add required variable "second_factors_display_name" in groups_vars all.yml. The displayname is used in the emails
+  sent by the middleware. See the template environment for more information. (https://www.pivotaltracker.com/story/show/174985988)
+- Fix: Prevent yum update from adding php-fpm www.conf. Requires redeploy of the app role.
+- Add a "configonly" Ansible tag to the deploy.yml playbook to update the configuration of a component without
+  deploying the code. Supported by Stepup-Webauthn for updating attestation certificates and Stepup-Azure-MFA
+  for updating RP configuration.
+- Fixes to PHP 56 => PHP 72 migration and support to ensure scripts call the correct PHP interpreter.
+
+* Stepup-Middleware 4.1.4
+  - Add display name for token types, used in emails
+
+* Stepup-Selfservice 3.3.0
+- Add SAML UserAttributes extension to allow user attributes (email) to be sent to a GSSP during registration
+  (https://www.pivotaltracker.com/story/show/175121584)
+
+* Stepup-Gateway 3.2.2
+- Upgraded to PHP 7.2 and Symfony 4, drop support for PHP 5.6
+- Add SAML UserAttributes extension to allow user attributes (email) to be sent to a GSSP during registration
+  (https://www.pivotaltracker.com/story/show/175121584)
+- Add X-UA-Compatible header required to support some IE embedded browsers
+
+* Stepup-Tiqr 3.0.4
+- Disable fragment support
+- Add X-UA-Compatible header required to support some IE embedded browsers
+
+* Stepup-Azure-MFA 1.4.1
+- SECURITY: Fix RCE by disabling fragments and setting APP_SECRET. See https://www.ambionics.io/blog/symfony-secret-fragment
+  for more information on this type of attack.
+- Add X-UA-Compatible header to support IE embedded browsers
+- Use email address from user's login to SelfService (https://www.pivotaltracker.com/story/show/175121584) during
+  registration instead of asking the user to enter their email address.
+
+* Stepup-Webauthn 1.0.7
+- SECURITY: Fix RCE by disabling fragment support and setting APP_SECRET. See https://www.ambionics.io/blog/symfony-secret-fragment
+  for more information on this type of attack
+- Add X-UA-Compatible header required to support some IE embedded browsers
+- Log unknown attestation certificates (https://www.pivotaltracker.com/story/show/175325410)
+- Fix layout not being applied
+
+INSTALL:
+* Update all.yaml group_vars and set Stepup-Gateway as PHP 7.2 component. I.e.:
+  app_php72_components:
+  - stepup-middleware
+  - stepup-ra
+  - stepup-selfservice
+  - stepup-tiqr
+  - stepup-gateway
+  app_symfony_3_components:
+  - stepup-keyserver
+
+You need to run the app role to apply these changes. I.e.:
+  "ansible-playbook site.yml -t app -i <environment>/inventory"
+
+* Deploy components:
+- Stepup-Middleware 4.1.4
+- Stepup-Selfservice 3.3.0
+- Stepup-Gateway 3.2.2
+- Stepup-Tiqr 3.0.4
+- Stepup-Azure-MFA 1.4.1
+- Stepup-Webauthn 1.0.7
+
+
+Release 20.4
+See release 21
+
+
+Release 20.3
+Not released
+
+
+Release 20.2
+* Stepup-tiqr 3.0.3
+- Upgraded to PHP 7.2 and Symfony 4, drop support for PHP 5.6
+- Add /heath and /info endpoints
+- Fix rare chrome issue where location.reload() is not working (#106)
+
+INSTALL:
+* Update all.yaml group_vars and set Stepup-tiqr as PHP 7.2 component. I.e.:
+  app_php72_components:
+  - stepup-middleware
+  - stepup-ra
+  - stepup-selfservice
+  - stepup-tiqr
+  app_symfony_3_components:
+  - stepup-gateway
+  - stepup-keyserver
+
+You need to run the app role to apply these changes. I.e.:
+  "ansible-playbook site.yml -t app -i <environment>/inventory"
+
+* Deploy components:
+- Stepup-tiqr 3.0.3
+
+
+Release 20.1
+* Stepup-Azure-MFA 1.3.3
+- Add /info and /health endpoints
+- Fix client-side email validation
+
+* Stepup-Webauthn 1.0.6
+- Add /health and /info endpoints
+
+INSTALL:
+* Deploy components:
+- Stepup-Azure-MFA 1.4.1
+- Stepup-Webauthn 1.0.7
+
+
+Release 20
+* Stepup-SelfService 3.2.0
+- Upgraded to PHP 7.2 and Symfony 4, drop support for PHP 5.6
+- Allow HTML in explanation/description text for GSSPs (https://www.pivotaltracker.com/story/show/174901359)
+
+INSTALL:
+Update all.yaml group_vars and set Stepup-SelfService as PHP 7.2 component. I.e.:
+  app_php72_components:
+  - stepup-middleware
+  - stepup-ra
+  - stepup-selfservice
+  app_symfony_3_components:
+  - stepup-gateway
+  - stepup-tiqr
+  - stepup-keyserver
+
+You need to run the app role to apply these changes. I.e.:
+  "ansible-playbook site.yml -t app -i <environment>/inventory"
+
+* Deploy components:
+  - Stepup-SelfService 3.2.0
+
+
 Release 19
 * Stepup-Deploy
   - Added skip_prove_possession_second_factors to the all.yml groups_vars. This controls whether the second factor proof
@@ -27,7 +216,6 @@ INSTALL
   app_symfony_3_components:
   - stepup-gateway
   - stepup-selfservice
-  - stepup-ra
   - stepup-tiqr
   - stepup-keyserver
 
@@ -87,11 +275,33 @@ INSTALL
   This makes the http://<vhosts>/vhost_component_info URL available that is required to deploy components
 
 * Deploy components:
-  - Stepup-Webauthn
-  - Stepup-Azure-MFA
-  - Stepup-Gateway 2.10.3
-  - Stepup-SelfService 2.10.6
-  - Stepup-RA 2.10.6
+  - Stepup-Webauthn 1.0.3
+  - Stepup-Azure-MFA 1.2.1
+  - Stepup-Gateway 3.0.1
+  - Stepup-SelfService 3.1.0
+  - Stepup-RA 3.1.3
+
+
+Release 17.2
+Bugfix release.
+
+CHANGES:
+* Stepup-Gateway:
+  - Fix: No SAMLError response is sent when using the SFO endpoint (https://www.pivotaltracker.com/story/show/172262049)
+
+* Stepup-Middleware:
+  - Fix: Performance issue updating the ra_candidates projection. For lager number of users with an active token this
+    results in a PHP execution timeout when pushing an institution configuration or when assigning an RA or RAA role to
+    a user. (https://www.pivotaltracker.com/story/show/172245466)
+
+INSTALL
+ * Deploy components
+   - Stepup-Gateway 3.0.1
+   - Stepup-Middleware 3.1.7
+
+ * Update middleware database schema to 20200416135127 (from 20190211163604) by running /root/01-middleware-db_migrate.sh
+   on an app server.
+   A restore of the middleware and gateway schema's is required to perform a rollback of the middleware.
 
 
 Release 17.1

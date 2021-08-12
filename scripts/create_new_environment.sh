@@ -131,6 +131,11 @@ echo "Reading configuration from: ${ENVIRONMENT_CONF}"
 echo "Done reading configuration"
 
 
+if [ "${USE_KEYSZAR}" -ne "0" -a  "${USE_ANSIBLE_VAULT}" -ne "0" ]; then
+  error_exit "Error in template configuration USE_KEYSZAR and USE_ANSIBLE_VAULT cannot be used at the same time"
+fi
+
+
 ENVIRONMENT_DIR=`realpath ${ENVIRONMENT_DIR}`
 if [ $? -ne "0" ]; then
     error_exit "Could not change to environment dir"
@@ -180,7 +185,28 @@ if [ "${USE_KEYSZAR}" -eq 1 ]; then
     fi
     echo "Using keydir: ${KEY_DIR}"
 else
-    echo "Not using keyszar. Keys and passwords will be stored in plaintext"
+    echo "Not using keyszar."
+fi
+
+
+if [ "${USE_ANSIBLE_VAULT}" -eq 1 ]; then
+    # Create Ansible Vault password for encrypting secrets
+    ANSIBLE_VAULT_PASSWORD_FILE=${ENVIRONMENT_DIR}/stepup-ansible-vault-password
+
+    if [ ! -f ${ANSIBLE_VAULT_PASSWORD_FILE} ]; then
+        ${BASEDIR}/gen_password.sh ${PASSWORD_LENGTH} > ${ANSIBLE_VAULT_PASSWORD_FILE}
+        if [ $? -ne "0" ]; then
+            error_exit "Error generating Ansible Vault password"
+        fi
+        echo "Generated Ansible Vault password file"
+    fi
+    echo "Generated secrets will be encrypted using Ansible Vault with the password stored in ${ANSIBLE_VAULT_PASSWORD_FILE}"
+else
+    echo "Not using Ansible Vault"
+fi
+
+if [ "${USE_KEYSZAR}" -ne 1 -a "${USE_ANSIBLE_VAULT}" -ne 1 ]; then
+    echo "Generated secrets are stored in plaintext"
 fi
 
 
@@ -200,6 +226,17 @@ if [ ${#PASSWORDS[*]} -gt 0 ]; then
                 error_exit "Error generating password"
             fi
             echo "${generated_password}" > ${PASSWORD_DIR}/${pass}
+            if [ $? -ne "0" ]; then
+                error_exit "Error writing password"
+            fi
+            if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
+                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} ${PASSWORD_DIR}/${pass}
+            fi
+            if [ $? -ne "0" ]; then
+                rm ${PASSWORD_DIR}/${pass}
+                error_exit "Error encrypting password"
+            fi
+
         else
             echo "Password ${pass} exists, skipping"
         fi
@@ -233,6 +270,16 @@ if [ ${#SECRETS[*]} -gt 0 ]; then
                 error_exit "Error generating secret"
             fi
             echo "${generated_secret}" > ${SECRET_DIR}/${secret}
+            if [ $? -ne "0" ]; then
+                error_exit "Error writing secret"
+            fi
+            if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
+                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} ${SECRET_DIR}/${secret}
+            fi
+            if [ $? -ne "0" ]; then
+                rm ${SECRET_DIR}/${secret}
+                error_exit "Error encrypting secret"
+            fi
         else
             echo "Secret ${secret} exists, skipping"
         fi
@@ -259,6 +306,14 @@ if [ ${#SAML_CERTS[*]} -gt 0 ]; then
             ${BASEDIR}/gen_selfsigned_cert.sh ${cert_name} "${cert_dn}" ${KEY_DIR}
             if [ $? -ne "0" ]; then
                 error_exit "Error creating SAML signing certificate"
+            fi
+            if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
+                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} "${SAML_CERT_DIR}/${cert_name}.key"
+            fi
+            if [ $? -ne "0" ]; then
+                rm "${SAML_CERT_DIR}/${cert_name}.crt"
+                rm "${SAML_CERT_DIR}/${cert_name}.key"
+                error_exit "Error encrypting SAML signing key"
             fi
         else
             echo "SAML signing certificate ${cert_name} exists, skipping"
@@ -296,7 +351,15 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
             echo "Creating SSL certificate and key for ${cert_name}; DN: ${cert_dn}"
             ${BASEDIR}/gen_ssl_server_cert.sh ${CA_DIR} ${cert_name} "${cert_dn}" ${KEY_DIR}
             if [ $? -ne "0" ]; then
-                error_exit "Error creating SSL certificate"
+                error_exit "Error creating SSL certificate and key"
+            fi
+            if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
+                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} "${SSL_CERT_DIR}/${cert_name}.key"
+            fi
+            if [ $? -ne "0" ]; then
+                rm "${SSL_CERT_DIR}/${cert_name}.crt"
+                rm "${SSL_CERT_DIR}/${cert_name}.key"
+                error_exit "Error encrypting SSL certificate key"
             fi
         else
             echo "SSL certificate ${cert_name} exists, skipping"
@@ -323,6 +386,13 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
             ${BASEDIR}/gen_ssh_key.sh ${key} ${KEY_DIR}
             if [ $? -ne "0" ]; then
                 error_exit "Error generating SSH keypair"
+            fi
+            if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
+                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} "${SSH_KEY_DIR}/${key}.key"
+            fi
+            if [ $? -ne "0" ]; then
+                rm "${SSH_KEY_DIR}/${key}.key"
+                error_exit "Error encrypting SSH key"
             fi
         else
             echo "SSH keypair ${key} exists, skipping"
@@ -353,6 +423,26 @@ echo "
   2) Update vault_keydir in group_vars/all.yml to point to the new location
   Note that rerunning this script after moving the key will result in a new key being created, which is probably
   undesired.
+"
+else
+  echo "
+* Note that because you are not using Keyczar the 'vault_keydir' variable in 'group_vars/all.ym' MUST be set to an
+  empty string, otherwise the 'vault' filter will try to use Keyczar, resulting in an error when running the playbook.
+"
+fi
+if [ ${USE_ANSIBLE_VAULT} -eq 1 ]; then
+  echo "
+* All secrets (except the CA private key) are encrypted using ansible-vault. The password used to encrypt is stored
+  in ${ANSIBLE_VAULT_PASSWORD_FILE}
+
+* For productions (like) systems it is advisable to keep this password separate from the environment.
+  Note that rerunning this script after (re)moving the password file will result in a new key being created, which is
+  probably not what you want.
+
+* You can use the ansible-vault command to encrypt and decrypt secrets, using the above password
+
+* You need to add specify the vault passwords to ansible commands that need access to these secrets.
+  E.g. add '--vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE}'
 "
 fi
 if [ ${#SSL_CERTS[*]} -gt 0 ]; then

@@ -1,3 +1,32 @@
+Release 24
+Allow identities to me migrated to a new institution, add gesture support to iOS WebAuthn GSSP.
+
+CHANGES
+* Stepup-Deploy
+- Add migrate-identities.yml Ansible playbook for migrating identities to a new institution using the new
+  middleware:migrate:vetted-tokens middleware console command.
+
+* Stepup-Middleware 4.3.0
+- Add middleware:migrate:vetted-tokens console command for migrating an identity and its active tokens to a new
+  institution (https://www.pivotaltracker.com/epic/show/4815403)
+- Fix: sensitive information being included in event stream (https://www.pivotaltracker.com/story/show/178390934)
+
+* Stepup-RA 4.2.0
+- Show migrated tokens in audit log (https://www.pivotaltracker.com/story/show/178241372)
+
+* Webauthn 1.0.9
+- Add button for iOS devices requiring a gesture before FIDO can be used (https://github.com/OpenConext/Stepup-Webauthn/pull/56)
+
+INSTALL
+* Deploy components:
+  - Stepup-Middleware 4.3.0
+  - Stepup-RA 4.2.0
+  - Stepup-Webauthn 1.0.9
+
+Stepup-Middleware includes a database migration to fix sensitive information being included in event stream. On an
+app server run /root/01-middleware-db_migrate.sh to run this migration.
+
+
 Release 23
 - Allow the user to activate a new token with their existing token
 - Add Spryng as SMS provider option
@@ -192,7 +221,7 @@ Release 19
   - Added skip_prove_possession_second_factors to the all.yml groups_vars. This controls whether the second factor proof
     of possession step during vetting in the RA is skipped for the listed second factors. The middleware must be redeployed
     after changing this option.
-    
+
   - Stepup-Middleware 4.1.2
     - Added identity & token bootstrap console commands (for test) #302 #303 #304 #305
     - Drop support for php5.6 and support php7.2

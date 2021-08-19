@@ -1,3 +1,16 @@
+Release 24.1
+Bugfix release
+
+CHANGES
+* Stepup-Middleware 4.3.1
+- Fix migration corrupting the event_stream because of escaping error (https://www.pivotaltracker.com/story/show/179264987)
+  introduced in Stepup-Middleware 4.3.0.
+
+INSTALL
+* Deploy components:
+  - Stepup-Middleware 4.3.1
+
+
 Release 24
 Allow identities to me migrated to a new institution, add gesture support to iOS WebAuthn GSSP.
 

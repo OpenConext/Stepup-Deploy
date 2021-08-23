@@ -11,6 +11,12 @@
 # E.g.
 # ansible-playbook Stepup-Deploy/migrate-identities.yml -i <environment>/inventory -e identities_file=`pwd`/identities_to_migrate.csv
 
+# SQL Query to get the NameIDs of the active tokens:
+#  SELECT distinct name_id, email
+#    FROM `identity` i, vetted_second_factor v
+#    WHERE i.institution = 'surfnet.nl' AND i.id = v.identity_id
+#    ORDER BY name_id
+
 - name: Push middleware institution configuration
   hosts: stepup-middleware
   serial: 1      # Execute serially

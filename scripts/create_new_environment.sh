@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright 2015, 2016 SURFnet B.V.
+# Copyright 2015, 2016, 2021 SURFnet B.V.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -49,6 +49,9 @@ BASEDIR=`realpath ${BASEDIR}`
 
 # Default template dir
 TEMPLATE_DIR="${BASEDIR}/../environments/template"
+
+# Default vault-id when using ansible vault.
+STEPUP_VAULT_ID="stepup"
 
 # Process options
 ENVIRONMENT_DIR=$1
@@ -190,7 +193,22 @@ fi
 
 
 if [ "${USE_ANSIBLE_VAULT}" -eq 1 ]; then
-    # Create Ansible Vault password for encrypting secrets
+    # Check that ANSIBLE_ environment variables that affect ansible-vault behaviour are not set. This to
+    # prevent possible confusion as to what password and vault-id is used to encrypt.
+    FORBIDDEN_ANSIBLE_VARS=(
+        "ANSIBLE_VAULT_ENCRYPT_IDENTITY"
+        "ANSIBLE_VAULT_IDENTITY"
+        "ANSIBLE_VAULT_IDENTITY_LIST"
+        "ANSIBLE_VAULT_PASSWORD_FILE" )
+    for var in "${FORBIDDEN_ANSIBLE_VARS[@]}"; do
+        # Use indirect expansion: ${!variable}
+        # Alternative: eval "echo \$${var}"
+        if [ -n "${!var}" ]; then
+          error_exit "Environment variable $var is set. Aborting because this can interfere with how ansible-vault is used in the is script. You must unset this variable to use this script."
+        fi
+    done
+
+    # Create Ansible Vault password for encrypting secrets, if it does not yet exists
     ANSIBLE_VAULT_PASSWORD_FILE=${ENVIRONMENT_DIR}/stepup-ansible-vault-password
 
     if [ ! -f ${ANSIBLE_VAULT_PASSWORD_FILE} ]; then
@@ -199,8 +217,11 @@ if [ "${USE_ANSIBLE_VAULT}" -eq 1 ]; then
             error_exit "Error generating Ansible Vault password"
         fi
         echo "Generated Ansible Vault password file"
+    else
+      echo "Using existing Ansible Vault password"
     fi
     echo "Generated secrets will be encrypted using Ansible Vault with the password stored in ${ANSIBLE_VAULT_PASSWORD_FILE}"
+    echo "Using vault-id ${STEPUP_VAULT_ID}"
 else
     echo "Not using Ansible Vault"
 fi
@@ -209,6 +230,9 @@ if [ "${USE_KEYSZAR}" -ne 1 -a "${USE_ANSIBLE_VAULT}" -ne 1 ]; then
     echo "Generated secrets are stored in plaintext"
 fi
 
+# Location of an empty ansible configuration file, used to disable system specific ansible configuration that may
+# interfere with our use of ansible-vault
+EMPTY_ANSIBLE_CONFIG_FILE=${BASEDIR}/empty_ansible.cfg;
 
 # Generate passwords
 if [ ${#PASSWORDS[*]} -gt 0 ]; then
@@ -230,7 +254,11 @@ if [ ${#PASSWORDS[*]} -gt 0 ]; then
                 error_exit "Error writing password"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} ${PASSWORD_DIR}/${pass}
+                # Prevent default ansible.cfg from being applied so we can provide the ansible vault password
+                # without ansible configuration from interfering.
+
+                # shellcheck disable=SC2034
+                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${PASSWORD_DIR}/${pass}"
             fi
             if [ $? -ne "0" ]; then
                 rm ${PASSWORD_DIR}/${pass}
@@ -274,7 +302,7 @@ if [ ${#SECRETS[*]} -gt 0 ]; then
                 error_exit "Error writing secret"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} ${SECRET_DIR}/${secret}
+                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SECRET_DIR}/${secret}"
             fi
             if [ $? -ne "0" ]; then
                 rm ${SECRET_DIR}/${secret}
@@ -308,7 +336,7 @@ if [ ${#SAML_CERTS[*]} -gt 0 ]; then
                 error_exit "Error creating SAML signing certificate"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} "${SAML_CERT_DIR}/${cert_name}.key"
+                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SAML_CERT_DIR}/${cert_name}.key"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SAML_CERT_DIR}/${cert_name}.crt"
@@ -354,7 +382,7 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
                 error_exit "Error creating SSL certificate and key"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} "${SSL_CERT_DIR}/${cert_name}.key"
+                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSL_CERT_DIR}/${cert_name}.key"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SSL_CERT_DIR}/${cert_name}.crt"
@@ -388,7 +416,7 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
                 error_exit "Error generating SSH keypair"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ansible-vault encrypt --vault-password-file=${ANSIBLE_VAULT_PASSWORD_FILE} "${SSH_KEY_DIR}/${key}.key"
+                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSH_KEY_DIR}/${key}.key"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SSH_KEY_DIR}/${key}.key"

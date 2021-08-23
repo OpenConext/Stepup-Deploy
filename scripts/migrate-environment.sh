@@ -25,15 +25,22 @@ function realpath {
 }
 
 if [ $# -lt 1 ]; then
-    echo "Usage $0 <environment directory> [--keyczar-dir <keyczar-directory>] [--vault-password-file <vault password filename>]"
+    echo "Usage $0 <environment directory> [--keyczar-dir <keyczar-directory>] [--vault-id <vault-name>] [--vault-password-file <vault password filename>]"
     echo ""
     echo "This script migrates the secrets that are encrypted using keyczar to secrets encrypted using Ansible vault."
-    echo "The scrips decrypts the secrect using the keyczar key and then encrypts them using Ansible vault."
+    echo "The scrips decrypts the secret using the keyczar key and then encrypts them using the specified Ansible vault-id name and password."
     echo ""
-    echo "By default the vault password is read from <environment directory>/stepup-ansible-vault-password and the"
-    echo "keyczar key is read from <environment dir>/stepup-ansible-keystore"
-    echo "You can override these locations using the --vault-password-file and --keyczar-dir options respectively."
+    echo "By default the vault-id is set to 'stepup', the vault-password-file is set to '<environment directory>/stepup-ansible-vault-password'"
+    echo "and the keyczar key is read from <environment dir>/stepup-ansible-keystore"
+    echo "You can override echo of the parameters using the --vault-id, --vault-password-file and --keyczar-dir options respectively."
     echo ""
+    echo "OPTIONS:"
+    echo "--keyczar-dir <keyczar-directory>                The directory with the keyczar key used for decryption"
+    echo "--vault-name <vault-name>                        The name of the Ansible vault"
+    echo "--vault-password-file <vault password filename>  The path to the file with the password used for encryption"
+    echo ""
+    echo "The vault-name is incorporated (in plain text) in the encrypted blob. Recommendation is to set this to something that identifies"
+    echo "the environment."
     exit 1
 fi
 
@@ -51,8 +58,9 @@ echo "Using environment directory: $ENVIRONMENT_DIR"
 
 
 # Set default keyczar dir and vault password file locations
-KEYCZAR_DIR=${ENVIRONMENT_DIR}/stepup-ansible-keystore
-VAULT_PASSWORD_FILE=${ENVIRONMENT_DIR}/stepup-ansible-vault-password
+KEYCZAR_DIR="${ENVIRONMENT_DIR}/stepup-ansible-keystore"
+STEPUP_VAULT_ID=stepup
+ANSIBLE_VAULT_PASSWORD_FILE=${ENVIRONMENT_DIR}/stepup-ansible-vault-password
 
 # Process option(s)
 while [[ $# > 0 ]]
@@ -68,9 +76,16 @@ case $option in
     shift
     ;;
     --vault-password-file)
-    VAULT_PASSWORD_FILE="$1"
+    ANSIBLE_VAULT_PASSWORD_FILE="$1"
     if [ -z "$1" ]; then
         error_exit "--vault-password-file option requires argument"
+    fi
+    shift
+    ;;
+    --vault-name)
+    STEPUP_VAULT_ID="$1"
+    if [ -z "$1" ]; then
+        error_exit "--vault-name option requires argument"
     fi
     shift
     ;;
@@ -88,7 +103,8 @@ if [ ! -f ${VAULT_PASSWORD_FILE} ]; then
 fi
 
 echo "Using keyczar directory: ${KEYCZAR_DIR}"
-echo "Using Ansible vault password file: ${VAULT_PASSWORD_FILE}"
+echo "Using Ansible vault-name: ${STEPUP_VAULT_ID}"
+echo "Using Ansible vault-password-file: ${ANSIBLE_VAULT_PASSWORD_FILE}"
 
 echo ""
 echo "WARNING: Reencryption will overwrite the encrypted files with the newly encrypted versions!"
@@ -98,6 +114,10 @@ echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
+
+# Location of an empty ansible configuration file, used to disable system specific ansible configuration that may
+# interfere with our use of ansible-vault
+EMPTY_ANSIBLE_CONFIG_FILE=${BASEDIR}/empty_ansible.cfg;
 
 # List of globs of encrypted files
 ENCRYPTED_FILE_GLOBS=("password/*" "saml_cert/*.key" "secret/*" "ssh/*.key" "ssl_cert/*.key")
@@ -154,7 +174,7 @@ for fileglob in ${ENCRYPTED_FILE_GLOBS[@]}; do
       continue
     fi
 
-    ansible-vault encrypt --vault-password-file=${VAULT_PASSWORD_FILE} ${temp}
+    ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${temp}"
     if [ $? -ne "0" ]; then
       rm ${temp}
       echo "Error encrypting file"
@@ -180,3 +200,11 @@ echo "Inspected files: $inspected"
 echo "Converted files: $converted"
 echo "Skipped files: $skipped"
 echo "Error'ed files: $errors"
+echo ""
+echo "To enable decryption of the Ansible vault encrypted files without having to specify the password you can add"
+echo "the password to your ansible.cfg file by setting vault_identity_list in the [default] section:"
+echo ""
+echo "vault_identity_list = ${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}".
+echo ""
+echo "You can add multiple identities by separating them with a comma. E.g."
+echo "vault_identity_list = id1@password-file, id2@password-file"

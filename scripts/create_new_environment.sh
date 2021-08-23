@@ -21,31 +21,35 @@
 
 # The configuration is read from a file called "environment.conf" that must be located in the template directory
 
-CWD=`pwd`
-BASEDIR=`dirname $0`
+CWD=$(pwd)
+BASEDIR=$(dirname "$0")
 
 function error_exit {
     echo "${1}"
-    cd ${CWD}
+    # shellcheck disable=SC2164
+    cd "${CWD}"
     exit 1
 }
 
 function realpath {
-    if [ ! -d ${1} ]; then
+    if [ ! -d "${1}" ]; then
         return 1
     fi
-    current_dir=`pwd`
-    cd ${1}
+    current_dir=$(pwd)
+    # shellcheck disable=SC2164
+    cd "${1}"
     res=$?
     if [ $? -eq "0" ]; then
-        path=`pwd`
-        cd $current_dir
-        echo $path
+        path=$(pwd)
+        # shellcheck disable=SC2164
+        cd "$current_dir"
+        echo "$path"
     fi
     return $res
 }
 
-BASEDIR=`realpath ${BASEDIR}`
+# Set BASEDIR to the full path to the directory that contains this script.
+BASEDIR=$(realpath "${BASEDIR}")
 
 # Default template dir
 TEMPLATE_DIR="${BASEDIR}/../environments/template"
@@ -73,10 +77,11 @@ Options:
 "
     exit 1;
 fi
-ENVIRONMENT_NAME=`basename ${ENVIRONMENT_DIR}`
+# shellcheck disable=SC2006
+ENVIRONMENT_NAME=`basename "${ENVIRONMENT_DIR}"`
 
 # Process option(s)
-while [[ $# > 0 ]]
+while [[ $# -gt 0 ]]
 do
 option="$1"
 shift
@@ -98,23 +103,24 @@ esac
 done
 
 
-TEMPLATE_DIR=`realpath ${TEMPLATE_DIR}`
+# shellcheck disable=SC2006
+TEMPLATE_DIR=`realpath "${TEMPLATE_DIR}"`
 if [ $? -ne "0" ]; then
     error_exit "Could not find template dir: ${TEMPLATE_DIR}"
 fi
 echo "Using template from: ${TEMPLATE_DIR}"
 
 
-if [ ! -e ${ENVIRONMENT_DIR} ]; then
+if [ ! -e "${ENVIRONMENT_DIR}" ]; then
     echo "Creating new environment directory: ${ENVIRONMENT_DIR}"
-    mkdir -p ${ENVIRONMENT_DIR}
+    mkdir -p "${ENVIRONMENT_DIR}"
 fi
 
 # Read environment.conf from template directory
 ENVIRONMENT_CONF="${ENVIRONMENT_DIR}/environment.conf"
 if [ ! -f "${ENVIRONMENT_CONF}" ]; then
     # environment.conf does not yet exist, offer to edit it before continuing
-    cp ${TEMPLATE_DIR}/environment.conf ${ENVIRONMENT_CONF}
+    cp "${TEMPLATE_DIR}/environment.conf" "${ENVIRONMENT_CONF}"
     if [ $? -ne "0" ]; then
         error_exit "Could not copy 'environment.conf' from ${TEMPLATE_DIR}/environment.conf to ${ENVIRONMENT_CONF}"
     fi
@@ -134,12 +140,12 @@ echo "Reading configuration from: ${ENVIRONMENT_CONF}"
 echo "Done reading configuration"
 
 
-if [ "${USE_KEYSZAR}" -ne "0" -a  "${USE_ANSIBLE_VAULT}" -ne "0" ]; then
+if [ "${USE_KEYSZAR}" -ne "0" ] && [ "${USE_ANSIBLE_VAULT}" -ne "0" ]; then
   error_exit "Error in template configuration USE_KEYSZAR and USE_ANSIBLE_VAULT cannot be used at the same time"
 fi
 
 
-ENVIRONMENT_DIR=`realpath ${ENVIRONMENT_DIR}`
+ENVIRONMENT_DIR=$(realpath "${ENVIRONMENT_DIR}")
 if [ $? -ne "0" ]; then
     error_exit "Could not change to environment dir"
 fi
@@ -156,16 +162,16 @@ fi
 # Copy directories from the template to the new environment
 directories=("group_vars" "handlers" "tasks" "templates" "files")
 for directory in "${directories[@]}"; do
-    if [ -e ${TEMPLATE_DIR}/${directory} ]; then
-        if [ ! -e ${ENVIRONMENT_DIR}/${directory} ]; then
+    if [ -e "${TEMPLATE_DIR}/${directory}" ]; then
+        if [ ! -e "${ENVIRONMENT_DIR}/${directory}" ]; then
             echo "Creating/copying ${directory} directory"
-            mkdir -p ${ENVIRONMENT_DIR}/${directory}
+            mkdir -p "${ENVIRONMENT_DIR}/${directory}"
             if [ $? -ne "0" ]; then
                 error_exit "Error creating ${directory} directory"
             fi
-            cp -r ${TEMPLATE_DIR}/${directory}/* ${ENVIRONMENT_DIR}/${directory}
+            cp -r "${TEMPLATE_DIR}/${directory}"/* "${ENVIRONMENT_DIR}/${directory}"
             if [ $? -ne "0" ]; then
-                rm -r ${ENVIRONMENT_DIR}/${directory}
+                rm -r "${ENVIRONMENT_DIR:?}/${directory}"
                 error_exit "Error copying files to the ${directory} directory"
             fi
         else
@@ -180,8 +186,8 @@ if [ "${USE_KEYSZAR}" -eq 1 ]; then
     # Create keystore for encypting secrets
     KEY_DIR=${ENVIRONMENT_DIR}/${KEYSTORE_DIR}
 
-    if [ ! -e ${KEY_DIR} ]; then
-        ${BASEDIR}/create_keydir.sh ${KEY_DIR}
+    if [ ! -e "${KEY_DIR}" ]; then
+        "${BASEDIR}/create_keydir.sh" "${KEY_DIR}"
         if [ $? -ne "0" ]; then
             error_exit "Error creating keyset"
         fi
@@ -211,8 +217,8 @@ if [ "${USE_ANSIBLE_VAULT}" -eq 1 ]; then
     # Create Ansible Vault password for encrypting secrets, if it does not yet exists
     ANSIBLE_VAULT_PASSWORD_FILE=${ENVIRONMENT_DIR}/stepup-ansible-vault-password
 
-    if [ ! -f ${ANSIBLE_VAULT_PASSWORD_FILE} ]; then
-        ${BASEDIR}/gen_password.sh ${PASSWORD_LENGTH} > ${ANSIBLE_VAULT_PASSWORD_FILE}
+    if [ ! -f "${ANSIBLE_VAULT_PASSWORD_FILE}" ]; then
+        "${BASEDIR}"/gen_password.sh "${PASSWORD_LENGTH}" > "${ANSIBLE_VAULT_PASSWORD_FILE}"
         if [ $? -ne "0" ]; then
             error_exit "Error generating Ansible Vault password"
         fi
@@ -226,7 +232,7 @@ else
     echo "Not using Ansible Vault"
 fi
 
-if [ "${USE_KEYSZAR}" -ne 1 -a "${USE_ANSIBLE_VAULT}" -ne 1 ]; then
+if [ "${USE_KEYSZAR}" -ne 1 ] && [ "${USE_ANSIBLE_VAULT}" -ne 1 ]; then
     echo "Generated secrets are stored in plaintext"
 fi
 
@@ -237,15 +243,15 @@ EMPTY_ANSIBLE_CONFIG_FILE=${BASEDIR}/empty_ansible.cfg;
 # Generate passwords
 if [ ${#PASSWORDS[*]} -gt 0 ]; then
     PASSWORD_DIR=${ENVIRONMENT_DIR}/password
-    if [ ! -e ${PASSWORD_DIR} ]; then
+    if [ ! -e "${PASSWORD_DIR}" ]; then
         echo "Creating password directory"
-        mkdir -p ${PASSWORD_DIR}
+        mkdir -p "${PASSWORD_DIR}"
     fi
 
     for pass in "${PASSWORDS[@]}"; do
         if [ ! -e "${PASSWORD_DIR}/${pass}" ]; then
             echo "Generating password for ${pass}"
-            generated_password=`${BASEDIR}/gen_password.sh ${PASSWORD_LENGTH} ${KEY_DIR}`
+            generated_password=$("${BASEDIR}/gen_password.sh" "${PASSWORD_LENGTH}" "${KEY_DIR}")
             if [ $? -ne "0" ]; then
                 error_exit "Error generating password"
             fi
@@ -261,7 +267,7 @@ if [ ${#PASSWORDS[*]} -gt 0 ]; then
                 ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${PASSWORD_DIR}/${pass}"
             fi
             if [ $? -ne "0" ]; then
-                rm ${PASSWORD_DIR}/${pass}
+                rm "${PASSWORD_DIR}/${pass}"
                 error_exit "Error encrypting password"
             fi
 
@@ -271,11 +277,11 @@ if [ ${#PASSWORDS[*]} -gt 0 ]; then
     done
     if [ ! -e "${PASSWORD_DIR}/empty_placeholder" ]; then
         echo "Creating empty_placeholder password"
-        generated_password=`${BASEDIR}/gen_password.sh 0 ${KEY_DIR}`
+        generated_password=$("${BASEDIR}/gen_password.sh" 0 "${KEY_DIR}")
         if [ $? -ne "0" ]; then
             error_exit "Error creating password"
         fi
-        echo "${generated_password}" > ${PASSWORD_DIR}/empty_placeholder
+        echo "${generated_password}" > "${PASSWORD_DIR}"/empty_placeholder
     fi
 else
     echo "Skipping generation of passwords because none are defined in the environment.conf"
@@ -285,19 +291,19 @@ fi
 # Generate secrets
 if [ ${#SECRETS[*]} -gt 0 ]; then
     SECRET_DIR=${ENVIRONMENT_DIR}/secret
-    if [ ! -e ${SECRET_DIR} ]; then
+    if [ ! -e "${SECRET_DIR}" ]; then
         echo "Creating secret directory"
-        mkdir -p ${SECRET_DIR}
+        mkdir -p "${SECRET_DIR}"
     fi
 
     for secret in "${SECRETS[@]}"; do
         if [ ! -e "${SECRET_DIR}/${secret}" ]; then
             echo "Generating secret for ${secret}"
-            generated_secret=`${BASEDIR}/gen_password.sh ${SECRET_LENGTH} ${KEY_DIR}`
+            generated_secret=$("${BASEDIR}/gen_password.sh" "${SECRET_LENGTH}" "${KEY_DIR}")
             if [ $? -ne "0" ]; then
                 error_exit "Error generating secret"
             fi
-            echo "${generated_secret}" > ${SECRET_DIR}/${secret}
+            echo "${generated_secret}" > "${SECRET_DIR}/${secret}"
             if [ $? -ne "0" ]; then
                 error_exit "Error writing secret"
             fi
@@ -305,7 +311,7 @@ if [ ${#SECRETS[*]} -gt 0 ]; then
                 ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_ID}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SECRET_DIR}/${secret}"
             fi
             if [ $? -ne "0" ]; then
-                rm ${SECRET_DIR}/${secret}
+                rm "${SECRET_DIR}/${secret}"
                 error_exit "Error encrypting secret"
             fi
         else
@@ -320,18 +326,21 @@ fi
 # Generate self-signed certs for SAML use
 if [ ${#SAML_CERTS[*]} -gt 0 ]; then
     SAML_CERT_DIR=${ENVIRONMENT_DIR}/saml_cert
-    if [ ! -e ${SAML_CERT_DIR} ]; then
+    if [ ! -e "${SAML_CERT_DIR}" ]; then
         echo "Creating saml_cert directory"
-        mkdir -p ${SAML_CERT_DIR}
+        mkdir -p "${SAML_CERT_DIR}"
+        if [ $? -ne "0" ]; then
+            error_exit "Error creating ${SAML_CERT_DIR}"
+        fi
     fi
 
-    cd ${SAML_CERT_DIR}
+    cd "${SAML_CERT_DIR}"
     for cert in "${SAML_CERTS[@]}"; do
         cert_name=${cert%%:*}
         cert_dn=${cert#*:}
-        if [ ! -e "${SAML_CERT_DIR}/${cert_name}.crt" -a "${SAML_CERT_DIR}/${cert_name}.key" ]; then
+        if [ ! -e "${SAML_CERT_DIR}/${cert_name}.crt" ] && [ ! -e "${SAML_CERT_DIR}/${cert_name}.key" ]; then
             echo "Creating SAML signing certificate and key for ${cert_name}; DN: ${cert_dn}"
-            ${BASEDIR}/gen_selfsigned_cert.sh ${cert_name} "${cert_dn}" ${KEY_DIR}
+            "${BASEDIR}/gen_selfsigned_cert.sh" "${cert_name}" "${cert_dn}" "${KEY_DIR}"
             if [ $? -ne "0" ]; then
                 error_exit "Error creating SAML signing certificate"
             fi
@@ -347,7 +356,7 @@ if [ ${#SAML_CERTS[*]} -gt 0 ]; then
             echo "SAML signing certificate ${cert_name} exists, skipping"
         fi
     done
-    cd ${CWD}
+    cd "${CWD}"
 else
     echo "Skipping generation of self-signed certificates because none are defined in the environment.conf"
 fi
@@ -356,9 +365,9 @@ fi
 if [ ${#SSL_CERTS[*]} -gt 0 ]; then
     # Create Root CA for issueing SSL Server certs
     CA_DIR=${ENVIRONMENT_DIR}/ca
-    if [ ! -e ${CA_DIR} ]; then
+    if [ ! -e "${CA_DIR}" ]; then
         echo "Creating Root CA with DN: ${SSL_ROOT_DN}"
-        ${BASEDIR}/create_ca.sh ${CA_DIR} "${SSL_ROOT_DN}"
+        "${BASEDIR}/create_ca.sh" "${CA_DIR}" "${SSL_ROOT_DN}"
         if [ $? -ne "0" ]; then
             error_exit "Error creating CA"
         fi
@@ -366,18 +375,21 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
 
     # Create SSL server certificates
     SSL_CERT_DIR=${ENVIRONMENT_DIR}/ssl_cert
-    if [ ! -e ${SSL_CERT_DIR} ]; then
+    if [ ! -e "${SSL_CERT_DIR}" ]; then
         echo "Creating ssl_cert directory"
-        mkdir -p ${SSL_CERT_DIR}
+        mkdir -p "${SSL_CERT_DIR}"
+        if [ $? -ne "0" ]; then
+            error_exit "Error creating ${SSL_CERT_DIR}"
+        fi
     fi
 
-    cd ${SSL_CERT_DIR}
+    cd "${SSL_CERT_DIR}"
     for cert in "${SSL_CERTS[@]}"; do
         cert_name=${cert%%:*}
         cert_dn=${cert#*:}
-        if [ ! -e "${SSL_CERT_DIR}/${cert_name}.crt" -a "${SSL_CERT_DIR}/${cert_name}.key" ]; then
+        if [ ! -e "${SSL_CERT_DIR}/${cert_name}.crt" ] && [ ! -e "${SSL_CERT_DIR}/${cert_name}.key" ]; then
             echo "Creating SSL certificate and key for ${cert_name}; DN: ${cert_dn}"
-            ${BASEDIR}/gen_ssl_server_cert.sh ${CA_DIR} ${cert_name} "${cert_dn}" ${KEY_DIR}
+            "${BASEDIR}/gen_ssl_server_cert.sh" "${CA_DIR}" "${cert_name}" "${cert_dn}" "${KEY_DIR}"
             if [ $? -ne "0" ]; then
                 error_exit "Error creating SSL certificate and key"
             fi
@@ -393,7 +405,7 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
             echo "SSL certificate ${cert_name} exists, skipping"
         fi
     done
-    cd ${CWD}
+    cd "${CWD}"
 else
     echo "Skipping generation of the CA and certificates because none are defined in the environment.conf"
 fi
@@ -402,16 +414,19 @@ fi
 # Generate SSH keys
 if [ ${#SSH_KEYS[*]} -gt 0 ]; then
     SSH_KEY_DIR=${ENVIRONMENT_DIR}/ssh
-    if [ ! -e ${SSH_KEY_DIR} ]; then
+    if [ ! -e "${SSH_KEY_DIR}" ]; then
         echo "Creating ssh directory"
-        mkdir -p ${SSH_KEY_DIR}
+        mkdir -p "${SSH_KEY_DIR}"
+        if [ $? -ne "0" ]; then
+            error_exit "Error creating ${SSH_KEY_DIR}"
+        fi
     fi
 
-    cd ${SSH_KEY_DIR}
+    cd "${SSH_KEY_DIR}"
     for key in "${SSH_KEYS[@]}"; do
-        if [ ! -e "${SSH_KEY_DIR}/${key}.pub" -a "${SSH_KEY_DIR}/${key}.key" ]; then
+        if [ ! -e "${SSH_KEY_DIR}/${key}.pub" ] && [ ! -e "${SSH_KEY_DIR}/${key}.key" ]; then
             echo "Generating ssh keypair for ${key}"
-            ${BASEDIR}/gen_ssh_key.sh ${key} ${KEY_DIR}
+            "${BASEDIR}/gen_ssh_key.sh" "${key}" "${KEY_DIR}"
             if [ $? -ne "0" ]; then
                 error_exit "Error generating SSH keypair"
             fi
@@ -426,7 +441,7 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
             echo "SSH keypair ${key} exists, skipping"
         fi
     done
-    cd ${CWD}
+    cd "${CWD}"
 else
     echo "Skipping generation of ssh keys because none are defined in the environment.conf"
 fi
@@ -439,7 +454,7 @@ echo "
 Created (or updated) passwords, secrets, certificates and/or ssh keys for the new environment as specified in
 the environment.conf: ${ENVIRONMENT_CONF}
 It is safe to rerun this script as it will not overwrite existing files."
-if [ ${USE_KEYSZAR} -eq 1 ]; then
+if [ "${USE_KEYSZAR}" -eq 1 ]; then
 echo "
 * All secrets (except the CA private key) are encrypted with a symmetric key that is stored in a \"vault\". The vault is
   located in ${KEY_DIR}
@@ -458,7 +473,7 @@ else
   empty string, otherwise the 'vault' filter will try to use Keyczar, resulting in an error when running the playbook.
 "
 fi
-if [ ${USE_ANSIBLE_VAULT} -eq 1 ]; then
+if [ "${USE_ANSIBLE_VAULT}" -eq 1 ]; then
   echo "
 * All secrets (except the CA private key) are encrypted using ansible-vault. The password used to encrypt is stored
   in ${ANSIBLE_VAULT_PASSWORD_FILE}

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Migrate an environment from keyczar encrytion to ansible-vault encryption
+
 CWD=$(pwd)
 BASEDIR=$(dirname "$0")
 
@@ -213,10 +215,13 @@ echo "Converted files: $converted"
 echo "Skipped files: $skipped"
 echo "Error'ed files: $errors"
 echo ""
+echo "Next update you Stepup environment to set 'vault_keydir: ""' in the all.yml group_vars to disable"
+echo "using keyczar."
+echo ""
 echo "To enable decryption of the Ansible vault encrypted files without having to specify the password you can add"
 echo "the password to your ansible.cfg file by setting vault_identity_list in the [default] section:"
 echo ""
-echo "vault_identity_list = ${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}".
+echo "vault_identity_list = ${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}"
 echo ""
 echo "You can add multiple identities by separating them with a comma. E.g."
 echo "vault_identity_list = id1@password-file, id2@password-file"

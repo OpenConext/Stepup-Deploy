@@ -28,6 +28,7 @@ function error_exit {
     echo "${1}"
     # shellcheck disable=SC2164
     cd "${CWD}"
+    unset ANSIBLE_CONFIG
     exit 1
 }
 
@@ -204,7 +205,8 @@ if [ "${USE_ANSIBLE_VAULT}" -eq 1 ]; then
         "ANSIBLE_VAULT_ENCRYPT_IDENTITY"
         "ANSIBLE_VAULT_IDENTITY"
         "ANSIBLE_VAULT_IDENTITY_LIST"
-        "ANSIBLE_VAULT_PASSWORD_FILE" )
+        "ANSIBLE_VAULT_PASSWORD_FILE"
+        "ANSIBLE_CONFIG")
     for var in "${FORBIDDEN_ANSIBLE_VARS[@]}"; do
         # Use indirect expansion: ${!variable}
         # Alternative: eval "echo \$${var}"
@@ -263,7 +265,7 @@ if [ ${#PASSWORDS[*]} -gt 0 ]; then
                 # without ansible configuration from interfering.
 
                 # shellcheck disable=SC2034
-                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${PASSWORD_DIR}/${pass}"
+                export ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${PASSWORD_DIR}/${pass}"
             fi
             if [ $? -ne "0" ]; then
                 rm "${PASSWORD_DIR}/${pass}"
@@ -307,7 +309,7 @@ if [ ${#SECRETS[*]} -gt 0 ]; then
                 error_exit "Error writing secret"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SECRET_DIR}/${secret}"
+                export ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SECRET_DIR}/${secret}"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SECRET_DIR}/${secret}"
@@ -344,7 +346,7 @@ if [ ${#SAML_CERTS[*]} -gt 0 ]; then
                 error_exit "Error creating SAML signing certificate"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SAML_CERT_DIR}/${cert_name}.key"
+                export ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SAML_CERT_DIR}/${cert_name}.key"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SAML_CERT_DIR}/${cert_name}.crt"
@@ -393,7 +395,7 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
                 error_exit "Error creating SSL certificate and key"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
-                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSL_CERT_DIR}/${cert_name}.key"
+                export ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSL_CERT_DIR}/${cert_name}.key"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SSL_CERT_DIR}/${cert_name}.crt"
@@ -431,7 +433,7 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
                 # shellcheck disable=SC2034
-                ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSH_KEY_DIR}/${key}.key"
+                export ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSH_KEY_DIR}/${key}.key"
             fi
             if [ $? -ne "0" ]; then
                 rm "${SSH_KEY_DIR}/${key}.key"
@@ -445,6 +447,8 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
 else
     echo "Skipping generation of ssh keys because none are defined in the environment.conf"
 fi
+
+unset ANSIBLE_CONFIG
 
 
 echo

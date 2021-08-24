@@ -9,6 +9,7 @@ function error_exit {
     echo "${1}"
     # shellcheck disable=SC2164
     cd "${CWD}"
+    unset ANSIBLE_CONFIG
     exit 1
 }
 
@@ -49,6 +50,19 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+FORBIDDEN_ANSIBLE_VARS=(
+    "ANSIBLE_VAULT_ENCRYPT_IDENTITY"
+    "ANSIBLE_VAULT_IDENTITY"
+    "ANSIBLE_VAULT_IDENTITY_LIST"
+    "ANSIBLE_VAULT_PASSWORD_FILE"
+    "ANSIBLE_CONFIG" )
+for var in "${FORBIDDEN_ANSIBLE_VARS[@]}"; do
+    # Use indirect expansion: ${!variable}
+    # Alternative: eval "echo \$${var}"
+    if [ -n "${!var}" ]; then
+      error_exit "Environment variable $var is set. Aborting because this can interfere with how ansible-vault is used in the is script. You must unset this variable to use this script."
+    fi
+done
 
 # The environment directory
 ENVIRONMENT_DIR=$1
@@ -192,7 +206,7 @@ for fileglob in "${ENCRYPTED_FILE_GLOBS[@]}"; do
     fi
 
     # shellcheck disable=SC2034
-    ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${temp}"
+    export ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${temp}"
     if [ $? -ne "0" ]; then
       rm "${temp}"
       echo "Error encrypting file"
@@ -213,13 +227,15 @@ for fileglob in "${ENCRYPTED_FILE_GLOBS[@]}"; do
   done
 done
 
+unset ANSIBLE_CONFIG
+
 echo ""
 echo "Inspected files: $inspected"
 echo "Converted files: $converted"
 echo "Skipped files: $skipped"
 echo "Error'ed files: $errors"
 echo ""
-echo "Next update you Stepup environment to set 'vault_keydir: ""' in the all.yml group_vars to disable"
+echo "Next update you Stepup environment to set 'vault_keydir: \"\"' in the all.yml group_vars to disable"
 echo "using keyczar."
 echo ""
 echo "To enable decryption of the Ansible vault encrypted files without having to specify the password you can add"

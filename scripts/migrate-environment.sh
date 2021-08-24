@@ -99,7 +99,17 @@ if [ ! -d "${KEYCZAR_DIR}" ]; then
     error_exit "Error: Keyczar directory not found"
 fi
 if [ ! -f "${ANSIBLE_VAULT_PASSWORD_FILE}" ]; then
-    error_exit "Error: Ansible vault password file not found"
+    echo "Ansible vault password file not found: ${ANSIBLE_VAULT_PASSWORD_FILE}"
+    read -p "Do you want to create a new vault password file (Y/N)? " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        error_exit "Abort: vault password file not created"
+    fi
+    "${BASEDIR}"/gen_password.sh 15 > "${ANSIBLE_VAULT_PASSWORD_FILE}"
+    if [ $? -ne "0" ]; then
+        error_exit "Error generating Ansible Vault password"
+    fi
+    echo "Generated Ansible Vault password file"
 fi
 
 

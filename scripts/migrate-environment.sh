@@ -7,6 +7,7 @@ BASEDIR=$(dirname "$0")
 
 function error_exit {
     echo "${1}"
+    # shellcheck disable=SC2164
     cd "${CWD}"
     exit 1
 }
@@ -16,10 +17,12 @@ function realpath {
         return 1
     fi
     current_dir=$(pwd)
+    # shellcheck disable=SC2164
     cd "${1}"
     res=$?
     if [ $? -eq "0" ]; then
         path=$(pwd)
+        # shellcheck disable=SC2164
         cd "$current_dir"
         echo "$path"
     fi
@@ -188,6 +191,7 @@ for fileglob in "${ENCRYPTED_FILE_GLOBS[@]}"; do
       continue
     fi
 
+    # shellcheck disable=SC2034
     ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${temp}"
     if [ $? -ne "0" ]; then
       rm "${temp}"

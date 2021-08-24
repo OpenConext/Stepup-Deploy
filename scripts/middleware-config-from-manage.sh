@@ -16,12 +16,12 @@
 
 
 # Check required tools
-JQ=`which jq`
+JQ=$(which jq)
 if [ $? -ne 0 ]; then
   echo "Error: 'jq' (https://stedolan.github.io/jq/) is required but could not be found in the current path."
   exit 1
 fi
-CURL=`which curl`
+CURL=$(which curl)
 if [ $? -ne 0 ]; then
   echo "Error: 'curl' (https://curl.haxx.se/) is required but could not be found in the current path."
   exit 1
@@ -67,9 +67,9 @@ if [ $? -ne 0 ]; then
   echo "Error: Could not find definition for environment '${environment}' in ~/.manage.config"
   exit 1
 fi
-manage_url=`${JQ} -r ".\"${environment}\".url" ~/.manage.config`
-manage_login=`${JQ} -r ".\"${environment}\".login" ~/.manage.config`
-manage_password=`${JQ} -r ".\"${environment}\".password" ~/.manage.config`
+manage_url=$(${JQ} -r ".\"${environment}\".url" ~/.manage.config)
+manage_login=$(${JQ} -r ".\"${environment}\".login" ~/.manage.config)
+manage_password=$(${JQ} -r ".\"${environment}\".password" ~/.manage.config)
 
 
 entityid=$2
@@ -78,18 +78,18 @@ entityid=$2
 # --fail: non zero exit code on HTTP status >= 400
 # --silent: suppress showing transfer/progress
 # --show-error: do not suppress errors when running --silent
-response=`${CURL} --fail --silent --show-error \
+response=$(${CURL} --fail --silent --show-error \
                   -H 'Content-Type: application/json' \
-                  -u ${manage_login}:${manage_password} \
+                  -u "${manage_login}:${manage_password}" \
                   -X POST \
                   -d "{\"entityid\":\"${entityid}\",\"ALL_ATTRIBUTES\":true}" \
-                  ${manage_url}`
+                  "${manage_url}")
 if [ $? -ne 0 ]; then
    echo "ERROR: POST to '${manage_url}' failed"
    exit 1
 fi
-echo ${response}
-echo ${response} | ${JQ} -f ${basedir}/middleware-config-from-manage.jq | sed 's/\\r\\n//g' 
+echo "${response}"
+echo "${response}" | ${JQ} -f "${basedir}/middleware-config-from-manage.jq" | sed 's/\\r\\n//g'
 if [ $? -ne 0 ]; then
    echo "ERROR: Parsing manage response failed"
    exit 1

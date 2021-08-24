@@ -23,19 +23,19 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-if [ $1 -eq "0" ]; then
+if [ "$1" -eq "0" ]; then
     password=''
-elif [ $1 -gt "0" ]; then
-    password=`env LC_CTYPE=C LC_ALL=C tr -dc "a-zA-Z0-9-_" < /dev/urandom | head -c $1`
+elif [ "$1" -gt "0" ]; then
+    password=$(env LC_CTYPE=C LC_ALL=C tr -dc "a-zA-Z0-9-_" < /dev/urandom | head -c "$1")
 else
     echo "password length must be >= 0"
     exit 1
 fi
 
 if [ -d "$2" ]; then
-    tempfile=`mktemp -t genpass.XXXXX`
-    echo -n ${password} > "$tempfile"    
-    `dirname $0`/encrypt-file.sh "$2" -f "$tempfile"
+    tempfile=$(mktemp -t genpass.XXXXX)
+    echo -n "${password}" > "$tempfile"
+    "$(dirname "$0")/encrypt-file.sh" "$2" -f "$tempfile"
     if [ $? -ne "0" ]; then
         echo "Encryption failed"
         rm "$tempfile"
@@ -43,5 +43,5 @@ if [ -d "$2" ]; then
     fi
     rm "$tempfile"
 else
-    echo $password
+    echo "$password"
 fi

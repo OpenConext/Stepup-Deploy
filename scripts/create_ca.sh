@@ -14,37 +14,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CWD=`pwd`
-BASEDIR=`dirname $0`
+CWD=$(pwd)
+BASEDIR=$(dirname $0)
 CA_VALIDITY_DAYS=3650
 CA_RSA_MODULUS_SIZE_BITS=4096
 
 function error_exit {
     echo "${1}"
-    rm -r ${CA_DIR}
-    cd ${CWD}
+    rm -r "${CA_DIR}"
+    # shellcheck disable=SC2164
+    cd "${CWD}"
     exit 1
 }
 
 function realpath {
-    if [ ! -d ${1} ]; then
+    if [ ! -d "${1}" ]; then
         return 1
     fi
-    current_dir=`pwd`
-    cd ${1}
+    current_dir=$(pwd)
+    # shellcheck disable=SC2164
+    cd "${1}"
     res=$?
     if [ $? -eq "0" ]; then
-        path=`pwd`
-        cd $current_dir
-        echo $path
+        path=$(pwd)
+        # shellcheck disable=SC2164
+        cd "$current_dir"
+        echo "$path"
     fi
     return $res
 }
 
-BASEDIR=`realpath ${BASEDIR}`
+BASEDIR=$(realpath "${BASEDIR}")
 
-OPENSSL=`which openssl`
-if [ -z "${OPENSSL}" -o ! -x ${OPENSSL} ]; then
+OPENSSL=$(which openssl)
+if [ -z "${OPENSSL}" ] || [ ! -x "${OPENSSL}" ]; then
     echo "openssl is not in path or not executable. Please install openssl"
     exit 1;
 fi
@@ -62,14 +65,14 @@ if [ $# -lt 2 ]; then
 fi
 
 
-if [ -e ${CA_DIR} ]; then
+if [ -e "${CA_DIR}" ]; then
     echo "CA Directory already exists. Leaving"
     exit 1
 fi
 
-mkdir -p ${CA_DIR}
+mkdir -p "${CA_DIR}"
 
-CA_DIR=`realpath ${CA_DIR}`
+CA_DIR=$(realpath "${CA_DIR}")
 if [ $? -ne "0" ]; then
     error_exit "Could not change to CA dir"
 fi
@@ -78,14 +81,14 @@ echo "Initializing a new CA in: ${CA_DIR}"
 
 OPENSSL_CONF=${BASEDIR}/opensslca.conf
 
-cd ${CA_DIR}
+cd "${CA_DIR}"
 mkdir -p certs
 
 # Generate random 128 bit serial number to prevent reusing a issuer + serial combination when recreating a CA. Browser won't accept that anymore nowadays
 ${OPENSSL} rand -hex 16 > serial
 touch index.txt
 
-${OPENSSL} req -x509 -newkey rsa:${CA_RSA_MODULUS_SIZE_BITS} -out ${CA_DIR}/ca-cert.pem -outform PEM -nodes -config ${OPENSSL_CONF} -keyout ${CA_DIR}/ca-key.pem -sha256 -extensions v3_ca -set_serial 0 -days ${CA_VALIDITY_DAYS} -subj "${CA_DN}"
+${OPENSSL} req -x509 -newkey rsa:${CA_RSA_MODULUS_SIZE_BITS} -out "${CA_DIR}/ca-cert.pem" -outform PEM -nodes -config "${OPENSSL_CONF}" -keyout "${CA_DIR}/ca-key.pem" -sha256 -extensions v3_ca -set_serial 0 -days ${CA_VALIDITY_DAYS} -subj "${CA_DN}"
 if [ $? -ne "0" ]; then
     error_exit "Error generating CA root certificate and key"
 fi
@@ -93,6 +96,7 @@ fi
 echo "Wrote CA certificate to: ${CA_DIR}/ca-cert.pem"
 
 echo "Generated CA certificate:"
-${OPENSSL} x509 -in ${CA_DIR}/ca-cert.pem -text
+${OPENSSL} x509 -in "${CA_DIR}/ca-cert.pem" -text
 
-cd ${CWD}
+# shellcheck disable=SC2164
+cd "${CWD}"

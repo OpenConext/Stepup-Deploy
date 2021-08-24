@@ -77,8 +77,7 @@ Options:
 "
     exit 1;
 fi
-# shellcheck disable=SC2006
-ENVIRONMENT_NAME=`basename "${ENVIRONMENT_DIR}"`
+ENVIRONMENT_NAME=$(basename "${ENVIRONMENT_DIR}")
 
 # Process option(s)
 while [[ $# -gt 0 ]]
@@ -153,9 +152,9 @@ echo "Creating/updating the environment in directory: ${ENVIRONMENT_DIR}"
 
 # Copy inventory file into the new environment
 INVENTORY_FILE=${ENVIRONMENT_DIR}/inventory
-if [ ! -e  ${INVENTORY_FILE} ]; then
+if [ ! -e  "${INVENTORY_FILE}" ]; then
     echo "Creating inventory file"
-    cp ${TEMPLATE_DIR}/inventory ${INVENTORY_FILE}
+    cp "${TEMPLATE_DIR}/inventory" "${INVENTORY_FILE}" || error_exit "Error copying inventory file"
 fi
 
 
@@ -255,7 +254,7 @@ if [ ${#PASSWORDS[*]} -gt 0 ]; then
             if [ $? -ne "0" ]; then
                 error_exit "Error generating password"
             fi
-            echo "${generated_password}" > ${PASSWORD_DIR}/${pass}
+            echo "${generated_password}" > "${PASSWORD_DIR}/${pass}"
             if [ $? -ne "0" ]; then
                 error_exit "Error writing password"
             fi
@@ -334,7 +333,7 @@ if [ ${#SAML_CERTS[*]} -gt 0 ]; then
         fi
     fi
 
-    cd "${SAML_CERT_DIR}"
+    cd "${SAML_CERT_DIR}" || error_exit "Error changing directory"
     for cert in "${SAML_CERTS[@]}"; do
         cert_name=${cert%%:*}
         cert_dn=${cert#*:}
@@ -356,7 +355,7 @@ if [ ${#SAML_CERTS[*]} -gt 0 ]; then
             echo "SAML signing certificate ${cert_name} exists, skipping"
         fi
     done
-    cd "${CWD}"
+    cd "${CWD}" || error_exit "Error changing directory"
 else
     echo "Skipping generation of self-signed certificates because none are defined in the environment.conf"
 fi
@@ -383,7 +382,7 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
         fi
     fi
 
-    cd "${SSL_CERT_DIR}"
+    cd "${SSL_CERT_DIR}" || error_exit "Error changing directory"
     for cert in "${SSL_CERTS[@]}"; do
         cert_name=${cert%%:*}
         cert_dn=${cert#*:}
@@ -405,7 +404,7 @@ if [ ${#SSL_CERTS[*]} -gt 0 ]; then
             echo "SSL certificate ${cert_name} exists, skipping"
         fi
     done
-    cd "${CWD}"
+    cd "${CWD}" || error_exit "Error changing directory"
 else
     echo "Skipping generation of the CA and certificates because none are defined in the environment.conf"
 fi
@@ -422,7 +421,7 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
         fi
     fi
 
-    cd "${SSH_KEY_DIR}"
+    cd "${SSH_KEY_DIR}" || error_exit "Error changing directory"
     for key in "${SSH_KEYS[@]}"; do
         if [ ! -e "${SSH_KEY_DIR}/${key}.pub" ] && [ ! -e "${SSH_KEY_DIR}/${key}.key" ]; then
             echo "Generating ssh keypair for ${key}"
@@ -431,6 +430,7 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
                 error_exit "Error generating SSH keypair"
             fi
             if [ "${USE_ANSIBLE_VAULT}" -eq "1" ]; then
+                # shellcheck disable=SC2034
                 ANSIBLE_CONFIG=${EMPTY_ANSIBLE_CONFIG_FILE}; ansible-vault encrypt --vault-id="${STEPUP_VAULT_LABEL}@${ANSIBLE_VAULT_PASSWORD_FILE}" "${SSH_KEY_DIR}/${key}.key"
             fi
             if [ $? -ne "0" ]; then
@@ -441,7 +441,7 @@ if [ ${#SSH_KEYS[*]} -gt 0 ]; then
             echo "SSH keypair ${key} exists, skipping"
         fi
     done
-    cd "${CWD}"
+    cd "${CWD}" || error_exit "Error changing directory"
 else
     echo "Skipping generation of ssh keys because none are defined in the environment.conf"
 fi

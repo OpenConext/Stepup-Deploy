@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-CWD=`pwd`
-BASEDIR=`dirname $0`
+CWD=$(pwd)
+BASEDIR=$(dirname "$0")
 COMPONENTS=("Stepup-Middleware" "Stepup-Gateway" "Stepup-SelfService" "Stepup-RA" "Stepup-tiqr" "Stepup-Webauthn" "oath-service-php" "Stepup-Azure-MFA")
 CONFIG_ONLY_COMPONENTS=("Stepup-Webauthn" "Stepup-Azure-MFA")
 UNARCHIVE=1
@@ -13,25 +13,28 @@ LIMIT=""
 
 function error_exit {
     echo "${1}"
-    if [ -n "${TMP_ARCHIVE_DIR}" -a -d "${TMP_ARCHIVE_DIR}" ]; then
+    if [ -n "${TMP_ARCHIVE_DIR}" ] && [ -d "${TMP_ARCHIVE_DIR}" ]; then
         rm -r "${TMP_ARCHIVE_DIR}"
     fi
-    cd ${CWD}
+    # shellcheck disable=SC2164
+    cd "${CWD}"
     exit 1
 }
 
 
 function realpath {
-    if [ ! -d ${1} ]; then
+    if [ ! -d "${1}" ]; then
         return 1
     fi
-    current_dir=`pwd`
-    cd ${1}
+    current_dir=$(pwd)
+    # shellcheck disable=SC2164
+    cd "${1}"
     res=$?
     if [ $? -eq "0" ]; then
-        path=`pwd`
-        cd $current_dir
-        echo $path
+        path=$(pwd)
+        # shellcheck disable=SC2164
+        cd "$current_dir"
+        echo "$path"
     fi
     return $res
 }
@@ -39,7 +42,7 @@ function realpath {
 
 # Process options
 COMPONENT_TARBALL=$1
-if [ ! -f ${COMPONENT_TARBALL} ]; then
+if [ ! -f "${COMPONENT_TARBALL}" ]; then
     error_exit "FIle not found: '${COMPONENT_TARBALL}'"
 fi
 shift
@@ -56,7 +59,7 @@ if [ -z "${COMPONENT_TARBALL}"  ]; then
     exit 1;
 fi
 
-while [[ $# > 0 ]]
+while [[ $# -gt 0 ]]
 do
 option="$1"
 shift
@@ -85,10 +88,10 @@ case $option in
         error_exit "Inventory file '${INVENTORY}' not found"
     fi
     # Get absolute path to inventory
-    cd ${CWD}
-    cd `dirname ${INVENTORY}`
-    INVENTORY=`pwd`/`basename ${INVENTORY}`
-    cd ${CWD}
+    cd "${CWD}" || error_exit "Error changing directory"
+    cd "$(dirname "${INVENTORY}")"  || error_exit "Error changing directory"
+    INVENTORY=$(pwd)/$(basename "${INVENTORY}")
+    cd "${CWD}" || error_exit "Error changing directory"
     ;;
     -l|--limit)
     LIMIT="$1"
@@ -103,7 +106,7 @@ case $option in
 esac
 done
 
-component_tarball_basename=`basename ${COMPONENT_TARBALL}`
+component_tarball_basename=$(basename "${COMPONENT_TARBALL}")
 found=0
 for comp in "${COMPONENTS[@]}"; do
     regex="^($comp).*(\.tar\.bz2)$"
@@ -116,20 +119,22 @@ if [ "$found" -ne "1" ]; then
     error_exit "Tarball to deploy must end in .tar.bz2 and start with one of: ${COMPONENTS[*]}"
 fi
 
-#If -c is set, and componet does not support -c, error here
+# If -c is set, and component does not support -c, error here
 if [ ${CONFIGONLY} -eq "1" ]; then
-  if [[ ! "${CONFIG_ONLY_COMPONENTS[@]}" =~ "${COMPONENT}" ]]; then
+  # "${CONFIG_ONLY_COMPONENTS[*]}" concatenates all strings in CONFIG_ONLY_COMPONENTS and the comparison with *"${COMPONENT}"* does a substring search
+  # This behaves correctly here because we have already assured that COMPONENT is one of COMPONENTS
+  if [[ ! "${CONFIG_ONLY_COMPONENTS[*]}" = *"${COMPONENT}"* ]]; then
     error_exit "${COMPONENT} does not support -c|--config-only"
   fi
 fi
 
 # Get absolute path to component tarball
-cd ${CWD}
-cd `dirname ${COMPONENT_TARBALL}`
-COMPONENT_TARBALL=`pwd`/`basename ${COMPONENT_TARBALL}`
-cd ${CWD}
+cd "${CWD}" || error_exit "Error changing directory"
+cd "$(dirname "${COMPONENT_TARBALL}")" || error_exit "Error changing directory"
+COMPONENT_TARBALL=$(pwd)/$(basename "${COMPONENT_TARBALL}")
+cd "${CWD}" || error_exit "Error changing directory"
 
-COMPONENT=`echo ${COMPONENT} | tr '[:upper:]' '[:lower:]'`
+COMPONENT=$(echo "${COMPONENT}" | tr '[:upper:]' '[:lower:]')
 echo "Deploying component: ${COMPONENT}"
 echo "Using inventory: ${INVENTORY}"
 echo "Host limit: ${LIMIT}"
@@ -142,24 +147,24 @@ if [ ${UNARCHIVE} -eq "1" ]; then
     echo "Testing ${COMPONENT_TARBALL}"
 
     # Sanity check tar file
-    TMP_ARCHIVE_DIR=`mktemp -d "/tmp/${COMPONENT}.XXXXXXXX"`
+    TMP_ARCHIVE_DIR=$(mktemp -d "/tmp/${COMPONENT}.XXXXXXXX")
     if [ $? -ne "0" ]; then
         error_exit "Could not create temp dir"
     fi
 
     # Extract tarball
-    bunzip2 -k -q -c "${COMPONENT_TARBALL}" > ${TMP_ARCHIVE_DIR}/component.tar
+    bunzip2 -k -q -c "${COMPONENT_TARBALL}" > "${TMP_ARCHIVE_DIR}/component.tar"
     if [ $? -ne "0" ]; then
         error_exit "bunzip2 failed"
     fi
 
     # Untar it
-    tar -xf ${TMP_ARCHIVE_DIR}/component.tar -C ${TMP_ARCHIVE_DIR}
+    tar -xf "${TMP_ARCHIVE_DIR}/component.tar" -C "${TMP_ARCHIVE_DIR}"
     if [ $? -ne "0" ]; then
         error_exit "tar failed"
     fi
 
-    rm -r ${TMP_ARCHIVE_DIR}
+    rm -r "${TMP_ARCHIVE_DIR}"
 fi
 
 # Start ansible deploy
@@ -187,15 +192,16 @@ if [ -n "${LIMIT}" ]; then
 fi
 
 
-deploy_playbook_dir=`realpath "${BASEDIR}/../"`
+deploy_playbook_dir=$(realpath "${BASEDIR}/../")
 
 
 if [ "${VERBOSE}" -eq "1" ]; then
-    echo ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags $COMPONENT -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+    echo ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} "${inventory_option}" "${limit_option}" "${configonly_flag}" --tags "$COMPONENT" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
 fi
 
-ansible-playbook ${deploy_playbook_dir}/deploy.yml ${verbose_flag} ${inventory_option} ${limit_option} --tags $COMPONENT ${configonly_flag} -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
+ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} "${inventory_option}" "${limit_option}" --tags "$COMPONENT" "${configonly_flag}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
 res=$?
-cd ${CWD}
+# shellcheck disable=SC2164
+cd "${CWD}"
 
 exit $res

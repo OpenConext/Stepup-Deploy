@@ -24,17 +24,18 @@
 # If a keyczar keyvault directory is provided, the key that is output is encrypted.
 
 
-CWD=`pwd`
-BASEDIR=`dirname $0`
+CWD=$(pwd)
+BASEDIR=$(dirname "$0")
 RSA_MODULUS_SIZE_BITS=2048
 CERT_VALIDITY_DAYS=1095
 
 function error_exit {
     echo "${1}"
-    if [ -d ${tmpdir} ]; then
-        rm -r ${tmpdir}
+    if [ -d "${tmpdir}" ]; then
+        rm -r "${tmpdir}"
     fi
-    cd ${CWD}
+    # shellcheck disable=SC2164
+    cd "${CWD}"
     exit 1
 }
 
@@ -43,20 +44,22 @@ function realpath {
         return 1
     fi
     current_dir=`pwd`
-    cd ${1}
+    # shellcheck disable=SC2164
+    cd "${1}"
     res=$?
     if [ $? -eq "0" ]; then
-        path=`pwd`
-        cd $current_dir
-        echo $path
+        path=$(pwd)
+        # shellcheck disable=SC2164
+        cd "$current_dir"
+        echo "$path"
     fi
     return $res
 }
 
-BASEDIR=`realpath ${BASEDIR}`
+BASEDIR=$(realpath "${BASEDIR}")
 
-OPENSSL=`which openssl`
-if [ -z "${OPENSSL}" -o ! -x ${OPENSSL} ]; then
+OPENSSL=$(which openssl)
+if [ -z "${OPENSSL}" ] || [ ! -x "${OPENSSL}" ]; then
     echo "openssl is not in path or not executable. Please install openssl"
     exit 1;
 fi
@@ -78,54 +81,54 @@ if [ $# -lt 3 ]; then
     exit 1;
 fi
 
-if [ -e ${CERT_BASENAME}.key -o -e ${CERT_BASENAME}.crt ]; then
+if [ -e "${CERT_BASENAME}.key" ] || [ -e "${CERT_BASENAME}.crt" ]; then
     echo "'${CERT_BASENAME}.key' or '${CERT_BASENAME}.crt' already exist. Leaving"
     exit 1;
 fi
 
-if [ ! -d ${CA_DIR} ]; then
+if [ ! -d "${CA_DIR}" ]; then
     echo "CA Directory does not exist. Leaving"
     exit 1
 fi
-CA_DIR=`realpath ${CA_DIR}`
+CA_DIR=$(realpath "${CA_DIR}")
 
 OPENSSL_CONF=${BASEDIR}/opensslca.conf
 
-tmpdir=`mktemp -d -t sscrt.XXXXX`
+tmpdir=$(mktemp -d -t sscrt.XXXXX)
 if [ $? -ne "0" ]; then
     error_exit "Error creating TMP dir"
 fi
 
-${OPENSSL} req -newkey rsa:${RSA_MODULUS_SIZE_BITS} -keyout ${tmpdir}/private_key.pem -nodes -out ${tmpdir}/request.pem -config ${OPENSSL_CONF} -subj "${CERT_DN}"
+${OPENSSL} req -newkey rsa:${RSA_MODULUS_SIZE_BITS} -keyout "${tmpdir}/private_key.pem" -nodes -out "${tmpdir}/request.pem" -config "${OPENSSL_CONF}" -subj "${CERT_DN}"
 if [ $? -ne "0" ]; then
     error_exit "Error generating certificate key"
 fi
 
-cd ${CA_DIR}
-${OPENSSL} ca -config ${OPENSSL_CONF} -days ${CERT_VALIDITY_DAYS} -extensions v3_sslserver -in ${tmpdir}/request.pem -batch -out ${tmpdir}/certificate.pem
+cd "${CA_DIR}" || error_exit "Error changing directory"
+${OPENSSL} ca -config "${OPENSSL_CONF}" -days ${CERT_VALIDITY_DAYS} -extensions v3_sslserver -in "${tmpdir}/request.pem" -batch -out "${tmpdir}/certificate.pem"
 if [ $? -ne "0" ]; then
     error_exit "Error generating certificate"
 fi
-cd ${CWD}
+cd "${CWD}" || error_exit "Error changing directory"
 
 
 if [ -d "${KEY_DIR}" ]; then
-    crypted_private_key=`${BASEDIR}/encrypt-file.sh "${KEY_DIR}" -f "${tmpdir}/private_key.pem"`
+    crypted_private_key=$("${BASEDIR}/encrypt-file.sh" "${KEY_DIR}" -f "${tmpdir}/private_key.pem")
     if [ $? -ne "0" ]; then
         error_exit "Error crypting private key"
     fi
-    echo "${crypted_private_key}" > ${CERT_BASENAME}.key
+    echo "${crypted_private_key}" > "${CERT_BASENAME}.key"
     if [ $? -ne "0" ]; then
         error_exit "Error writing private key"
     fi
 else
-    cp ${tmpdir}/private_key.pem ${CERT_BASENAME}.key
+    cp "${tmpdir}/private_key.pem" "${CERT_BASENAME}.key"
     if [ $? -ne "0" ]; then
         error_exit "Error copying private key"
     fi
 fi
 
-${OPENSSL} x509 -in ${tmpdir}/certificate.pem -out ${CERT_BASENAME}.crt
-if [ $? -ne "0" -o ! -e ${CERT_BASENAME}.crt ]; then
+${OPENSSL} x509 -in "${tmpdir}/certificate.pem" -out "${CERT_BASENAME}.crt"
+if [ $? -ne "0" ] || [ ! -e "${CERT_BASENAME}.crt" ]; then
     error_exit "Error copying certificate"
 fi

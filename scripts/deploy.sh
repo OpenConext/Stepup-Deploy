@@ -196,10 +196,10 @@ deploy_playbook_dir=$(realpath "${BASEDIR}/../")
 
 
 if [ "${VERBOSE}" -eq "1" ]; then
-    echo ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} "${inventory_option}" "${limit_option}" "${configonly_flag}" --tags "$COMPONENT" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}"
+    echo ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags "${COMPONENT}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" ${ASKSUDO}
 fi
 
-ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} "${inventory_option}" "${limit_option}" --tags "$COMPONENT" "${configonly_flag}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" $ASKSUDO
+ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags "${COMPONENT}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" ${ASKSUDO}
 res=$?
 # shellcheck disable=SC2164
 cd "${CWD}"

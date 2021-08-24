@@ -175,9 +175,9 @@ if [ "${VERBOSE}" -eq "1" ]; then
     verbose_flag="-vvvv"
 fi
 
-configonly_flag="--extra-var configonly=False"
+configonly_flag="-e configonly=False"
 if [ "${CONFIGONLY}" -eq "1" ]; then
-    configonly_flag="--extra-var configonly=True"
+    configonly_flag="-e configonly=True"
 fi
 
 

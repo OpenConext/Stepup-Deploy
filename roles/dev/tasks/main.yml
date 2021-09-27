@@ -67,20 +67,27 @@
   shell:
     cmd: "source /root/.bashrc && nvm install 10"
 
-- name: "Install npm module 'yarn'"
+- name: "Install npm module 'yarn' for node version 10"
   shell:
     cmd: "source /root/.bashrc && nvm use 10 && npm install --global yarn"
-
-
 
 # stepup-example-gssp requires node 12 with yarn
 - name: "Install node version 12"
   shell:
     cmd: "source /root/.bashrc && nvm install 12"
 
-- name: "Install npm module 'yarn'"
+- name: "Install npm module 'yarn' for node version 12"
   shell:
     cmd: "source /root/.bashrc && nvm use 12 && npm install --global yarn"
+
+# all components should move to node version 14
+- name: "Install node version 14"
+  shell:
+    cmd: "source /root/.bashrc && nvm install 14"
+
+- name: "Install npm module 'yarn' for node version 14"
+  shell:
+    cmd: "source /root/.bashrc && nvm use 14 && npm install --global yarn"
 
 
 ## XDebug ##

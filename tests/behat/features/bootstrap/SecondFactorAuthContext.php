@@ -192,7 +192,7 @@ class SecondFactorAuthContext implements Context
 
     public function authenticateUserYubikeyInGateway()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/yubikey');
+        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sso/yubikey');
 
         // Give an OTP
         $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');

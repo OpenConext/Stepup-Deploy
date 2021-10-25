@@ -30,5 +30,13 @@
   {
     "entity_id": "https://selfservice.stepup.example.com/registration/gssf/tiqr/metadata",
     "public_key": null
+  },
+  {
+    "entity_id": "https://selfservice.stepup.example.com/registration/gssf/demo_gssp/metadata",
+    "public_key": null
+  },
+  {
+    "entity_id": "https://selfservice.stepup.example.com/registration/gssf/demo_2_gssp/metadata",
+    "public_key": null
   }
 ]

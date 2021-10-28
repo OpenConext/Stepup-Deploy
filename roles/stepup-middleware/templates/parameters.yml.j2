@@ -35,6 +35,7 @@ parameters:
 
     selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
     registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
+    readonly_api_password: {{ readonly_api_password | vault(vault_keydir) }}
     management_password: {{ management_password | vault(vault_keydir) }}
 
     self_service_email_verification_url_template: https://{{ selfservice_vhost_name }}/verify-email?n={nonce}

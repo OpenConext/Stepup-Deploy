@@ -18,3 +18,7 @@
 - name: Activate component
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_vhost_name }} state=link
   when: not configonly | bool
+
+- name: Restart php72-php-fpm to flush opcache
+  service: name=php72-php-fpm state=restarted
+  when: deploy_php_72 and not configonly | bool

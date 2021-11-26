@@ -19,6 +19,11 @@
   file: src={{ component_dir_name }} dest=/opt/www/{{ component_vhost_name }} state=link
   when: not configonly | bool
 
-- name: Restart php72-php-fpm to flush opcache
-  service: name=php72-php-fpm state=restarted
-  when: deploy_php_72 and not configonly | bool
+# Restart php-fpm to ensure opcache is flushed
+- name: Reload php-fpm
+  service: name=php-fpm state=reloaded
+  when: not app_remove_php56 and not configonly | bool
+
+- name: Reload php72-php-fpm
+  service: name=php72-php-fpm state=reloaded
+  when: not configonly | bool

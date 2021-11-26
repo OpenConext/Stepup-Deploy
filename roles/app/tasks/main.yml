@@ -125,6 +125,7 @@
           - php72-php-pecl-memcache
           - php72-php-sodium
           - php72-php-gd
+          - php72-php-opcache
         state: present
 
     - name: Put php.ini for PHP 7.2 (/etc/opt/remi/php72/php.ini)
@@ -147,6 +148,15 @@
       copy:
         src: "createrundir.conf"
         dest: "/etc/systemd/system/php72-php-fpm.service.d/createrundir.conf"
+      notify:
+        - "restart php72-php-fpm"
+
+    - name: Install custom PHP configuration for 7.2
+      template:
+        src: "{{ item }}.j2"
+        dest: "/etc/opt/remi/php72/php.d/{{ item }}"
+      with_items:
+        - 10-opcache.ini
       notify:
         - "restart php72-php-fpm"
 

@@ -7,6 +7,11 @@ parameters:
 
     database_host:     {{ database_lb_address }}
     database_port:     3306
+    # Enabling the STRICT_ALL_TABLES SQL mode. To prevent 'magic' truncation problems where string
+    # values like the identity name id would be truncated after 255 characters without notice. Enabling
+    # STRICT_ALL_TABLES changes this behaviour, and raises SQLSTATE[22001] 'Bad response' when this
+    # occurs.
+    database_driver_options_1002: 'SET @@SQL_MODE = CONCAT(@@SQL_MODE, ",STRICT_ALL_TABLES")'
     # The database server version is used in the dbal configuration and is required to prevent issues when the database
     # connection is booted. See https://github.com/doctrine/DoctrineBundle/issues/351 for more details on this.
     # Also see: https://symfony.com/doc/current/reference/configuration/doctrine.html#doctrine-dbal-configuration
@@ -35,6 +40,7 @@ parameters:
 
     selfservice_api_password: {{ selfservice_api_password | vault(vault_keydir) }}
     registration_authority_api_password: {{ registration_authority_api_password | vault(vault_keydir) }}
+    readonly_api_password: {{ readonly_api_password | vault(vault_keydir) }}
     management_password: {{ management_password | vault(vault_keydir) }}
 
     self_service_email_verification_url_template: https://{{ selfservice_vhost_name }}/verify-email?n={nonce}

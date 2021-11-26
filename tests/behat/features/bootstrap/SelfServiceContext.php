@@ -78,7 +78,7 @@ class SelfServiceContext implements Context
         $this->minkContext->visit($this->selfServiceUrl);
         $this->authContext->authenticateWithIdentityProviderFor($userName);
         $this->authContext->passTroughGatewaySsoAssertionConsumerService();
-
+        $this->iSwitchLocaleTo('English');
         $this->minkContext->assertPageContainsText('Registration Portal');
     }
 
@@ -130,12 +130,10 @@ class SelfServiceContext implements Context
             ->find('css', '[href="/registration/sms/send-challenge"]')->click();
 
         $this->minkContext->assertPageAddress('/registration/sms/send-challenge');
-
         // Start registration
         $this->minkContext->assertPageContainsText('Send SMS code');
         $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
         $this->minkContext->pressButton('Send code');
-
         // Now we should be on the prove possession page where we enter our OTP
         $this->minkContext->assertPageAddress('/registration/sms/prove-possession');
         $this->minkContext->assertPageContainsText('Enter SMS code');
@@ -146,6 +144,83 @@ class SelfServiceContext implements Context
         ## And we should now be on the mail verification page
         $this->minkContext->assertPageContainsText('Verify your e-mail');
         $this->minkContext->assertPageContainsText('Check your inbox');
+    }
+
+    /**
+     * @When I self-vet a new SMS token with my Yubikey token
+
+     */
+    public function selfVetNewSmsToken()
+    {
+        $this->minkContext->visit($this->selfServiceUrl);
+        $this->minkContext->assertPageAddress('/overview');
+
+        $this->minkContext->assertPageContainsText('The following tokens are registered for your account');
+        $this->minkContext->assertPageContainsText('Yubikey');
+
+        $this->minkContext->visit('/registration/select-token');
+
+        // Select the sms second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/sms/send-challenge"]')->click();
+        $this->minkContext->assertPageAddress('/registration/sms/send-challenge');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Send SMS code');
+        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+        $this->minkContext->pressButton('Send code');
+
+        $this->minkContext->assertPageContainsText('Please validate that you can receive SMS messages on this phone');
+        $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
+        $this->minkContext->pressButton('Verify');
+
+        $this->minkContext->visit(
+            $this->getEmailVerificationUrl()
+        );
+        // Now we should be on the choose vetting page
+        $this->minkContext->assertPageContainsText('Use your existing token');
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[action$="self-vet"]');
+        $form->submit();
+        $this->minkContext->pressButton('Submit');
+        $this->authContext->authenticateUserYubikeyInGateway();
+    }
+
+    /**
+     * @Given /^I try to self\-vet a new Yubikey token with my SMS token$/
+     */
+    public function iTryToSelfVetANewYubikeyTokenWithMySMSToken()
+    {
+        $this->minkContext->visit($this->selfServiceUrl);
+        $this->minkContext->assertPageAddress('/overview');
+
+        $this->minkContext->assertPageContainsText('The following tokens are registered for your account');
+        $this->minkContext->assertPageContainsText('Yubikey');
+
+        $this->minkContext->visit('/registration/select-token');
+
+        // Select the sms second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/yubikey/prove-possession"]')->click();
+        $this->minkContext->assertPageAddress('/registration/yubikey/prove-possession');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Link your YubiKey');
+        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+        $this->minkContext->pressButton('Send code');
+
+        $this->minkContext->assertPageContainsText('Please validate that you can receive SMS messages on this phone');
+        $this->minkContext->fillField('ss_prove_yubikey_possession_otp', 'scvcb234cv3234213abas41');
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[name="ss_prove_yubikey_possession"]');
+        $form->submit();
+
+        $this->minkContext->visit(
+            $this->getEmailVerificationUrl()
+        );
+        $this->verifyEmailAddress();
     }
 
     /**
@@ -189,11 +264,18 @@ class SelfServiceContext implements Context
         $this->minkContext->visit($this->selfServiceUrl.'/'.$uri);
     }
 
+    private function iSwitchLocaleTo(string $newLocale): void
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $selectElement = $page->find('css', '#stepup_switch_locale_locale');
+        $selectElement->selectOption($newLocale);
+        $form = $page->find('css', 'form[name="stepup_switch_locale"]');
+        $form->submit();
+    }
+
     private function getEmailVerificationUrl()
     {
-        $message = $this->getLastSentEmail();
-        $body = $message->source;
-
+        $body = $this->getLastSentEmail();
         $body = str_replace("\r", '', $body);
         $body = str_replace("=\n", '', $body);
         $body = str_replace("=3D", '=', $body);
@@ -240,7 +322,7 @@ class SelfServiceContext implements Context
     {
         $response = file_get_contents(
             sprintf(
-                '%s/%d.json',
+                '%s/%d.html',
                 rtrim($this->mailCatcherUrl, '/'),
                 $id
             )
@@ -252,14 +334,7 @@ class SelfServiceContext implements Context
             );
         }
 
-        $message = json_decode($response);
-        if (!$message) {
-            throw new Exception(
-                'Unable to parse mailcatcher response for single message'
-            );
-        }
-
-        return $message;
+        return $response;
     }
 
     /**

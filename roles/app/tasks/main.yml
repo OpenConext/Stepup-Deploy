@@ -270,7 +270,7 @@
   vars:
     component_name: keyserver
     vhost_name:      "{{ keyserver_vhost_name }}"
-    php_version:     "{{ ('stepup-kerserver' in app_php72_components) | ternary( 72, 56) }}"
+    php_version:     "{{ ('stepup-keyserver' in app_php72_components) | ternary( 72, 56) }}"
     symfony_version: "{{ ('stepup-keyserver' in app_symfony_3_components or php_version == 56) | ternary( 3, 4) }}"
   when: "'stepup-keyserver' in group_names"
 

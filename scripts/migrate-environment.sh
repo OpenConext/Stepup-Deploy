@@ -150,7 +150,7 @@ fi
 EMPTY_ANSIBLE_CONFIG_FILE=${BASEDIR}/empty_ansible.cfg;
 
 # List of globs of encrypted files
-ENCRYPTED_FILE_GLOBS=("password/*" "saml_cert/*.key" "secret/*" "ssh/*.key" "ssl_cert/*.key")
+ENCRYPTED_FILE_GLOBS=("password/*" "saml_cert/*.key" "secret/*" "ssh/*.key" "ssl_cert/*.key" "syslog_cert/*.key")
 
 skipped=0      # Skipped: files that are already encrypted using ansible vault
 converted=0    # Converted: files that were successfully migrated from keyczar to Ansible vault

@@ -1,4 +1,8 @@
 # Config for keyserver component
 
 # Used for Symfony CSRF protection
-keyserver_secret: "{{ lookup('file', inventory_dir+'/secret/keyserver') }}"
+keyserver_secret: "{{ lookup('file', inventory_dir+'/secret/keyserver_secret') }}"
+# Key for encrypting secrets
+keyserver_encryptionkey: "{{ lookup('file', inventory_dir+'/secret/keyserver_encryptionkey') }}"
+# Consumer key for API operations
+keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/keyserver_consumerkey') }}"

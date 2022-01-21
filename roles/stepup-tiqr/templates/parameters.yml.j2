@@ -78,6 +78,13 @@ parameters:
                 url: 'https://tx.tiqr.org/tokenexchange/'
                 appid: 'tiqr'
             usersecretstorage:
+{% if tiqr_oathserviceclient is defined and tiqr_oathserviceclient is sameas true %}
+              type: 'oathserviceclient'
+              arguments:
+                apiURL: 'https://{{ keyserver_vhost_name }}'
+                consumerKey: '{{ keyserver_consumerkey | vault(vault_keydir) }}'
+{% else -%}
               type: 'pdo'
               # Use PDO config from userstorage
               arguments: []
+{% endif %}

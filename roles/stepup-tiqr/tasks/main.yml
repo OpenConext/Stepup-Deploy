@@ -67,7 +67,10 @@
   template: src={{ item }}.j2 dest=/root/{{ item }} group=root owner=root mode="500"
   with_items:
   - "01-tiqr-db_init.sh"
+  - "02-tiqr-migrate-to-keyserver.php"
 
 - name: Show database configuration hint
   debug:
-    msg: "Note: Database initialisation/migration must be run manually once. Run '/root/01-tiqr-db_init.sh' on an app server."
+    msg:
+      - "Note: Database initialisation/migration must be run manually once. Run '/root/01-tiqr-db_init.sh' on an app server."
+      - "If migrating from usersecretstorage:pdo to usersecretstorage:oathserviceclient run '{{ php_cli }} /root/02-tiqr-migrate-to-keyserver.php'"

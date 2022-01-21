@@ -23,7 +23,7 @@ tiqr_secret: "{{ lookup('file', inventory_dir+'/secret/tiqr') }}"
 tiqr_idp_privatekey: "{{ lookup('file', inventory_dir+'/saml_cert/tiqr_idp.key') }}"
 
 # OAuth consumer key for authentication to the keyserver
-oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyserver') }}"
+keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/keyserver_secret') }}"
 
 # Optional API key for Firebase Cloud Messaging (FCM)
 # Required for sending push notifications to Android devices
@@ -40,4 +40,5 @@ oath_keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/oath_keyse
 # TODO: Set APNS client certificate to enable push notifications on iOS
 # tiqr_apns_pemfile: "{{ lookup('file', inventory_dir+'/ssl_cert/apns.pem') }}"
 
-
+# Set to true to use the keyserver for storing and validating secrets
+tiqr_oathserviceclient: false

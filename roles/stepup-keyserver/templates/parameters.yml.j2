@@ -17,7 +17,7 @@ parameters:
           encryption:
             type: openssl
             options:
-              method: aes-256-gcm #a string containing the cipher method, e.g. aes-256-cbc, see http://php.net/manual/en/function.openssl-get-cipher-methods.php for more info on available cipher methods
+              method: aes-256-cbc #a string containing the cipher method, e.g. aes-256-cbc, see http://php.net/manual/en/function.openssl-get-cipher-methods.php for more info on available cipher methods
               key: {{ keyserver_encryptionkey | vault(vault_keydir) }} #the encryption key, 256-bit
 
     surfnet_oath.consumerKey: {{ keyserver_consumerkey | vault(vault_keydir) }}

@@ -42,3 +42,6 @@ keyserver_consumerkey: "{{ lookup('file', inventory_dir+'/secret/keyserver_secre
 
 # Set to true to use the keyserver for storing and validating secrets
 tiqr_oathserviceclient: false
+
+# Set to 'pdo' to use the database for storing sessions
+tiqr_statestorage: memcache

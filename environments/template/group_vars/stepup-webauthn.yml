@@ -11,3 +11,6 @@ webauthn_secret: "{{ lookup('file', inventory_dir+'/secret/webauthn') }}"
 webauthn_support_url:
   nl_NL: "https://webauthn.stepup.example.com/nl_NL/support_url"
   en_GB: "https://webauthn.stepup.example.com/en_GB/support_url"
+
+webauthn_user_display_name: SURFsecureID-template
+webauthn_support_email: support@surfconext.nl

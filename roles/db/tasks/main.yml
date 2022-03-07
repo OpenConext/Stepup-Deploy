@@ -117,7 +117,12 @@
 
 
 - include: middleware.yml
+  tags: mariadb_create_db_and_users
 - include: gateway.yml
+  tags: mariadb_create_db_and_users
 - include: tiqr.yml
+  tags: mariadb_create_db_and_users
 - include: keyserver.yml
+  tags: mariadb_create_db_and_users
 - include: webauthn.yml
+  tags: mariadb_create_db_and_users

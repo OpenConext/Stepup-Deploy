@@ -1,7 +1,11 @@
 # Database configuration for webauthn component
 
 - name: Create webauthn database
-  mysql_db: name={{ database_webauthn_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  mysql_db: name: "{{ database_webauthn_name }}" 
+    state: "present" 
+    login_host: "{{ mariadb_provision_host }}"
+    login_user: "{{ mariadb_root_user }}"
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Create webauthn deploy user with ALL access to webauthn database
   mysql_user:
@@ -9,8 +13,8 @@
     host: "%"
     password: "{{ database_webauthn_deploy_password | vault(vault_keydir) }}"
     priv: "{{ database_webauthn_name }}.*:ALL\ PRIVILEGES,GRANT"
-    login_host: "127.0.0.1"
-    login_user: "root"
+    login_host: "{{ mariadb_provision_host }}"
+    login_user: "{{ mariadb_root_user }}"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Create DB user for webauthn component
@@ -19,6 +23,6 @@
     host: "%"
     password: "{{ database_webauthn_password | vault(vault_keydir) }}"
     priv: "{{ database_webauthn_name }}.*:SELECT,INSERT,DELETE,UPDATE"
-    login_host: "127.0.0.1"
-    login_user: root
+    login_host: "{{ mariadb_provision_host }}"
+    login_user: "{{ mariadb_root_user }}"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

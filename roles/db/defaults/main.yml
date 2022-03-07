@@ -4,3 +4,5 @@
 # It is suggested you specify the node to bootstrap when running the playbook. E.g.:
 # ansible-playbook ... -e "galera_bootstrap_node=<hostname of the node to bootstrap>"
 galera_bootstrap_node: ""
+galera_privision_host: 127.0.0.1
+galera_root_user: root

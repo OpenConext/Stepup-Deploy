@@ -1,7 +1,12 @@
 # Database configuration for keyserver component
 
 - name: Create keyserver database
-  mysql_db: name={{ database_keyserver_name }} state=present login_user=root login_password={{ mariadb_root_password | vault(vault_keydir) }}
+  mysql_db: 
+    name: "{{ database_keyserver_name }}" 
+    state: "present" 
+    login_host: "{{ mariadb_provision_host }}"
+    login_user: "{{ mariadb_root_user }}" 
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 - name: Create keyserver deploy DB user with ALL access to keyserver database
   mysql_user:
@@ -9,8 +14,8 @@
     host: "%"
     password: "{{ database_keyserver_deploy_password | vault(vault_keydir) }}"
     priv: "{{ database_keyserver_name }}.*:ALL\ PRIVILEGES,GRANT"
-    login_host: "127.0.0.1"
-    login_user: "root"
+    login_host: "{{ mariadb_provision_host }}"
+    login_user: "{{ mariadb_root_user }}"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 
@@ -20,7 +25,6 @@
     host: "%"
     password: "{{ database_keyserver_password | vault(vault_keydir) }}"
     priv: "{{ database_keyserver_name }}.*:SELECT,INSERT,DELETE,UPDATE"
-    login_host: "127.0.0.1"
-    login_user: root
+    login_host: "{{ mariadb_provision_host }}"
+    login_user: "{{ mariadb_root_user }}"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
-

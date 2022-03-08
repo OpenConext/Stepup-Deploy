@@ -1,7 +1,8 @@
 # Database configuration for webauthn component
 
 - name: Create webauthn database
-  mysql_db: name: "{{ database_webauthn_name }}" 
+  mysql_db: 
+    name: "{{ database_webauthn_name }}" 
     state: "present" 
     login_host: "{{ mariadb_provision_host }}"
     login_user: "{{ mariadb_root_user }}"

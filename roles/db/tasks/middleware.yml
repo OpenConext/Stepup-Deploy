@@ -1,18 +1,17 @@
 # Database configuration for middleware component
-
 - name: Create Middleware database
-  mysql_db: 
-    name: "{{ database_middleware_name }}" 
-    state: "present" 
+  mysql_db:
+    name: "{{ database_middleware_name }}"
+    state: "present"
     login_host: "{{ mariadb_provision_host }}"
     login_user: "{{ mariadb_root_user }}"
-    login_password=: "{{ mariadb_root_password | vault(vault_keydir) }}"
+    login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"
 
 # Both midleware and gateway databases are managed using middleware app/console (for now)
 - name: Create Gateway database
-  mysql_db: 
-    name: "{{ database_gateway_name }}" 
-    state: "present" 
+  mysql_db:
+    name: "{{ database_gateway_name }}"
+    state: "present"
     login_host: "{{ mariadb_provision_host }}"
     login_user: "{{ mariadb_root_user }}"
     login_password: "{{ mariadb_root_password | vault(vault_keydir) }}"

@@ -22,6 +22,6 @@ parameters:
     support_email: '{{ webauthn_support_email }}'
     user_display_name: '{{ webauthn_user_display_name }}'
     webauthn_name: '{{ webauthn_user_display_name }}'
-    webauthn_logo: '{{ webauthn_vhost_name }}/images/header-logo.png'
+    webauthn_logo: 'https://{{ webauthn_vhost_name }}/images/header-logo.png'
 
     trusted_certificates_directory: '{{ component_config_file_dir_name }}/trusted_certificates'

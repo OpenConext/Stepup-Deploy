@@ -211,9 +211,7 @@ class RaContext implements Context
                 $verifiedSecondFactorId
             )
         );
-        $this->minkContext->fillField('ra_verify_identity_documentNumber', '654321');
-        $this->minkContext->checkOption('ra_verify_identity_identityVerified');
-        $this->minkContext->pressButton('Verify identity');
+        $this->iVerifyTheUsersIdentityByFillingTheLastCharactersOfTheDocumentNumber();
     }
 
     private function vettingProcessIsCompleted($verifiedSecondFactorId)
@@ -625,5 +623,25 @@ class RaContext implements Context
         if (!empty($data)) {
             throw new Exception(sprintf('Missing profile data: "%s"', json_encode(array_keys($data))));
         }
+    }
+
+    /**
+     * @When I enter the Yubikey OTP during RA vetting
+     */
+    public function iEnterTheYubikeyOtpOnRaVetting()
+    {
+        $this->minkContext->fillField('ra_verify_yubikey_public_id_otp', 'bogus-otp-we-use-a-mock-yubikey-service');
+        $form = $this->minkContext->getSession()->getPage()->find('css', 'form[name="ra_verify_yubikey_public_id"]');
+        $form->submit();
+    }
+
+    /**
+     * @Given /^I verify the users identity by filling the last 6 characters of the document\-number$/
+     */
+    public function iVerifyTheUsersIdentityByFillingTheLastCharactersOfTheDocumentNumber()
+    {
+        $this->minkContext->fillField('ra_verify_identity_documentNumber', '654321');
+        $this->minkContext->checkOption('ra_verify_identity_identityVerified');
+        $this->minkContext->pressButton('Verify identity');
     }
 }

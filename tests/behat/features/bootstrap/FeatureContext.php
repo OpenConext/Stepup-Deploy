@@ -79,8 +79,9 @@ class FeatureContext implements Context
         $this->apiContext = $environment->getContext(ApiFeatureContext::class);
         $this->serlfServiceContext = $environment->getContext(SelfServiceContext::class);
 
-        // Set the testcookie, effectively putting the Stepup suite in test mode
+        // Set the testcookie for both sessions, effectively putting the Stepup suite in test mode
         $this->minkContext->getSession()->setCookie('testcookie', 'testcookie');
+        $this->minkContext->getSession('second')->setCookie('testcookie', 'testcookie');
 
         $this->payloadFactory = new CommandPayloadFactory();
         $this->repository = new SecondFactorRepository();
@@ -100,6 +101,19 @@ class FeatureContext implements Context
         $uuid = (string)Uuid::uuid4();
 
         return $this->aUserIdentifiedByWithAVettedTokenAndTheRoleWithUuid($commonName, $nameId, $institution, $uuid);
+    }
+
+    /**
+     * @Given /^a user "([^"]*)" identified by "([^"]*)" from institution "([^"]*)" and fail with "([^"]*)"$/
+     */
+    public function anExceptionMessageIsExcpected($commonName, $nameId, $institution, $errorMessage)
+    {
+        try {
+            $uuid = (string)Uuid::uuid4();
+            return $this->aUserIdentifiedByWithAVettedTokenAndTheRoleWithUuid($commonName, $nameId, $institution, $uuid);
+        } catch (Exception $e) {
+            assertContains($errorMessage, $e->getMessage());
+        }
     }
 
     /**
@@ -141,11 +155,11 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given /^the user "([^"]*)" has a vetted "([^"]*)"$/
+     * @Given /^the user "([^"]*)" has a vetted "([^"]*)" identified by "([^"]*)"$/
      */
-    public function theUserHasAVetted($nameId, $tokenType)
+    public function theUserHasAVetted($nameId, $tokenType, $identifier)
     {
-        $this->theUserHasAVettedWithIdentifier($nameId, $tokenType, '03945859');
+        $this->theUserHasAVettedWithIdentifier($nameId, $tokenType, $identifier);
     }
 
     /**
@@ -167,15 +181,36 @@ class FeatureContext implements Context
         $token = SecondFactorToken::from($tokenId, $tokenType, $identifier);
         $identityData = $this->identityStore[$nameId];
         $identityData->tokens = [$token];
-
-        // 1: Prove possession of the token
-        $this->proveYubikeyPossession($identityData);
-
+        switch ($tokenType) {
+            case "yubikey":
+                // 1: Prove possession of the token
+                $this->proveYubikeyPossession($identityData);
+                break;
+            case "sms":
+                // 1: Prove possession of the token
+                $this->proveSmsPosession($identityData);
+                break;
+            default:
+                throw new InvalidArgumentException("This token type is not yet supported");
+                break;
+        }
         // 2: Mail verification
         $this->mailVerification($tokenId, $identityData);
 
-        // 3 Vet the yubikey
-        $this->vetYubikeyToken($identityData);
+        switch ($tokenType) {
+            case "yubikey":
+                // 3 Vet the yubikey
+                $this->vetYubikeyToken($identityData);
+                break;
+            case "sms":
+                // 3 Vet the yubikey
+                $this->vetSmsToken($identityData);
+                break;
+            default:
+                throw new InvalidArgumentException("This token type is not yet supported");
+                break;
+        }
+
     }
 
     /**
@@ -259,6 +294,15 @@ class FeatureContext implements Context
         $this->apiContext->iRequest('POST', '/command');
     }
 
+    private function proveSmsPosession($identityData)
+    {
+        // 1.1 prove possession of a yubikey token
+        $payload = $this->payloadFactory->build('Identity:ProvePhonePossession', $identityData);
+        $this->setPayload($payload);
+        $this->connectToApi('ss', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
+    }
+
     private function mailVerification($tokenId, $identityData)
     {
         // 2.1: Mail verification -> get verification nonce
@@ -282,6 +326,22 @@ class FeatureContext implements Context
         // 3.2  Vet the second factor device
         $identityData->activationContext = $activationContext;
         $payload = $this->payloadFactory->build('Identity:VetSecondFactor', $identityData);
+        $this->setPayload($payload);
+        $this->connectToApi('ra', 'secret');
+        $this->apiContext->iRequest('POST', '/command');
+    }
+
+    private function vetSmsToken($identityData)
+    {
+        // 3.1. Retrieve the registration code
+        $activationContext = new ActivationContext();
+        $activationContext->registrationCode = $this->repository->getRegistrationCodeByIdentity($identityData->identityId);
+        $activationContext->actorId = 'dc4cc738-5f1c-4d8c-84a2-d6faf8aded89';
+
+        // 3.2  Vet the second factor device
+        $identityData->activationContext = $activationContext;
+        $payload = $this->payloadFactory->build('Identity:VetSecondFactor', $identityData);
+
         $this->setPayload($payload);
         $this->connectToApi('ra', 'secret');
         $this->apiContext->iRequest('POST', '/command');

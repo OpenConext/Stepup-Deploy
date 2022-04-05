@@ -25,6 +25,10 @@ default:
             goutte: ~
             sessions:
                 default:
-                    goutte:
-                        guzzle_parameters:
-                            verify: False
+                  goutte:
+                    guzzle_parameters:
+                      verify: False
+                second:
+                  goutte:
+                    guzzle_parameters:
+                      verify: False

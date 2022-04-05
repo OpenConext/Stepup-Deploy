@@ -16,6 +16,7 @@ Feature: Use case C: Closely cooperating institutions
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "select_raa": [
@@ -30,6 +31,7 @@ Feature: Use case C: Closely cooperating institutions
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "select_raa": [
@@ -45,15 +47,15 @@ Feature: Use case C: Closely cooperating institutions
       And I authenticate to the Middleware API
       And I request "POST /management/institution-configuration"
       And a user "RAA institution A" identified by "urn:collab:person:institution-a.example.com:joe-a-raa" from institution "institution-a.example.com"
-      And the user "urn:collab:person:institution-a.example.com:joe-a-raa" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-a.example.com:joe-a-raa" has a vetted "yubikey" with identifier "00000004"
       And the user "urn:collab:person:institution-a.example.com:joe-a-raa" has the role "raa" for institution "institution-a.example.com"
       And a user "RAA institution D" identified by "urn:collab:person:institution-d.example.com:joe-d-raa" from institution "institution-d.example.com"
-      And the user "urn:collab:person:institution-d.example.com:joe-d-raa" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-d.example.com:joe-d-raa" has a vetted "yubikey" with identifier "00000005"
       And the user "urn:collab:person:institution-d.example.com:joe-d-raa" has the role "raa" for institution "institution-d.example.com"
       And a user "Jane Jackson" identified by "urn:collab:person:institution-a.example.com:jane-a1" from institution "institution-a.example.com"
-      And the user "urn:collab:person:institution-a.example.com:jane-a1" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-a.example.com:jane-a1" has a vetted "yubikey" with identifier "00000006"
       And a user "Joe Satriani" identified by "urn:collab:person:institution-d.example.com:joe-d1" from institution "institution-d.example.com"
-      And the user "urn:collab:person:institution-d.example.com:joe-d1" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-d.example.com:joe-d1" has a vetted "yubikey" with identifier "00000007"
 
   Scenario: The institution A RAA can promote identities from institution D
     Given I am logged in into the ra portal as "joe-a-raa" with a "yubikey" token

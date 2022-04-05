@@ -11,6 +11,7 @@ Feature: Use case B: Institutions sharing vetting locations
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "use_ra": [
@@ -22,6 +23,7 @@ Feature: Use case B: Institutions sharing vetting locations
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "use_ra": [
@@ -34,10 +36,10 @@ Feature: Use case B: Institutions sharing vetting locations
       And I authenticate to the Middleware API
       And I request "POST /management/institution-configuration"
       And a user "RA institution A" identified by "urn:collab:person:institution-a.example.com:joe-a-ra" from institution "institution-a.example.com"
-      And the user "urn:collab:person:institution-a.example.com:joe-a-ra" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-a.example.com:joe-a-ra" has a vetted "yubikey" with identifier "00000004"
       And the user "urn:collab:person:institution-a.example.com:joe-a-ra" has the role "ra" for institution "institution-a.example.com"
       And a user "RA institution D" identified by "urn:collab:person:institution-d.example.com:joe-d-ra" from institution "institution-d.example.com"
-      And the user "urn:collab:person:institution-d.example.com:joe-d-ra" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-d.example.com:joe-d-ra" has a vetted "yubikey" with identifier "00000005"
       And the user "urn:collab:person:institution-d.example.com:joe-d-ra" has the role "ra" for institution "institution-d.example.com"
       And a user "Jane Jackson" identified by "urn:collab:person:institution-a.example.com:jane-a1" from institution "institution-a.example.com"
       And the user "urn:collab:person:institution-a.example.com:jane-a1" has a verified "yubikey" with registration code "1234ABCD"

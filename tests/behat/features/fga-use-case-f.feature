@@ -15,6 +15,7 @@ Feature: Use case F: An institution that manages Stepup for a (a group of) siste
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 2,
                 "select_raa": [
@@ -27,6 +28,7 @@ Feature: Use case F: An institution that manages Stepup for a (a group of) siste
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "use_ra": ["institution-a.example.com"],
@@ -37,6 +39,7 @@ Feature: Use case F: An institution that manages Stepup for a (a group of) siste
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "use_ra": ["institution-a.example.com"],

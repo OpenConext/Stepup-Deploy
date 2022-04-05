@@ -26,3 +26,6 @@ Feature: A (S)RA(A) user reads identities of StepUp users in the middleware API
     When I request "GET /identity?institution=institution-x.example.com&actorId=dc4cc738-5f1c-4d8c-84a2-d6faf8aded89&actorInstitution=stepup.example.com"
     Then the api response status code should be 200
     And the "items" property should be an empty array
+
+  Scenario: A very long NameID is not permitted and should not exceed the pre-configured database length for the field
+    Given a user "Longjohn" identified by "urn:collab:person:institution-a.example.com:thisuserhasawaytolongusernamethatexceeds255characters_thisuserhasawaytolongusernamethatexceeds255charactersthisuserhasawaytolongusernamethatexceeds255characters_thisuserhasawaytolongusernamethatexceeds255charactersthisuserhasawaytolongusernamethatexceeds255characters_thisuserhasawaytolongusernamethatexceeds255characters" from institution "institution-a.example.com" and fail with "maximum length for nameId exceeds configured length of 255"

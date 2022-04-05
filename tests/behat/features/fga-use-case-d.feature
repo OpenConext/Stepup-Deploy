@@ -15,6 +15,7 @@ Feature: Use case D: Vetting users from a guest IdP
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "use_ra": [
@@ -29,6 +30,7 @@ Feature: Use case D: Vetting users from a guest IdP
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1
             }
@@ -45,6 +47,7 @@ Feature: Use case D: Vetting users from a guest IdP
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1,
                 "select_raa": [
@@ -55,6 +58,7 @@ Feature: Use case D: Vetting users from a guest IdP
                 "use_ra_locations": true,
                 "show_raa_contact_information": true,
                 "verify_email": true,
+                "self_vet": false,
                 "allowed_second_factors": [],
                 "number_of_tokens_per_identity": 1
             }

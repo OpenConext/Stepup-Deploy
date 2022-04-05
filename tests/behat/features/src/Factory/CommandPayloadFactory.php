@@ -39,7 +39,6 @@ class CommandPayloadFactory
                     $context->institution,
                     $context->commonName
                 );
-                break;
 
             case "Identity:ProveYubikeyPossession":
 
@@ -71,7 +70,37 @@ class CommandPayloadFactory
                     $token->tokenId,
                     $token->identifier
                 );
-                break;
+
+            case "Identity:ProvePhonePossession":
+
+                /** @var SecondFactorToken $token */
+                $token = $context->tokens[0];
+
+                $payload = '{
+                    "meta": {
+                        "actor_id": "%s",
+                        "actor_institution": "%s"
+                    },
+                    "command": {
+                        "name":"Identity:ProvePhonePossession",
+                        "uuid":"%s",
+                        "payload": {
+                            "identity_id": "%s",
+                            "second_factor_id": "%s",
+                            "phone_number": "%s"
+                        }
+                    }
+                }';
+
+                return sprintf(
+                    $payload,
+                    $context->identityId,
+                    $context->institution,
+                    (string)Uuid::uuid4(),
+                    $context->identityId,
+                    $token->tokenId,
+                    $token->identifier
+                );
 
             case "Identity:VerifyEmail":
                 /** @var SecondFactorToken $token */
@@ -101,7 +130,6 @@ class CommandPayloadFactory
                     $token->nonce
                 );
 
-                break;
             case "Identity:VetSecondFactor":
                 /** @var SecondFactorToken $token */
                 $token = $context->tokens[0];
@@ -119,7 +147,7 @@ class CommandPayloadFactory
                             "identity_id": "%s",
                             "second_factor_id": "%s",
                             "registration_code": "%s",
-                            "second_factor_type": "yubikey",
+                            "second_factor_type": "%s",
                             "second_factor_identifier": "%s",
                             "document_number": "123456",
                             "identity_verified": true
@@ -136,10 +164,9 @@ class CommandPayloadFactory
                     $context->identityId,
                     $token->tokenId,
                     $context->activationContext->registrationCode,
+                    $token->type,
                     $token->identifier
                 );
-
-                break;
         }
     }
 

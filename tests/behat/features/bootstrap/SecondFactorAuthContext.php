@@ -39,6 +39,15 @@ class SecondFactorAuthContext implements Context
     private $requiredLoa;
 
     /**
+     * @var string
+     */
+    private $storedAuthnRequest;
+    /**
+     * @var string
+     */
+    private $storedChallengeCode;
+
+    /**
      * Initializes context.
      */
     public function __construct($spTestUrl)
@@ -90,8 +99,18 @@ class SecondFactorAuthContext implements Context
         if ($this->activeIdp === self::SFO_IDP) {
             $this->minkContext->fillField('subject', self::TEST_NAMEID);
         }
-
         $this->minkContext->pressButton('Login');
+    }
+
+    private function fillField($session, $field, $value)
+    {
+        $field = $this->fixStepArgument($field);
+        $value = $this->fixStepArgument($value);
+        $this->minkContext->getSession($session)->getPage()->fillField($field, $value);
+    }
+    private function fixStepArgument($argument)
+    {
+        return str_replace('\\"', '"', $argument);
     }
 
     /**
@@ -105,13 +124,13 @@ class SecondFactorAuthContext implements Context
     /**
      * @When I verify the :arg1 second factor
      */
-    public function verifySpecifiedSecondFactor($tokenType)
+    public function verifySpecifiedSecondFactor($tokenType, $smsChallenge = null)
     {
         switch ($tokenType){
             case "sms":
                 // Pass through acs
                 $this->minkContext->pressButton('Submit');
-                $this->authenticateUserSmsInGateway();
+                $this->authenticateUserSmsInGateway($smsChallenge);
                 break;
             case "yubikey":
                 $this->authenticateUserYubikeyInGateway();
@@ -206,20 +225,24 @@ class SecondFactorAuthContext implements Context
         $this->minkContext->pressButton('Submit');
     }
 
-    public function authenticateUserSmsInGateway()
+    private function debugOut($arg = null)
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sms');
-
-        // Give an OTP
-        $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');
-        // Simulate the enter press the yubikey otp generator
-        $form = $this->minkContext->getSession()->getPage()->find('css', '[name="gateway_verify_yubikey_otp"]');
-        if (!$form) {
-            throw new ElementNotFoundException('Yubikey OTP Submit form could not be found on the page');
+        if ($arg !== null) {
+            var_dump($arg);
         }
-        $this->minkContext->pressButton('gateway_verify_yubikey_otp_submit');
-        // Pass through the 'return to sp' redirection page.
-        $this->minkContext->pressButton('Submit');
+        echo $this->minkContext->getSession()->getCurrentUrl();
+        echo PHP_EOL . PHP_EOL;
+        die($this->minkContext->getSession()->getPage()->getHtml());
+    }
+
+    public function authenticateUserSmsInGateway(string $challenge)
+    {
+        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sms/verify-challenge');
+        // Fill the challenge
+        $this->minkContext->fillField('gateway_verify_sms_challenge_challenge', $challenge);
+        // Submit the form
+        $this->minkContext->pressButton('Verify code');
+        $this->minkContext->assertResponseNotContains('stepup.verify_possession_of_phone_command.challenge.may_not_be_empty');
     }
 
     public function cancelAuthenticationInDummyGsspApplication()
@@ -283,7 +306,6 @@ class SecondFactorAuthContext implements Context
         $this->minkContext->fillField('password', $userName);
 
         $this->minkContext->pressButton('Login');
-
         $this->passTroughIdentityProviderAssertionConsumerService();
     }
 
@@ -320,5 +342,100 @@ class SecondFactorAuthContext implements Context
         $this->minkContext->assertPageNotContainsText(
             sprintf('You are logged in to SP')
         );
+    }
+
+    /**
+     * @When I prepare an SFO authentication as :arg1
+     */
+    public function prepareSfoAuthentication($nameId)
+    {
+        $this->minkContext->getSession('second')->visit($this->spTestUrl);
+
+        $this->fillField('second', 'idp', $this->activeIdp);
+        $this->fillField('second','sp', $this->activeSp);
+        $this->fillField('second','loa', $this->requiredLoa);
+        $this->fillField('second', 'subject', $nameId);
+    }
+
+    /**
+     * @Given I start and intercept the SFO authentication
+     */
+    public function iStartASMSSFOAuthentication()
+    {
+        // To intercept the AuthNRequest, instruct the 'browser' not to auto-follow redirects
+        $client = $this->minkContext->getSession('second')->getDriver()->getClient();
+        $client->followRedirects(false);
+        $this->minkContext->getSession('second')->getPage()->pressButton('Login');
+        // Jump from SSP SP to Gateway (we are interested in that AR)
+        $client->followRedirect();
+        // Catch the Url containing he AuthNRequest, removing the trailing slash
+        $this->storedAuthnRequest = $this->minkContext->getSession('second')->getCurrentUrl();
+        // And back to normal
+        $client->followRedirects(true);
+    }
+
+    /**
+     * @Given I start the stored SFO session in the victims session remembering the challenge for :arg1
+     */
+    public function victimizeTheStoredSFORequest($phoneNumber)
+    {
+        if ($this->storedAuthnRequest === null) {
+            throw new RuntimeException('There is no stored authentication request. First run step definition: "I start and intercept a SMS SFO authentication"');
+        }
+        $this->minkContext->visit($this->storedAuthnRequest);
+        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sms/verify-challenge?authenticationMode=sfo');
+        $this->storedChallengeCode[$phoneNumber] = $this->fetchSmsChallengeFromCookie($phoneNumber);
+    }
+
+    /**
+     * @Given I use the stored SMS verification code for :arg1
+     */
+    public function iUseTheStoredVerificationCode($phoneNumber)
+    {
+        if (!isset($this->storedChallengeCode[$phoneNumber])) {
+            throw new RuntimeException('There is no stored SMS challenge available for this phone number.');
+        }
+        $this->authenticateUserSmsInGateway($this->storedChallengeCode[$phoneNumber]);
+    }
+
+    private function fetchSmsChallengeFromCookie($phoneNumber): string
+    {
+        $cookies = $this->minkContext
+            ->getSession()
+            ->getDriver()
+            ->getClient()
+            ->getCookieJar()
+            ->all();
+        $expectedCookieName = sprintf("%s%s", 'smoketest-sms-service-', $phoneNumber);
+        $bodyPattern = '/^Your.SMS.code:.([A-Z-0-9]+)$/';
+        foreach ($cookies as $cookie) {
+            if ($cookie->getName() === $expectedCookieName) {
+                $bodyMatches = [];
+                preg_match($bodyPattern, $cookie->getValue(), $bodyMatches);
+                return array_pop($bodyMatches);
+            }
+        }
+        throw new RuntimeException('SMS verification code was not found in smoketest cookie');
+    }
+
+    /**
+     * @Then I start an SMS SSO session for :arg1 with verification code for :arg2
+     */
+    public function iStartAnSmsSSOSessionFor($userName, $phoneNumber)
+    {
+        $this->configureServiceProviderForSingleSignOn();
+        $this->visitServiceProvider();
+        // Pass through Gateway (already authenticated)
+        $this->minkContext->pressButton('Submit');
+        // Choose SMS token on WAYG
+        $this->minkContext->pressButton('gateway_choose_second_factor[choose_sms]');
+    }
+
+    /**
+     * @Then /^The verification code is invalid$/
+     */
+    public function theVerificationCodeIsInvalid()
+    {
+        $this->minkContext->assertResponseContains('This code is not correct. Please try again or request a new code.');
     }
 }

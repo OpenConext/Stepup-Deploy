@@ -28,6 +28,10 @@
 - debug:
     msg: "app_require_php56: {{ app_require_php56 | bool }}; app_require_php72: {{ app_require_php72 }}; app_remove_php56: {{ app_remove_php56 }}"
 
+- name: Remove old SURF yum repo
+  ansible.builtin.file:
+    path: /etc/yum.repos.d/surfnet.repo
+    state: absent
 
 # node.less is used by app/console assetic:dump
 # sendmail is used for sending mail from localhost (enabled in default config)

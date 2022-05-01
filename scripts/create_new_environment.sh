@@ -58,6 +58,9 @@ TEMPLATE_DIR="${BASEDIR}/../environments/template"
 # Default vault-id when using ansible vault.
 STEPUP_VAULT_LABEL="stepup"
 
+# Default
+USE_ANSIBLE_VAULT=0
+
 # Process options
 ENVIRONMENT_DIR=$1
 ALWAYS_CONTINUE=0

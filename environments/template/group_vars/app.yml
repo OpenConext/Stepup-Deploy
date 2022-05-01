@@ -82,8 +82,10 @@ sms_maximum_otp_requests: 3
 
 # Passwords for accessing the Middleware REST API
 selfservice_api_password: "{{ lookup('file', inventory_dir+'/password/middleware_selfservice_api') }}"
+readonly_api_password: "{{ lookup('file', inventory_dir+'/password/middleware_readonly_api') }}"
 registration_authority_api_password: "{{ lookup('file', inventory_dir+'/password/middleware_registration_authority_api') }}"
 management_password: "{{ lookup('file', inventory_dir+'/password/middleware_management_api') }}"
+lifecycle_password:  "{{ lookup('file', inventory_dir+'/password/middleware_lifecycle_api') }}"
 
 
 # User for performing deploys

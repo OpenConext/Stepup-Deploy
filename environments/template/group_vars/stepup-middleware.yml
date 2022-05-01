@@ -3,6 +3,11 @@
 # Used for Symfony CSRF protection
 middleware_secret: "{{ lookup('file', inventory_dir+'/secret/middleware') }}"
 
+# Application name
+# The application name reported by the lifecycle API
+# TODO: Set application name
+lifecycle_application_name: "OpenConext Stepup"
+
 # The middleware_sraa array serves two related purposes:
 # 1. It lists the NameID if the users that have the super registration authority administrator (SRAA) role in stepup.
 #    These are the "root" users, or super administrators of stepup. These users can vet and revoke any user, and assign

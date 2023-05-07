@@ -12,5 +12,5 @@ webauthn_support_url:
   nl_NL: "https://webauthn.stepup.example.com/nl_NL/support_url"
   en_GB: "https://webauthn.stepup.example.com/en_GB/support_url"
 
-webauthn_user_display_name: SURFsecureID-template
-webauthn_support_email: support@surfconext.nl
+webauthn_user_display_name: OpenConext-Stepup
+webauthn_support_email: support@stepup.example.com

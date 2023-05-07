@@ -12,4 +12,5 @@
   with_items:
     - "{{ component_dir_name }}/var/cache"
     - "{{ component_dir_name }}/var/logs"
+    - "{{ component_dir_name }}/var/log"
   when: not (develop | default(false))

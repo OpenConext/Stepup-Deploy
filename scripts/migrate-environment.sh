@@ -69,7 +69,7 @@ ENVIRONMENT_DIR=$1
 shift
 
 if [ ! -d "${ENVIRONMENT_DIR}" ]; then
-    error_exit "Environment directory not found"
+    error_exit "Environment directory '${ENVIRONMENT_DIR}' not found"
 fi
 ENVIRONMENT_DIR=$(realpath "${ENVIRONMENT_DIR}")
 echo ""

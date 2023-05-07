@@ -309,7 +309,7 @@
 
   # The {{ set_nvm_nodejs_version_cmd }} is added for Tiqr versions that run encore during composer install
   - name: DEVELOP -  Composer install
-    shell: "{{ set_nvm_nodejs_version_cmd }} && export COMPOSER_CACHE_DIR=/vagrant/composer_cache && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }} {{ deploy_ignore_platform_reqs }}"
+    shell: "{{ set_nvm_nodejs_version_cmd }} && export COMPOSER_CACHE_DIR={{ dev_composer_cache_dir }} && {{ php_cli }} /usr/local/bin/composer install --no-interaction --working-dir={{ component_dir_name }} {{ deploy_ignore_platform_reqs }}"
 
   # Run "yarn install && yarn encore dev" for those components that require it
   # Note: this takes a long time

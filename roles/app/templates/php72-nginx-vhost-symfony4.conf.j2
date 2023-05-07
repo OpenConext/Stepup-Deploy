@@ -48,9 +48,14 @@ server {
         set $app_env "prod";
         set $app_debug false;
         {% elif 'dev' in group_names %}
-        # If the testcookie is present, we will kick the symfony environment into smoketest mode. Otherwise dev mode it is.
-        set $app_env "dev";
+        set $app_env "prod";
+        # Set app_env to "dev" to run the application in development mode.
+        # Note this requires an installation from source, as the tarball does not contain the dev dependencies
+        #set $app_env "dev";
+
         set $app_debug true;
+
+        # If the testcookie is present, we will kick the symfony environment into smoketest mode.
         if ($cookie_testcookie) {
             set $app_env "smoketest";
             set $app_debug true;

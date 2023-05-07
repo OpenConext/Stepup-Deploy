@@ -4,7 +4,7 @@ After=network.service vagrant.mount
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mailcatcher --foreground --ip 0.0.0.0 --smtp-port 1025 --http-port 1080
+ExecStart=/usr/bin/scl enable rh-ruby27 "mailcatcher --foreground --ip 0.0.0.0 --smtp-port 1025 --http-port 1080"
 User=mailcatcher
 Group=mailcatcher
 

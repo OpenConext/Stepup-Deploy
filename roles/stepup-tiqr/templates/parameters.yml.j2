@@ -94,6 +94,11 @@ parameters:
                 consumerKey: '{{ keyserver_consumerkey | vault(vault_keydir) }}'
 {% else %}
               type: 'pdo'
-              # Use PDO config from userstorage
-              arguments: []
+              # usersecretstorage uses the same table as the userstorage
+              arguments:
+                table: 'user'
+                dsn: 'mysql:host={{ database_lb_address }};dbname={{ database_tiqr_name }}'
+                username: '{{ database_tiqr_user }}'
+                password: '{{ database_tiqr_password | vault(vault_keydir) }}'
+
 {% endif %}

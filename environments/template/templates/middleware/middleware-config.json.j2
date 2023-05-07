@@ -25,12 +25,12 @@
 
 {# Email templates #}
  {# Output the email template configuration. The format we are generating is JSON, so the syntax is strict.
-     The email templates use Jinja2 syntax as well, but that is parsed by the middlware at runtime, not by Ansible.
+     The email templates use Jinja2 syntax as well, but that is parsed by the middleware at runtime, not by Ansible.
      Because JSON requires strings to be in one line, we read them from separate files using Ansible file lookup so we
      can use newlines for readability.
   #}
   "email_templates": {
-    {% for email_template in ('confirm_email', 'registration_code_with_ras', 'second_factor_verification_reminder_with_ras', 'registration_code_with_ra_locations', 'second_factor_verification_reminder_with_ra_locations', 'vetted', 'second_factor_revoked') %}
+    {% for email_template in ('confirm_email', 'registration_code_with_ras', 'registration_code_with_ra_locations', 'vetted', 'second_factor_revoked', 'second_factor_verification_reminder_with_ras', 'second_factor_verification_reminder_with_ra_locations', 'recovery_token_created', 'recovery_token_revoked' ) %}
     "{{ email_template }}": {
       {% for locale in ('en_GB', 'nl_NL') %}
         "{{ locale }}": "{{ lookup('file', email_template + '_' + locale + '.j2') | replace('\"', '\\\"') | replace('\n',' ') | regex_replace(' +', ' ') }}"{% if not loop.last %}, {% endif %}

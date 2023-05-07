@@ -2,6 +2,11 @@
 
 # Development tools for on app server
 # Not safe for production use
+- name: Enable SCM and update yum cache
+  yum:
+    update_cache: yes
+    name:
+    - centos-release-scl
 
 - name: Install development specific RPM's
   yum:
@@ -10,8 +15,8 @@
       - git
 
       # For Mailcatcher
-      - ruby
-      - ruby-devel
+      - rh-ruby27
+      - rh-ruby27-ruby-devel
       - gcc
       - gcc-c++
       - sqlite
@@ -109,8 +114,9 @@
 
 # Accessible at http://<server>:1080/
 
-- name: Install mailcatcher
-  command: gem install mailcatcher --no-rdoc --no-ri creates=/usr/local/bin/mailcatcher
+- name: Install mailcatcher with scl ruby27
+  command: /usr/bin/scl enable rh-ruby27 "bash -c 'gem install mailcatcher -v0.8.2 --no-document'" creates=/opt/rh/rh-ruby27/root/usr/local/bin/mailcatcher
+  #command: gem install mailcatcher --no-rdoc --no-ri creates=/usr/local/bin/mailcatcher
 
 # Create user and group for running the mailcatcher daemon
 - name: Add group mailcatcher
@@ -173,13 +179,13 @@
   file: path=/usr/local/share/simplesamlphp-{{ ssp_version }}/cert state=directory
 
 - name: Run composer install
-  shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer install
+  shell: export COMPOSER_CACHE_DIR={{ dev_composer_cache_dir }} && /usr/local/bin/composer install
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
 
 # saml2debug seems broken, ignoring errors for now
 - name: Add saml2debug module
-  shell: export COMPOSER_CACHE_DIR=/vagrant/composer_cache && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug
+  shell: export COMPOSER_CACHE_DIR={{ dev_composer_cache_dir }} && /usr/local/bin/composer require simplesamlphp/simplesamlphp-module-saml2debug
   args:
     chdir: "/usr/local/share/simplesamlphp-{{ ssp_version }}"
   ignore_errors: yes

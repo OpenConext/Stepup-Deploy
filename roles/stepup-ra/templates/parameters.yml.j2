@@ -50,6 +50,7 @@ parameters:
     stepup_loa_loa1: '{{ stepup_uri_loa1 }}'
     stepup_loa_loa2: '{{ stepup_uri_loa2 }}'
     stepup_loa_loa3: '{{ stepup_uri_loa3 }}'
+    stepup_loa_self_asserted: '{{ stepup_uri_self_asserted }}'
 
     asset_version: {{ stable_nonce }}
 
@@ -66,10 +67,15 @@ parameters:
         loa: {{ value.loa }}
 {% endfor %}
 
+    // TODO: Remove, unused
     u2f_app_id: https://{{ gateway_vhost_name }}/u2f/app-id
 
     session_max_absolute_lifetime: {{ app_session_max_duration }}
     session_max_relative_lifetime: {{ app_session_expiry_time }}
 
-    # URL of the selfselrvice interface, for display in (error) messages to the user
+    # URL of the selfservice interface, for display in (error) messages to the user
     self_service_url: https://{{ selfservice_vhost_name }}
+
+    # Date format defaults for Twig date functions
+    date_format: 'Y-m-d H:i P'
+    date_timezone: Europe/Amsterdam

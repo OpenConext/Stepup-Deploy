@@ -81,9 +81,11 @@ enabled_locales:
 stepup_uri_loa1: 'http://stepup.example.com/assurance/loa1'
 stepup_uri_loa2: 'http://stepup.example.com/assurance/loa2'
 stepup_uri_loa3: 'http://stepup.example.com/assurance/loa3'
+stepup_uri_self_asserted: 'http://stepup.example.com/assurance/loa1.5'
 # uri's used by the second factor only (SFO) endpoint
 stepup_uri_sfo_loa2: 'http://stepup.example.com/assurance/sfo-level2'
 stepup_uri_sfo_loa3: 'http://stepup.example.com/assurance/sfo-level3'
+stepup_uri_sfo_self_asserted: 'http://stepup.example.com/assurance/sfo-level1.5'
 
 # The build in second factor types of the Stepup-Gateway to enable in the SS and the RA
 # Format: comma separated list of factors to enable
@@ -231,6 +233,12 @@ azuremfa_idp_publickey: "{{ lookup('file', inventory_dir+'/saml_cert/azuremfa_id
 
 # Database tables and users for Stepup applications, keyserver
 # Used by dbcluster role to create users and tables
+
+# The DB server to be used for provisioning commands.
+# Defaults to database_lb_address
+# Set this to another address to use a different database server, e.g.
+# when not using the dbcluser role.
+mariadb_provision_host: "{{ database_lb_address }}"
 
 # Used by stepup-middleware role to configure middleware
 database_middleware_name: middleware

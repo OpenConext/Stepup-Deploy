@@ -42,9 +42,6 @@ function realpath {
 
 # Process options
 COMPONENT_TARBALL=$1
-if [ ! -f "${COMPONENT_TARBALL}" ]; then
-    error_exit "FIle not found: '${COMPONENT_TARBALL}'"
-fi
 shift
 if [ -z "${COMPONENT_TARBALL}"  ]; then
     echo "Usage: $0 <component tarball> [options]"
@@ -58,6 +55,10 @@ if [ -z "${COMPONENT_TARBALL}"  ]; then
     echo "Supported components: ${COMPONENTS[*]}"
     exit 1;
 fi
+if [ ! -f "${COMPONENT_TARBALL}" ]; then
+    error_exit "File not found: '${COMPONENT_TARBALL}'"
+fi
+
 
 while [[ $# -gt 0 ]]
 do
@@ -74,6 +75,13 @@ case $option in
     ;;
     -K|--ask-sudo-pass)
     ASKSUDO="-K"
+    ;;
+    --vault-password-file)
+    VAULT_PASSWORD_FILE="$1"
+    shift
+    if [ -z "${VAULT_PASSWORD_FILE}" ]; then
+        error_exit "--vault-password-file option requires an argument"
+    fi
     ;;
     -v|--verbose)
     VERBOSE="1"
@@ -191,15 +199,19 @@ if [ -n "${LIMIT}" ]; then
     limit_option="-l ${LIMIT}"
 fi
 
+vault_password_file_option=""
+if [ -n "${VAULT_PASSWORD_FILE}" ]; then
+    vault_password_file_option="--vault-password-file ${VAULT_PASSWORD_FILE}"
+fi
 
 deploy_playbook_dir=$(realpath "${BASEDIR}/../")
 
 
 if [ "${VERBOSE}" -eq "1" ]; then
-    echo ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags "${COMPONENT}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" ${ASKSUDO}
+    echo ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags "${COMPONENT}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" ${ASKSUDO} $vault_password_file_option
 fi
 
-ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags "${COMPONENT}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" ${ASKSUDO}
+ansible-playbook "${deploy_playbook_dir}/deploy.yml" ${verbose_flag} ${inventory_option} ${limit_option} ${configonly_flag} --tags "${COMPONENT}" -e "component_tarball_name=${COMPONENT_TARBALL}" -e "component_unarchive=${UNARCHIVE}" ${ASKSUDO} $vault_password_file_option
 res=$?
 # shellcheck disable=SC2164
 cd "${CWD}"

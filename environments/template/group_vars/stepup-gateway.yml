@@ -22,7 +22,7 @@ sms_service: 'spryng'
 # Required for sending SMS messages using sms_service: 'messagebird'
 # You can register at https://www.messagebird.com/ for a free developer / trial account
 # TODO: Set messagebird API access key
-messagebird_authorization: "{{ lookup('file', inventory_dir+'/password/empty_placeholder') }}"
+messagebird_authorization: "AccessKey dummy_access_key"
 
 # Spring API key (vaulted)
 # Reuired for sending SMS messages using sms_service: 'spryng'

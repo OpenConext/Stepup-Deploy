@@ -1,3 +1,5 @@
+dev_composer_cache_dir: "/vagrant/composer_cache"
+
 # vhost names for simple saml test idp and sp
 # For production these would be set in app.yml group_var
 ssp_vhost_name: ssp.stepup.example.com

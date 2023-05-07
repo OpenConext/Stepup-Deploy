@@ -1,7 +1,10 @@
 # Name of the galera cluster
 mariadb_cluster_name: stepup-cluster
 
-# Password for mariaDB root user
+# Username for the mariaDB root user
+mariadb_root_user: root
+
+# Password for mariadb_root_user
 # Note: unlike the other passwords, the db role does not support changeing the MariaDB root password once it has been
 #       set. To change the root passsword, set the new password in the enironment and change the MariaDb password
 #       manually.

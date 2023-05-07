@@ -1,6 +1,0 @@
-#!/bin/bash
-
-pushd /opt/www/{{ gateway_vhost_name }}
-echo "{{ php_cli }} {{ console }} u2f:migrations:migrate --env=prod"
-{{ php_cli }} {{ console }} u2f:migrations:migrate --env=prod
-popd

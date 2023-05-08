@@ -12,9 +12,10 @@
 - name: Install MariaDB, Galera, rsync, MySQL-python
   yum:
     name:
-      - MariaDB-Galera-server
+      #- MariaDB-Galera-server
       - MariaDB-client
-      - galera
+      - mariadb-server
+      #- galera
       - rsync         # For galera sync
       - MySQL-python  # Required for using the Ansible mysql_* modules
       - memcached
@@ -64,11 +65,6 @@
            must be bootstrapped first. To do this run the playbook again with:
                ansible-playbook ... -e "galera_bootstrap_node={{ inventory_hostname }}"
   when: (status_result.rc != 0) and (start_result is failed) and (galera_bootstrap_node != inventory_hostname)
-
-# Only bootstrap when galera_bootstrap_node allows us to bootsrap this node, and the node is not running
-- name: Bootstrap first MariaDB server
-  command: /sbin/service mysql bootstrap
-  when: (status_result.rc != 0) and (start_result is failed) and (galera_bootstrap_node == inventory_hostname)
 
 # Bootstrap database
 # - Set root password

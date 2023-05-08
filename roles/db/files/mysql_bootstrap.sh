@@ -14,7 +14,7 @@
 # 2: error
 
 mysql_root_password=$1
-changes=0
+changed=0
 
 if [ -z ${mysql_root_password} ]; then
    echo "Usage $0 <mysql root password>"
@@ -45,13 +45,13 @@ elif [[ ${out_err} ==  "ERROR 1045 (28000)"* ]]; then
    echo "Mysql root account has a password set"
 else
    echo "Unexpected error from mysql:"
-   echo ${out_err}
+   echo "${out_err}"
    exit 2
 fi
 
 # Fix any root acounts that we may have missed
 echo -n "Securing all root accounts... "
-out=`mysql -u root -p${mysql_root_password} -N -B -e "UPDATE mysql.user SET Password = PASSWORD('${mysql_root_password}') WHERE User = 'root'; SELECT ROW_COUNT(); FLUSH PRIVILEGES;"`
+out=$(mysql -u root "-p${mysql_root_password}" -N -B -e "UPDATE mysql.user SET Password = PASSWORD('${mysql_root_password}') WHERE User = 'root'; SELECT ROW_COUNT(); FLUSH PRIVILEGES;")
 res=$?
 if [ ${res} == 0 ]; then
    if [ "${out}" -gt "0" ]; then
@@ -67,7 +67,7 @@ fi
 
 
 echo -n "Removing anonymous users (if any)... "
-out=`mysql -u root -p"${mysql_root_password}" -N -B -e "DELETE FROM mysql.user WHERE User = ''; SELECT ROW_COUNT(); FLUSH PRIVILEGES;"`
+out=$(mysql -u root -p"${mysql_root_password}" -N -B -e "DELETE FROM mysql.user WHERE User = ''; SELECT ROW_COUNT(); FLUSH PRIVILEGES;")
 res=$?
 if [ ${res} == 0 ]; then
    if [ "${out}" -gt "0" ]; then
@@ -83,7 +83,7 @@ fi
 
 
 echo -n "Removing test schema/database (if any)... "
-out=`mysql -u root -p"${mysql_root_password}" -N -B -e "DROP DATABASE IF EXISTS test; SELECT ROW_COUNT();"`
+out=$(mysql -u root -p"${mysql_root_password}" -N -B -e "DROP DATABASE IF EXISTS test; SELECT ROW_COUNT();")
 res=$?
 if [ ${res} == 0 ]; then
    if [ "${out}" -gt "0" ]; then
@@ -98,4 +98,4 @@ else
 fi
 
 
-exit ${changed}
+exit "${changed}"

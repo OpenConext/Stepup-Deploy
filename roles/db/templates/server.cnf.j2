@@ -39,13 +39,13 @@ innodb_log_file_size=100M
 innodb_file_per_table
 innodb_flush_log_at_trx_commit=2
 
-wsrep_provider=/usr/lib64/galera/libgalera_smm.so
-wsrep_cluster_address="gcomm://{% for host in groups['dbcluster'] %}{{ hostvars[host]['backend_ipv4'] }}{% if not loop.last %},{% endif %}{% endfor %}"
-wsrep_cluster_name='{{ mariadb_cluster_name }}'
-wsrep_node_address='{{ backend_ipv4 }}:4567'
-wsrep_node_name='{{ inventory_hostname }}'
-wsrep_sst_method=rsync
-wsrep_sst_auth={{ mariadb_cluster_user }}:{{ mariadb_cluster_password | vault(vault_keydir) }}
+#wsrep_provider=/usr/lib64/galera/libgalera_smm.so
+#wsrep_cluster_address="gcomm://{% for host in groups['dbcluster'] %}{{ hostvars[host]['backend_ipv4'] }}{% if not loop.last %},{% endif %}{% endfor %}"
+#wsrep_cluster_name='{{ mariadb_cluster_name }}'
+#wsrep_node_address='{{ backend_ipv4 }}:4567'
+#wsrep_node_name='{{ inventory_hostname }}'
+#wsrep_sst_method=rsync
+#wsrep_sst_auth={{ mariadb_cluster_user }}:{{ mariadb_cluster_password | vault(vault_keydir) }}
 
 
 # This group is only read by MariaDB-10.0 servers.

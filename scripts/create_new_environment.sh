@@ -156,8 +156,9 @@ echo "Creating/updating the environment in directory: ${ENVIRONMENT_DIR}"
 
 # Copy inventory file into the new environment
 INVENTORY_FILE=${ENVIRONMENT_DIR}/inventory
-if [ ! -e  "${INVENTORY_FILE}" ]; then
+if [ ! -e "${INVENTORY_FILE}" ] && [ ! -L "${INVENTORY_FILE}" ]; then
     echo "Creating inventory file"
+    echo cp "${TEMPLATE_DIR}/inventory" "${INVENTORY_FILE}"
     cp "${TEMPLATE_DIR}/inventory" "${INVENTORY_FILE}" || error_exit "Error copying inventory file"
 fi
 

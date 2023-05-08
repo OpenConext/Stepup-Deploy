@@ -10,6 +10,7 @@
   # In lieu of using a handler, restart sshd when the previous task changed
 - name: restart sshd
   service: name=sshd state=restarted
+  tags: skip_docker_test
   when: ssh_result.changed
 
 

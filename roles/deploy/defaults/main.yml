@@ -11,9 +11,15 @@ deploy_symfony_4: no
 deploy_assetic: no
 deploy_mopa_bootstrap: no
 
-# For develop deploy only
+# DEVELOP - component_info default used during develop deploy only
+# Do not change these defaults. Use the component_info file to specify the deploy (and build) requirements of a
+# component instead
 deploy_node_version: 10
 deploy_encore: no
+deploy_composer_version: 1
+
+# DEVELOP - Should not be needed, can be used to disable checking for platform requirements during composer install
 deploy_ignore_platform_reqs: ""
+#deploy_ignore_platform_reqs: "--ignore-platform-reqs"
 
 

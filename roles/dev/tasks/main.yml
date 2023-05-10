@@ -41,9 +41,13 @@
 
 ## Composer ##
 
-# Install systemwide composer in /usr/local/bin
-- name: Download version 1.10.16 /usr/local/bin/composer from https://getcomposer.org/composer-stable.phar
+# Install systemwide composer v1 in /usr/local/bin
+- name: Download latest v1 composer to /usr/local/bin/composer from https://getcomposer.org/composer-1.phar
   get_url: url=https://getcomposer.org/composer-1.phar dest=/usr/local/bin/composer mode=555 owner=root group=root
+
+# Install systemwide composer v2 in /usr/local/bin
+- name: Download latest stable (v2) composer to /usr/local/bin/composer2 from https://getcomposer.org/composer-stable.phar
+  get_url: url=https://getcomposer.org/composer-stable.phar dest=/usr/local/bin/composer2 mode=555 owner=root group=root
 
 - name: Put /etc/rc.d/rc.local
   copy: src=rc.local dest=/etc/rc.d/rc.local mode=550

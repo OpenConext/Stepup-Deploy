@@ -30,7 +30,7 @@ Feature: A user manages his tokens in the selfservice portal
 
   Scenario: A user self vets a token in selfservice
     Given a user "Ponder Stibbons" identified by "urn:collab:person:institution-a.example.com:joe-a2" from institution "institution-a.example.com"
-    And the user "urn:collab:person:institution-a.example.com:joe-a2" has a vetted "yubikey"
+    And the user "urn:collab:person:institution-a.example.com:joe-a2" has a vetted "yubikey" identified by "01010101"
     And I am logged in into the selfservice portal as "joe-a2"
     And I self-vet a new SMS token with my Yubikey token
     And I visit the "overview" page in the selfservice portal
@@ -40,7 +40,7 @@ Feature: A user manages his tokens in the selfservice portal
 
   Scenario: A user needs a suitable token to self vet
     Given a user "Ponder Stibbons" identified by "urn:collab:person:institution-a.example.com:joe-a2" from institution "institution-a.example.com"
-    And the user "urn:collab:person:institution-a.example.com:joe-a2" has a vetted "sms"
+    And the user "urn:collab:person:institution-a.example.com:joe-a2" has a vetted "sms" identified by "01010101"
     And I am logged in into the selfservice portal as "joe-a2"
     And I try to self-vet a new Yubikey token with my SMS token
     # The self vet option is not available on the token vetting page

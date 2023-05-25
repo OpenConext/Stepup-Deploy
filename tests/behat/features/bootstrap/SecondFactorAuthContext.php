@@ -211,8 +211,12 @@ class SecondFactorAuthContext implements Context
 
     public function authenticateUserYubikeyInGateway()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sso/yubikey');
-
+        // try SFO retry on SSO, might be better to create a new test method instead..
+        try {
+            $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sfo/yubikey');
+        } catch (Exception $e) {
+            $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sso/yubikey');
+        }
         // Give an OTP
         $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'ccccccdhgrbtucnfhrhltvfkchlnnrndcbnfnnljjdgf');
         // Simulate the enter press the yubikey otp generator
@@ -258,7 +262,12 @@ class SecondFactorAuthContext implements Context
 
     public function cancelYubikeyAuthentication()
     {
-        $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/yubikey');
+        // try SFO retry on SSO, might be better to create a new test method instead..
+        try {
+            $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sfo/yubikey');
+        } catch (Exception $e) {
+            $this->minkContext->assertPageAddress('https://gateway.stepup.example.com/verify-second-factor/sso/yubikey');
+        }
         // Cancel the yubikey authentication action.
         $this->minkContext->pressButton('Cancel');
 

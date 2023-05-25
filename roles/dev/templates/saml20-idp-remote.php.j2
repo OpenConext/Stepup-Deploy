@@ -75,7 +75,7 @@ $metadata['https://{{ gateway_vhost_name }}/authentication/metadata'] = array (
 );
 
 if ( isset($_COOKIE['testcookie']) ) {
-    $metadata['https://{{ gateway_vhost_name }}/authentication/metadata']['keys'][0]['X509Certificate'] = depem(file_get_contents('/vagrant/deploy/tests/behat/fixtures/test_public_key.crt'));
+    $metadata['https://{{ gateway_vhost_name }}/authentication/metadata']['keys'][0]['X509Certificate'] = depem(file_get_contents('/deploy/tests/behat/fixtures/test_public_key.crt'));
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ $metadata['https://{{ gateway_vhost_name }}/second-factor-only/metadata'] = arra
 );
 
 if ( isset($_COOKIE['testcookie']) ) {
-    $metadata['https://{{ gateway_vhost_name }}/second-factor-only/metadata']['keys'][0]['X509Certificate'] = depem(file_get_contents('/vagrant/deploy/tests/behat/fixtures/test_public_key.crt'));
+    $metadata['https://{{ gateway_vhost_name }}/second-factor-only/metadata']['keys'][0]['X509Certificate'] = depem(file_get_contents('/deploy/tests/behat/fixtures/test_public_key.crt'));
 }
 
 /**

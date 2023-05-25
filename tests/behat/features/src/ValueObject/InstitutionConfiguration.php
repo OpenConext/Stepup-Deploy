@@ -80,6 +80,7 @@ class InstitutionConfiguration
                     "show_raa_contact_information": true,
                     "verify_email": true,
                     "self_vet": false,
+                    "allow_self_asserted_tokens": false,
                     "number_of_tokens_per_identity": 2,
                     "allowed_second_factors": [],
                     %s

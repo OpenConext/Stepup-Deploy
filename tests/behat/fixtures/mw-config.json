@@ -28,6 +28,14 @@
     "second_factor_revoked": {
       "en_GB": "<p>Dear {{ commonName }},</p> <p> {% if isRevokedByRa %} The registration of your {{ tokenType }} with ID {{ tokenIdentifier }} was deleted by an administrator. {% else %} You have deleted the registration of your {{ tokenType }} token with ID {{ tokenIdentifier }}. If you did not delete your token you must immediately contact the support desk of your institution, as this may indicate that your account has been compromised. {% endif %} </p> <p>You can no longer use this token to access services that require two-step authentication.</p> <p>Do you want to replace your token? Please visit <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> and register a new token.</p>",
       "nl_NL": "<p>Beste {{ commonName }},</p> <p> {% if isRevokedByRa %} De registratie van je {{ tokenType }} token met ID {{ tokenIdentifier }} is verwijderd door een beheerder. {% else %} Je hebt de registratie voor je {{ tokenType }} token met ID {{ tokenIdentifier }} verwijderd. Neem direct contact op met de helpdesk van je instelling als je dit zelf niet gedaan hebt, omdat dit kan betekenen dat je account gecompromitteerd is. {% endif %} </p> <p>Je kunt dit token niet meer gebruiken om in te loggen bij services die een tweede inlogstap vereisen.</p> <p>Wil je een nieuw token aanvragen? Ga dan naar <a href='{{ selfServiceUrl }}'>{{ selfServiceUrl }}</a> en doorloop het registratieproces opnieuw.</p>"
+    },
+    "recovery_token_created": {
+      "en_GB": "<p>Beste {{ commonName }},</p> <p>thanks for registering your [recovery token].",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Bedankt voor het registreren van je [recovery token]"
+    },
+    "recovery_token_revoked": {
+      "en_GB": "<p>Beste {{ commonName }},</p> <p>Now shes gone</p>",
+      "nl_NL": "<p>Beste {{ commonName }},</p> <p>Token is weg"
     }
   },
 

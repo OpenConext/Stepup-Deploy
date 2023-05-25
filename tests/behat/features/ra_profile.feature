@@ -5,10 +5,10 @@ Feature: A RA(A) can view profile information
     And institution "institution-a.example.com" can "use_raa" from institution "institution-a.example.com"
     And institution "institution-a.example.com" can "select_raa" from institution "institution-a.example.com"
     And a user "Jane Toppan" identified by "urn:collab:person:institution-a.example.com:jane-a-ra" from institution "institution-a.example.com" with UUID "00000000-0000-4000-A000-000000000001"
-    And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey"
+    And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey" identified by "01010101"
     And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "raa" for institution "institution-a.example.com"
     And a user "Joe Satriani" identified by "urn:collab:person:institution-a.example.com:joe-a-ra" from institution "institution-a.example.com" with UUID "00000000-0000-4000-A000-000000000002"
-    And the user "urn:collab:person:institution-a.example.com:joe-a-ra" has a vetted "yubikey"
+    And the user "urn:collab:person:institution-a.example.com:joe-a-ra" has a vetted "yubikey" identified by "01010102"
     And the user "urn:collab:person:institution-a.example.com:joe-a-ra" has the role "ra" for institution "institution-a.example.com"
 
   Scenario: RAA user for one institution sees the authorization for that institution

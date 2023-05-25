@@ -65,7 +65,7 @@ class FeatureContext implements Context
 
         echo "Update the keys\n";
         // Update the `saml_entities` projection in `gateway_test`
-        shell_exec("/vagrant/deploy/tests/behat/fixtures/bin/override_sp_public_keys");
+        shell_exec("/deploy/tests/behat/fixtures/bin/override_sp_public_keys");
     }
 
     /**

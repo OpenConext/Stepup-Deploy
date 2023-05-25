@@ -152,6 +152,6 @@ $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php'] =
 );
 
 if ( isset($_COOKIE['testcookie']) ) {
-    $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php']['publickey'] = '/vagrant/deploy/tests/behat/fixtures/test_public_key.crt';
-    $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php']['privatekey'] = '/vagrant/deploy/tests/behat/fixtures/test_private_key.key';
+    $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php']['publickey'] = '/deploy/tests/behat/fixtures/test_public_key.crt';
+    $metadata['https://{{ ssp_vhost_name }}/simplesamlphp/saml2/idp/metadata.php']['privatekey'] = '/deploy/tests/behat/fixtures/test_private_key.key';
 }

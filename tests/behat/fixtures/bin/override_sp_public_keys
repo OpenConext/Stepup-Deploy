@@ -23,7 +23,7 @@ $updateFormat = 'UPDATE `saml_entity` SET `configuration` = :configuration WHERE
 $connection = new PDO(sprintf($dsn, $dbName), $dbUser, $dbPassword);
 
 // Read the overrides
-$overrides = json_decode(file_get_contents('/vagrant/deploy/tests/behat/fixtures/sp_key_overrides.json'));
+$overrides = json_decode(file_get_contents('/deploy/tests/behat/fixtures/sp_key_overrides.json'));
 
 // Create the update SQL
 foreach ($overrides as $overrideConfig) {

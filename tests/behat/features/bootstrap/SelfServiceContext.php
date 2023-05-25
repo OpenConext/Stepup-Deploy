@@ -2,6 +2,7 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\MinkExtension\Context\MinkContext;
 
 class SelfServiceContext implements Context
@@ -35,6 +36,8 @@ class SelfServiceContext implements Context
      * @var string The UUID that identifies the verified second factor (used in RaContext)
      */
     private $verifiedSecondFactorId;
+
+    private $safeStoreRecoveryToken = '';
 
     /**
      * Initializes context.
@@ -123,24 +126,7 @@ class SelfServiceContext implements Context
     public function registerNewSmsToken()
     {
         $this->minkContext->assertPageAddress('/registration/select-token');
-
-        // Select the SMS second factor type
-        $this->minkContext->getSession()
-            ->getPage()
-            ->find('css', '[href="/registration/sms/send-challenge"]')->click();
-
-        $this->minkContext->assertPageAddress('/registration/sms/send-challenge');
-        // Start registration
-        $this->minkContext->assertPageContainsText('Send SMS code');
-        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
-        $this->minkContext->pressButton('Send code');
-        // Now we should be on the prove possession page where we enter our OTP
-        $this->minkContext->assertPageAddress('/registration/sms/prove-possession');
-        $this->minkContext->assertPageContainsText('Enter SMS code');
-        $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
-
-        $this->minkContext->pressButton('Verify');
-
+        $this->registerAndVerifySMSToken();
         ## And we should now be on the mail verification page
         $this->minkContext->assertPageContainsText('Verify your e-mail');
         $this->minkContext->assertPageContainsText('Check your inbox');
@@ -148,7 +134,6 @@ class SelfServiceContext implements Context
 
     /**
      * @When I self-vet a new SMS token with my Yubikey token
-
      */
     public function selfVetNewSmsToken()
     {
@@ -171,13 +156,10 @@ class SelfServiceContext implements Context
         $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
         $this->minkContext->pressButton('Send code');
 
-        $this->minkContext->assertPageContainsText('Please validate that you can receive SMS messages on this phone');
+        $this->minkContext->assertPageContainsText('Enter the code that was sent to your phone');
         $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
         $this->minkContext->pressButton('Verify');
 
-        $this->minkContext->visit(
-            $this->getEmailVerificationUrl()
-        );
         // Now we should be on the choose vetting page
         $this->minkContext->assertPageContainsText('Use your existing token');
         $page = $this->minkContext->getSession()->getPage();
@@ -185,6 +167,269 @@ class SelfServiceContext implements Context
         $form->submit();
         $this->minkContext->pressButton('Submit');
         $this->authContext->authenticateUserYubikeyInGateway();
+    }
+
+    /**
+     * @Given start registration of a self-asserted ":tokenType" token
+     */
+    public function startRegistrationOfASelfAssertedToken(string $tokenType)
+    {
+        $this->minkContext->assertPageAddress('/registration/select-token');
+        switch ($tokenType) {
+            case 'SMS':
+                $this->registerAndVerifySMSToken();
+                break;
+            case 'Yubikey':
+                $this->registerAndVerifyYubikeyToken();
+                break;
+            default:
+                throw new PendingException();
+        }
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[action$="self-asserted-token-registration"]');
+        $form->submit();
+    }
+
+    private function registerAndVerifyYubikeyToken()
+    {
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/yubikey/prove-possession"]')->click();
+        $this->minkContext->assertPageAddress('/registration/yubikey/prove-possession');
+
+        // Start registration
+        $this->minkContext->assertPageContainsText('Link your YubiKey');
+        $this->minkContext->fillField('ss_prove_yubikey_possession_otp', 'vviveikvgbguhrfthjuciuinkiregvdfrknjtukbrbve');
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[name="ss_prove_yubikey_possession"]');
+        $form->submit();
+    }
+
+    private function registerAndVerifySMSToken()
+    {
+        // Select the SMS second factor type
+        $this->minkContext->getSession()
+            ->getPage()
+            ->find('css', '[href="/registration/sms/send-challenge"]')->click();
+
+        $this->minkContext->assertPageAddress('/registration/sms/send-challenge');
+        // Start registration
+        $this->minkContext->assertPageContainsText('Send SMS code');
+        $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+        $this->minkContext->pressButton('Send code');
+
+        // Now we should be on the prove possession page where we enter our OTP
+        $this->minkContext->assertPageAddress('/registration/sms/prove-possession');
+        $this->minkContext->assertPageContainsText('Enter SMS code');
+        $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
+
+        $this->minkContext->pressButton('Verify');
+    }
+
+    /**
+     * @Given create a ":tokenType" recovery token
+     */
+    public function createARecoveryToken(string $tokenType)
+    {
+        $this->minkContext->assertPageContainsText('Add recovery method');
+        $page = $this->minkContext->getSession()->getPage();
+
+        switch ($tokenType) {
+            case 'safe-store':
+                $form = $page->find('css', 'form[action$="safe-store"]');
+                $form->submit();
+
+                $this->minkContext->assertPageContainsText('The recovery code below will only be displayed once. Keep this recovery code somewhere safe in case you need it in the future');
+
+                $this->safeStoreRecoveryToken = $this->extractSafeStoreSecret();
+                $page = $this->minkContext->getSession()->getPage();
+                $form = $page->find('css', 'form[name="ss_promise_recovery_token_possession"]');
+                $form->checkField('ss_promise_recovery_token_possession_promisedPossession');
+                $form->submit();
+                break;
+            case 'SMS':
+                $form = $page->find('css', 'form[action$="sms"]');
+                $form->submit();
+                $this->minkContext->assertPageContainsText('Register recovery phone number');
+                $this->minkContext->fillField('ss_send_sms_challenge_subscriber', '612345678');
+                $this->minkContext->pressButton('Send code');
+
+                $this->minkContext->assertPageContainsText('Enter the code that was sent to your phone');
+                $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '123132');
+                $page = $this->minkContext->getSession()->getPage();
+                $form = $page->find('css', 'form[name="ss_verify_sms_challenge"]');
+                $form->submit();
+                break;
+            default:
+                throw new PendingException();
+        }
+    }
+
+    private function extractSafeStoreSecret(): string
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        return $page->find('css', 'p.password')->getText();
+    }
+
+    /**
+     * @Then I should see a LoA ":loaLevel" ":tokenType" token
+     */
+    public function iShouldSeeALoaToken(float $loaLevel, string $tokenType)
+    {
+        $this->minkContext->assertPageContainsText('The following tokens are registered for your account.');
+        switch ($tokenType) {
+            case "SMS":
+                $this->minkContext->assertPageContainsText('SMS');
+                $this->minkContext->assertPageContainsText('+31 (0) 612345678');
+
+                break;
+            case "Yubikey":
+                $this->minkContext->assertPageContainsText('Yubikey');
+                $this->minkContext->assertPageContainsText('280921859117406');
+                break;
+            default:
+                throw new PendingException();
+        }
+
+        $loaOnPage = $this->calculateLoa();
+        if ($loaOnPage !== $loaLevel) {
+            throw new Exception(
+                sprintf(
+                    'The LoA on the page (%.1F) did not match the expected LoA (%.1F)',
+                    $loaOnPage,
+                    $loaLevel
+                )
+            );
+        }
+    }
+
+    private function calculateLoa(): float
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        // Iffy logic, when more than one tokens are present on page this will probably stop working or only work for the first token.
+        $starRatingComponent = $page->find('css', 'span.loa-star-rating');
+        $openStarsCount = count($starRatingComponent->findAll('css', 'img.star-open'));
+        $halfStarsCount = count($starRatingComponent->findAll('css', 'img.star-half'));
+        $rating = 3 - $openStarsCount;
+        if ($halfStarsCount === 1 && $openStarsCount === 1) {
+            return 1.5;
+        }
+        if ($halfStarsCount === 1) {
+            $rating += 0.5;
+        }
+        return (float) $rating;
+    }
+
+    /**
+     * @Then I should see a ":tokenType" recovery token
+     */
+    public function iShouldSeeARecoveryToken($tokenType)
+    {
+        $this->minkContext->assertPageContainsText('Recovery methods');
+        switch ($tokenType) {
+            case "safe-store":
+                $this->minkContext->assertPageContainsText('Recovery code');
+                break;
+            case "SMS":
+                $this->minkContext->assertPageContainsText('Recovery phone number');
+                $this->minkContext->assertPageContainsText('+31 (0) 612345678');
+                break;
+            default:
+                throw new PendingException();
+        }
+    }
+
+    /**
+     * This step simply clicks the recovery-token/delete link. If more than one exist on page, this might not work.
+     * @Given I revoke my :tokenType token
+     */
+    public function iRevokeMyToken($tokenType)
+    {
+        $page = $this->minkContext->getSession()->getPage();
+        $revokeLink = $page->find('css', 'a.btn-warning[href^="/second-factor/vetted/"]');
+        $revokeLink->click();
+        $this->minkContext->assertPageContainsText('Remove token');
+        $this->minkContext->assertPageContainsText('You are about to remove the following token');
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[name="ss_revoke_second_factor"]');
+        $form->submit();
+    }
+
+    /**
+     * @Then I register a :tokenType token using the :recoveryTokenType recovery token
+     */
+    public function iRegisterMyTokenUsingTheRecoveryToken($tokenType, $recoveryTokenType)
+    {
+        $this->minkContext->clickLink('Add token');
+
+        switch ($tokenType) {
+            case 'SMS':
+                $this->registerAndVerifySMSToken();
+                break;
+            case 'Yubikey':
+                $this->registerAndVerifyYubikeyToken();
+                break;
+            default:
+                throw new PendingException();
+        }
+
+        // Choose SAT vetting type
+        $page = $this->minkContext->getSession()->getPage();
+        $form = $page->find('css', 'form[action$="self-asserted-token-registration"]');
+        $form->submit();
+
+        switch ($recoveryTokenType) {
+            case 'safe-store':
+                $this->minkContext->assertPageContainsText('Activate using your recovery code');
+                $page = $this->minkContext->getSession()->getPage();
+                $form = $page->find('css', 'form[name="ss_authenticate_safe_store"]');
+                $form->fillField('ss_authenticate_safe_store_secret', $this->safeStoreRecoveryToken);
+                $form->submit();
+                break;
+            case 'SMS':
+                $this->minkContext->assertPageContainsText('Enter the code that was sent to your phone');
+                $this->minkContext->fillField('ss_verify_sms_challenge_challenge', '999');
+                $this->minkContext->pressButton('Verify');
+                break;
+            default:
+                throw new PendingException();
+        }
+    }
+
+    /**
+     * @Given I register a ":tokenType" recovery token
+     */
+    public function iRegisterARecoveryToken(string $tokenType)
+    {
+        $this->minkContext->assertPageContainsText('Always make sure you have at least one recovery method');
+        switch ($tokenType) {
+            case 'safe-store':
+                $this->minkContext->clickLink('Add recovery method');
+                $page = $this->minkContext->getSession()->getPage();
+                $form = $page->find('css', 'form[action$="/recovery-token/create-safe-store"]');
+                $form->submit();
+
+                // Authentication step to ensure the identity is in posession of the second factor token it is
+                // registering a Recovery token for.
+                $this->minkContext->pressButton('Submit');
+                $this->minkContext->assertPageContainsText('Your YubiKey-code:');
+                $this->minkContext->fillField('gateway_verify_yubikey_otp_otp', 'vviveikvgbguhrfthjuciuinkiregvdfrknjtukbrbve');
+                $page = $this->minkContext->getSession()->getPage();
+                $form = $page->find('css', 'form[name="gateway_verify_yubikey_otp"]');
+                $form->submit();
+                // Pass through gateway back to the selfservice
+                $this->minkContext->pressButton('Submit');
+
+                $this->minkContext->assertPageContainsText('The recovery code below will only be displayed once. Keep this recovery code somewhere safe in case you need it in the future');
+
+                $page = $this->minkContext->getSession()->getPage();
+                $form = $page->find('css', 'form[name="ss_promise_recovery_token_possession"]');
+                $form->checkField('ss_promise_recovery_token_possession_promisedPossession');
+                $form->submit();
+                break;
+            default:
+                throw new PendingException();
+        }
     }
 
     /**

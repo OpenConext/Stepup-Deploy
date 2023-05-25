@@ -193,14 +193,14 @@ if ( isset($GLOBALS['gSP_ProtocolBinding']) ) {
 
 # In test mode (testcookie is present) use the test certificates for the SP's
 if ( isset($_COOKIE['testcookie']) ) {
-    $config['default-sp']['certificate'] = '/vagrant/deploy/tests/behat/fixtures/test_public_key.crt';
-    $config['default-sp']['privatekey'] = '/vagrant/deploy/tests/behat/fixtures/test_private_key.key';
-    $config['second-sp']['certificate'] = '/vagrant/deploy/tests/behat/fixtures/test_public_key.crt';
-    $config['second-sp']['privatekey'] = '/vagrant/deploy/tests/behat/fixtures/test_private_key.key';
-    $config['third-sp']['certificate'] = '/vagrant/deploy/tests/behat/fixtures/test_public_key.crt';
-    $config['third-sp']['privatekey'] = '/vagrant/deploy/tests/behat/fixtures/test_private_key.key';
-    $config['fourth-sp']['certificate'] = '/vagrant/deploy/tests/behat/fixtures/test_public_key.crt';
-    $config['fourth-sp']['privatekey'] = '/vagrant/deploy/tests/behat/fixtures/test_private_key.key';
+    $config['default-sp']['certificate'] = '/deploy/tests/behat/fixtures/test_public_key.crt';
+    $config['default-sp']['privatekey'] = '/deploy/tests/behat/fixtures/test_private_key.key';
+    $config['second-sp']['certificate'] = '/deploy/tests/behat/fixtures/test_public_key.crt';
+    $config['second-sp']['privatekey'] = '/deploy/tests/behat/fixtures/test_private_key.key';
+    $config['third-sp']['certificate'] = '/deploy/tests/behat/fixtures/test_public_key.crt';
+    $config['third-sp']['privatekey'] = '/deploy/tests/behat/fixtures/test_private_key.key';
+    $config['fourth-sp']['certificate'] = '/deploy/tests/behat/fixtures/test_public_key.crt';
+    $config['fourth-sp']['privatekey'] = '/deploy/tests/behat/fixtures/test_private_key.key';
 }
 
 // Accounts for accountgen script

@@ -8,7 +8,7 @@ Feature: A RA manages tokens tokens registered in the selfservice portal
       And institution "institution-a.example.com" can "select_raa" from institution "institution-a.example.com"
       And institution "institution-d.example.com" can "use_ra" from institution "institution-a.example.com"
       And a user "Jane Toppan" identified by "urn:collab:person:institution-a.example.com:jane-a-ra" from institution "institution-a.example.com"
-      And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey"
+      And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has a vetted "yubikey" identified by "01010101"
       And the user "urn:collab:person:institution-a.example.com:jane-a-ra" has the role "ra" for institution "institution-a.example.com"
 
   Scenario: RA user can vet a token from an institution it is RA for

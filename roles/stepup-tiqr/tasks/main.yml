@@ -2,6 +2,9 @@
 # Install tiqr component
 # TODO: Test!
 
+- name: Put .env file
+  template: src=env.j2 dest={{ component_dir_name }}/.env.local group={{ component_group }} mode={{ component_mode_640 }}
+
 - name: Put parameters YAML config
   template:
     src: "{{ item }}.yml.j2"

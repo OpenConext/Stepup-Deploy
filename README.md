@@ -1,3 +1,8 @@
+Deprecation
+===========
+
+The deploy functionality for OpenConext Stepup has been merged into the overall [OpenConext-deploy](https://github.com/OpenConext/OpenConext-deploy/) repository.  This separate Setup-Deploy is no longer used.
+
 Ansible deploy scripts for Stepup Infrastructure
 ================================================
 
